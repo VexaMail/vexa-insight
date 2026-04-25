@@ -1,0 +1,1 @@
+ALTER TABLE `processed_messages` ADD `job_run_id` integer REFERENCES job_runs(id);

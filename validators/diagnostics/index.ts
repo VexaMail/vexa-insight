@@ -1,0 +1,1 @@
+export { validateDmarcTag } from './validateDmarcTag'

@@ -1,0 +1,11 @@
+export type DiagnosticsInsightCategory =
+  | 'dns_spf'
+  | 'dns_dmarc'
+  | 'dns_dkim'
+  | 'dns_mx'
+  | 'authentication'
+  | 'alignment'
+  | 'forwarding'
+  | 'policy'
+  | 'coverage'
+  | 'general'

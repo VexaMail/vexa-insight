@@ -1,0 +1,267 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *)); /* ──────────────────────────────────────────────────────────────────────────────
+   Light theme (default)
+   ────────────────────────────────────────────────────────────────────────────── */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 5%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 5%;
+  --popover: 0 0% 98%;
+  --popover-foreground: 0 0% 5%;
+  --primary: 160 84% 39%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 93%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 0 0% 94%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 0 0% 94%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 350 89% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 160 84% 39%;
+  --radius: 0.75rem;
+
+  --success: 160 84% 39%;
+  --success-foreground: 0 0% 100%;
+  --danger: 350 89% 60%;
+  --danger-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 100%;
+  --info: 217 91% 60%;
+  --info-foreground: 0 0% 100%;
+
+  --surface-1: 0 0% 96%;
+  --surface-2: 0 0% 92%;
+  --surface-3: 0 0% 88%;
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 30%;
+  --sidebar-primary: 160 84% 39%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 94%;
+  --sidebar-accent-foreground: 0 0% 10%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 160 84% 39%;
+
+  --chart-pass: 160 84% 39%;
+  --chart-fail: 350 89% 60%;
+  --chart-spf: 199 89% 48%;
+  --chart-dkim: 262 83% 58%;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Dark theme
+   ────────────────────────────────────────────────────────────────────────────── */
+.dark {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 93%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 93%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 93%;
+  --primary: 160 84% 39%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 93%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 55%;
+  --accent: 0 0% 14%;
+  --accent-foreground: 0 0% 93%;
+  --destructive: 350 89% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 14%;
+  --input: 0 0% 14%;
+  --ring: 160 84% 39%;
+
+  --success: 160 84% 39%;
+  --success-foreground: 0 0% 100%;
+  --danger: 350 89% 60%;
+  --danger-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 100%;
+  --info: 217 91% 60%;
+  --info-foreground: 0 0% 100%;
+
+  --surface-1: 0 0% 9%;
+  --surface-2: 0 0% 12%;
+  --surface-3: 0 0% 16%;
+
+  --sidebar-background: 0 0% 5%;
+  --sidebar-foreground: 0 0% 55%;
+  --sidebar-primary: 160 84% 39%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 10%;
+  --sidebar-accent-foreground: 0 0% 93%;
+  --sidebar-border: 0 0% 12%;
+  --sidebar-ring: 160 84% 39%;
+
+  --chart-pass: 160 84% 39%;
+  --chart-fail: 350 89% 60%;
+  --chart-spf: 199 89% 48%;
+  --chart-dkim: 262 83% 58%;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Tailwind v4 theme inline — register semantic tokens
+   ────────────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-danger: hsl(var(--danger));
+  --color-danger-foreground: hsl(var(--danger-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-surface-1: hsl(var(--surface-1));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-surface-3: hsl(var(--surface-3));
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+  --color-chart-pass: hsl(var(--chart-pass));
+  --color-chart-fail: hsl(var(--chart-fail));
+  --color-chart-spf: hsl(var(--chart-spf));
+  --color-chart-dkim: hsl(var(--chart-dkim));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display:
+    var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-fade-in-delay-1: fade-in 0.4s ease-out 0.1s both;
+  --animate-fade-in-delay-2: fade-in 0.4s ease-out 0.2s both;
+  --animate-fade-in-delay-3: fade-in 0.4s ease-out 0.3s both;
+  --animate-scale-in: scale-in 0.3s ease-out both;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+
+  @keyframes fade-in {
+    0% {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px -5px hsl(var(--primary) / 0.5);
+    }
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Base layer
+   ────────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Component layer — glass cards, scrollbar, utilities
+   ────────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  .glass-card {
+    @apply bg-card/80 border-border/50 rounded-xl border backdrop-blur-xl;
+  }
+  .glass-card-hover {
+    @apply bg-card/80 border-border/50 hover:border-primary/30 rounded-xl border backdrop-blur-xl transition-all duration-300 hover:shadow-[0_0_30px_-5px_hsl(var(--primary)/0.15)];
+  }
+  .stat-glow {
+    @apply shadow-[0_0_40px_-10px_hsl(var(--primary)/0.2)];
+  }
+  .gradient-text {
+    @apply bg-linear-to-r from-[hsl(var(--primary))] to-[hsl(var(--chart-spf))] bg-clip-text text-transparent;
+  }
+  .vexa-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .vexa-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .vexa-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Accessibility
+   ────────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

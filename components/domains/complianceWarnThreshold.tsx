@@ -1,0 +1,1 @@
+export const COMPLIANCE_WARN_THRESHOLD = 80

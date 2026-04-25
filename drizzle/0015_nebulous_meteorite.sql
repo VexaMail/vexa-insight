@@ -1,0 +1,1 @@
+ALTER TABLE `job_poll_events` ADD `message_uid` text NOT NULL;

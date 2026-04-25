@@ -1,0 +1,1 @@
+export { updateGeoIpDb } from './updateDb'

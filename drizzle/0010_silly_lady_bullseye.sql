@@ -1,0 +1,1 @@
+ALTER TABLE `raw_reports` ADD `source_message_id` text;

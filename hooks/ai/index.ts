@@ -1,0 +1,1 @@
+export { useAiDiagnosticsInsightsPanel } from './useAiDiagnosticsInsightsPanel'

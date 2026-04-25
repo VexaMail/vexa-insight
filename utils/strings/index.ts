@@ -1,0 +1,1 @@
+export { trimEdgePunctuation } from './trimEdgePunctuation'

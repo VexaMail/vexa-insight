@@ -1,0 +1,1 @@
+export const UNINSTALLED_CACHE_TTL = 10 * 1000

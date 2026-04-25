@@ -1,0 +1,1 @@
+export { useDomainsTable } from './useDomainsTable'

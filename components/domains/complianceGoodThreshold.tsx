@@ -1,0 +1,1 @@
+export const COMPLIANCE_GOOD_THRESHOLD = 95

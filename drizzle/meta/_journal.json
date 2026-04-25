@@ -1,0 +1,181 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1772101912189,
+      "tag": "0000_volatile_meggan",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1772108580957,
+      "tag": "0001_clean_katie_power",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1730000000000,
+      "tag": "0002_job_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772110689574,
+      "tag": "0003_unusual_grim_reaper",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1772110800000,
+      "tag": "0004_imap_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1772110900000,
+      "tag": "0005_ingestion_days_back_default",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1772111000000,
+      "tag": "0006_poll_status_progress_abort",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1772111100000,
+      "tag": "0007_manual_poll_progress",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1772111200000,
+      "tag": "0008_drop_app_settings_imap",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1772148076098,
+      "tag": "0009_loud_smiling_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1772451439490,
+      "tag": "0010_silly_lady_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1772462788408,
+      "tag": "0011_gray_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1772463721025,
+      "tag": "0012_mute_gunslinger",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1772625529993,
+      "tag": "0013_gigantic_stardust",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1772633022983,
+      "tag": "0014_clean_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1772633474151,
+      "tag": "0015_nebulous_meteorite",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1772743815067,
+      "tag": "0016_pink_yellow_claw",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1772747751401,
+      "tag": "0017_glossy_hedge_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1772747967051,
+      "tag": "0018_powerful_supernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1772820036913,
+      "tag": "0019_damp_randall_flagg",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1772903948020,
+      "tag": "0020_dizzy_dazzler",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1772905499011,
+      "tag": "0021_white_songbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1772906000000,
+      "tag": "0022_add_mark_as_read_after_process",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1775170636892,
+      "tag": "0023_eager_tiger_shark",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1775261021000,
+      "tag": "0024_ai_provider_settings",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export const NEEDS_REVIEW_THRESHOLD = 80
