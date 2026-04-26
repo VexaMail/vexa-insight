@@ -3,8 +3,8 @@ import {
   DashboardFilterInitializer,
   KpiCards,
   LatestReportsTable,
+  LivePollStatusCard,
   PassRateRing,
-  PollStatusCard,
   TopDomainsTable,
   TopIpSendersTable,
   VolumeByOrgTable,
@@ -63,7 +63,7 @@ export default async function DashboardPage({
         <div className="lg:col-span-2">
           <PassRateRing />
         </div>
-        <PollStatusCard status={pollStatus} />
+        <LivePollStatusCard initialStatus={pollStatus} />
       </div>
 
       {/* Charts */}
