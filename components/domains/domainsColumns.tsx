@@ -45,7 +45,7 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() !== 'desc')}
         >
           Messages
           {column.getIsSorted() === 'asc' && (
@@ -70,7 +70,7 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() !== 'desc')}
         >
           Compliance
           {column.getIsSorted() === 'asc' && (
