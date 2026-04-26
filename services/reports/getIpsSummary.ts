@@ -19,6 +19,7 @@ export async function getIpsSummary(
       ip: ipAddresses.ip,
       countryCode: ipAddresses.countryCode,
       hostname: ipHostnameEnrichments.hostname,
+      hostnameLastLookupAt: ipHostnameEnrichments.lastLookupAt,
       emailsSentCount: ipAddresses.emailsSentCount,
       totalMessages: sql<number>`sum(${normalizedEvents.count})`.as(
         'total_messages',
@@ -73,7 +74,11 @@ export async function getIpsSummary(
           : undefined,
       ),
     )
-    .groupBy(ipAddresses.id, ipHostnameEnrichments.hostname)
+    .groupBy(
+      ipAddresses.id,
+      ipHostnameEnrichments.hostname,
+      ipHostnameEnrichments.lastLookupAt,
+    )
     .orderBy(desc(sql`total_messages`))
 
   const ips = rows.map((r) => {
@@ -86,6 +91,9 @@ export async function getIpsSummary(
       ip: r.ip,
       countryCode: r.countryCode,
       hostname: r.hostname,
+      hostnameLastLookupAt: r.hostnameLastLookupAt
+        ? Math.floor(r.hostnameLastLookupAt.getTime() / 1000)
+        : null,
       totalMessages,
       emailsSentCount: r.emailsSentCount,
       firstSeen: r.firstSeen ? Number(r.firstSeen) : null,

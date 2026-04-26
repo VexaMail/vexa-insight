@@ -18,6 +18,7 @@ export default function IpDetailSummary({
           ip={data.ip}
           countryCode={data.countryCode}
           hostname={data.hostname}
+          hostnameLastLookupAt={data.hostnameLastLookupAt}
           layout="stacked"
           ipAsLink={false}
           className="flex-1 [&_span.font-mono]:text-xl [&_span.font-mono]:font-bold"

@@ -13,12 +13,18 @@ import { getIpsColumns } from './ipsColumns'
 export default function IpsTable({ ips }: IpsTableProps) {
   const router = useRouter()
   const setScope = useListState((s) => s.setScope)
-  const { localHostnames, refreshingIps, handleRefresh } = useIpsRefresh()
+  const {
+    localHostnames,
+    localHostnameLookupTimestamps,
+    refreshingIps,
+    handleRefresh,
+  } = useIpsRefresh()
   const { uniqueCountries, uniqueMainDomains } = useIpsTable(ips)
 
   const columns = getIpsColumns({
     refreshingIps,
     localHostnames,
+    localHostnameLookupTimestamps,
     handleRefresh,
     ips,
     setScope,

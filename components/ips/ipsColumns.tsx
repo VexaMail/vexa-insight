@@ -24,6 +24,7 @@ import { IpDisplay } from './IpDisplay'
 export function getIpsColumns({
   refreshingIps,
   localHostnames,
+  localHostnameLookupTimestamps,
   handleRefresh,
   ips,
   setScope,
@@ -104,11 +105,15 @@ export function getIpsColumns({
         const ip = row.getValue<string>('ip')
         const isRefreshing = refreshingIps.has(ip)
         const hostname = localHostnames[ip] ?? row.getValue<string>('hostname')
+        const hostnameLastLookupAt =
+          localHostnameLookupTimestamps[ip] ??
+          row.original.hostnameLastLookupAt
 
         return (
           <IpDisplay
             ip={ip}
             hostname={hostname}
+            hostnameLastLookupAt={hostnameLastLookupAt}
             layout="none"
             showFlag={false}
             showIp={false}

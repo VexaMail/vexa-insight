@@ -2,6 +2,7 @@ export type IpSummaryData = {
   ip: string
   countryCode: string | null
   hostname: string | null
+  hostnameLastLookupAt: number | null
   totalMessages: number
   emailsSentCount: number
   firstSeen: number | null

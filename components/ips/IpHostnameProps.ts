@@ -1,5 +1,6 @@
 export type IpHostnameProps = Readonly<{
   hostname?: string | null | undefined
+  hostnameLastLookupAt?: number | null | undefined
   showHostname: boolean | 'if-present'
   isRefreshing: boolean
   ip: string

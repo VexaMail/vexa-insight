@@ -3,6 +3,7 @@ export type IpDisplayProps = {
   countryCode?: string | null
   countryName?: string | null
   hostname?: string | null
+  hostnameLastLookupAt?: number | null
 
   layout?: 'stacked' | 'inline' | 'none'
   showFlag?: boolean

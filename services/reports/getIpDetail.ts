@@ -20,6 +20,7 @@ export async function getIpDetail(
       ip: ipAddresses.ip,
       countryCode: ipAddresses.countryCode,
       hostname: ipHostnameEnrichments.hostname,
+      hostnameLastLookupAt: ipHostnameEnrichments.lastLookupAt,
       emailsSentCount: ipAddresses.emailsSentCount,
       totalMessages: sql<number>`sum(${normalizedEvents.count})`.as(
         'total_messages',
@@ -73,7 +74,11 @@ export async function getIpDetail(
       eq(ipHostnameEnrichments.ip, ipAddresses.ip),
     )
     .where(eq(ipAddresses.ip, ip))
-    .groupBy(ipAddresses.id, ipHostnameEnrichments.hostname)
+    .groupBy(
+      ipAddresses.id,
+      ipHostnameEnrichments.hostname,
+      ipHostnameEnrichments.lastLookupAt,
+    )
     .limit(1)
 
   const r = rows[0]
@@ -88,6 +93,9 @@ export async function getIpDetail(
     ip: r.ip,
     countryCode: r.countryCode,
     hostname: r.hostname,
+    hostnameLastLookupAt: r.hostnameLastLookupAt
+      ? Math.floor(r.hostnameLastLookupAt.getTime() / 1000)
+      : null,
     totalMessages,
     emailsSentCount: r.emailsSentCount,
     firstSeen: r.firstSeen ? Number(r.firstSeen) : null,
