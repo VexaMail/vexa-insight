@@ -21,7 +21,7 @@ export function getReportsColumns({
   sortKey,
   sortDir,
   filtered,
-  domainId,
+  domainName,
   setScope,
 }: GetReportsColumnsParams): ColumnDef<ReportRow>[] {
   return [
@@ -111,7 +111,7 @@ export function getReportsColumns({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        href={`/domains/${d.domainId}`}
+                        href={`/domains/${encodeURIComponent(d.domainName)}`}
                         onClick={(e) => e.stopPropagation()}
                         className="hover:text-foreground max-w-[120px] truncate transition-colors hover:underline"
                       >
@@ -156,8 +156,8 @@ export function getReportsColumns({
     {
       id: 'actions',
       cell: ({ row }) => {
-        const href = domainId
-          ? `/reports/${row.original.id}?fromDomain=${domainId}`
+        const href = domainName
+          ? `/reports/${row.original.id}?fromDomain=${encodeURIComponent(domainName)}`
           : `/reports/${row.original.id}`
 
         return (

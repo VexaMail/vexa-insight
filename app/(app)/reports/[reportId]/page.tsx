@@ -51,14 +51,17 @@ export default async function ReportDetailPage({
   ])
   if (!report) notFound()
 
-  const backHref = fromDomain ? `/domains/${fromDomain}` : '/reports'
+  const backHref =
+    typeof fromDomain === 'string' && fromDomain.length > 0
+      ? `/domains/${encodeURIComponent(fromDomain)}`
+      : '/reports'
   const backLabel = fromDomain ? <>&larr; Domain Info</> : <>&larr; Reports</>
 
   const aiConfigured = isAiConfigured()
   const hasEvents = stats.totalMessages > 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <ReportHeader
         report={report}
         backHref={backHref}

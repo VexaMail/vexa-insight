@@ -11,8 +11,10 @@ import { getReportsColumns } from './reportsColumns'
 
 export default function ReportsTable({
   domainId,
+  domainName,
 }: {
   readonly domainId?: number
+  readonly domainName?: string
 } = {}) {
   const router = useRouter()
   const setScope = useListState((s) => s.setScope)
@@ -36,7 +38,7 @@ export default function ReportsTable({
     sortKey,
     sortDir,
     filtered,
-    domainId,
+    domainName,
     setScope,
   })
 

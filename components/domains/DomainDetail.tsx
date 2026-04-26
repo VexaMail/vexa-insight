@@ -6,7 +6,7 @@ import DomainStatsCard from './DomainStatsCard'
 
 export default function DomainDetail({
   domainId,
-  domainName: _domainName,
+  domainName,
   data,
 }: Readonly<DomainDetailProps>) {
   const { stats, sources } = data
@@ -47,7 +47,7 @@ export default function DomainDetail({
         >
           Associated Reports
         </h2>
-        <ReportsTable domainId={domainId} />
+        <ReportsTable domainId={domainId} domainName={domainName} />
       </section>
     </>
   )
