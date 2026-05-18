@@ -1,4 +1,5 @@
 import { gunzipSync } from 'node:zlib'
+import { MAX_UNCOMPRESSED_SIZE } from './constants'
 import { extractXmlFromZip } from './extractXmlFromZip'
 
 /**
@@ -16,7 +17,7 @@ export async function extractXmlFromBuffer(
   }
   if (lower.endsWith('.gz') || lower.endsWith('.gzip')) {
     try {
-      return gunzipSync(fileContent)
+      return gunzipSync(fileContent, { maxOutputLength: MAX_UNCOMPRESSED_SIZE })
     } catch {
       return null
     }

@@ -1,5 +1,6 @@
 import type yauzl from 'yauzl'
 import { handleReadStream } from './handleReadStream'
+import { isUnsafeZipEntryName } from './isUnsafeZipEntryName'
 
 export function processZipEntry(
   z: yauzl.ZipFile,
@@ -10,6 +11,10 @@ export function processZipEntry(
   readNext: () => void,
 ) {
   entries.push({ uncompressedSize: entry.uncompressedSize })
+  if (isUnsafeZipEntryName(entry.fileName)) {
+    readNext()
+    return
+  }
   const isXml = entry.fileName.toLowerCase().endsWith('.xml')
 
   if (isXml && currentXmlBuffer === null) {

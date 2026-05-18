@@ -15,6 +15,11 @@ import { str } from './str'
  */
 export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
   const rawXml = xmlBuffer.toString('utf-8')
+  if (/<!DOCTYPE/i.test(rawXml) || /<!ENTITY/i.test(rawXml)) {
+    throw new Error(
+      'DMARC XML must not contain DOCTYPE or ENTITY declarations',
+    )
+  }
   const obj = parser.parse(rawXml) as Record<string, unknown>
   const feedback = obj?.feedback as Record<string, unknown> | undefined
   if (!feedback) {

@@ -4,4 +4,5 @@ export const parser = new XMLParser({
   ignoreAttributes: true,
   parseTagValue: false,
   trimValues: true,
+  processEntities: false,
 })
