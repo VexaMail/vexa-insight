@@ -1,0 +1,1 @@
+CREATE INDEX `event_report_end_idx` ON `normalized_events` (`report_end_date`);

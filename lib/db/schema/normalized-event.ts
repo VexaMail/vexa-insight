@@ -42,5 +42,6 @@ export const normalizedEvents = sqliteTable(
   (table) => [
     index('domain_date_idx').on(table.domainId, table.reportBeginDate),
     index('domain_spf_auth_idx').on(table.domainId, table.spfAuthResult),
+    index('event_report_end_idx').on(table.reportEndDate),
   ],
 )
