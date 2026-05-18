@@ -1,6 +1,7 @@
 'use client'
 
 import type { AIProviderId, ProviderModelInfo } from '@/types/ai'
+import { fetchProviderModels } from '@/utils/ai'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
@@ -11,67 +12,79 @@ export function useProviderModels(
   providerId: AIProviderId | null,
   temporaryApiKey: string,
 ) {
-  const [models, setModels] = useState<ProviderModelInfo[]>([])
+  const [fetchedModels, setFetchedModels] = useState<ProviderModelInfo[]>([])
+  const [fetchedError, setFetchedError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
 
-  const fetchModels = useCallback(async () => {
-    if (!providerId) {
-      setModels([])
-      return
-    }
+  const models = providerId ? fetchedModels : []
+  const error = providerId ? fetchedError : null
 
+  useEffect(() => {
+    if (!providerId) return
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const res = await fetch('/api/v1/admin/ai-models', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-        body: JSON.stringify({
+    let cancelled = false
+    const run = async () => {
+      try {
+        await Promise.resolve()
+        if (cancelled) return
+        setIsLoading(true)
+        setFetchedError(null)
+        const result = await fetchProviderModels({
+          apiKey,
           providerId,
-          ...(temporaryApiKey.trim() ? { apiKey: temporaryApiKey.trim() } : {}),
-        }),
+          temporaryApiKey,
+          signal: controller.signal,
+        })
+        if (cancelled) return
+        setFetchedModels(result.models)
+        setFetchedError(result.error)
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
+        if (!cancelled) {
+          setFetchedError('Failed to load models')
+          setFetchedModels([])
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+    void run()
+    return () => {
+      cancelled = true
+      controller.abort()
+    }
+  }, [apiKey, providerId, temporaryApiKey])
+
+  const refetch = useCallback(async () => {
+    if (!providerId) {
+      setFetchedModels([])
+      return
+    }
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
+    setIsLoading(true)
+    setFetchedError(null)
+    try {
+      const result = await fetchProviderModels({
+        apiKey,
+        providerId,
+        temporaryApiKey,
         signal: controller.signal,
       })
-
-      if (!res.ok) {
-        const json = (await res.json()) as {
-          error: { message: string }
-        }
-        setError(json.error.message)
-        setModels([])
-        return
-      }
-
-      const json = (await res.json()) as { data: ProviderModelInfo[] }
-      setModels(json.data)
+      setFetchedModels(result.models)
+      setFetchedError(result.error)
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') return
-      setError('Failed to load models')
-      setModels([])
+      setFetchedError('Failed to load models')
+      setFetchedModels([])
     } finally {
       setIsLoading(false)
     }
   }, [apiKey, providerId, temporaryApiKey])
 
-  useEffect(() => {
-    if (!providerId) {
-      setModels([])
-      setError(null)
-      return
-    }
-    void fetchModels()
-    return () => abortRef.current?.abort()
-  }, [providerId, fetchModels])
-
-  return { models, isLoading, error, refetch: fetchModels }
+  return { models, isLoading, error, refetch }
 }

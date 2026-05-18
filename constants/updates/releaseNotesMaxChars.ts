@@ -1,0 +1,1 @@
+export const RELEASE_NOTES_MAX_CHARS = 5000

@@ -1,24 +1,46 @@
-# Vexa Mail Insight – run with: docker compose up --build
-# Set env in .env (SECRET_KEY, IMAP_* optional). Migrations run on container start.
+# Vexa Mail Insight – default compose
+#
+# Two ways to run:
+#   1) Pull the latest published image (recommended for production):
+#        docker compose pull && docker compose up -d
+#   2) Build from source (for development / forks):
+#        VEXA_BUILD_FROM_SOURCE=1 docker compose up -d --build
+#
+# To enable hands-off auto-updates, layer the Watchtower override:
+#   docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
+#
+# Migrations run automatically on container start. Your data lives in the
+# `vexa-data` volume and is preserved across upgrades.
 
 services:
   web:
-    build: .
+    image: ${VEXA_IMAGE:-ghcr.io/vexamail/vexa-insight-dashboard:latest}
+    # Uncomment the build block below (and comment out `image:`) to build
+    # from the local checkout instead of pulling the published image.
+    # build: .
+    pull_policy: always
     ports:
       - '3000:3000'
     environment:
       - NODE_ENV=production
       - DATABASE_URL=file:./data/vexa.db
-      - SECRET_KEY=${SECRET_KEY:-change-me-min-32-chars}
+      # SECRET_KEY must be set to a random 32+ char value before going to prod.
+      # Leaving CHANGE_ME triggers the first-run installer and refuses admin auth.
+      - SECRET_KEY=${SECRET_KEY:-CHANGE_ME}
       - IMAP_SERVER=${IMAP_SERVER:-}
       - IMAP_PORT=${IMAP_PORT:-993}
       - IMAP_USERNAME=${IMAP_USERNAME:-}
       - IMAP_PASSWORD=${IMAP_PASSWORD:-}
       - INGESTION_INTERVAL_MINUTES=${INGESTION_INTERVAL_MINUTES:-60}
       - INGESTION_DAYS_BACK=${INGESTION_DAYS_BACK:-7}
+      - VEXA_UPDATE_CHECK_ENABLED=${VEXA_UPDATE_CHECK_ENABLED:-true}
+      - VEXA_UPDATE_REPO=${VEXA_UPDATE_REPO:-}
     volumes:
       - vexa-data:/app/data
     restart: unless-stopped
+    labels:
+      # Watchtower opt-in label: only updated when the override compose is layered.
+      - 'com.centurylinklabs.watchtower.enable=true'
 
 volumes:
   vexa-data:

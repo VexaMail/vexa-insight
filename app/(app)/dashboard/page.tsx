@@ -9,6 +9,7 @@ import {
   VolumeByOrgTable,
 } from '@/components/dashboard'
 import { DateRangeFilter } from '@/components/filters'
+import { PageContainer, PageHeader } from '@/components/shell'
 
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
@@ -34,30 +35,29 @@ export default async function DashboardPage({
   const pollStatus = await getPollStatusSafe()
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <PageContainer>
       <DashboardFilterInitializer days={days} from={fromDate} to={toDate} />
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h1 className="font-display text-foreground text-2xl font-bold tracking-tight">
-          Dashboard
-        </h1>
-        <Suspense
-          fallback={
-            <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
-          }
-        >
-          <DateRangeFilter
-            currentDays={days}
-            basePath="/dashboard"
-            from={fromDate}
-            to={toDate}
-          />
-        </Suspense>
-      </div>
 
-      {/* Hero Stats */}
+      <PageHeader
+        title="Dashboard"
+        actions={
+          <Suspense
+            fallback={
+              <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
+            }
+          >
+            <DateRangeFilter
+              currentDays={days}
+              basePath="/dashboard"
+              from={fromDate}
+              to={toDate}
+            />
+          </Suspense>
+        }
+      />
+
       <KpiCards />
 
-      {/* Pass Rate + Ingestion */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <PassRateRing />
@@ -65,16 +65,13 @@ export default async function DashboardPage({
         <PollStatusCard status={pollStatus} />
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <DispositionChart />
         <SpfDkimChart />
       </div>
 
-      {/* Trend */}
       <TrendChart />
 
-      {/* Volume + Top Domains + Latest Reports */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-1">
           <VolumeByOrgTable />
@@ -86,6 +83,6 @@ export default async function DashboardPage({
           <LatestReportsTable />
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

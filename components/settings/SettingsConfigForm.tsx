@@ -11,6 +11,7 @@ import { GeoIpSection } from './GeoIpSection'
 import ImapAccountsSection from './ImapAccountsSection'
 import IngestionSection from './IngestionSection'
 import IpHostnameSection from './IpHostnameSection'
+import UpdateStatusSection from './UpdateStatusSection'
 
 export default function SettingsConfigForm({
   className = '',
@@ -38,6 +39,8 @@ export default function SettingsConfigForm({
       }}
       className={`space-y-6 ${className}`}
     >
+      <UpdateStatusSection apiKey={apiKey} />
+
       <ApiKeySection
         apiKey={apiKey}
         newKey={form.secretKeyNew}

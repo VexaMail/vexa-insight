@@ -1,7 +1,7 @@
 import { fetchMoreIpLogs } from '@/actions/fetchMoreIpLogs'
 import type { IpLogRow } from '@/types/IpLogRow'
 import type { IpDateRange } from '@/types/filters'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export function useIpEventLogs({
   initialLogs,
@@ -12,14 +12,17 @@ export function useIpEventLogs({
   ip: string
   dateRange: IpDateRange
 }) {
+  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [logs, setLogs] = useState<IpLogRow[]>(initialLogs)
   const [isLoading, setIsLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialLogs.length === 50)
 
-  useEffect(() => {
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey)
     setLogs(initialLogs)
     setHasMore(initialLogs.length === 50)
-  }, [ip, dateRange.fromTs, dateRange.toTs, initialLogs])
+  }
 
   const handleLoadMore = async (): Promise<void> => {
     setIsLoading(true)

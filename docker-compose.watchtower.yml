@@ -1,0 +1,29 @@
+# Watchtower override — enables hands-off auto-updates.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
+#
+# Watchtower polls the published image every 6 hours (configurable via
+# WATCHTOWER_POLL_INTERVAL). When a new tag is pushed to GHCR, your `web`
+# container is gracefully recreated against the new image. Your SQLite
+# database lives in the `vexa-data` volume and is preserved across the
+# restart. Old images are pruned (`WATCHTOWER_CLEANUP=true`).
+#
+# `WATCHTOWER_LABEL_ENABLE=true` means Watchtower only touches containers
+# tagged with `com.centurylinklabs.watchtower.enable=true` — i.e. only the
+# `web` service in this compose file. Other containers on the host are
+# left alone.
+
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: vexa-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL:-21600}
+      - TZ=${TZ:-UTC}

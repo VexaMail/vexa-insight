@@ -6,6 +6,7 @@ import {
   rawReports,
 } from '@/lib/db'
 import { upsertIp } from '@/services/geoip'
+import { fireAndForgetDispatch } from '@/services/notifications'
 import type { ParseResult } from '@/types/dmarc'
 import type { IngestResult } from '@/types/reports'
 import { eq } from 'drizzle-orm'
@@ -117,6 +118,24 @@ export async function ingestParsedReport(
       }
     }
   })
+
+  const unauthorizedIps = Array.from(
+    new Set(
+      report.events
+        .filter((ev) => !ev.spfAligned && !ev.dkimAligned)
+        .map((ev) => ev.sourceIp),
+    ),
+  )
+  if (unauthorizedIps.length > 0) {
+    fireAndForgetDispatch('unauthorized_source.detected', {
+      domain: report.domain,
+      reportId: report.rawReport.reportId,
+      reportingOrg: report.rawReport.orgName,
+      unauthorizedIps,
+      reportBeginDate: report.rawReport.beginDate,
+      reportEndDate: report.rawReport.endDate,
+    })
+  }
 
   return { ingested: true, rawReportId }
 }

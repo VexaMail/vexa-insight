@@ -1,0 +1,1 @@
+export const DISPATCH_TIMEOUT_MS = 5000

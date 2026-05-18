@@ -70,6 +70,7 @@ const config = defineConfig([
             'scripts/extract-pass2.ts',
             'scripts/fix-imports.ts',
             'scripts/rename-constants.ts',
+            'scripts/seed-demo.ts',
           ],
         },
         tsconfigRootDir: import.meta.dirname,
@@ -363,9 +364,14 @@ const config = defineConfig([
     },
   },
 
-  // DataTable uses TanStack Table which raises a React Compiler warning
+  // TanStack Table's `useReactTable()` returns functions that React Compiler
+  // cannot safely memoize. The hook already carries `'use no memo'` to opt
+  // out of compilation; the lint rule still detects the call site statically
+  // and has no allow-list option. Until @tanstack/react-table changes its API
+  // or eslint-plugin-react-hooks adds an allow-list, this rule stays off for
+  // the one wrapper that consumes useReactTable.
   {
-    files: ['components/ui/DataTable.tsx'],
+    files: ['hooks/ui/useDataTable.ts'],
     rules: {
       'react-hooks/incompatible-library': 'off',
     },

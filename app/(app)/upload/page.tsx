@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { PageContainer, PageHeader } from '@/components/shell'
 import { UploadForm } from '@/components/upload'
 
 export const metadata: Metadata = {
@@ -9,8 +10,12 @@ export const metadata: Metadata = {
 
 export default function UploadPage() {
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <PageContainer>
+      <PageHeader
+        title="Upload"
+        description="Upload DMARC aggregate reports for analysis."
+      />
       <UploadForm />
-    </div>
+    </PageContainer>
   )
 }

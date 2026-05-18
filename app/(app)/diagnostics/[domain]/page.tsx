@@ -1,5 +1,6 @@
 import { AiDiagnosticsInsightsPanel } from '@/components/ai'
 import { DiagnosticsView } from '@/components/diagnostics'
+import { PageContainer } from '@/components/shell'
 import { parseDateRangeParams } from '@/lib/utils'
 import { isAiConfigured } from '@/services/ai'
 import {
@@ -72,7 +73,7 @@ export default async function DomainDiagnosticsPage({
   const aiConfigured = isAiConfigured()
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <PageContainer>
       <DiagnosticsView
         domains={mappedDomains}
         currentDomainName={domainName}
@@ -92,6 +93,6 @@ export default async function DomainDiagnosticsPage({
         startDate={queryFromDate?.toISOString()}
         endDate={queryToDate?.toISOString()}
       />
-    </div>
+    </PageContainer>
   )
 }

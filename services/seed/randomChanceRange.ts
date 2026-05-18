@@ -1,0 +1,1 @@
+export const RANDOM_CHANCE_RANGE = 1_000_000

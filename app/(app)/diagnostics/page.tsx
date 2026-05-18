@@ -1,3 +1,5 @@
+import { PageContainer, PageHeader } from '@/components/shell'
+import { EmptyState } from '@/components/ui'
 import { getDomainsSummaryAll } from '@/services/reports'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -18,16 +20,10 @@ export default async function DiagnosticsIndexPage() {
 
   if (domains.length === 0) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <h1 className="font-display text-foreground text-2xl font-bold tracking-tight">
-            Diagnostics
-          </h1>
-        </div>
-        <div className="bg-card text-muted-foreground rounded-lg border p-8 text-center shadow-sm">
-          No domains found with DMARC reports.
-        </div>
-      </div>
+      <PageContainer>
+        <PageHeader title="Diagnostics" />
+        <EmptyState>No domains found with DMARC reports.</EmptyState>
+      </PageContainer>
     )
   }
 

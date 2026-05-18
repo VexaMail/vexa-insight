@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from '@/components/shell'
 import { UsersClient } from '@/components/users'
 import { getSession } from '@/services/auth'
 import { getUsers } from '@/services/users'
@@ -11,7 +12,6 @@ export default async function UsersPage() {
     redirect('/')
   }
 
-  // Serialize the date objects to strings to pass safely to Client Component if necessary, or let Next.js handle it
   const initialUsers = await getUsers()
   const serializedUsers = initialUsers.map((u) => ({
     ...u,
@@ -20,20 +20,15 @@ export default async function UsersPage() {
   }))
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <h1 className="font-display text-foreground text-3xl font-bold tracking-tight">
-        Users
-      </h1>
-      <p className="text-muted-foreground text-sm">
-        Manage system access, roles, and domain restrictions. Only Admins can
-        access this section.
-      </p>
-      <div className="pt-4">
-        <UsersClient
-          initialUsers={serializedUsers}
-          currentUserId={session.user.id}
-        />
-      </div>
-    </div>
+    <PageContainer>
+      <PageHeader
+        title="Users"
+        description="Manage system access, roles, and domain restrictions. Only Admins can access this section."
+      />
+      <UsersClient
+        initialUsers={serializedUsers}
+        currentUserId={session.user.id}
+      />
+    </PageContainer>
   )
 }

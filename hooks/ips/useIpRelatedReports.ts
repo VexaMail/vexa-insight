@@ -1,7 +1,7 @@
 import { fetchMoreIpReports } from '@/actions/fetchMoreIpReports'
 import type { IpRelatedReportRow } from '@/types/IpRelatedReportRow'
 import type { IpDateRange } from '@/types/filters'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export function useIpRelatedReports({
   initialReports,
@@ -12,14 +12,17 @@ export function useIpRelatedReports({
   ip: string
   dateRange: IpDateRange
 }) {
+  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [reports, setReports] = useState<IpRelatedReportRow[]>(initialReports)
   const [isLoading, setIsLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialReports.length === 25)
 
-  useEffect(() => {
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey)
     setReports(initialReports)
     setHasMore(initialReports.length === 25)
-  }, [ip, dateRange.fromTs, dateRange.toTs, initialReports])
+  }
 
   const handleLoadMore = async (): Promise<void> => {
     setIsLoading(true)

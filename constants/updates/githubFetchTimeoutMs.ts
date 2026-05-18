@@ -1,0 +1,1 @@
+export const GITHUB_FETCH_TIMEOUT_MS = 8000

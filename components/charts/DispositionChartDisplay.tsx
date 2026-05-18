@@ -1,7 +1,7 @@
 'use client'
 
 import type { DispositionChartProps } from '@/types/charts'
-import dynamic from 'next/dynamic'
+import { DispositionChartInner } from './dispositionChartLazy'
 
 /**
  * Display-only version of DispositionChart for use when you already have
@@ -10,8 +10,5 @@ import dynamic from 'next/dynamic'
 export default function DispositionChartDisplay(
   props: Readonly<DispositionChartProps>,
 ) {
-  const DispositionChartInner = dynamic(() => import('./_DispositionChart'), {
-    ssr: false,
-  })
   return <DispositionChartInner {...props} />
 }

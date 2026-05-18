@@ -1,7 +1,7 @@
 import { fetchMoreIpDomains } from '@/actions/fetchMoreIpDomains'
 import type { IpRelatedDomainRow } from '@/types/IpRelatedDomainRow'
 import type { IpDateRange } from '@/types/filters'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export function useIpRelatedDomains({
   initialDomains,
@@ -12,14 +12,17 @@ export function useIpRelatedDomains({
   ip: string
   dateRange: IpDateRange
 }) {
+  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [domains, setDomains] = useState<IpRelatedDomainRow[]>(initialDomains)
   const [isLoading, setIsLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialDomains.length === 25)
 
-  useEffect(() => {
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey)
     setDomains(initialDomains)
     setHasMore(initialDomains.length === 25)
-  }, [ip, dateRange.fromTs, dateRange.toTs, initialDomains])
+  }
 
   const handleLoadMore = async (): Promise<void> => {
     setIsLoading(true)

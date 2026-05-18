@@ -1,10 +1,11 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import VexaLogo from './VexaLogo'
 import { bottomNavItems } from './bottomNavItems'
 import { renderNavItems } from './renderNavItems'
+import SidebarVersionStatus from './SidebarVersionStatus'
 import { topNavItems } from './topNavItems'
+import VexaLogo from './VexaLogo'
 
 export default function AppSidebar() {
   const pathname = usePathname()
@@ -25,9 +26,7 @@ export default function AppSidebar() {
         </ul>
       </div>
       <div className="border-border/50 shrink-0 border-t p-4 pb-6">
-        <p className="text-muted-foreground/50 text-center text-[10px]">
-          Vexa Insight v2.0
-        </p>
+        <SidebarVersionStatus />
       </div>
     </aside>
   )

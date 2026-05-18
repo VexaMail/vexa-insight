@@ -38,11 +38,14 @@ When reporting, please include:
 
 When evaluating reports, these are the components most likely to be impactful:
 
-- **`/api/v1/admin/*`** endpoints — protected by `SECRET_KEY`. Should never be exposed publicly without additional network or application-level access control.
+- **`/api/v1/admin/*`** endpoints — protected by `SECRET_KEY` (timing-safe HMAC comparison) and/or a valid admin session cookie. The admin API refuses to authenticate when `SECRET_KEY` is unset, equal to `CHANGE_ME`, or shorter than 32 characters. Should never be exposed publicly without additional network or application-level access control.
 - **`/install`** route — first-time setup. Locked once the first user exists.
+- **Login** — rate-limited to 5 attempts per minute per IP, scrypt + `crypto.timingSafeEqual` for password verification.
 - **IMAP credentials** — stored encrypted at rest in the database; review credential handling in `services/imap/` and the Settings UI.
-- **DMARC report ingestion** — XML parsing of untrusted email attachments (`.zip` and `.gz`); review parser surface in `services/ingestion/`.
-- **Authentication and session handling** — review `services/auth/` and the `sessions` table.
+- **DMARC report ingestion** — XML parsing of untrusted email attachments (`.zip` and `.gz`); review parser surface in `services/dmarc/` and `utils/dmarc/`. Uncompressed-size cap protects against zip bombs.
+- **Self-update flow** — `scripts/self-update.sh` accepts only tag refs matching `^v\d+\.\d+\.\d+(-[A-Za-z0-9.-]+)?$`. Every invocation is recorded in `data/self-update.audit.log`. Build failures trigger automatic git/`.next` rollback before any supervisor signal.
+- **Outbound webhooks** — payloads are signed with HMAC-SHA256 when an endpoint has a `secret`; verify on the receiver via the `X-Vexa-Signature` header.
+- **Authentication and session handling** — review `services/auth/` (scrypt, 30-day cookies, `HttpOnly`, `Secure` in production, `SameSite=lax`) and the `sessions` table.
 
 ## Scope
 

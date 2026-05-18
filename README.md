@@ -1,255 +1,280 @@
+<div align="center">
+
 # Vexa Mail Insight
 
+### Self-hosted DMARC observability. Your data, your server, your dashboard.
+
+[![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight-dashboard/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight-dashboard/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight-dashboard?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight-dashboard/releases)
+[![Docker Pulls](https://img.shields.io/badge/ghcr.io-vexamail%2Fvexa--insight--dashboard-2496ED?logo=docker)](https://github.com/VexaMail/vexa-insight-dashboard/pkgs/container/vexa-insight-dashboard)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Node](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)](https://nodejs.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![Stars](https://img.shields.io/github/stars/VexaMail/vexa-insight-dashboard?style=social)](https://github.com/VexaMail/vexa-insight-dashboard/stargazers)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Vexa Mail Insight is an open-source Email Authentication Observability Platform built with Next.js and TypeScript. It transforms raw DMARC aggregate reports into structured intelligence, providing modern dashboards, analytics, and actionable insights for domain protection and deliverability monitoring.
+</div>
 
-This project is designed to be enterprise-friendly, self-hostable, SQLite-first (zero-friction install), database-agnostic (PostgreSQL/MySQL ready), and extensible beyond DMARC.
+<p align="center">
+  <img src="docs/screenshots/dashboard-overview.png" alt="Vexa Mail Insight — Sending Sources view with hostname and geo enrichment" width="100%" />
+</p>
 
-**Highlights:**
+**Vexa Mail Insight** turns raw DMARC aggregate reports (RUA) into a queryable security signal: who is sending mail using your domains, how SPF/DKIM are performing, where unauthorized senders are coming from. Built with Next.js 16, TypeScript, and Drizzle ORM. SQLite by default — **install in 30 seconds, no third party touches your data**.
 
-- IMAP ingestion of DMARC aggregate reports (RUA) with support for .zip and .gz compressed XML
-- Idempotent processing and structured normalization into queryable records
-- SQLite by default; no extra setup required
-- Optional PostgreSQL or MySQL via a single environment variable
-- Dashboard with domain and time-range filtering, top sending IPs, authentication pass/fail trends, policy disposition breakdown, and ingestion health visibility
-
----
-
-## Why Vexa Mail Insight?
-
-DMARC aggregate reports are difficult to consume: they arrive as XML, often inside compressed email attachments. Most teams rely on third-party email digests and lose direct access to the underlying data. There is a gap between raw report data and actionable intelligence. Organizations need domain-level visibility, trend analysis, and the ability to answer questions about who is sending mail for their domains and how authentication is performing.
-
-Vexa Mail Insight positions itself as the observability layer for email authentication infrastructure: ingest, normalize, store, and expose the same data through a clear API and dashboard so that infrastructure and security teams can monitor and act on it.
+<p align="center">
+  <a href="docs/screenshots/domains.png"><img src="docs/screenshots/domains.png" alt="Domains list with compliance bars and status pills" width="32%" /></a>
+  <a href="docs/screenshots/ips.png"><img src="docs/screenshots/ips.png" alt="Sending Sources with hostname and geo enrichment" width="32%" /></a>
+  <a href="docs/screenshots/diagnostics.png"><img src="docs/screenshots/diagnostics.png" alt="Per-domain security score with SPF/DKIM/DMARC checks" width="32%" /></a>
+</p>
 
 ---
 
-## Core Features (v1)
+## Quick start (30 seconds)
 
-**Ingestion**
+```bash
+docker run -d --name vexa -p 3000:3000 \
+  -v vexa-data:/app/data \
+  ghcr.io/vexamail/vexa-insight-dashboard:latest
+```
 
-- IMAP polling of DMARC aggregate reports (RUA) from a dedicated mailbox
-- Support for .zip and .gz compressed XML attachments
-- Idempotent processing: each report is identified by `report_id`; duplicates are skipped
-- Structured normalization: raw XML is parsed into `RawReport` and then into `NormalizedEvent` records (domain, source IP, SPF/DKIM results, alignment, disposition, counts, report window)
+Then open <http://localhost:3000>, complete the web installer, and connect your DMARC mailbox (or run `pnpm run seed:demo` against a local checkout to see the dashboard with sample data first).
 
-**Persistence**
-
-- SQLite default: set `DATABASE_URL=file:./data/vexa.db` (or leave default); no additional setup
-- PostgreSQL or MySQL: change `DATABASE_URL` to your connection string and run migrations; no application code changes
-
-**Dashboard and API**
-
-- Overview dashboard: KPI cards, trend chart, SPF/DKIM breakdown, disposition metrics, volume by reporting org, ingestion (poll) status
-- Domain list and domain detail pages with source IP analysis and report drill-down
-- Time-range and domain filtering
-- Top sending IP analysis and authentication pass/fail trends
-- Policy disposition breakdown
-- Ingestion health visibility (last poll, running status)
-- Settings page configures project name, API key, IMAP accounts, and ingestion (interval, days back); stored in the database or seeded from environment variables
+Prefer Compose? [`docker-compose.yml`](docker-compose.yml) bundles persistence and an opt-in Watchtower auto-update layer.
 
 ---
 
-## Architecture Overview
+## Why self-host vs SaaS DMARC?
+
+|                                  | Vexa Mail Insight (self-hosted)         | SaaS DMARC tools                                 |
+| -------------------------------- | --------------------------------------- | ------------------------------------------------ |
+| **Data location**                | Your server, your control               | Sent to a third party                            |
+| **GDPR / SOC2 / data residency** | You decide — no DPA required            | Vendor risk review, DPA, data export negotiation |
+| **Cost at scale**                | Infrastructure only                     | $$$ per domain / month, tiered                   |
+| **Customization**                | Open source (Apache 2.0) — fork it      | Closed, feature requests at vendor pace          |
+| **Air-gapped support**           | Yes (`VEXA_UPDATE_CHECK_ENABLED=false`) | No                                               |
+| **Vendor lock-in**               | None — standard schema, exportable      | Migration friction                               |
+
+If the answer to "can we ship our authentication logs to a SaaS vendor?" is _no, definitely not_, this project exists for you.
+
+---
+
+## Who is this for?
+
+- **Security teams.** Detect phishing and spoofing campaigns abusing your domain — see the source IP, the reporting org, and the SPF/DKIM failure pattern.
+- **Email infrastructure / deliverability.** Trend authentication pass rates over time, spot misconfigured ESPs, validate alignment after DNS changes.
+- **MSPs and agencies** (roadmap: multi-tenant). Operate one Vexa instance to monitor DMARC for multiple customer domains.
+- **Compliance / GRC.** Demonstrate continuous monitoring of email authentication policy enforcement without sending logs to an external processor.
+
+---
+
+## Highlights
+
+- **IMAP ingestion** of DMARC aggregate reports (RUA) with `.zip` and `.gz` support, including zip-bomb protection.
+- **Idempotent processing** keyed on `report_id`; duplicates are skipped.
+- **Three-layer data model:** `RawReport` (audit), `NormalizedEvent` (query/analytics), optional `AggregatedMetric` (future precomputed metrics).
+- **SQLite by default** — no extra setup. Switch to PostgreSQL or MySQL via `DATABASE_URL`; no app code changes.
+- **Dashboard:** KPI cards, authentication trend chart, SPF/DKIM breakdown, disposition metrics, top sending IPs, ingestion health.
+- **First-run web installer** at `/install` with permanent lockout after the first user is created.
+- **CLI recovery** (`scripts/recovery.ts`) for password reset and admin creation when SMTP isn't available.
+- **Hands-off auto-updates** via the bundled Watchtower override compose, or one-click "Apply update now" for source installs running under systemd / PM2.
+- **Apache 2.0** with explicit patent grant — commercially safe.
+
+---
+
+## What you see (KPIs)
+
+- Authentication pass/fail trend (SPF, DKIM, DMARC alignment) over a configurable date range.
+- Top sending IPs and the geographic distribution of senders.
+- Volume by reporting organization (Gmail, Microsoft, Yahoo, etc.) — anomalies flag possible deliverability incidents.
+- Policy disposition breakdown (`none` / `quarantine` / `reject`).
+- Domain drill-down with source IP analysis and per-report inspection.
+- Ingestion health: last poll, scheduler status, error visibility.
+
+---
+
+## Architecture overview
 
 **Application layers**
 
-- **Next.js App Router:** UI (dashboard, domains, reports, settings, upload) and API routes under `/api/v1/`
-- **Background job runner:** In-Node scheduler (node-cron) for IMAP fetch and ingest; optional external trigger via `POST /api/v1/admin/trigger-poll` with API key (X-API-Key or Bearer)
-- **DMARC ingestion pipeline:** Fetch attachments from IMAP, parse DMARC XML (including from .zip/.gz), normalize, and write to the database with idempotency
-- **Database abstraction:** Drizzle ORM with SQLite by default and support for other drivers via `DATABASE_URL`
+- **Next.js App Router:** UI (dashboard, domains, reports, settings, upload) and API routes under `/api/v1/`.
+- **Background job runner:** in-Node scheduler (node-cron) for IMAP fetch and ingest; optional external trigger via `POST /api/v1/admin/trigger-poll` with API key.
+- **DMARC ingestion pipeline:** fetch attachments from IMAP → parse XML (including from `.zip`/`.gz`) → normalize → persist with idempotency.
+- **Database abstraction:** Drizzle ORM with SQLite by default and support for PostgreSQL/MySQL via `DATABASE_URL`.
 
-**Data model (three layers)**
+**Data model**
 
-- **RawReport:** Stores the original XML payload and metadata (report_id, org name, date range, source email, ingested_at). Used for auditability and debugging.
-- **NormalizedEvent:** Per-record structured data: domain, source IP, SPF/DKIM result and alignment, disposition, count, report window. Used for queries, dashboards, and analytics.
-- **AggregatedMetric (optional/future):** Precomputed metrics for dashboards; if not present, the application computes metrics from NormalizedEvent via API queries.
-
-This separation keeps raw data auditable, allows flexible querying and reporting on normalized data, and leaves room for future materialized aggregates without changing the ingestion pipeline.
+- **RawReport:** original XML payload + metadata. Auditable, debuggable.
+- **NormalizedEvent:** per-record structured data (domain, source IP, SPF/DKIM result + alignment, disposition, count, report window). Used for queries and dashboards.
+- **AggregatedMetric** _(optional / future)_: precomputed metrics if you want them; otherwise computed from `NormalizedEvent` on demand.
 
 ---
 
-## Tech Stack
+## Tech stack
 
-- **Next.js** 16 (App Router)
-- **React** 19
-- **TypeScript** 5
-- **Drizzle ORM** (SQLite default; PostgreSQL/MySQL via connection string)
-- **Tailwind CSS** 4
-- **Zod** (validation)
-- **node-cron** (in-process scheduler)
-- **Docker**-ready (see Docker section)
-
-Migrations are generated and applied with Drizzle Kit: `pnpm run db:generate`, `pnpm run db:migrate`.
+Next.js 16 · React 19 · TypeScript 5 · Drizzle ORM · SQLite (default) · Tailwind CSS 4 · Zod · node-cron · Docker. Tests with Vitest. CI with GitHub Actions. Multi-arch image (`linux/amd64`, `linux/arm64`) published to GHCR on every release.
 
 ---
 
 ## Installation Guide
 
-**Requirements:** Node.js 22+, pnpm (recommended).
+**Requirements:** Node.js 22+, pnpm (recommended) for source installs. Docker 24+ for the image flow.
 
-**Quick start (SQLite default, no .env required)**
+### Source install (SQLite default, no .env required)
 
-1. Clone the repository and install dependencies:
+```bash
+git clone https://github.com/VexaMail/vexa-insight-dashboard.git
+cd vexa-insight-dashboard
+pnpm install
+pnpm run seed:demo      # optional — populate sample data for first impression
+pnpm dev                # open http://localhost:3000
+```
 
-   ```bash
-   git clone https://github.com/VexaMail/vexa-insight-dashboard.git
-   cd vexa-insight-dashboard
-   pnpm install
-   ```
+The first time you load the app it redirects to `/install` for superadmin creation. Once a user exists, the installer locks itself permanently.
 
-2. Start the app and use the web installer:
+### Docker install
 
-   ```bash
-   pnpm dev
-   ```
+```bash
+docker compose up -d              # builds + persists data + healthcheck
+# or, fully hands-off auto-update:
+docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
+```
 
-   Open [http://localhost:3000](http://localhost:3000). If the app is not yet installed, you will be redirected to the initial setup page. No `.env` is required for a quick start; the database is created at `data/vexa.db` by default. Complete the form (project name, API key, optional IMAP account, ingestion options) and submit to finish installation.
+### Environment variables
 
-3. Optional: configure environment variables (e.g. for production or to override the database path):
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Edit `.env` if needed. `DATABASE_URL` is optional (default `file:./data/vexa.db`). Other settings can be managed in the Settings UI after installation.
-
-**Environment variables**
-
-| Variable                     | Required               | Description                                                                                                  |
-| ---------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `DATABASE_URL`               | No                     | Default `file:./data/vexa.db` for SQLite. Set for PostgreSQL/MySQL or a custom path.                         |
-| `SECRET_KEY`                 | No (set via installer) | Min 32 characters. API key for trigger poll and crons; can be set in the web installer or later in Settings. |
-| `IMAP_SERVER`                | No                     | IMAP host. Can also be set in the web installer or Settings UI.                                              |
-| `IMAP_PORT`                  | No                     | Default `993`.                                                                                               |
-| `IMAP_USERNAME`              | No                     | IMAP username.                                                                                               |
-| `IMAP_PASSWORD`              | No                     | IMAP password.                                                                                               |
-| `INGESTION_INTERVAL_MINUTES` | No                     | Scheduler interval in minutes (default `60`).                                                                |
-| `INGESTION_DAYS_BACK`        | No                     | Days of mailbox history to fetch (default `7`).                                                              |
-| `PROJECT_NAME`               | No                     | Default `Vexa Mail Insight`.                                                                                 |
-| `ENVIRONMENT`                | No                     | `development`, `staging`, or `production`.                                                                   |
-
-For quick start, no `.env` is required: run the app and use the web installer; the database is created at `data/vexa.db` by default. Optional variables can be set in `.env` or overridden later in the Settings panel (stored in the database).
+| Variable                                                        | Required    | Description                                                                                                                                                                |
+| --------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                                                  | No          | Default `file:./data/vexa.db`. Set to a PostgreSQL/MySQL connection string and run `pnpm run db:migrate`.                                                                  |
+| `SECRET_KEY`                                                    | Recommended | Min 32 characters. Used for admin API auth (`X-API-Key` / `Authorization: Bearer`). Left as `CHANGE_ME`, admin API is disabled until you set it via installer or Settings. |
+| `IMAP_SERVER` / `IMAP_PORT` / `IMAP_USERNAME` / `IMAP_PASSWORD` | No          | IMAP credentials. Can also be set in the Settings UI.                                                                                                                      |
+| `INGESTION_INTERVAL_MINUTES`                                    | No          | Scheduler interval (default `60`).                                                                                                                                         |
+| `INGESTION_DAYS_BACK`                                           | No          | Days of mailbox history to fetch (default `7`).                                                                                                                            |
+| `PROJECT_NAME`                                                  | No          | Default `Vexa Mail Insight`.                                                                                                                                               |
+| `ENVIRONMENT`                                                   | No          | `development` / `staging` / `production`.                                                                                                                                  |
+| `VEXA_UPDATE_CHECK_ENABLED`                                     | No          | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                            |
+| `VEXA_UPDATE_REPO`                                              | No          | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                 |
 
 ---
 
 ## Installation & Recovery
 
-Vexa Mail Insight requires an initial Bootstrap process to secure your instance.
+### First-time install (Bootstrap)
 
-### 1. First-Time Install (Bootstrap)
+When you start with an empty database, you are redirected to `/install`. You must provide an admin email and password. Once at least one user exists, `/install` is permanently locked.
 
-When you start the application for the first time with an empty database, you will be forcibly redirected to `/install`.
+### Password recovery
 
-- **Superadmin Creation**: You must provide an Admin Email and Password. This creates the first user in the system.
-- **Lockout**: Once at least one user exists in the database, the `/install` route is permanently locked and inaccessible.
-
-### 2. Password Recovery (OSS-Friendly)
-
-In open-source deployments where SMTP email infrastructure might not be configured, **password recovery is done via the CLI** on the server.
-If an admin forgets their password, they must run the recovery script.
-
-### 3. CLI Recovery Commands
-
-We provide a dedicated CLI script for recovering access or managing users directly from the server console.
-
-Run these commands from the root of the project:
-
-**Create a new Admin user**
+OSS deployments may not have SMTP configured, so recovery is performed via CLI on the server:
 
 ```bash
+# create new admin
 npx tsx scripts/recovery.ts create-admin newadmin@example.com MySecurePassword123!
-```
 
-**Reset a user's password**
-
-```bash
+# reset existing password
 npx tsx scripts/recovery.ts reset-password existingadmin@example.com NewPwd456!
-```
 
-**Promote a standard user to Admin**
-
-```bash
+# promote user to admin
 npx tsx scripts/recovery.ts promote-user someuser@example.com
-```
 
-**Hard Reset (USE WITH CAUTION)**
-_Deletes all users from the database, which unlocks the `/install` route again._
-
-```bash
+# hard reset (deletes all users; unlocks /install) — destructive
 npx tsx scripts/recovery.ts hard-reset --confirm
 ```
+
+### Seed demo data (optional)
+
+```bash
+pnpm run seed:demo            # idempotent — skips if already seeded
+pnpm run seed:demo --force    # wipe demo data and reseed
+```
+
+Refuses to run with `NODE_ENV=production` unless `VEXA_FORCE_SEED_DEMO=1` is set. Only touches rows tagged with the `demo-` report-id prefix.
 
 ---
 
 ## Background Jobs
 
-**IMAP polling:** When IMAP settings are configured (via env or Settings UI), the application starts an in-Node scheduler on server startup. It runs the ingest job at a configurable interval (default every 60 minutes), fetching new DMARC reports from the mailbox, parsing them, and persisting raw and normalized data.
+**IMAP polling.** When IMAP settings are configured (via env or Settings UI), the in-Node scheduler starts on server startup. It runs every `INGESTION_INTERVAL_MINUTES` (default 60), fetching new DMARC reports.
 
 **Triggering ingestion**
 
-- **Internal:** The scheduler runs automatically when the server is up and IMAP is configured.
-- **External cron or script:** Call the trigger-poll endpoint with your API key:
-
+- _Internal:_ the scheduler runs automatically.
+- _External cron / script:_
   ```bash
   curl -X POST -H "X-API-Key: YOUR_API_KEY" https://your-host/api/v1/admin/trigger-poll
   ```
-
-  Or use `Authorization: Bearer YOUR_API_KEY`. Use the same API key as in Settings. Do not expose this endpoint publicly; protect it with network or application-level access control.
-
-- **Manual:** Use the same endpoint from the UI (e.g. Settings or dashboard) or any HTTP client.
+  Or `Authorization: Bearer YOUR_API_KEY`. Do not expose admin endpoints publicly.
+- _Manual:_ the Settings → Updates panel exposes UI controls for installs that have a supervisor.
 
 ---
 
 ## Switching to PostgreSQL or MySQL
 
-1. Set `DATABASE_URL` in `.env` to your PostgreSQL or MySQL connection string.
-2. Run migrations: `pnpm run db:migrate`.
+1. Set `DATABASE_URL` to your connection string.
+2. Run `pnpm run db:migrate`.
 
-No application code changes are required. This path is suitable for production scaling and multi-process deployments.
+No app code changes required. Recommended for production at scale and multi-process deployments.
 
 ---
 
-## Dashboard Overview
+## Updating
 
-- **Overview:** KPI cards, authentication trend chart, SPF/DKIM breakdown, disposition metrics, volume by reporting organization, and ingestion (poll) status with optional date-range filter.
-- **Domains:** List of domains with summary data; drill into a domain for source IPs, per-domain stats, and linked reports.
-- **Reports:** List and single-report view; optional upload flow for manual report ingestion.
-- **Settings:** Configure project name, API key, IMAP accounts, ingestion interval and days back, and optional advanced options (stored in the database).
+The dashboard checks GitHub once per day for new stable releases and shows an "Update available" indicator. Three upgrade paths:
 
-The dashboard consumes the public API (`/api/v1/...`); it does not access the database directly.
+1. **Hands-off auto-update with Watchtower** (recommended for Docker):
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
+   ```
+2. **Manual Docker upgrade:** `docker compose pull && docker compose up -d`.
+3. **Source upgrade:** `git pull && pnpm install && pnpm build && pnpm start`.
+4. **WordPress-style "Apply update now"** when running under systemd or PM2 — backs up the SQLite database, pulls the new tag, builds, and lets the supervisor restart the process. Logged in `data/self-update.log`, audited in `data/self-update.audit.log`. Examples in [`deploy/vexa.service`](deploy/vexa.service) and [`deploy/ecosystem.config.cjs`](deploy/ecosystem.config.cjs).
+
+The check itself is notification-only — Vexa never modifies your filesystem on its own. Full details: [docs/UPDATING.md](docs/UPDATING.md).
 
 ---
 
 ## Roadmap
 
-- **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline, dashboard analytics, SQLite default, optional PostgreSQL/MySQL.
-- **Phase 2:** Forensic reports (RUF), alerting, unauthorized source detection.
-- **Phase 3:** Reputation scoring, threat intelligence enrichment, anomaly detection.
+- **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline, dashboard analytics, SQLite default, optional PostgreSQL/MySQL, web installer, recovery CLI, self-update flow.
+- **Phase 2:** Outbound webhook / Slack / Teams alerts, Prometheus metrics, OpenAPI spec, forensic reports (RUF).
+- **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation scoring, threat-intel enrichment, anomaly detection.
 - **Phase 4:** Full Email Authentication Control Center.
+
+---
+
+## Integrations
+
+The following endpoints are stable and meant for automation:
+
+- `POST /api/v1/admin/trigger-poll` — kick off an ingestion run.
+- `GET /api/v1/admin/update-check` / `POST /api/v1/admin/update-check` — read or refresh upstream release info.
+- `GET /api/v1/admin/apply-update` / `POST /api/v1/admin/apply-update` — read or trigger the self-update flow (source installs with supervisor).
+- `GET /api/v1/metrics` — Prometheus-format metrics.
+- `GET /api/v1/health` — `200` if DB reachable, `503` otherwise (used by Docker `HEALTHCHECK`).
+- `GET /api/v1/openapi.json` — machine-readable spec of public endpoints.
+
+Outbound webhooks (Slack, Teams, generic) for "unauthorized source detected" and "ingest job failed" are configured in Settings.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR workflow. In short: fork and open a PR; run `pnpm run check` (type-check, format, lint) before submitting; keep route handlers thin and logic in services; use TypeScript and place types in `types/<area>/`; follow existing patterns (one export per file, Drizzle migrations for schema changes).
+Contributions welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, code style, and PR workflow. In short: fork, run `pnpm run check` before submitting, keep route handlers thin and logic in services, place types under `types/<area>/`, follow existing patterns (one export per file, Drizzle migrations for schema changes).
 
 ---
 
-## Security Notice
+## Security
 
-- Store IMAP credentials securely (environment variables or Settings UI); do not commit `.env`.
-- Do not expose ingestion or admin endpoints publicly. Protect `/api/v1/admin/*` with the API key (SECRET_KEY) and run the application behind authentication in production.
-- SQLite is recommended for local development. For production, consider PostgreSQL or MySQL and appropriate file and network security.
+- Store IMAP credentials securely; never commit `.env`.
+- Do not expose `/api/v1/admin/*` publicly. Protect with `SECRET_KEY` and run behind authentication in production.
+- Admin API auth uses timing-safe comparison and refuses to authenticate when `SECRET_KEY` is unset or under 32 characters.
+- Login is rate-limited (5 attempts / minute / IP).
+- HTTP security headers (CSP, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy) enabled by default.
+- SQLite is fine for development. For production, consider PostgreSQL/MySQL plus appropriate file/network controls.
+
+Report security issues privately as described in [SECURITY.md](SECURITY.md).
 
 ---
 
 ## License
 
-Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). Commercial use is permitted. There are no copyleft restrictions. The license includes a patent grant.
+Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). Commercial use permitted. No copyleft restrictions. Includes patent grant.
 
 ---
 

@@ -14,4 +14,11 @@ export async function register(): Promise<void> {
   } catch {
     // Not installed yet (no app_settings row or secret_key still CHANGE_ME); skip scheduler
   }
+
+  const { startUpdateCheckScheduler } = await import('@/services/updates')
+  try {
+    startUpdateCheckScheduler()
+  } catch (err) {
+    console.warn('[update-check] failed to start scheduler', err)
+  }
 }

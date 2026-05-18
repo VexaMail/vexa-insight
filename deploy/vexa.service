@@ -1,0 +1,46 @@
+; Vexa Mail Insight – systemd unit example.
+;
+; Install:
+;   sudo cp deploy/vexa.service /etc/systemd/system/vexa.service
+;   sudo systemctl daemon-reload
+;   sudo systemctl enable --now vexa
+;
+; Update from the dashboard:
+;   The Settings → Updates panel detects systemd via INVOCATION_ID and
+;   exposes the "Apply update now" button. systemd's Restart=always
+;   policy brings the process back up against the new build after the
+;   self-update script terminates the old one.
+;
+; Adjust User, Group, WorkingDirectory, and EnvironmentFile to match
+; your install layout. The user must own the working directory so
+; `git pull` and `pnpm install` can write to it.
+
+[Unit]
+Description=Vexa Mail Insight (DMARC observability dashboard)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vexa
+Group=vexa
+WorkingDirectory=/opt/vexa-insight-dashboard
+EnvironmentFile=-/opt/vexa-insight-dashboard/.env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+ExecStart=/usr/bin/env pnpm run start
+Restart=always
+RestartSec=2
+KillSignal=SIGTERM
+TimeoutStopSec=30
+LimitNOFILE=65535
+
+; Hardening (safe defaults – tighten as your environment allows)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/vexa-insight-dashboard
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

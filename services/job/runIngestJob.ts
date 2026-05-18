@@ -1,5 +1,6 @@
 import { getDb, jobPollEvents, jobRuns } from '@/lib/db'
 import { getConfig } from '@/services/config'
+import { fireAndForgetDispatch } from '@/services/notifications'
 import type { EmailProgressPayload } from '@/types/dashboard'
 import { eq } from 'drizzle-orm'
 import { getPollStatusFromDb } from './getPollStatusFromDb'
@@ -131,6 +132,17 @@ export async function runIngestJob(): Promise<{
         console.error('[ingest] failed to update job run:', updateErr)
       }
     }
+  }
+
+  if (errors.length > 0) {
+    fireAndForgetDispatch('ingest.failed', {
+      jobRunId: jobRunId ?? null,
+      processed,
+      ingested,
+      skipped,
+      errorCount: errors.length,
+      errors: errors.slice(0, 10),
+    })
   }
 
   return {

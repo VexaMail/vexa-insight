@@ -26,69 +26,6 @@ export function getReportsColumns({
 }: GetReportsColumnsParams): ColumnDef<ReportRow>[] {
   return [
     {
-      accessorKey: 'reportId',
-      header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
-            dispatch({ type: 'SET_SORT', payload: { key: 'reportId' } })
-          }
-        >
-          Report ID
-          <SortIcon active={sortKey === 'reportId'} dir={sortDir} />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <FileText className="text-primary h-3.5 w-3.5 shrink-0" />
-          <span className="text-foreground font-mono text-xs">
-            {row.getValue('reportId')}
-          </span>
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'orgName',
-      header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
-            dispatch({ type: 'SET_SORT', payload: { key: 'orgName' } })
-          }
-        >
-          Organization
-          <SortIcon active={sortKey === 'orgName'} dir={sortDir} />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-sm">
-          {row.getValue('orgName')}
-        </span>
-      ),
-    },
-    {
-      accessorKey: 'beginDate',
-      header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
-            dispatch({ type: 'SET_SORT', payload: { key: 'beginDate' } })
-          }
-        >
-          Date Range
-          <SortIcon active={sortKey === 'beginDate'} dir={sortDir} />
-        </div>
-      ),
-      cell: ({ row }) => {
-        const report = row.original
-        return (
-          <span className="text-muted-foreground text-sm">
-            {formatReportDateRange(report.beginDate, report.endDate)}
-          </span>
-        )
-      },
-    },
-    {
       id: 'relatedDomains',
       header: () => (
         <div className="text-muted-foreground text-xs font-medium select-none">
@@ -152,6 +89,69 @@ export function getReportsColumns({
         )
       },
       enableGlobalFilter: false,
+    },
+    {
+      accessorKey: 'reportId',
+      header: () => (
+        <div
+          className="flex cursor-pointer items-center gap-1 select-none"
+          onClick={() =>
+            dispatch({ type: 'SET_SORT', payload: { key: 'reportId' } })
+          }
+        >
+          Report ID
+          <SortIcon active={sortKey === 'reportId'} dir={sortDir} />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <FileText className="text-primary h-3.5 w-3.5 shrink-0" />
+          <span className="text-foreground font-mono text-xs">
+            {row.getValue('reportId')}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'orgName',
+      header: () => (
+        <div
+          className="flex cursor-pointer items-center gap-1 select-none"
+          onClick={() =>
+            dispatch({ type: 'SET_SORT', payload: { key: 'orgName' } })
+          }
+        >
+          Organization
+          <SortIcon active={sortKey === 'orgName'} dir={sortDir} />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">
+          {row.getValue('orgName')}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'beginDate',
+      header: () => (
+        <div
+          className="flex cursor-pointer items-center gap-1 select-none"
+          onClick={() =>
+            dispatch({ type: 'SET_SORT', payload: { key: 'beginDate' } })
+          }
+        >
+          Date Range
+          <SortIcon active={sortKey === 'beginDate'} dir={sortDir} />
+        </div>
+      ),
+      cell: ({ row }) => {
+        const report = row.original
+        return (
+          <span className="text-muted-foreground text-sm">
+            {formatReportDateRange(report.beginDate, report.endDate)}
+          </span>
+        )
+      },
     },
     {
       id: 'actions',

@@ -9,10 +9,10 @@ import {
 } from '@tanstack/react-table'
 import { useMemo, useState } from 'react'
 
-/* eslint-disable react-hooks/incompatible-library */
 export function useDataTable<TData, TValue>(
   props: Readonly<DataTableProps<TData, TValue>>,
 ): UseDataTableReturn<TData> {
+  'use no memo'
   const [sorting, setSorting] = useState<SortingState>(
     props.initialSorting ?? [],
   )

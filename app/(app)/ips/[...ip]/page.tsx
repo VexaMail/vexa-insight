@@ -5,6 +5,8 @@ import {
   IpRelatedDomains,
   IpRelatedReports,
 } from '@/components/ips'
+import { BackButton, PageContainer, PageHeader } from '@/components/shell'
+import { InlineErrorBlock } from '@/components/ui'
 import { parseDateRangeParams } from '@/lib/utils'
 
 import { getIpDetailPageData } from '@/services/reports'
@@ -56,24 +58,26 @@ export default async function IpDetailPage(props: PageProps) {
   if (!data) return notFound()
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-foreground text-2xl font-bold tracking-tight">
-          IP Detail Snapshot
-        </h1>
-        <Suspense
-          fallback={
-            <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
-          }
-        >
-          <DateRangeFilter
-            currentDays={days}
-            basePath={`/ips/${rawIp}`}
-            from={fromDate}
-            to={toDate}
-          />
-        </Suspense>
-      </div>
+    <PageContainer>
+      <PageHeader
+        eyebrow="Sending source"
+        title={<span className="font-mono break-all">{decodedIp}</span>}
+        back={<BackButton href="/ips">&larr; Sources</BackButton>}
+        actions={
+          <Suspense
+            fallback={
+              <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
+            }
+          >
+            <DateRangeFilter
+              currentDays={days}
+              basePath={`/ips/${rawIp}`}
+              from={fromDate}
+              to={toDate}
+            />
+          </Suspense>
+        }
+      />
 
       <IpDetailSummary data={data} />
 
@@ -86,9 +90,9 @@ export default async function IpDetailPage(props: PageProps) {
               dateRange={dateRange}
             />
           ) : (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
+            <InlineErrorBlock>
               Related domains section is temporarily unavailable.
-            </div>
+            </InlineErrorBlock>
           )}
 
           {reports ? (
@@ -98,9 +102,9 @@ export default async function IpDetailPage(props: PageProps) {
               dateRange={dateRange}
             />
           ) : (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
+            <InlineErrorBlock>
               Related reports section is temporarily unavailable.
-            </div>
+            </InlineErrorBlock>
           )}
         </div>
 
@@ -112,12 +116,12 @@ export default async function IpDetailPage(props: PageProps) {
               dateRange={dateRange}
             />
           ) : (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
+            <InlineErrorBlock>
               Available logs section is temporarily unavailable.
-            </div>
+            </InlineErrorBlock>
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

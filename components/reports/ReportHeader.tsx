@@ -1,3 +1,4 @@
+import { BackButton, PageEyebrow } from '@/components/shell'
 import { formatReportDateRange } from '@/utils/format'
 import { Building2, Calendar, ExternalLink, Hash } from 'lucide-react'
 import Link from 'next/link'
@@ -17,19 +18,12 @@ export function ReportHeader({
   return (
     <header className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href={backHref}
-          className="bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-ring inline-flex w-fit items-center gap-2 rounded-md px-4 py-2 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-        >
-          {backLabel}
-        </Link>
+        <BackButton href={backHref}>{backLabel}</BackButton>
         {navigatorSlot}
       </div>
 
       <div className="space-y-3">
-        <p className="text-muted-foreground text-xs font-semibold tracking-[0.2em] uppercase">
-          DMARC aggregate report
-        </p>
+        <PageEyebrow>DMARC aggregate report</PageEyebrow>
 
         {primaryDomain ? (
           <Link

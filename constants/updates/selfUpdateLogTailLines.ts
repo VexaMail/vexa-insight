@@ -1,0 +1,1 @@
+export const SELF_UPDATE_LOG_TAIL_LINES = 200

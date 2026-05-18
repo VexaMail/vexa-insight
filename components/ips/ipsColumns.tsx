@@ -106,8 +106,7 @@ export function getIpsColumns({
         const isRefreshing = refreshingIps.has(ip)
         const hostname = localHostnames[ip] ?? row.getValue<string>('hostname')
         const hostnameLastLookupAt =
-          localHostnameLookupTimestamps[ip] ??
-          row.original.hostnameLastLookupAt
+          localHostnameLookupTimestamps[ip] ?? row.original.hostnameLastLookupAt
 
         return (
           <IpDisplay

@@ -10,6 +10,7 @@ import {
   ReportTransportSecurityPrimer,
   XmlViewerCollapsible,
 } from '@/components/reports'
+import { PageContainer } from '@/components/shell'
 import { Navigator } from '@/components/ui'
 import { isAiConfigured } from '@/services/ai'
 import {
@@ -61,7 +62,7 @@ export default async function ReportDetailPage({
   const hasEvents = stats.totalMessages > 0
 
   return (
-    <div className="space-y-8">
+    <PageContainer>
       <ReportHeader
         report={report}
         backHref={backHref}
@@ -88,6 +89,6 @@ export default async function ReportDetailPage({
       <ReportMetadata report={report} />
 
       <XmlViewerCollapsible rawXml={report.rawXml} />
-    </div>
+    </PageContainer>
   )
 }

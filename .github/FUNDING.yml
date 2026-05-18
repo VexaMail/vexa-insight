@@ -1,0 +1,12 @@
+# Funding configuration for Vexa Mail Insight.
+#
+# Uncomment the line(s) that match the funding channels you have actually
+# set up. Leaving values pointing at accounts that do not exist will surface
+# a broken "Sponsor" button on GitHub, so the file ships fully commented out
+# by default. Delete this file entirely if you do not want a Sponsor button.
+#
+# github: [VexaMail]
+# open_collective: vexa-mail-insight
+# ko_fi: vexamail
+# custom:
+#   - https://vexamail.io/sponsor

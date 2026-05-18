@@ -1,0 +1,1 @@
+export const UPDATE_CHECK_STARTUP_DELAY_MS = 60_000

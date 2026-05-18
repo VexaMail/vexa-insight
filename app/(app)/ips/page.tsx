@@ -1,5 +1,7 @@
 import { DateRangeFilter } from '@/components/filters'
-import { IpsSectionHeader, IpsSummaryKpis, IpsTable } from '@/components/ips'
+import { IpsSummaryKpis, IpsTable } from '@/components/ips'
+import { PageContainer, PageHeader } from '@/components/shell'
+import { PageSkeleton } from '@/components/ui'
 import { parseDateRangeParams } from '@/lib/utils'
 import { getIpsSummary } from '@/services/reports'
 import type { IpDateRange } from '@/types/filters'
@@ -45,28 +47,29 @@ export default async function IpsPage(props: PageProps) {
   const kpis = computeIpsKpis(summary.ips)
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <IpsSectionHeader />
-        <Suspense
-          fallback={
-            <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
-          }
-        >
-          <DateRangeFilter
-            currentDays={days}
-            basePath="/ips"
-            from={fromDate}
-            to={toDate}
-          />
-        </Suspense>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Sending Sources"
+        description="IP addresses that sent email claiming to be from your domains, based on DMARC aggregate reports. Review authentication health to identify trusted and potentially unauthorized sources."
+        actions={
+          <Suspense
+            fallback={
+              <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
+            }
+          >
+            <DateRangeFilter
+              currentDays={days}
+              basePath="/ips"
+              from={fromDate}
+              to={toDate}
+            />
+          </Suspense>
+        }
+      />
       <IpsSummaryKpis kpis={kpis} />
-      <Suspense
-        fallback={<div className="glass-card bg-muted/20 animate-pulse p-8" />}
-      >
+      <Suspense fallback={<PageSkeleton />}>
         <IpsTable ips={summary.ips} />
       </Suspense>
-    </div>
+    </PageContainer>
   )
 }

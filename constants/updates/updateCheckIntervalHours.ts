@@ -1,0 +1,1 @@
+export const UPDATE_CHECK_INTERVAL_HOURS = 24

@@ -6,6 +6,7 @@ import {
   JobRunHistoryTable,
   ProcessedEmailsTable,
 } from '@/components/ingest'
+import { PageContainer, PageHeader } from '@/components/shell'
 import { getIngestPageData } from '@/services/ingest'
 
 export const metadata: Metadata = {
@@ -34,7 +35,11 @@ export default async function IngestPage({
   } = await getIngestPageData(jobId)
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <PageContainer>
+      <PageHeader
+        title="Ingest"
+        description="Track ingestion jobs, processed emails, and scheduled crons."
+      />
       <IngestStoreProvider
         initialState={{
           selectedJobId: effectiveJobId ?? null,
@@ -67,6 +72,6 @@ export default async function IngestPage({
           }
         />
       </IngestStoreProvider>
-    </div>
+    </PageContainer>
   )
 }

@@ -107,13 +107,11 @@ export function useReportsTable({
     return () => ctrl.abort()
   }, [domainId, dateFilterParams])
 
-  const [domainOptions, setDomainOptions] = useState<string[]>([])
+  const [fetchedDomainOptions, setFetchedDomainOptions] = useState<string[]>([])
+  const domainOptions = domainId ? [] : fetchedDomainOptions
 
   useEffect(() => {
-    if (domainId) {
-      setDomainOptions([])
-      return
-    }
+    if (domainId) return
     const ctrl = new AbortController()
     const run = async () => {
       try {
@@ -123,7 +121,7 @@ export function useReportsTable({
           : `/api/v1/reports/domain-options`
         const res = await fetch(url, { signal: ctrl.signal })
         const json = (await res.json()) as { data: string[] }
-        setDomainOptions(json.data)
+        setFetchedDomainOptions(json.data)
       } catch (e) {
         if (e instanceof Error && e.name === 'AbortError') return
       }
