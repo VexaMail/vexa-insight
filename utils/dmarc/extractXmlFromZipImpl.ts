@@ -19,6 +19,11 @@ export function extractXmlFromZipImpl(
         return
       }
 
+      // Surface yauzl's own validation errors (invalid filenames, malformed
+      // archive structure, etc.) instead of letting them become uncaught
+      // exceptions that leave the promise unsettled and hang the caller.
+      zipFile.on('error', () => resolve(null))
+
       zipFile.on('entry', (entry: yauzl.Entry) => {
         processZipEntry(
           zipFile,
