@@ -41,6 +41,7 @@ const config = defineConfig([
 
   globalIgnores([
     '.next/**',
+    '.claude/**',
     'out/**',
     'build/**',
     'dist/**',
