@@ -1,0 +1,5 @@
+{
+  "$schema": "https://anthropic.com/.mcp.schema.json",
+  "_comment": "Example MCP config. Copy to .mcp.json and customize.",
+  "servers": {}
+}

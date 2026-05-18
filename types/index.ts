@@ -1,6 +1,7 @@
 // Public API: types
 // Import from '@/types' or '@/types/<submodule>'
 
+export * from './auth'
 export * from './charts'
 export * from './config'
 export * from './dashboard'

@@ -64,3 +64,6 @@ lint-out*.txt
 scratch/
 AGENTS.md
 CLAUDE.md
+
+# Local MCP server configs (often contain tokens)
+.mcp.json
