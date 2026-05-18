@@ -14,6 +14,10 @@ import type { SafeFetchResult } from './SafeFetchResult'
  * When `allowDispatch: false`, validation runs but no network request is sent.
  * That mode is intended for unit tests and for callers that only need to
  * pre-validate a URL.
+ *
+ * On success the live `Response` is exposed so callers can read the body from
+ * the same DNS resolution the guard checked. This avoids a re-resolution
+ * window that a DNS-rebinding attacker could exploit.
  */
 export async function safeFetch(
   rawUrl: string,
@@ -24,14 +28,26 @@ export async function safeFetch(
 
   const { timeoutMs = 10_000, allowDispatch = true, ...init } = options
   if (!allowDispatch) {
-    return { ok: true, status: null, dispatched: false, error: null }
+    return {
+      ok: true,
+      status: null,
+      dispatched: false,
+      response: null,
+      error: null,
+    }
   }
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
   try {
     const res = await fetch(rawUrl, { ...init, signal: controller.signal })
-    return { ok: true, status: res.status, dispatched: true, error: null }
+    return {
+      ok: true,
+      status: res.status,
+      dispatched: true,
+      response: res,
+      error: null,
+    }
   } catch (err) {
     if (controller.signal.aborted) {
       return safeFetchErrorResult(

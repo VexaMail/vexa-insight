@@ -1,14 +1,9 @@
 import { formatPrometheusOutput } from '@/formatters/metrics'
-import { requireAdminAccess } from '@/services/api'
+import { withApiAuth } from '@/services/api'
 import { getMetricsSnapshot } from '@/services/metrics'
-import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const access = await requireAdminAccess(request)
-  if (access) {
-    return NextResponse.json({ error: access.error }, { status: access.status })
-  }
+export const GET = withApiAuth(async (): Promise<NextResponse> => {
   const snapshot = await getMetricsSnapshot()
   const body = formatPrometheusOutput(snapshot)
   return new NextResponse(body, {
@@ -18,4 +13,4 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       'cache-control': 'no-store',
     },
   })
-}
+})

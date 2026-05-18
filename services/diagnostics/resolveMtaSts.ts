@@ -1,5 +1,5 @@
-import type { MtaStsResult } from '@/types/diagnostics'
 import { safeFetch } from '@/services/security'
+import type { MtaStsResult } from '@/types/diagnostics'
 import { DNS_TIMEOUT_MS } from './dnsTimeoutMs'
 import { emptyMtaStsResult } from './emptyMtaStsResult'
 import { MTA_STS_HOSTNAME_REGEX } from './mtaStsHostnameRegex'
@@ -29,27 +29,24 @@ export async function resolveMtaSts(domain: string): Promise<MtaStsResult> {
     const mxRecords: string[] = []
 
     const policyUrl = `https://mta-sts.${domain}/.well-known/mta-sts.txt`
-    const guard = await safeFetch(policyUrl, { allowDispatch: false })
-    if (guard.ok) {
+    const res = await safeFetch(policyUrl, {
+      method: 'GET',
+      timeoutMs: DNS_TIMEOUT_MS,
+    })
+    if (res.ok && res.response && res.response.ok) {
       try {
-        const controller = new AbortController()
-        const timeout = setTimeout(() => controller.abort(), DNS_TIMEOUT_MS)
-        const response = await fetch(policyUrl, { signal: controller.signal })
-        clearTimeout(timeout)
-        if (response.ok) {
-          policyFileAccessible = true
-          const policyText = await response.text()
-          const modeMatch = /mode:\s*(\S+)/.exec(policyText)
-          mode = modeMatch?.[1] ?? null
-          const ageMatch = /max_age:\s*(\d+)/.exec(policyText)
-          fileAge = ageMatch?.[1] ?? null
-          const mxMatches = policyText.matchAll(/mx:\s*(\S+)/g)
-          for (const m of mxMatches) {
-            if (m[1]) mxRecords.push(m[1])
-          }
+        policyFileAccessible = true
+        const policyText = await res.response.text()
+        const modeMatch = /mode:\s*(\S+)/.exec(policyText)
+        mode = modeMatch?.[1] ?? null
+        const ageMatch = /max_age:\s*(\d+)/.exec(policyText)
+        fileAge = ageMatch?.[1] ?? null
+        const mxMatches = policyText.matchAll(/mx:\s*(\S+)/g)
+        for (const m of mxMatches) {
+          if (m[1]) mxRecords.push(m[1])
         }
       } catch {
-        // Policy file not reachable
+        // Policy body not readable
       }
     }
 

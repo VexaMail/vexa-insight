@@ -24,13 +24,25 @@ describe('every /api/v1/** route handler enforces auth', () => {
     if (publicAllow.has(rel)) continue
     it(rel, () => {
       const src = readFileSync(file, 'utf8')
+      const usesWithApiAuth = src.includes('withApiAuth(')
+      const usesRequireAdminAuth = src.includes('requireAdminAuth(')
+      const usesRequireAdminAccess = src.includes('requireAdminAccess(')
+      const usesRequireSameOrigin = src.includes('requireSameOrigin')
+      // A route is acceptable if it either:
+      //   * goes through `withApiAuth` (CSRF + auth wrapper),
+      //   * uses `requireAdminAuth` (token-only, exempt from CSRF), or
+      //   * uses `requireAdminAccess` AND also wires CSRF via
+      //     `requireSameOrigin`. Using `requireAdminAccess` alone is not
+      //     enough for mutating cookie-session routes — without
+      //     `requireSameOrigin` a logged-in admin loading a malicious page
+      //     can have requests forged via CSRF.
       const hasAuth =
-        src.includes('withApiAuth(') ||
-        src.includes('requireAdminAuth(') ||
-        src.includes('requireAdminAccess(')
+        usesWithApiAuth ||
+        usesRequireAdminAuth ||
+        (usesRequireAdminAccess && usesRequireSameOrigin)
       expect(
         hasAuth,
-        `${rel} must use withApiAuth / requireAdminAuth / requireAdminAccess`,
+        `${rel} must use withApiAuth, requireAdminAuth, or requireAdminAccess + requireSameOrigin`,
       ).toBe(true)
     })
   }

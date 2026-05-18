@@ -25,6 +25,10 @@ describe('isPrivateIp', () => {
     ['fd00::abcd', true],
     ['::ffff:127.0.0.1', true],
     ['::ffff:8.8.8.8', false],
+    ['::ffff:0a00:0001', true],
+    ['fe81::1', true],
+    ['febf::ffff', true],
+    ['fec0::1', false],
     ['2001:4860:4860::8888', false],
   ]
   for (const [ip, expected] of cases) {
