@@ -1,13 +1,21 @@
-import { isInstalled } from '@/services/install'
+import { getOrCreateInstallToken, isInstalled } from '@/services/install'
 import { NextResponse } from 'next/server'
 
 /**
  * GET /api/install/check — returns whether the app is installed.
- * Used by proxy to decide redirect. No auth.
+ * When not installed, eagerly creates the boot install token (idempotent;
+ * `getOrCreateInstallToken` short-circuits on repeated calls) so it gets
+ * printed to stdout even if no remote installer has hit POST yet. The
+ * actual token value is never returned in the response.
  */
 export async function GET(): Promise<
-  NextResponse<{ data: { installed: boolean } }>
+  NextResponse<{ data: { installed: boolean; requiresToken: boolean } }>
 > {
   const installed = isInstalled()
-  return NextResponse.json({ data: { installed } })
+  if (!installed) {
+    getOrCreateInstallToken()
+  }
+  return NextResponse.json({
+    data: { installed, requiresToken: !installed },
+  })
 }

@@ -40,6 +40,12 @@ When evaluating reports, these are the components most likely to be impactful:
 
 - **`/api/v1/admin/*`** endpoints — protected by `SECRET_KEY` (timing-safe HMAC comparison) and/or a valid admin session cookie. The admin API refuses to authenticate when `SECRET_KEY` is unset, equal to `CHANGE_ME`, or shorter than 32 characters. Should never be exposed publicly without additional network or application-level access control.
 - **`/install`** route — first-time setup. Locked once the first user exists.
+  On first boot the server prints a one-time install token to stdout (re-displayed
+  every boot until installation completes). `POST /api/install` requires the
+  token via the `x-install-token` header or the `installToken` body field and
+  refuses non-loopback requests by default; the token is wiped from memory after
+  a successful install. Set `VEXA_ALLOW_REMOTE_INSTALL=1` to relax the loopback
+  restriction — the token remains mandatory.
 - **Login** — rate-limited to 5 attempts per minute per IP, scrypt + `crypto.timingSafeEqual` for password verification.
 - **IMAP credentials** — stored encrypted at rest in the database; review credential handling in `services/imap/` and the Settings UI.
 - **DMARC report ingestion** — XML parsing of untrusted email attachments (`.zip` and `.gz`); review parser surface in `services/dmarc/` and `utils/dmarc/`. Uncompressed-size cap protects against zip bombs.

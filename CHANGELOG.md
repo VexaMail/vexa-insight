@@ -100,6 +100,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- Install endpoint now requires a one-time token printed to server logs on
+  first boot and is restricted to loopback unless `VEXA_ALLOW_REMOTE_INSTALL=1`
+  is set. Closes the bootstrap-race window where any reachable network caller
+  could register the first admin user before the operator opened the UI.
 - **Timing-safe API key comparison.** `requireAdminAuth` now hashes
   both the presented token and the configured `SECRET_KEY` with
   SHA-256 and compares the digests via `crypto.timingSafeEqual`,

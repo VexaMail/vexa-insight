@@ -8,6 +8,23 @@ export async function register(): Promise<void> {
   const { runMigrations } = await import('@/lib/db')
   runMigrations()
 
+  const { getOrCreateInstallToken, isInstalled } = await import(
+    '@/services/install'
+  )
+  if (!isInstalled()) {
+    const token = getOrCreateInstallToken()
+    if (token) {
+      console.warn(
+        '\n========================================\n' +
+          `Vexa first-run install token:\n  ${token}\n` +
+          "Pass this token to POST /api/install via the 'x-install-token'\n" +
+          "header or the 'installToken' body field. Re-displayed on every\n" +
+          'boot until installation completes.\n' +
+          '========================================\n',
+      )
+    }
+  }
+
   const { startScheduler } = await import('@/services/job')
   try {
     startScheduler()
