@@ -1,3 +1,5 @@
+export * from './derivePasswordForWrite'
+export * from './encryptLegacyImapPasswords'
 export * from './getAiSettingsPublic'
 export * from './getExistingImapPasswords'
 export * from './getImapAccountsRow'

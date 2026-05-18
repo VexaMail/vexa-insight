@@ -1,6 +1,9 @@
 import { appSettings, getDb, imapAccounts } from '@/lib/db'
+import { getConfig } from '@/services/config'
+import { encryptSecret } from '@/services/crypto'
 import type { SettingsUpdatePayload } from '@/types/settings'
 import { eq } from 'drizzle-orm'
+import { derivePasswordForWrite } from './derivePasswordForWrite'
 import { getExistingImapPasswords } from './getExistingImapPasswords'
 
 function updateSettings(payload: SettingsUpdatePayload): void {
@@ -32,7 +35,8 @@ function updateSettings(payload: SettingsUpdatePayload): void {
     }
   }
 
-  if (payload.secretKey !== undefined && payload.secretKey.trim() !== '') {
+  const payloadSecret = (payload.secretKey ?? '').trim()
+  if (payload.secretKey !== undefined && payloadSecret !== '') {
     updates.secretKey = payload.secretKey
   }
   db.update(appSettings)
@@ -41,6 +45,18 @@ function updateSettings(payload: SettingsUpdatePayload): void {
     .run()
 
   if (payload.imapAccounts !== undefined) {
+    const secretKey =
+      payloadSecret !== '' ? payloadSecret : getConfig().secretKey
+
+    const hasAnyNewPassword = payload.imapAccounts.some(
+      (a) => a.password !== undefined && a.password.trim() !== '',
+    )
+    if (hasAnyNewPassword && !secretKey) {
+      throw new Error(
+        'SECRET_KEY must be configured before storing IMAP credentials',
+      )
+    }
+
     const existingRows = db
       .select({ id: imapAccounts.id })
       .from(imapAccounts)
@@ -61,12 +77,12 @@ function updateSettings(payload: SettingsUpdatePayload): void {
       const hasNewPassword =
         acc.password !== undefined && acc.password.trim() !== ''
 
-      let passwordForInsert = ''
-      if (hasNewPassword && acc.password) {
-        passwordForInsert = acc.password
-      } else if (acc.id != null) {
-        passwordForInsert = passwordsById[acc.id] ?? ''
-      }
+      const passwordForInsert = derivePasswordForWrite({
+        hasNewPassword,
+        newPassword: acc.password,
+        existingPassword: acc.id != null ? passwordsById[acc.id] : undefined,
+        secretKey,
+      })
 
       if (isUpdate && acc.id != null) {
         const updateRow: Record<string, string | number | boolean | null> = {
@@ -83,7 +99,7 @@ function updateSettings(payload: SettingsUpdatePayload): void {
           markAsReadAfterProcess: acc.markAsReadAfterProcess ?? false,
         }
         if (hasNewPassword && acc.password) {
-          updateRow.password = acc.password.trim()
+          updateRow.password = encryptSecret(acc.password.trim(), secretKey)
         }
         db.update(imapAccounts)
           .set(updateRow)
@@ -96,7 +112,7 @@ function updateSettings(payload: SettingsUpdatePayload): void {
             server: acc.server,
             port: acc.port,
             username: acc.username,
-            password: passwordForInsert ?? '',
+            password: passwordForInsert,
             sortOrder: index,
             fetchIncludeTrash: acc.fetchIncludeTrash ?? false,
             fetchIncludeAllFolders: acc.fetchIncludeAllFolders ?? false,

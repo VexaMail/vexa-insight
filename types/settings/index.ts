@@ -5,6 +5,7 @@ export type { UseModelComboboxReturn } from './UseModelComboboxReturn'
 export type { UseSelfUpdateReturn } from './UseSelfUpdateReturn'
 export type { UseUpdateStatusReturn } from './UseUpdateStatusReturn'
 
+export * from './DerivePasswordForWriteInput'
 export * from './FolderEntry'
 export * from './FolderState'
 export * from './ImapAccountFormEntry'

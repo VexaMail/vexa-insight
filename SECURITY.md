@@ -47,7 +47,7 @@ When evaluating reports, these are the components most likely to be impactful:
   a successful install. Set `VEXA_ALLOW_REMOTE_INSTALL=1` to relax the loopback
   restriction — the token remains mandatory.
 - **Login** — rate-limited to 5 attempts per minute per IP, scrypt + `crypto.timingSafeEqual` for password verification.
-- **IMAP credentials** — stored encrypted at rest in the database; review credential handling in `services/imap/` and the Settings UI.
+- **IMAP credentials** — stored encrypted at rest in the database using AES-256-GCM. The encryption key is derived from `SECRET_KEY` via HKDF-SHA256 (salt `vexa-imap-pwd-v1`, info `aes-gcm`); each ciphertext carries its own random 12-byte IV and is authenticated with the GCM tag. Blobs are stored with a `v1:` version prefix. Legacy plaintext rows from upgrades are migrated automatically on first boot after the upgrade. Review credential handling in `services/crypto/`, `services/settings/`, `services/imap/`, and the Settings UI.
 - **DMARC report ingestion** — XML parsing of untrusted email attachments (`.zip` and `.gz`); review parser surface in `services/dmarc/` and `utils/dmarc/`. Uncompressed-size cap protects against zip bombs.
 - **Self-update flow** — `scripts/self-update.sh` accepts only tag refs matching `^v\d+\.\d+\.\d+(-[A-Za-z0-9.-]+)?$`. Every invocation is recorded in `data/self-update.audit.log`. Build failures trigger automatic git/`.next` rollback before any supervisor signal.
 - **Outbound webhooks** — payloads are signed with HMAC-SHA256 when an endpoint has a `secret`; verify on the receiver via the `X-Vexa-Signature` header.

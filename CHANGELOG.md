@@ -100,6 +100,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- IMAP credentials are now encrypted at rest (AES-256-GCM with a key derived
+  from SECRET_KEY via HKDF). Legacy plaintext rows are migrated automatically
+  on first boot after upgrade.
 - Install endpoint now requires a one-time token printed to server logs on
   first boot and is restricted to loopback unless `VEXA_ALLOW_REMOTE_INSTALL=1`
   is set. Closes the bootstrap-race window where any reachable network caller

@@ -8,10 +8,10 @@ export async function register(): Promise<void> {
   const { runMigrations } = await import('@/lib/db')
   runMigrations()
 
-  const { getOrCreateInstallToken, isInstalled } = await import(
-    '@/services/install'
-  )
-  if (!isInstalled()) {
+  const { getOrCreateInstallToken, isInstalled } =
+    await import('@/services/install')
+  const installed = isInstalled()
+  if (!installed) {
     const token = getOrCreateInstallToken()
     if (token) {
       console.warn(
@@ -22,6 +22,20 @@ export async function register(): Promise<void> {
           'boot until installation completes.\n' +
           '========================================\n',
       )
+    }
+  }
+
+  if (installed) {
+    const { encryptLegacyImapPasswords } = await import('@/services/settings')
+    try {
+      const { migrated } = encryptLegacyImapPasswords()
+      if (migrated > 0) {
+        console.info(
+          `[crypto] migrated ${migrated} legacy IMAP passwords to v1 encryption`,
+        )
+      }
+    } catch (err) {
+      console.warn('[crypto] failed to migrate legacy IMAP passwords', err)
     }
   }
 
