@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feedback>
+  <report_metadata>
+    <org_name>zero-records.example</org_name>
+    <email>dmarc@zero-records.example</email>
+    <report_id>zerorecs-2026-06</report_id>
+    <date_range>
+      <begin>1717286400</begin>
+      <end>1717372799</end>
+    </date_range>
+  </report_metadata>
+  <policy_published>
+    <domain>example.com</domain>
+    <p>none</p>
+  </policy_published>
+</feedback>
