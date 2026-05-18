@@ -1,6 +1,7 @@
 import type { AIServiceError } from '@/services/ai'
 import { generateDiagnosticsInsights } from '@/services/ai'
 import { withApiAuth } from '@/services/api'
+import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -11,6 +12,20 @@ import { NextResponse } from 'next/server'
  */
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
+    const AI_LIMIT = 10
+    const AI_WINDOW_MS = 60_000
+    const rlKey = `ai-diag:${getRateLimitKey(request)}`
+    if (!checkRateLimit(rlKey, AI_LIMIT, AI_WINDOW_MS)) {
+      return NextResponse.json(
+        {
+          error: {
+            code: 'TOO_MANY_REQUESTS',
+            message: 'AI rate limit exceeded',
+          },
+        },
+        { status: 429 },
+      )
+    }
     try {
       const body = (await request.json()) as {
         domainName?: string
