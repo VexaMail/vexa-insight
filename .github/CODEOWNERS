@@ -1,0 +1,11 @@
+# Default owner — every file
+*       @cristiandeluxe
+
+# Security-sensitive paths get explicit ownership
+/services/security/      @cristiandeluxe
+/services/crypto/        @cristiandeluxe
+/services/auth/          @cristiandeluxe
+/services/install/       @cristiandeluxe
+/services/api/withApiAuth.ts  @cristiandeluxe
+/.github/                @cristiandeluxe
+/SECURITY.md             @cristiandeluxe
