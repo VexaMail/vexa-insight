@@ -5,6 +5,10 @@
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
 
+  // Fail-fast environment validation. Throws on invalid env with a clear
+  // Zod error before any other module loads.
+  await import('@/lib/env')
+
   const { runMigrations } = await import('@/lib/db')
   runMigrations()
 
