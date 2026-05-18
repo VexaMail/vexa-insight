@@ -1,6 +1,6 @@
 'use client'
 
-import { XmlViewer } from '@/components/reports'
+import { LazyXmlViewer } from '@/components/reports'
 import { Button, DataTable, Navigator } from '@/components/ui'
 import type { ProcessedEmailsTableProps } from '@/types/ingest'
 import { formatPollStatusTime } from '@/utils/format'
@@ -109,7 +109,7 @@ export default function ProcessedEmailsTable({
                       {contentError}
                     </div>
                   )}
-                  {fileContent && <XmlViewer rawXml={fileContent} />}
+                  {fileContent && <LazyXmlViewer rawXml={fileContent} />}
                 </div>
               </div>
             </div>
