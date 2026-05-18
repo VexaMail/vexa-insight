@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { applySqlFile } from './applySqlFile'
 import { MIGRATIONS_TABLE } from './migrationsTable'
+import { resolveDbFilePath } from './resolveDbFilePath'
 
 /**
  * Runs Drizzle SQL migrations in order. Ensures data directory exists.
@@ -13,10 +14,7 @@ import { MIGRATIONS_TABLE } from './migrationsTable'
  */
 function runMigrations(): void {
   const dbUrl = getDatabaseUrl()
-  const dbPath = dbUrl.replace(/^file:\/?/, '')
-  const absPath = path.isAbsolute(dbPath)
-    ? dbPath
-    : path.resolve(process.cwd(), dbPath)
+  const absPath = resolveDbFilePath(dbUrl)
   const dir = path.dirname(absPath)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
