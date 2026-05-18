@@ -1,5 +1,8 @@
 import type { NextConfig } from 'next'
-import { buildSecurityHeaders } from './utils/security'
+import {
+  buildSecurityHeaders,
+  getAllowedOriginsFromEnv,
+} from './utils/security'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -8,6 +11,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ['geoip-lite'],
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
+  experimental: {
+    serverActions: {
+      allowedOrigins: getAllowedOriginsFromEnv(),
+    },
+  },
   async headers() {
     return [{ source: '/:path*', headers: buildSecurityHeaders(isProd) }]
   },

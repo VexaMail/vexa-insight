@@ -100,6 +100,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- Mutating API routes wrapped by withApiAuth now reject cross-origin or
+  missing-origin requests (Sec-Fetch-Site / Origin same-origin check) before
+  the auth gate runs.
+- Server actions honor a VEXA_ALLOWED_ORIGINS env var via
+  experimental.serverActions.allowedOrigins for deployments behind a
+  reverse proxy with a different hostname.
 - IMAP credentials are now encrypted at rest (AES-256-GCM with a key derived
   from SECRET_KEY via HKDF). Legacy plaintext rows are migrated automatically
   on first boot after upgrade.

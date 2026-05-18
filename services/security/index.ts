@@ -1,4 +1,6 @@
 export { isPrivateIp } from './isPrivateIp'
+export { requireSameOrigin } from './requireSameOrigin'
+export { SAFE_METHODS } from './safeMethods'
 export { safeFetch } from './safeFetch'
 export type { SafeFetchError } from './SafeFetchError'
 export type { SafeFetchOptions } from './SafeFetchOptions'

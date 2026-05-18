@@ -14,6 +14,16 @@ export async function createSession(userId: string) {
   })
 
   const cookieStore = await cookies()
+  // sameSite: 'lax' is intentional. 'strict' breaks bookmarked logins and
+  // top-level navigations from external links (e.g. an email "Sign in" link
+  // would fail to attach the cookie on first hop). CSRF for mutating
+  // endpoints is enforced separately:
+  //   - API routes: `requireSameOrigin` (Sec-Fetch-Site / Origin check) runs
+  //     in `withApiAuth` BEFORE the auth gate.
+  //   - Server actions: `experimental.serverActions.allowedOrigins` in
+  //     `next.config.ts` (driven by VEXA_ALLOWED_ORIGINS).
+  // So the session cookie alone cannot be replayed cross-origin against a
+  // state-changing endpoint.
   cookieStore.set('session', sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

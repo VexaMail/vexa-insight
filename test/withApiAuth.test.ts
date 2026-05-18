@@ -27,4 +27,17 @@ describe('withApiAuth', () => {
     const res = await handler(fakeRequest())
     expect(res.status).toBe(200)
   })
+
+  it('rejects cross-origin POST before auth runs', async () => {
+    const handler = withApiAuth(
+      async () => NextResponse.json({ data: 'should never reach' }),
+      { authFn: async () => null },
+    )
+    const req = new NextRequest('https://vexa.example.com/api/v1/users', {
+      method: 'POST',
+      headers: { origin: 'https://evil.example.com' },
+    })
+    const res = await handler(req)
+    expect(res.status).toBe(403)
+  })
 })
