@@ -4,6 +4,9 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+# pnpm 11 refuses to remove an existing node_modules without TTY unless CI=true;
+# without this, install fails with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY.
+ENV CI=true
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 COPY . .
