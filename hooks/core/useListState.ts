@@ -1,6 +1,5 @@
+import type { ListState } from '@/types/stores'
 import { create } from 'zustand'
-
-import type { ListState } from '../../stores/ListState'
 
 export const useListState = create<ListState>((set, get) => ({
   itemsScope: [],

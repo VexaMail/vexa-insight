@@ -1,5 +1,5 @@
+import type { DashboardFiltersState } from '@/types/stores'
 import { create } from 'zustand'
-import type { DashboardFiltersState } from '../../store/DashboardFiltersState'
 
 export const useDashboardFilters = create<DashboardFiltersState>((set) => ({
   days: 30,

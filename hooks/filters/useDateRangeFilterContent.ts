@@ -1,4 +1,4 @@
-import { useDashboardFilters } from '@/store'
+import { useDashboardFilters } from '@/hooks/dashboard'
 import type {
   DateRangeFilterProps,
   UseDateRangeFilterContentReturn,

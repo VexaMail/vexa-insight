@@ -1,4 +1,4 @@
-import { useDashboardFilters } from '@/store'
+import { useDashboardFilters } from './useDashboardFilters'
 import type { DashboardFilterInitializerProps } from '@/types/dashboard'
 import { useEffect } from 'react'
 

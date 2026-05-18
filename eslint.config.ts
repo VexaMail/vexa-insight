@@ -202,7 +202,7 @@ const config = defineConfig([
        * Types:
        *   app       → Next.js App Router pages & API routes
        *   components → Client-safe UI components
-       *   shared    → Runtime-neutral shared code (lib, utils, hooks, types, store)
+       *   shared    → Runtime-neutral shared code (lib, utils, hooks, types)
        *   server    → Server-only code (services, actions)
        *
        * Dependency rules:
@@ -268,10 +268,6 @@ const config = defineConfig([
         { type: 'shared', pattern: 'hooks/**/*' },
         { type: 'shared', pattern: 'types/*' },
         { type: 'shared', pattern: 'types/**/*' },
-        { type: 'shared', pattern: 'store/*' },
-        { type: 'shared', pattern: 'store/**/*' },
-        { type: 'shared', pattern: 'stores/*' },
-        { type: 'shared', pattern: 'stores/**/*' },
 
         // Server-only code
         { type: 'server', pattern: 'services/*' },
