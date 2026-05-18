@@ -53,9 +53,19 @@ export async function ingestParsedReport(
   // Resolve all async IP upserts BEFORE entering the transaction.
   // SQLite transactions (better-sqlite3) must be synchronous; an async
   // callback causes the "Transaction function cannot return a promise" error.
-  const ipAddressIds = await Promise.all(
-    report.events.map((ev) => upsertIp(ev.sourceIp)),
-  )
+  // Dedupe IPs before upsert: many DMARC reports include multiple events
+  // from the same source IP. Without dedup, concurrent upsertIp calls
+  // race on the UNIQUE index and the whole ingest rejects.
+  const uniqueIps = [...new Set(report.events.map((ev) => ev.sourceIp))]
+  const ipIdByValue = new Map<string, number>()
+  for (const ip of uniqueIps) {
+    ipIdByValue.set(ip, await upsertIp(ip))
+  }
+  const ipAddressIds = report.events.map((ev) => {
+    const id = ipIdByValue.get(ev.sourceIp)
+    if (id == null) throw new Error(`Missing ipAddressId for ${ev.sourceIp}`)
+    return id
+  })
 
   // Use a transaction since we are inserting into multiple tables per event.
   // The callback MUST be synchronous (better-sqlite3 constraint).
