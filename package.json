@@ -45,7 +45,8 @@
     "check": "pnpm run type-check && pnpm run format && pnpm run lint:fix",
     "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run test",
     "check:ci": "pnpm run type-check && pnpm run lint && pnpm run format:check && pnpm run test",
-    "perf:check": "pnpm build && lhci autorun --config=.lighthouserc.json"
+    "perf:check": "pnpm build && lhci autorun --config=.lighthouserc.json",
+    "smoke": "bash scripts/smoke.sh"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

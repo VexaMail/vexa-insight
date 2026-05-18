@@ -60,4 +60,22 @@ describe('requireSameOrigin', () => {
         ?.status,
     ).toBe(403)
   })
+
+  it('passes POST with x-api-key (API-key auth is CSRF-exempt)', () => {
+    expect(
+      requireSameOrigin(req('POST', { 'x-api-key': 'k' })),
+    ).toBeNull()
+  })
+
+  it('passes POST with Authorization: Bearer (API-key auth is CSRF-exempt)', () => {
+    expect(
+      requireSameOrigin(req('POST', { authorization: 'Bearer k' })),
+    ).toBeNull()
+  })
+
+  it('rejects POST with Authorization but not Bearer scheme', () => {
+    expect(
+      requireSameOrigin(req('POST', { authorization: 'Basic xxx' }))?.status,
+    ).toBe(403)
+  })
 })
