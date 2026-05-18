@@ -126,6 +126,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `/api/v1/reports` and `/api/v1/ai/report-insights` reject
   unauthenticated callers, and `/api/install` rejects no-token,
   non-loopback, or already-installed POSTs.
+- `pnpm test:coverage` runs the suite with v8 coverage; text/lcov/html
+  reports under `coverage/`. No thresholds enforced — informational only.
 
 ### Security
 
