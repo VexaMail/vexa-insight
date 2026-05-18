@@ -1,7 +1,1 @@
-export const publicRoutes = [
-  '/login',
-  '/docs',
-  '/api/v1',
-  '/_next',
-  '/favicon.ico',
-]
+export const publicRoutes = ['/login', '/docs', '/_next', '/favicon.ico']

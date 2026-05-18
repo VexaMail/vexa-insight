@@ -1,9 +1,10 @@
 import { domains, getDb } from '@/lib/db'
+import { withApiAuth } from '@/services/api'
 import { getAllowedDomainIds } from '@/services/auth'
 import { desc, inArray } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
-export async function GET(): Promise<NextResponse> {
+export const GET = withApiAuth(async (): Promise<NextResponse> => {
   const db = getDb()
   const allowedIds = await getAllowedDomainIds()
 
@@ -21,4 +22,4 @@ export async function GET(): Promise<NextResponse> {
   const data = result.map((r) => r.id.toString())
 
   return NextResponse.json({ data })
-}
+})

@@ -1,5 +1,7 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
 export { isUsableSecret } from './isUsableSecret'
+export { PUBLIC_API_ROUTES } from './publicApiRoutes'
 export { requireAdminAccess } from './requireAdminAccess'
 export { requireAdminAuth } from './requireAdminAuth'
 export { timingSafeTokenEqual } from './timingSafeTokenEqual'
+export { withApiAuth } from './withApiAuth'
