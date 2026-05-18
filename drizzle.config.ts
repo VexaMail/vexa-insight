@@ -7,7 +7,7 @@ const filePath = databaseUrl.startsWith('file:')
   : databaseUrl
 
 export default defineConfig({
-  schema: './lib/db/schema.ts',
+  schema: './lib/db/schema/index.ts',
   out: './drizzle',
   dialect: 'sqlite',
   dbCredentials: { url: filePath },
