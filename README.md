@@ -27,17 +27,24 @@
 
 ---
 
-## Quick start (30 seconds)
+## Quick start
 
 ```bash
-docker run -d --name vexa -p 3000:3000 \
+docker run -d --name vexa \
+  -p 127.0.0.1:3000:3000 \
   -v vexa-data:/app/data \
+  -e SECRET_KEY=$(openssl rand -hex 32) \
   ghcr.io/vexamail/vexa-insight-dashboard:latest
+
+# Grab the one-time install token from the container logs:
+docker logs vexa 2>&1 | grep -A1 'install token'
 ```
 
-Then open <http://localhost:3000>, complete the web installer, and connect your DMARC mailbox (or run `pnpm run seed:demo` against a local checkout to see the dashboard with sample data first).
+Then open <http://127.0.0.1:3000>, paste the install token into the web installer, and connect your DMARC mailbox (or run `pnpm run seed:demo` against a local checkout to see the dashboard with sample data first).
 
-Prefer Compose? [`docker-compose.yml`](docker-compose.yml) bundles persistence and an opt-in Watchtower auto-update layer.
+**Exposing beyond localhost?** Bind to all interfaces (`-p 3000:3000`), set `-e VEXA_ALLOW_REMOTE_INSTALL=1`, and put it behind a reverse proxy with TLS — see [`docs/UPDATING.md`](docs/UPDATING.md) and the env-var table below.
+
+Prefer Compose? [`docker-compose.yml`](docker-compose.yml) bundles persistence, the loopback bind, and an opt-in Watchtower auto-update layer.
 
 ---
 
@@ -150,6 +157,8 @@ docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
 | `ENVIRONMENT`                                                   | No          | `development` / `staging` / `production`.                                                                                                                                  |
 | `VEXA_UPDATE_CHECK_ENABLED`                                     | No          | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                            |
 | `VEXA_UPDATE_REPO`                                              | No          | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                 |
+| `VEXA_ALLOW_REMOTE_INSTALL`                                     | No          | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.             |
+| `VEXA_ALLOWED_ORIGINS`                                          | No          | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.   |
 
 ---
 

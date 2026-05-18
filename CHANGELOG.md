@@ -97,22 +97,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   was harmless (rejected by the install flow because of the length
   check) but misleading. With this change `isInstalled()` detects the
   placeholder via the canonical sentinel.
+- README quickstart now binds the published image to `127.0.0.1:3000`
+  by default and documents the new install-token flow, the
+  `VEXA_ALLOW_REMOTE_INSTALL` env var, and `VEXA_ALLOWED_ORIGINS`.
+
+### Fixed
+
+- **Published Docker image now boots.** The Dockerfile CMD referenced
+  `scripts/run-migrations.cjs` which never existed. Migrations are
+  already executed by `instrumentation.ts:register()` before traffic
+  is accepted, so the CMD now simply runs `node server.js`.
+- **Docker build succeeds on pnpm 11.** Surfaced two pre-existing
+  failures once the missing CMD script was removed:
+  `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` (fixed by `ENV CI=true`
+  in the Dockerfile) and `ERR_PNPM_IGNORED_BUILDS` for native deps
+  (fixed by writing the proper `allowBuilds: { … : true }` block in
+  `pnpm-workspace.yaml` — the previous file contained a placeholder
+  with literal `"set this to true or false"` values that left install
+  scripts ignored for `better-sqlite3`, `esbuild`, `sharp`, and
+  `unrs-resolver`).
+- Removed the dead `config.ts` at the repo root. The live `matcher`
+  has always lived in `proxy.ts`.
+
+### Tooling
+
+- `pnpm smoke` (`scripts/smoke.sh`) builds the Docker image and asserts
+  the launch-blocker invariants end-to-end: `/api/v1/health` serves,
+  `/api/v1/reports` and `/api/v1/ai/report-insights` reject
+  unauthenticated callers, and `/api/install` rejects no-token,
+  non-loopback, or already-installed POSTs.
 
 ### Security
 
-- Mutating API routes wrapped by withApiAuth now reject cross-origin or
-  missing-origin requests (Sec-Fetch-Site / Origin same-origin check) before
-  the auth gate runs.
-- Server actions honor a VEXA_ALLOWED_ORIGINS env var via
-  experimental.serverActions.allowedOrigins for deployments behind a
-  reverse proxy with a different hostname.
-- IMAP credentials are now encrypted at rest (AES-256-GCM with a key derived
-  from SECRET_KEY via HKDF). Legacy plaintext rows are migrated automatically
-  on first boot after upgrade.
-- Install endpoint now requires a one-time token printed to server logs on
-  first boot and is restricted to loopback unless `VEXA_ALLOW_REMOTE_INSTALL=1`
-  is set. Closes the bootstrap-race window where any reachable network caller
-  could register the first admin user before the operator opened the UI.
+- **Default-deny auth on `/api/v1/**`.** Every route handler is now wrapped
+by `withApiAuth`(delegates to`requireAdminAccess`— session OR`x-api-key`/`Authorization: Bearer`). Explicit public allowlist:
+`/api/v1/health`, `/api/v1/openapi.json`. A structural test
+(`test/apiAuthSmoke.test.ts`) fails the build if any new route is added
+  without auth.
+- **AI endpoints rate-limited.** `POST /api/v1/ai/report-insights` and
+  `/api/v1/ai/diagnostics-insights` enforce 10/min/IP on top of auth so an
+  authenticated-but-runaway client cannot drain the operator's LLM provider
+  credits.
+- **Install endpoint hardened.** One-time install token printed to server
+  logs on first boot, required as `x-install-token` header or `installToken`
+  body field. Loopback-only by default; set `VEXA_ALLOW_REMOTE_INSTALL=1`
+  to allow remote install. Closes the bootstrap-race window where any
+  reachable network caller could register the first admin user before
+  the operator opened the UI.
+- **IMAP credentials encrypted at rest.** AES-256-GCM with a key derived
+  from `SECRET_KEY` via HKDF (SHA-256, salt `vexa-imap-pwd-v1`). Random IV
+  per ciphertext, GCM auth tag, `v1:` blob prefix. Legacy plaintext rows
+  are migrated automatically on first boot after upgrade.
+- **SSRF-safe outbound dispatch.** New `services/security/safeFetch` resolves
+  DNS and blocks loopback / link-local / private (RFC 1918) / CGNAT
+  (100.64.0.0/10) / metadata (169.254.169.254) / multicast IPv4 + the IPv6
+  equivalents. Wired into `deliverWebhook` and `resolveMtaSts`. Webhook URL
+  schema also tightened to `http(s)` only.
+- **CSRF same-origin guard.** Mutating routes wrapped by `withApiAuth`
+  reject cross-origin or missing-origin requests (Sec-Fetch-Site / Origin
+  check) before the auth gate runs. API-key (`x-api-key` /
+  `Authorization: Bearer`) callers are exempt — CSRF only matters for
+  cookie-bearing sessions.
+- **Server actions** honor `VEXA_ALLOWED_ORIGINS` via
+  `experimental.serverActions.allowedOrigins` for deployments behind a
+  reverse proxy with a different public hostname.
+- **DMARC parser hardened against XXE / zip-bomb / zip-slip.**
+  `gunzipSync` now caps decompressed output at `MAX_UNCOMPRESSED_SIZE`
+  (100 MB); `XMLParser` runs with `processEntities: false` and
+  `parseDmarcXml` rejects any input containing `<!DOCTYPE` or
+  `<!ENTITY` before parsing; `processZipEntry` rejects entries with
+  parent traversal, absolute paths, control characters, or normalized
+  names that differ from the raw name.
+- **Scrypt cost upgraded** to `N=131072, r=8, p=1` (maxmem 256 MB).
+  New hashes use a self-describing `scrypt$N$r$p$salt$hex` format;
+  legacy `salt:hash` records continue to verify with their historical
+  `N=16384` so existing logins do not break.
+- **`.mcp.json` now gitignored** to prevent accidental commit of MCP
+  server tokens. Ships `.mcp.example.json` as a neutral placeholder.
 - **Timing-safe API key comparison.** `requireAdminAuth` now hashes
   both the presented token and the configured `SECRET_KEY` with
   SHA-256 and compares the digests via `crypto.timingSafeEqual`,
