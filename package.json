@@ -45,7 +45,8 @@
     "seed:demo": "tsx scripts/seed-demo.ts",
     "check": "pnpm run type-check && pnpm run format && pnpm run lint:fix",
     "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run test",
-    "check:ci": "pnpm run type-check && pnpm run lint && pnpm run format:check && pnpm run test",
+    "check:ci": "pnpm run type-check && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run check:migrations",
+    "check:migrations": "bash scripts/check-migrations.sh",
     "perf:check": "pnpm build && lhci autorun --config=.lighthouserc.json",
     "smoke": "bash scripts/smoke.sh"
   },
