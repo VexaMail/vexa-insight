@@ -3,3 +3,11 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+# Force patched versions for transitive dependencies flagged by `pnpm audit`.
+# Reviewed individually — see SECURITY.md for the rationale per package.
+overrides:
+  dompurify: ^3.4.0
+  esbuild: ^0.25.0
+  postcss: ^8.5.10
+  tmp: ^0.2.4

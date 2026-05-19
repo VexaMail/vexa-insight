@@ -131,13 +131,5 @@
     "vitest": "^4.1.6",
     "vitest-axe": "^0.1.0"
   },
-  "packageManager": "pnpm@11.1.2",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ]
-  }
+  "packageManager": "pnpm@11.1.2"
 }
