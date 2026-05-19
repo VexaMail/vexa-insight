@@ -1,0 +1,18 @@
+apiVersion: v2
+name: vexa-insight-dashboard
+description: Open-source DMARC observability dashboard (Next.js + SQLite)
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+home: https://github.com/VexaMail/vexa-insight-dashboard
+sources:
+  - https://github.com/VexaMail/vexa-insight-dashboard
+maintainers:
+  - name: Vexa
+    url: https://github.com/VexaMail
+kubeVersion: '>=1.27.0'
+keywords:
+  - dmarc
+  - email-security
+  - observability
+  - self-hosted

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vexa-config
+  namespace: vexa
+data:
+  NODE_ENV: 'production'
+  NEXT_TELEMETRY_DISABLED: '1'
+  # Where the SQLite DB lives inside the container. PVC mounts /app/data.
+  DATABASE_URL: 'file:./data/vexa.db'
+  # Logging
+  VEXA_LOG_FORMAT: 'json'
+  # Update checks (set to "false" to disable outbound calls)
+  VEXA_UPDATE_CHECK_ENABLED: 'true'
+  # Comma-separated extra origins allowed for server actions. Edit per cluster.
+  VEXA_ALLOWED_ORIGINS: ''
+  # Public app URL — used by sitemap, robots, OIDC redirect, etc.
+  NEXT_PUBLIC_APP_URL: 'https://vexa.example.com'

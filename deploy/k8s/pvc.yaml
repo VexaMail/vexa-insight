@@ -1,0 +1,14 @@
+# Persists SQLite DB at /app/data/vexa.db and the GeoLite2 data set.
+# RWO is fine — the deployment runs at replicas=1 (SQLite is single-writer).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vexa-data
+  namespace: vexa
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  # storageClassName: <cluster default>

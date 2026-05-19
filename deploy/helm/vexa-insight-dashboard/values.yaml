@@ -1,0 +1,103 @@
+# Default values for vexa-insight-dashboard.
+# Override per environment with `helm install ... -f values.prod.yaml`
+# or `--set key=value`.
+
+image:
+  repository: ghcr.io/vexamail/vexa-insight-dashboard
+  # Pin to a real release; "latest" is convenient but not reproducible.
+  tag: ''
+  pullPolicy: IfNotPresent
+
+# SQLite enforces single-writer; do not raise replicas without moving DB.
+replicaCount: 1
+
+# Required env. Values rendered into a ConfigMap; do not put secrets here.
+config:
+  NODE_ENV: production
+  NEXT_TELEMETRY_DISABLED: '1'
+  DATABASE_URL: 'file:./data/vexa.db'
+  VEXA_LOG_FORMAT: 'json'
+  VEXA_UPDATE_CHECK_ENABLED: 'true'
+  # Comma-separated list of extra allowed origins for server actions.
+  VEXA_ALLOWED_ORIGINS: ''
+  # Public app URL (used by sitemap, robots, OIDC redirect, etc.)
+  NEXT_PUBLIC_APP_URL: 'https://vexa.example.com'
+
+# Secret values. Rendered into a Secret; override per environment.
+# Set `secret.create: false` and `secret.existingSecret: my-secret` to
+# reuse a secret managed outside of Helm (e.g. by External Secrets).
+secret:
+  create: true
+  existingSecret: ''
+  data:
+    SECRET_KEY: 'REPLACE_ME'
+    # Uncomment to enable SSO. See docs/SSO.md for details.
+    # VEXA_AUTH_PROVIDER: "oidc"
+    # OIDC_ISSUER_URL: ""
+    # OIDC_CLIENT_ID: ""
+    # OIDC_CLIENT_SECRET: ""
+    # OIDC_REDIRECT_URI: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: '10m'
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: vexa.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: vexa-tls
+      hosts:
+        - vexa.example.com
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+  # storageClassName: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+probes:
+  readiness:
+    path: /api/v1/health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    failureThreshold: 3
+  liveness:
+    path: /api/v1/health
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 3
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

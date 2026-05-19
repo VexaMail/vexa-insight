@@ -1,0 +1,22 @@
+Vexa Insight Dashboard {{ .Chart.AppVersion }} installed as {{ .Release.Name }}.
+
+1. Check pod status:
+   kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "vexa.fullname" . }}
+
+2. Capture the first-run install token (only printed until install completes):
+   kubectl --namespace {{ .Release.Namespace }} logs deploy/{{ include "vexa.fullname" . }} | grep -A1 "install token"
+
+3. Reach the app:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+   https://{{ .host }}
+{{- end }}
+{{- else }}
+   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "vexa.fullname" . }} 8080:{{ .Values.service.port }}
+{{- end }}
+
+4. Backups: the SQLite database lives at /app/data/vexa.db on the
+   {{ include "vexa.fullname" . }}-data PVC. Snapshot the volume or copy
+   the file out with `kubectl cp` on a regular schedule.
+
+5. SSO/OIDC is experimental — see docs/SSO.md before enabling.

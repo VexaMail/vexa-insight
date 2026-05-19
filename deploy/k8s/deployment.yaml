@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vexa
+  namespace: vexa
+  labels:
+    app.kubernetes.io/name: vexa-insight-dashboard
+spec:
+  # SQLite enforces single-writer; do not scale beyond 1 without moving
+  # to a network DB.
+  replicas: 1
+  strategy:
+    # Avoid two pods opening the SQLite file at the same time during rollouts.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vexa-insight-dashboard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vexa-insight-dashboard
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: app
+          image: ghcr.io/vexamail/vexa-insight-dashboard:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: vexa-config
+            - secretRef:
+                name: vexa-secrets
+          env:
+            - name: HOSTNAME
+              value: '0.0.0.0'
+            - name: PORT
+              value: '3000'
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ['ALL']
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: vexa-data

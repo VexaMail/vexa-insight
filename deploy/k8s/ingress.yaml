@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vexa
+  namespace: vexa
+  annotations:
+    # Sized for DMARC XML uploads (some senders send a single 5 MB report).
+    nginx.ingress.kubernetes.io/proxy-body-size: '10m'
+    # cert-manager: uncomment after installing cert-manager and a ClusterIssuer.
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vexa.example.com
+      secretName: vexa-tls
+  rules:
+    - host: vexa.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vexa
+                port:
+                  name: http
