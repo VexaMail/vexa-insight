@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { requireSameOrigin } from '../services/security/requireSameOrigin'
 
 describe('requireSameOrigin', () => {
-  const req = (
-    method: string,
-    headers: Record<string, string> = {},
-  ): Request =>
+  const req = (method: string, headers: Record<string, string> = {}): Request =>
     new Request('https://vexa.example.com/api/v1/users', { method, headers })
 
   it('passes GET unconditionally', () => {
@@ -62,9 +59,7 @@ describe('requireSameOrigin', () => {
   })
 
   it('passes POST with x-api-key (API-key auth is CSRF-exempt)', () => {
-    expect(
-      requireSameOrigin(req('POST', { 'x-api-key': 'k' })),
-    ).toBeNull()
+    expect(requireSameOrigin(req('POST', { 'x-api-key': 'k' }))).toBeNull()
   })
 
   it('passes POST with Authorization: Bearer (API-key auth is CSRF-exempt)', () => {

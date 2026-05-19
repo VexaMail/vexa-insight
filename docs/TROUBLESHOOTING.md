@@ -169,11 +169,11 @@ If `Settings > Updates` reports "update check disabled":
 
 ## Where to look first
 
-| Symptom                                | First file/log to check                                                                  |
-| -------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Container crash on boot                | `docker logs vexa --tail=200`                                                            |
-| Migration failure                      | Same — look for `Migration` lines                                                        |
-| IMAP errors                            | UI: `Settings > Polling status`; logs: lines beginning `[imap]`                          |
-| Parser errors                          | UI: `Settings > Ingestion log`                                                           |
-| Slow dashboard                         | Check `EXPLAIN QUERY PLAN` on suspect queries; verify indexes in `lib/db/schema/`        |
-| 4xx on Server Actions behind proxy     | Verify `VEXA_ALLOWED_ORIGINS` matches the public origin (see `docs/DEPLOY-BEHIND-PROXY.md`) |
+| Symptom                            | First file/log to check                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| Container crash on boot            | `docker logs vexa --tail=200`                                                               |
+| Migration failure                  | Same — look for `Migration` lines                                                           |
+| IMAP errors                        | UI: `Settings > Polling status`; logs: lines beginning `[imap]`                             |
+| Parser errors                      | UI: `Settings > Ingestion log`                                                              |
+| Slow dashboard                     | Check `EXPLAIN QUERY PLAN` on suspect queries; verify indexes in `lib/db/schema/`           |
+| 4xx on Server Actions behind proxy | Verify `VEXA_ALLOWED_ORIGINS` matches the public origin (see `docs/DEPLOY-BEHIND-PROXY.md`) |

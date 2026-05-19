@@ -20,9 +20,8 @@ describe('getDomainsSummaryAll (GROUP BY refactor)', () => {
   })
 
   it('returns per-domain totals that agree with getDomainSummary', async () => {
-    const { getDomainSummary, getDomainsSummaryAll } = await import(
-      '@/services/reports'
-    )
+    const { getDomainSummary, getDomainsSummaryAll } =
+      await import('@/services/reports')
     const now = new Date('2026-01-15T12:00:00Z')
     const beginUnix = Math.floor(
       new Date('2026-01-01T00:00:00Z').getTime() / 1000,

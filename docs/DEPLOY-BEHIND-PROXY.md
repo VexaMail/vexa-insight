@@ -102,7 +102,7 @@ sudo systemctl reload caddy
 Caddy provisions and renews certificates from Let's Encrypt automatically;
 no manual `certbot` step.
 
-## X-Forwarded-* header preservation
+## X-Forwarded-\* header preservation
 
 Next.js relies on `X-Forwarded-Host` and `X-Forwarded-Proto` to construct
 absolute URLs (used in OAuth callbacks, email links, etc.) and on the

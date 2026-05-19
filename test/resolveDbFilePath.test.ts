@@ -1,6 +1,6 @@
+import { resolveDbFilePath } from '@/lib/db'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { resolveDbFilePath } from '@/lib/db'
 
 describe('resolveDbFilePath', () => {
   it('resolves file: with relative dot path against cwd', () => {

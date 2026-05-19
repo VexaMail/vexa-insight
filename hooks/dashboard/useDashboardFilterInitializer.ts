@@ -1,6 +1,6 @@
-import { useDashboardFilters } from './useDashboardFilters'
 import type { DashboardFilterInitializerProps } from '@/types/dashboard'
 import { useEffect } from 'react'
+import { useDashboardFilters } from './useDashboardFilters'
 
 export function useDashboardFilterInitializer(
   props: Readonly<DashboardFilterInitializerProps>,

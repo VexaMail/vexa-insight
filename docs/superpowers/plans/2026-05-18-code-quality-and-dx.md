@@ -26,9 +26,9 @@ export function resolveDbFilePath(databaseUrl: string): string {
     ? stripped.slice(2).replace(/^[^/]*/, '')
     : stripped
   if (withoutAuthority.startsWith('/')) {
-    return withoutAuthority           // absolute path
+    return withoutAuthority // absolute path
   }
-  return path.resolve(process.cwd(), withoutAuthority)  // relative
+  return path.resolve(process.cwd(), withoutAuthority) // relative
 }
 ```
 
@@ -43,6 +43,7 @@ Commit: `fix(db): resolve file: URLs correctly for absolute paths`.
 **Files:** delete `store/` and `stores/` top-level dirs; move state types to live next to the hook factories that consume them, or to `types/stores/`.
 
 Inventory:
+
 - `store/index.ts` re-exports from `hooks/dashboard`
 - `store/DashboardFiltersState.ts` (type)
 - `stores/index.ts` re-exports from `hooks/core`
@@ -92,7 +93,9 @@ import { z } from 'zod'
 const envSchema = z.object({
   DATABASE_URL: z.string().default('file:./data/vexa.db'),
   SECRET_KEY: z.string().default(''),
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
   VEXA_ALLOW_REMOTE_INSTALL: z.enum(['0', '1']).default('0'),
   VEXA_ALLOWED_ORIGINS: z.string().default(''),
   VEXA_UPDATE_CHECK_ENABLED: z.string().default('true'),
@@ -117,7 +120,7 @@ Commit: `chore(env): add Zod-validated lib/env.ts; import at boot to fail-fast o
 
 `TROUBLESHOOTING.md` covers: container won't start (most likely cause + check), `better-sqlite3` native build fails on host install (toolchain prerequisites for macOS/Linux/Windows), `SQLITE_BUSY` during heavy ingestion (WAL + `busy_timeout`), IMAP auth fails (TLS, app password, OAuth), "no reports yet" (cron timing, mailbox-empty checklist), install token rotated.
 
-`DEPLOY-BEHIND-PROXY.md` covers: minimal nginx + Caddy config snippets, `VEXA_ALLOW_REMOTE_INSTALL=1` + `VEXA_ALLOWED_ORIGINS` settings, X-Forwarded-* header preservation, sticky-session caveat (single-instance only), TLS termination, healthcheck path.
+`DEPLOY-BEHIND-PROXY.md` covers: minimal nginx + Caddy config snippets, `VEXA_ALLOW_REMOTE_INSTALL=1` + `VEXA_ALLOWED_ORIGINS` settings, X-Forwarded-\* header preservation, sticky-session caveat (single-instance only), TLS termination, healthcheck path.
 
 Commit: `docs: troubleshooting + deploy-behind-proxy`.
 

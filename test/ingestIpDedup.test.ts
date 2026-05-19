@@ -1,9 +1,9 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { getDb, ipAddresses, runMigrations } from '@/lib/db'
 import { ingestParsedReport } from '@/services/reports'
 import { parseDmarcXml } from '@/utils/dmarc'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { resetDmarcDb } from './setup/resetDmarcDb'
 import { setupTestDb } from './setup/setupTestDb'
 

@@ -25,10 +25,12 @@
 ## File structure
 
 ### Modify
+
 - `.github/workflows/ci.yml`
 - `.github/workflows/release.yml`
 
 ### Create
+
 - `.github/workflows/codeql.yml`
 - `.github/CODEOWNERS`
 - `.github/dependabot.yml` (already exists — verify)
@@ -125,6 +127,7 @@ jobs:
 ```
 
 Notes for the implementer:
+
 - Use `gh api repos/actions/checkout/git/refs/tags/v4.2.2` (or `git ls-remote --tags https://github.com/actions/checkout v4*`) to resolve each tag to a commit SHA. Pin the immutable SHA, and put the human-readable version on the same line as a comment: `uses: actions/checkout@<sha> # v4.2.2`.
 - The pnpm version `11.1.2` matches the `packageManager` field in `package.json`.
 
@@ -133,7 +136,9 @@ Notes for the implementer:
 ```bash
 gh workflow run ci.yml --ref main   # only after push
 ```
+
 Locally:
+
 ```bash
 # Sanity: the smoke script the workflow calls is committed
 test -x scripts/smoke.sh && echo OK
@@ -161,7 +166,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 6 * * 1'  # weekly Monday 06:00 UTC
+    - cron: '0 6 * * 1' # weekly Monday 06:00 UTC
 
 permissions:
   actions: read
@@ -217,8 +222,8 @@ on:
 permissions:
   contents: write
   packages: write
-  id-token: write          # needed for cosign keyless + attestations
-  attestations: write      # needed for actions/attest-build-provenance
+  id-token: write # needed for cosign keyless + attestations
+  attestations: write # needed for actions/attest-build-provenance
 
 jobs:
   release:
@@ -347,6 +352,7 @@ jobs:
 ```
 
 Notes:
+
 - `docker/build-push-action@v6` already supports `provenance: true` and `sbom: true` natively (adds the OCI attestation manifest). The dedicated `actions/attest-build-provenance` step layers GitHub's SLSA attestation on top.
 - `cosign sign --yes` uses ambient OIDC from `id-token: write`. No key file. Verifiable later with `cosign verify ghcr.io/vexamail/vexa-insight-dashboard:vX.Y.Z --certificate-identity-regexp '^https://github\.com/VexaMail/vexa-insight-dashboard/' --certificate-oidc-issuer https://token.actions.githubusercontent.com`.
 

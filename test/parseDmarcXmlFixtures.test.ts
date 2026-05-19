@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
+import { describe, expect, it } from 'vitest'
 import { parseDmarcXml } from '../utils/dmarc/parseDmarcXml'
 
 describe('parseDmarcXml fixtures', () => {

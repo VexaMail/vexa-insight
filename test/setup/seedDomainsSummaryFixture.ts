@@ -12,8 +12,14 @@ import type { SeedDomainsSummaryResult } from './SeedDomainsSummaryResult'
 export function seedDomainsSummaryFixture(
   config: SeedDomainsSummaryConfig,
 ): SeedDomainsSummaryResult {
-  const { domainCount, reportsPerDomain, eventsPerReport, beginUnix, endUnix, now } =
-    config
+  const {
+    domainCount,
+    reportsPerDomain,
+    eventsPerReport,
+    beginUnix,
+    endUnix,
+    now,
+  } = config
 
   const domainIds = insertSeedDomains(domainCount, now)
   const ipId = insertSeedIp(now)

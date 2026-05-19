@@ -79,7 +79,7 @@ jobs:
 
       - name: Run smoke test against built image
         env:
-          VEXA_SMOKE_PORT: "14000"
+          VEXA_SMOKE_PORT: '14000'
         run: bash scripts/smoke.sh
 
   dep-audit:

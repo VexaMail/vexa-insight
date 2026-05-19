@@ -14,17 +14,18 @@
 
 1. **B1** — Convertir `/api/v1/**` a default-deny con allowlist explícita. Helper `withApiAuth(handler, { public?: boolean })`. Rutas públicas: `/api/v1/health`, `/api/v1/openapi.json`. El resto exige `requireAdminAccess` (sesión o `x-api-key`).
 2. **B3** — Token de install impreso a stdout en arranque cuando `SECRET_KEY === 'CHANGE_ME'`, requerido como header `x-install-token`. Adicionalmente bind loopback-only salvo `VEXA_ALLOW_REMOTE_INSTALL=1`. Mantenemos la UX del web installer pero el formulario pide el token (que el operador copia de `docker logs`).
-4. **B4** — Cifrado de passwords IMAP con AES-256-GCM, clave derivada de `SECRET_KEY` vía `crypto.hkdfSync('sha256', secretKey, salt='vexa-imap-pwd', info='v1', 32)`. Formato del campo: `v1:<base64(iv)>|<base64(tag)>|<base64(ct)>` (legacy detectado por ausencia de prefijo `v1:`). Schema sin cambios (TEXT). Migración lazy on-write (no migración masiva; se re-cifra al primer update post-deploy + un migration runner one-shot).
-5. **B6** — `services/security/safeFetch.ts` resuelve DNS, rechaza loopback/link-local/private/CGNAT/0.0.0.0/IPv6 equivalentes, exige `http|https`, timeout configurable. Lo aplicamos a `deliverWebhook` y `resolveMtaSts`.
-6. **B7** — `services/security/requireSameOrigin.ts` valida `Origin`/`Sec-Fetch-Site` para mutaciones (POST/PUT/PATCH/DELETE) que llevan cookie de sesión. Permite la propia `request.url`'s host. Server actions: confiamos en `next.config.ts` con `experimental.allowedOrigins` (Next 16 nativo).
-7. **B5** — `instrumentation.ts:register()` ya corre migrations antes de aceptar tráfico. Simplificamos el `Dockerfile` CMD a `CMD ["node", "server.js"]`. **Más simple que crear `run-migrations.cjs`** y elimina la ruta rota.
-8. **DMARC hardening** — `gunzipSync` con `maxOutputLength`; `XMLParser` con `processEntities: false` + rechazo explícito de `<!DOCTYPE`; `processZipEntry` con `path.normalize` check.
-9. **Scrypt** — Subir a `N=131072, r=8, p=1, maxmem=64MB`. Hash existing: no migrar (los hashes viejos siguen funcionando hasta el próximo reset de password; documentar en CHANGELOG).
-10. **.mcp.json** — Añadir a `.gitignore`, crear `.mcp.example.json` con contenido neutro.
+3. **B4** — Cifrado de passwords IMAP con AES-256-GCM, clave derivada de `SECRET_KEY` vía `crypto.hkdfSync('sha256', secretKey, salt='vexa-imap-pwd', info='v1', 32)`. Formato del campo: `v1:<base64(iv)>|<base64(tag)>|<base64(ct)>` (legacy detectado por ausencia de prefijo `v1:`). Schema sin cambios (TEXT). Migración lazy on-write (no migración masiva; se re-cifra al primer update post-deploy + un migration runner one-shot).
+4. **B6** — `services/security/safeFetch.ts` resuelve DNS, rechaza loopback/link-local/private/CGNAT/0.0.0.0/IPv6 equivalentes, exige `http|https`, timeout configurable. Lo aplicamos a `deliverWebhook` y `resolveMtaSts`.
+5. **B7** — `services/security/requireSameOrigin.ts` valida `Origin`/`Sec-Fetch-Site` para mutaciones (POST/PUT/PATCH/DELETE) que llevan cookie de sesión. Permite la propia `request.url`'s host. Server actions: confiamos en `next.config.ts` con `experimental.allowedOrigins` (Next 16 nativo).
+6. **B5** — `instrumentation.ts:register()` ya corre migrations antes de aceptar tráfico. Simplificamos el `Dockerfile` CMD a `CMD ["node", "server.js"]`. **Más simple que crear `run-migrations.cjs`** y elimina la ruta rota.
+7. **DMARC hardening** — `gunzipSync` con `maxOutputLength`; `XMLParser` con `processEntities: false` + rechazo explícito de `<!DOCTYPE`; `processZipEntry` con `path.normalize` check.
+8. **Scrypt** — Subir a `N=131072, r=8, p=1, maxmem=64MB`. Hash existing: no migrar (los hashes viejos siguen funcionando hasta el próximo reset de password; documentar en CHANGELOG).
+9. **.mcp.json** — Añadir a `.gitignore`, crear `.mcp.example.json` con contenido neutro.
 
 ## File structure
 
 ### New files
+
 - `services/security/safeFetch.ts` — outbound fetch con SSRF guard
 - `services/security/isPrivateIp.ts` — pura, lista CIDR + IPv6
 - `services/security/requireSameOrigin.ts` — Origin/Sec-Fetch-Site check
@@ -50,6 +51,7 @@
 - `test/fixtures/dmarc/zip-slip.zip` (generado programáticamente)
 
 ### Modified files
+
 - `Dockerfile` — CMD simplificado
 - `.gitignore` — añadir `.mcp.json`
 - `app/api/install/route.ts` — token + loopback check
@@ -82,6 +84,7 @@
 ### Task 1: Boot fix — simplify Dockerfile CMD
 
 **Files:**
+
 - Modify: `Dockerfile:41`
 
 - [ ] **Step 1: Verify that instrumentation.ts already runs migrations before serving**
@@ -92,10 +95,13 @@ Expected: `instrumentation.ts:8: runMigrations()` and the function defined in `l
 - [ ] **Step 2: Replace the Dockerfile CMD**
 
 Edit `Dockerfile`, change last line from:
+
 ```
 CMD ["sh", "-c", "node scripts/run-migrations.cjs && node server.js"]
 ```
+
 to:
+
 ```
 CMD ["node", "server.js"]
 ```
@@ -103,6 +109,7 @@ CMD ["node", "server.js"]
 - [ ] **Step 3: Build the image and verify health endpoint**
 
 Run:
+
 ```bash
 docker build -t vexa-boot-test .
 docker run -d --name vexa-boot-test \
@@ -115,6 +122,7 @@ docker logs vexa-boot-test | grep -i 'migration\|listen\|error' | head -20
 docker rm -f vexa-boot-test
 docker rmi vexa-boot-test
 ```
+
 Expected: `curl` returns 200 JSON. Logs show migrations applied. No `scripts/run-migrations.cjs not found` error.
 
 - [ ] **Step 4: Commit**
@@ -133,6 +141,7 @@ in scripts/, causing the published image to fail at boot."
 ### Task 2: Hardening utilities — isPrivateIp + safeFetch
 
 **Files:**
+
 - Create: `services/security/isPrivateIp.ts`
 - Create: `services/security/safeFetch.ts`
 - Create: `services/security/index.ts`
@@ -156,7 +165,7 @@ describe('isPrivateIp', () => {
     ['172.32.0.1', false],
     ['192.168.0.1', true],
     ['169.254.169.254', true], // AWS metadata
-    ['100.64.0.1', true],      // CGNAT
+    ['100.64.0.1', true], // CGNAT
     ['100.127.255.255', true],
     ['0.0.0.0', true],
     ['255.255.255.255', true],
@@ -183,6 +192,7 @@ describe('isPrivateIp', () => {
 ```bash
 pnpm vitest run test/isPrivateIp.test.ts
 ```
+
 Expected: module not found / function not exported.
 
 - [ ] **Step 3: Implement `services/security/isPrivateIp.ts`**
@@ -191,19 +201,19 @@ Expected: module not found / function not exported.
 import net from 'node:net'
 
 const V4_RANGES: Array<[number, number]> = [
-  [0x00_00_00_00, 0x00_FF_FF_FF],         // 0.0.0.0/8
-  [0x0A_00_00_00, 0x0A_FF_FF_FF],         // 10/8
-  [0x64_40_00_00, 0x64_7F_FF_FF],         // 100.64/10  CGNAT
-  [0x7F_00_00_00, 0x7F_FF_FF_FF],         // 127/8
-  [0xA9_FE_00_00, 0xA9_FE_FF_FF],         // 169.254/16 link-local
-  [0xAC_10_00_00, 0xAC_1F_FF_FF],         // 172.16/12
-  [0xC0_00_00_00, 0xC0_00_00_FF],         // 192.0.0/24
-  [0xC0_00_02_00, 0xC0_00_02_FF],         // 192.0.2/24 TEST-NET-1
-  [0xC0_A8_00_00, 0xC0_A8_FF_FF],         // 192.168/16
-  [0xC6_12_00_00, 0xC6_13_FF_FF],         // 198.18/15 benchmarking
-  [0xC6_33_64_00, 0xC6_33_64_FF],         // 198.51.100/24 TEST-NET-2
-  [0xCB_00_71_00, 0xCB_00_71_FF],         // 203.0.113/24 TEST-NET-3
-  [0xE0_00_00_00, 0xFF_FF_FF_FF],         // 224/4 multicast + 240/4 reserved
+  [0x00_00_00_00, 0x00_ff_ff_ff], // 0.0.0.0/8
+  [0x0a_00_00_00, 0x0a_ff_ff_ff], // 10/8
+  [0x64_40_00_00, 0x64_7f_ff_ff], // 100.64/10  CGNAT
+  [0x7f_00_00_00, 0x7f_ff_ff_ff], // 127/8
+  [0xa9_fe_00_00, 0xa9_fe_ff_ff], // 169.254/16 link-local
+  [0xac_10_00_00, 0xac_1f_ff_ff], // 172.16/12
+  [0xc0_00_00_00, 0xc0_00_00_ff], // 192.0.0/24
+  [0xc0_00_02_00, 0xc0_00_02_ff], // 192.0.2/24 TEST-NET-1
+  [0xc0_a8_00_00, 0xc0_a8_ff_ff], // 192.168/16
+  [0xc6_12_00_00, 0xc6_13_ff_ff], // 198.18/15 benchmarking
+  [0xc6_33_64_00, 0xc6_33_64_ff], // 198.51.100/24 TEST-NET-2
+  [0xcb_00_71_00, 0xcb_00_71_ff], // 203.0.113/24 TEST-NET-3
+  [0xe0_00_00_00, 0xff_ff_ff_ff], // 224/4 multicast + 240/4 reserved
 ]
 
 function ipv4ToInt(ip: string): number | null {
@@ -228,8 +238,8 @@ function isPrivateIpv6(ip: string): boolean {
   const lower = ip.toLowerCase()
   if (lower === '::' || lower === '::1') return true
   if (lower.startsWith('fe80:') || lower.startsWith('fe80::')) return true // link-local
-  if (lower.startsWith('fc') || lower.startsWith('fd')) return true        // unique local
-  if (lower.startsWith('ff')) return true                                  // multicast
+  if (lower.startsWith('fc') || lower.startsWith('fd')) return true // unique local
+  if (lower.startsWith('ff')) return true // multicast
   const mapped = lower.match(/^::ffff:([0-9.]+)$/)
   if (mapped) return isPrivateIpv4(mapped[1])
   return false
@@ -248,6 +258,7 @@ export function isPrivateIp(ip: string): boolean {
 ```bash
 pnpm vitest run test/isPrivateIp.test.ts
 ```
+
 All cases pass.
 
 - [ ] **Step 5: Write `test/safeFetch.test.ts`**
@@ -275,7 +286,9 @@ describe('safeFetch', () => {
   })
 
   it('rejects literal AWS metadata IP', async () => {
-    const res = await safeFetch('http://169.254.169.254/latest/', { method: 'GET' })
+    const res = await safeFetch('http://169.254.169.254/latest/', {
+      method: 'GET',
+    })
     expect(res.ok).toBe(false)
     expect(res.error?.code).toBe('PRIVATE_HOST_NOT_ALLOWED')
   })
@@ -343,7 +356,10 @@ export async function safeFetch(
     return errorResult('URL_INVALID', `Invalid URL: ${rawUrl}`)
   }
   if (!ALLOWED_SCHEMES.has(url.protocol)) {
-    return errorResult('SCHEME_NOT_ALLOWED', `Scheme ${url.protocol} not allowed`)
+    return errorResult(
+      'SCHEME_NOT_ALLOWED',
+      `Scheme ${url.protocol} not allowed`,
+    )
   }
   const host = url.hostname
   if (!host) {
@@ -375,7 +391,11 @@ export async function safeFetch(
     }
   }
 
-  const { timeoutMs = DEFAULT_TIMEOUT_MS, allowDispatch = true, ...init } = options
+  const {
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    allowDispatch = true,
+    ...init
+  } = options
   if (!allowDispatch) {
     return { ok: true, status: null, dispatched: false, error: null }
   }
@@ -401,7 +421,12 @@ function errorResult(
   code: SafeFetchError['code'],
   message: string,
 ): SafeFetchResult {
-  return { ok: false, status: null, dispatched: false, error: { code, message } }
+  return {
+    ok: false,
+    status: null,
+    dispatched: false,
+    error: { code, message },
+  }
 }
 ```
 
@@ -420,6 +445,7 @@ pnpm vitest run test/isPrivateIp.test.ts test/safeFetch.test.ts
 pnpm type-check
 pnpm lint
 ```
+
 Expected: PASS. (Network-touching test uses `allowDispatch: false`.)
 
 - [ ] **Step 10: Commit**
@@ -439,6 +465,7 @@ AbortController timeout. Used by webhook + MTA-STS dispatch."
 ### Task 3: Wire safeFetch into webhook and MTA-STS dispatch (B6)
 
 **Files:**
+
 - Modify: `services/notifications/deliverWebhook.ts`
 - Modify: `services/diagnostics/resolveMtaSts.ts`
 - Modify: `validators/webhooks/webhookEndpointInputSchema.ts`
@@ -447,6 +474,7 @@ AbortController timeout. Used by webhook + MTA-STS dispatch."
 - [ ] **Step 1: Tighten webhook schema to http(s) only**
 
 Replace `validators/webhooks/webhookEndpointInputSchema.ts`:
+
 ```ts
 import { ALL_WEBHOOK_EVENTS } from '@/types/notifications'
 import { z } from 'zod'
@@ -515,16 +543,20 @@ Locate `services/diagnostics/resolveMtaSts.ts` and replace its `fetch(...)` call
 ```ts
 import { safeFetch } from '@/services/security'
 
-const HOSTNAME_RE = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i
+const HOSTNAME_RE =
+  /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i
 
 // ... within resolveMtaSts:
 if (!HOSTNAME_RE.test(domain)) {
   return { policy: null, error: 'INVALID_HOSTNAME' }
 }
-const res = await safeFetch(`https://mta-sts.${domain}/.well-known/mta-sts.txt`, {
-  method: 'GET',
-  timeoutMs: 5000,
-})
+const res = await safeFetch(
+  `https://mta-sts.${domain}/.well-known/mta-sts.txt`,
+  {
+    method: 'GET',
+    timeoutMs: 5000,
+  },
+)
 if (!res.ok) return { policy: null, error: res.error.code }
 ```
 
@@ -533,6 +565,7 @@ Adapt to the actual function shape — preserve return type and existing error m
 - [ ] **Step 4: Add a regression test for webhook dispatch with private URL**
 
 Append to `test/safeFetch.test.ts`:
+
 ```ts
 import { deliverWebhook } from '../services/notifications/deliverWebhook'
 
@@ -570,9 +603,10 @@ tightened to http(s) only."
 
 ---
 
-### Task 4: Close /api/v1/** with default-deny auth (B1)
+### Task 4: Close /api/v1/\*\* with default-deny auth (B1)
 
 **Files:**
+
 - Create: `services/api/publicApiRoutes.ts`
 - Create: `services/api/withApiAuth.ts`
 - Create: `test/withApiAuth.test.ts`
@@ -586,7 +620,7 @@ tightened to http(s) only."
  * Add new entries here with a justification comment.
  */
 export const PUBLIC_API_ROUTES: ReadonlyArray<string> = [
-  '/api/v1/health',       // Docker / orchestrator probe
+  '/api/v1/health', // Docker / orchestrator probe
   '/api/v1/openapi.json', // OpenAPI doc — required for client generators
 ] as const
 ```
@@ -604,7 +638,9 @@ function fakeRequest(headers: Record<string, string> = {}) {
 
 describe('withApiAuth', () => {
   it('returns 401 when no session and no api key', async () => {
-    const handler = withApiAuth(async () => NextResponse.json({ data: 'secret' }))
+    const handler = withApiAuth(async () =>
+      NextResponse.json({ data: 'secret' }),
+    )
     const res = await handler(fakeRequest())
     expect(res.status).toBe(401)
   })
@@ -614,10 +650,9 @@ describe('withApiAuth', () => {
     // This test verifies that the handler runs when requireAdminAccess returns null.
     // Concrete wiring is exercised in integration tests; here we assert
     // the wrapping behavior by injecting a successful auth function.
-    const handler = withApiAuth(
-      async () => NextResponse.json({ data: 'ok' }),
-      { authFn: async () => null },
-    )
+    const handler = withApiAuth(async () => NextResponse.json({ data: 'ok' }), {
+      authFn: async () => null,
+    })
     const res = await handler(fakeRequest())
     expect(res.status).toBe(200)
   })
@@ -644,7 +679,9 @@ type Handler<TArgs extends unknown[]> = (
 
 interface WithApiAuthOptions {
   /** Injection seam for tests. Defaults to requireAdminAccess. */
-  authFn?: (req: NextRequest) => Promise<{ status: 401; error: { code: string; message: string } } | null>
+  authFn?: (
+    req: NextRequest,
+  ) => Promise<{ status: 401; error: { code: string; message: string } } | null>
 }
 
 export function withApiAuth<TArgs extends unknown[]>(
@@ -673,26 +710,32 @@ pnpm vitest run test/withApiAuth.test.ts
 Append: `export { withApiAuth } from './withApiAuth'`
 Append: `export { PUBLIC_API_ROUTES } from './publicApiRoutes'`
 
-- [ ] **Step 7: Apply `withApiAuth` to every non-public `/api/v1/**/route.ts`**
+- [ ] **Step 7: Apply `withApiAuth` to every non-public `/api/v1/**/route.ts`\*\*
 
 For each file in the list below, wrap each exported HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `withApiAuth`. Pattern:
 
 Before:
+
 ```ts
 export async function GET(request: NextRequest): Promise<NextResponse> {
   // ...
 }
 ```
+
 After:
+
 ```ts
 import { withApiAuth } from '@/services/api'
 
-export const GET = withApiAuth(async (request: NextRequest): Promise<NextResponse> => {
-  // ...
-})
+export const GET = withApiAuth(
+  async (request: NextRequest): Promise<NextResponse> => {
+    // ...
+  },
+)
 ```
 
 Use the same pattern for `POST`, etc. Where the handler also receives a route-segment context (e.g. `(request, { params })`), preserve the second arg:
+
 ```ts
 export const GET = withApiAuth(
   async (
@@ -741,6 +784,7 @@ NB: `/api/v1/admin/**` routes already use `requireAdminAuth` (token only, no ses
 - [ ] **Step 8: Add an end-to-end smoke test asserting closure**
 
 Create `test/apiAuthSmoke.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
@@ -771,7 +815,10 @@ describe('every /api/v1/** route handler enforces auth', () => {
         src.includes('withApiAuth(') ||
         src.includes('requireAdminAuth(') ||
         src.includes('requireAdminAccess(')
-      expect(hasAuth, `${rel} must use withApiAuth / requireAdminAuth / requireAdminAccess`).toBe(true)
+      expect(
+        hasAuth,
+        `${rel} must use withApiAuth / requireAdminAuth / requireAdminAccess`,
+      ).toBe(true)
     })
   }
 })
@@ -782,11 +829,13 @@ describe('every /api/v1/** route handler enforces auth', () => {
 ```bash
 pnpm vitest run test/apiAuthSmoke.test.ts
 ```
+
 If any route is missing auth, add `withApiAuth` to it and re-run.
 
 - [ ] **Step 10: Remove `/api/v1` from `utils/proxy/publicRoutes.ts`**
 
 Edit:
+
 ```ts
 export const publicRoutes = [
   '/login',
@@ -796,6 +845,7 @@ export const publicRoutes = [
   '/favicon.ico',
 ]
 ```
+
 This is cosmetic since the proxy `matcher` already excludes `/api`, but keeping the entry was misleading.
 
 - [ ] **Step 11: Full check**
@@ -825,6 +875,7 @@ route is added without auth. Closes B1 from the OSS launch audit."
 ### Task 5: AI endpoints — auth + strict rate limit (B2)
 
 **Files:**
+
 - Modify: `app/api/v1/ai/report-insights/route.ts`
 - Modify: `app/api/v1/ai/diagnostics-insights/route.ts`
 
@@ -843,51 +894,65 @@ import { NextResponse } from 'next/server'
 const AI_LIMIT = 10
 const AI_WINDOW_MS = 60_000
 
-export const POST = withApiAuth(async (request: NextRequest): Promise<NextResponse> => {
-  const key = `ai:${getRateLimitKey(request)}`
-  if (!checkRateLimit(key, AI_LIMIT, AI_WINDOW_MS)) {
-    return NextResponse.json(
-      { error: { code: 'TOO_MANY_REQUESTS', message: 'AI rate limit exceeded' } },
-      { status: 429 },
-    )
-  }
-  try {
-    const body = (await request.json()) as { reportId?: number }
-    const reportId = body.reportId
-    if (!reportId || typeof reportId !== 'number' || reportId < 1) {
+export const POST = withApiAuth(
+  async (request: NextRequest): Promise<NextResponse> => {
+    const key = `ai:${getRateLimitKey(request)}`
+    if (!checkRateLimit(key, AI_LIMIT, AI_WINDOW_MS)) {
       return NextResponse.json(
-        { error: { code: 'INVALID_INPUT', message: 'Valid reportId is required.' } },
-        { status: 400 },
+        {
+          error: {
+            code: 'TOO_MANY_REQUESTS',
+            message: 'AI rate limit exceeded',
+          },
+        },
+        { status: 429 },
       )
     }
-    const result = await generateReportInsights({ reportId })
-    return NextResponse.json({ data: result })
-  } catch (err: unknown) {
-    if (err && typeof err === 'object' && 'code' in err) {
-      const aiError = err as AIServiceError
-      const statusMap: Record<string, number> = {
-        NOT_CONFIGURED: 422,
-        UNAUTHORIZED: 401,
-        RATE_LIMITED: 429,
-        PROVIDER_UNAVAILABLE: 503,
-        TIMEOUT: 504,
-        MALFORMED_RESPONSE: 502,
-        INSUFFICIENT_DATA: 422,
-        UNKNOWN: 500,
+    try {
+      const body = (await request.json()) as { reportId?: number }
+      const reportId = body.reportId
+      if (!reportId || typeof reportId !== 'number' || reportId < 1) {
+        return NextResponse.json(
+          {
+            error: {
+              code: 'INVALID_INPUT',
+              message: 'Valid reportId is required.',
+            },
+          },
+          { status: 400 },
+        )
       }
-      const status = statusMap[aiError.code] ?? 500
+      const result = await generateReportInsights({ reportId })
+      return NextResponse.json({ data: result })
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'code' in err) {
+        const aiError = err as AIServiceError
+        const statusMap: Record<string, number> = {
+          NOT_CONFIGURED: 422,
+          UNAUTHORIZED: 401,
+          RATE_LIMITED: 429,
+          PROVIDER_UNAVAILABLE: 503,
+          TIMEOUT: 504,
+          MALFORMED_RESPONSE: 502,
+          INSUFFICIENT_DATA: 422,
+          UNKNOWN: 500,
+        }
+        const status = statusMap[aiError.code] ?? 500
+        return NextResponse.json(
+          { error: { code: aiError.code, message: aiError.message } },
+          { status },
+        )
+      }
+      console.error('[ai/report-insights] Unexpected error:', err)
       return NextResponse.json(
-        { error: { code: aiError.code, message: aiError.message } },
-        { status },
+        {
+          error: { code: 'UNKNOWN', message: 'An unexpected error occurred.' },
+        },
+        { status: 500 },
       )
     }
-    console.error('[ai/report-insights] Unexpected error:', err)
-    return NextResponse.json(
-      { error: { code: 'UNKNOWN', message: 'An unexpected error occurred.' } },
-      { status: 500 },
-    )
-  }
-})
+  },
+)
 ```
 
 - [ ] **Step 2: Apply the same wrapper to diagnostics-insights**
@@ -917,6 +982,7 @@ LLM credits and read summarized report content."
 ### Task 6: Install token + loopback default (B3)
 
 **Files:**
+
 - Create: `services/install/installToken.ts`
 - Create: `services/install/getOrCreateInstallToken.ts`
 - Create: `services/install/isLoopbackRequest.ts`
@@ -953,7 +1019,11 @@ export function clearInstallToken(): void {
 - [ ] **Step 2: Write `services/install/getOrCreateInstallToken.ts`**
 
 ```ts
-import { generateInstallToken, getInstallToken, setInstallTokenForBoot } from './installToken'
+import {
+  generateInstallToken,
+  getInstallToken,
+  setInstallTokenForBoot,
+} from './installToken'
 import { isInstalled } from './isInstalled'
 
 export function getOrCreateInstallToken(): string | null {
@@ -1030,6 +1100,7 @@ pnpm vitest run test/installToken.test.ts
 - [ ] **Step 6: Update `instrumentation.ts` to print the token on first boot**
 
 Replace:
+
 ```ts
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
@@ -1037,18 +1108,19 @@ export async function register(): Promise<void> {
   const { runMigrations } = await import('@/lib/db')
   runMigrations()
 
-  const { isInstalled, getOrCreateInstallToken } = await import('@/services/install')
+  const { isInstalled, getOrCreateInstallToken } =
+    await import('@/services/install')
   if (!isInstalled()) {
     const token = getOrCreateInstallToken()
     if (token) {
       // eslint-disable-next-line no-console
       console.warn(
         `\n========================================\n` +
-        `Vexa first-run install token:\n  ${token}\n` +
-        `Pass this token to POST /api/install as either the\n` +
-        `'x-install-token' header or 'installToken' body field.\n` +
-        `Re-displayed on every boot until installation completes.\n` +
-        `========================================\n`,
+          `Vexa first-run install token:\n  ${token}\n` +
+          `Pass this token to POST /api/install as either the\n` +
+          `'x-install-token' header or 'installToken' body field.\n` +
+          `Re-displayed on every boot until installation completes.\n` +
+          `========================================\n`,
       )
     }
   }
@@ -1070,6 +1142,7 @@ export async function register(): Promise<void> {
 ```
 
 Add the export from `services/install/index.ts`:
+
 ```ts
 export { getOrCreateInstallToken } from './getOrCreateInstallToken'
 export { isLoopbackRequest } from './isLoopbackRequest'
@@ -1101,9 +1174,7 @@ function timingSafeStringEqual(a: string, b: string): boolean {
   return crypto.timingSafeEqual(A, B)
 }
 
-export async function POST(
-  request: Request,
-): Promise<NextResponse> {
+export async function POST(request: Request): Promise<NextResponse> {
   runMigrations()
   if (isInstalled()) {
     return NextResponse.json(
@@ -1188,6 +1259,7 @@ export async function GET(): Promise<
 - [ ] **Step 9: Document the new flow in `.env.example`**
 
 Append:
+
 ```
 # --- Install ---
 # Restrict install to loopback (127.0.0.1) by default. Set to "1" to allow
@@ -1199,6 +1271,7 @@ Append:
 - [ ] **Step 10: Document in CHANGELOG + SECURITY.md**
 
 Add an `[Unreleased] / Security` entry:
+
 ```
 - Install endpoint now requires a one-time token printed to server logs on
   first boot and is restricted to loopback unless VEXA_ALLOW_REMOTE_INSTALL=1.
@@ -1238,6 +1311,7 @@ register the first admin user before the operator opened the UI."
 ### Task 7: IMAP password encryption at rest (B4)
 
 **Files:**
+
 - Create: `services/crypto/deriveEncryptionKey.ts`
 - Create: `services/crypto/encryptSecret.ts`
 - Create: `services/crypto/decryptSecret.ts`
@@ -1254,11 +1328,7 @@ register the first admin user before the operator opened the UI."
 
 ```ts
 import { describe, expect, it } from 'vitest'
-import {
-  decryptSecret,
-  encryptSecret,
-  isEncrypted,
-} from '../services/crypto'
+import { decryptSecret, encryptSecret, isEncrypted } from '../services/crypto'
 
 const SECRET = 'this-is-a-32-character-test-key-AA'
 
@@ -1314,7 +1384,13 @@ export function deriveEncryptionKey(secretKey: string): Buffer {
     throw new Error('SECRET_KEY too short to derive encryption key (min 16)')
   }
   return Buffer.from(
-    crypto.hkdfSync('sha256', Buffer.from(secretKey), Buffer.from(SALT), Buffer.from('aes-gcm'), 32),
+    crypto.hkdfSync(
+      'sha256',
+      Buffer.from(secretKey),
+      Buffer.from(SALT),
+      Buffer.from('aes-gcm'),
+      32,
+    ),
   )
 }
 ```
@@ -1336,7 +1412,9 @@ export function encryptSecret(plaintext: string, secretKey: string): string {
   const tag = cipher.getAuthTag()
   return (
     PREFIX +
-    [iv.toString('base64'), tag.toString('base64'), ct.toString('base64')].join('|')
+    [iv.toString('base64'), tag.toString('base64'), ct.toString('base64')].join(
+      '|',
+    )
   )
 }
 ```
@@ -1371,7 +1449,11 @@ export function decryptSecret(blob: string, secretKey: string): string {
 
 ```ts
 export function isEncrypted(value: string): boolean {
-  return typeof value === 'string' && value.startsWith('v1:') && value.split('|').length === 3
+  return (
+    typeof value === 'string' &&
+    value.startsWith('v1:') &&
+    value.split('|').length === 3
+  )
 }
 ```
 
@@ -1392,6 +1474,7 @@ pnpm vitest run test/encryptSecret.test.ts
 - [ ] **Step 9: Wire decryption into `services/settings/getImapAccountsRow.ts`**
 
 Replace the file:
+
 ```ts
 import { getDb, imapAccounts } from '@/lib/db'
 import { decryptSecret } from '@/services/crypto'
@@ -1452,6 +1535,7 @@ if (acc.password && acc.password.length > 0) {
 ```
 
 **Critical detail:** the function currently uses `payload.secretKey` only when truthy. We need an authoritative secret. Add at the top of `updateSettings`:
+
 ```ts
 import { getConfig } from '@/services/config'
 // ...
@@ -1469,6 +1553,7 @@ Refactor `getExistingImapPasswords(db)` to return `Map<number, string>` if it do
 - [ ] **Step 11: Stop reflecting passwords in IMAP API responses**
 
 In `app/api/v1/imap/folders/route.ts`, the local `account: ImapAccountConfig` is built from the decrypted row and used for the IMAP call. The response body returns folder metadata only. **Verify** no path in this file returns `password`. Apply the same audit to:
+
 - `app/api/v1/imap/folders/create/route.ts`
 - `app/api/v1/imap/test/route.ts`
 - `services/settings/getSettingsForAdmin.ts`
@@ -1478,6 +1563,7 @@ In `app/api/v1/imap/folders/route.ts`, the local `account: ImapAccountConfig` is
 - [ ] **Step 12: Add a one-shot migration runner that encrypts plaintext rows**
 
 Create `services/settings/encryptLegacyImapPasswords.ts`:
+
 ```ts
 import { getDb, imapAccounts } from '@/lib/db'
 import { getConfig } from '@/services/config'
@@ -1494,7 +1580,10 @@ export function encryptLegacyImapPasswords(): { migrated: number } {
     if (!row.password) continue
     if (isEncrypted(row.password)) continue
     const ct = encryptSecret(row.password, secret)
-    db.update(imapAccounts).set({ password: ct }).where(eq(imapAccounts.id, row.id)).run()
+    db.update(imapAccounts)
+      .set({ password: ct })
+      .where(eq(imapAccounts.id, row.id))
+      .run()
     migrated++
   }
   return { migrated }
@@ -1502,12 +1591,17 @@ export function encryptLegacyImapPasswords(): { migrated: number } {
 ```
 
 Call it from `instrumentation.ts:register()` AFTER `runMigrations()` AND only when installed:
+
 ```ts
 const { isInstalled } = await import('@/services/install')
 if (isInstalled()) {
-  const { encryptLegacyImapPasswords } = await import('@/services/settings/encryptLegacyImapPasswords')
+  const { encryptLegacyImapPasswords } =
+    await import('@/services/settings/encryptLegacyImapPasswords')
   const { migrated } = encryptLegacyImapPasswords()
-  if (migrated > 0) console.info(`[crypto] migrated ${migrated} legacy IMAP passwords to v1 encryption`)
+  if (migrated > 0)
+    console.info(
+      `[crypto] migrated ${migrated} legacy IMAP passwords to v1 encryption`,
+    )
 }
 ```
 
@@ -1550,6 +1644,7 @@ passwords. Closes B4 from the OSS launch audit."
 ### Task 8: CSRF — Same-origin check on mutating session-cookie routes (B7)
 
 **Files:**
+
 - Create: `services/security/requireSameOrigin.ts`
 - Create: `test/requireSameOrigin.test.ts`
 - Modify: `services/auth/createSession.ts` (consider `sameSite: 'strict'` upgrade — see step 5)
@@ -1565,7 +1660,10 @@ import { describe, expect, it } from 'vitest'
 import { requireSameOrigin } from '../services/security/requireSameOrigin'
 
 function req(method: string, headers: Record<string, string>): Request {
-  return new Request('https://vexa.example.com/api/v1/users', { method, headers }) as any
+  return new Request('https://vexa.example.com/api/v1/users', {
+    method,
+    headers,
+  }) as any
 }
 
 describe('requireSameOrigin', () => {
@@ -1578,19 +1676,29 @@ describe('requireSameOrigin', () => {
   })
 
   it('passes POST with Sec-Fetch-Site: same-origin', () => {
-    expect(requireSameOrigin(req('POST', { 'sec-fetch-site': 'same-origin' }))).toBeNull()
+    expect(
+      requireSameOrigin(req('POST', { 'sec-fetch-site': 'same-origin' })),
+    ).toBeNull()
   })
 
   it('passes POST with Origin matching host', () => {
-    expect(requireSameOrigin(req('POST', { origin: 'https://vexa.example.com' }))).toBeNull()
+    expect(
+      requireSameOrigin(req('POST', { origin: 'https://vexa.example.com' })),
+    ).toBeNull()
   })
 
   it('rejects POST with foreign Origin', () => {
-    expect(requireSameOrigin(req('POST', { origin: 'https://evil.example.com' }))?.status).toBe(403)
+    expect(
+      requireSameOrigin(req('POST', { origin: 'https://evil.example.com' }))
+        ?.status,
+    ).toBe(403)
   })
 
   it('rejects POST with Sec-Fetch-Site: cross-site', () => {
-    expect(requireSameOrigin(req('POST', { 'sec-fetch-site': 'cross-site' }))?.status).toBe(403)
+    expect(
+      requireSameOrigin(req('POST', { 'sec-fetch-site': 'cross-site' }))
+        ?.status,
+    ).toBe(403)
   })
 })
 ```
@@ -1605,7 +1713,8 @@ export function requireSameOrigin(
 ): { status: 403; error: { code: string; message: string } } | null {
   if (SAFE_METHODS.has(request.method.toUpperCase())) return null
   const site = request.headers.get('sec-fetch-site')
-  if (site === 'same-origin' || site === 'same-site' || site === 'none') return null
+  if (site === 'same-origin' || site === 'same-site' || site === 'none')
+    return null
   const origin = request.headers.get('origin')
   if (origin) {
     try {
@@ -1620,7 +1729,8 @@ export function requireSameOrigin(
     status: 403,
     error: {
       code: 'CSRF_REJECTED',
-      message: 'Cross-origin or missing-origin request rejected for mutating endpoint',
+      message:
+        'Cross-origin or missing-origin request rejected for mutating endpoint',
     },
   }
 }
@@ -1631,6 +1741,7 @@ Export from `services/security/index.ts`.
 - [ ] **Step 3: Plug into `withApiAuth`**
 
 Edit `services/api/withApiAuth.ts`:
+
 ```ts
 import { requireSameOrigin } from '@/services/security'
 
@@ -1646,6 +1757,7 @@ Add a unit test asserting the wrapper rejects a cross-origin POST.
 - [ ] **Step 4: Configure server-action origins**
 
 Edit `next.config.ts`:
+
 ```ts
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -1669,6 +1781,7 @@ Document `VEXA_ALLOWED_ORIGINS` in `.env.example` (e.g. `https://dmarc.example.c
 - [ ] **Step 5: Decide on cookie SameSite**
 
 Read `services/auth/createSession.ts` and decide between:
+
 - Keep `sameSite: 'lax'` + rely on Origin check + server-action allowedOrigins (recommended; preserves bookmarkable login).
 - Upgrade to `sameSite: 'strict'` (breaks email-link-to-app flows; less needed now).
 
@@ -1698,6 +1811,7 @@ Closes B7 from the OSS launch audit."
 ### Task 9: DMARC parser hardening (gzip cap, XML entities, zip-slip)
 
 **Files:**
+
 - Modify: `utils/dmarc/extractXmlFromBuffer.ts`
 - Modify: `utils/dmarc/parser.ts`
 - Modify: `utils/dmarc/parseDmarcXml.ts`
@@ -1708,6 +1822,7 @@ Closes B7 from the OSS launch audit."
 - [ ] **Step 1: Create billion-laughs fixture**
 
 `test/fixtures/dmarc/billion-laughs.xml`:
+
 ```xml
 <?xml version="1.0"?>
 <!DOCTYPE lolz [
@@ -1798,6 +1913,7 @@ export const parser = new XMLParser({
 - [ ] **Step 6: Add DOCTYPE/ENTITY rejection in `utils/dmarc/parseDmarcXml.ts`**
 
 Open the file and add an early guard at the very top of `parseDmarcXml(buffer)`:
+
 ```ts
 const text = buffer.toString('utf8')
 if (/<!DOCTYPE/i.test(text) || /<!ENTITY/i.test(text)) {
@@ -1810,6 +1926,7 @@ if (/<!DOCTYPE/i.test(text) || /<!ENTITY/i.test(text)) {
 - [ ] **Step 7: Harden `utils/dmarc/processZipEntry.ts` against zip-slip**
 
 Replace:
+
 ```ts
 import path from 'node:path'
 import type yauzl from 'yauzl'
@@ -1876,6 +1993,7 @@ Each behavior is locked with a regression test."
 ### Task 10: Misc hardening — scrypt N, .mcp.json, dead config.ts
 
 **Files:**
+
 - Modify: `services/auth/hashPassword.ts`
 - Modify: `services/auth/verifyPassword.ts`
 - Modify: `.gitignore`
@@ -1885,6 +2003,7 @@ Each behavior is locked with a regression test."
 - [ ] **Step 1: Bump scrypt parameters**
 
 Read `services/auth/hashPassword.ts` and `verifyPassword.ts`. Edit both to use:
+
 ```ts
 const SCRYPT_OPTS = { N: 131072, r: 8, p: 1, maxmem: 64 * 1024 * 1024 } as const
 // scryptSync(password, salt, KEY_LENGTH, SCRYPT_OPTS)
@@ -1895,6 +2014,7 @@ const SCRYPT_OPTS = { N: 131072, r: 8, p: 1, maxmem: 64 * 1024 * 1024 } as const
 **Concrete approach for backwards compat:** prepend params to the stored hash. Existing format probably `salt$hash`. Change to `scrypt$N$r$p$salt$hash`:
 
 `services/auth/hashPassword.ts`:
+
 ```ts
 import crypto from 'node:crypto'
 import { KEY_LENGTH } from './keyLength'
@@ -1907,13 +2027,19 @@ const p = 1
 export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(SALT_LENGTH).toString('hex')
   const hash = crypto
-    .scryptSync(password, salt, KEY_LENGTH, { N, r, p, maxmem: 64 * 1024 * 1024 })
+    .scryptSync(password, salt, KEY_LENGTH, {
+      N,
+      r,
+      p,
+      maxmem: 64 * 1024 * 1024,
+    })
     .toString('hex')
   return `scrypt$${N}$${r}$${p}$${salt}$${hash}`
 }
 ```
 
 `services/auth/verifyPassword.ts`:
+
 ```ts
 import crypto from 'node:crypto'
 import { KEY_LENGTH } from './keyLength'
@@ -1947,6 +2073,7 @@ export function verifyPassword(password: string, stored: string): boolean {
 - [ ] **Step 2: Add a test asserting verification still works on a legacy hash**
 
 `test/scryptBackcompat.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest'
 import crypto from 'node:crypto'
@@ -1973,6 +2100,7 @@ pnpm vitest run test/scryptBackcompat.test.ts
 - [ ] **Step 4: Add `.mcp.json` to `.gitignore`**
 
 Append to `.gitignore`:
+
 ```
 # Local MCP server configs (often contain tokens)
 .mcp.json
@@ -2022,6 +2150,7 @@ git commit -m "feat(security): scrypt N=131072, gitignore .mcp.json, drop dead c
 ### Task 11: Smoke test — end-to-end Docker boot + closed API + safe install
 
 **Files:**
+
 - Create: `scripts/smoke.sh` (idempotent local smoke)
 
 - [ ] **Step 1: Write `scripts/smoke.sh`**
@@ -2077,11 +2206,13 @@ echo "OK — smoke test passed."
 ```bash
 ./scripts/smoke.sh
 ```
+
 Expected: prints `OK — smoke test passed.`
 
 - [ ] **Step 3: Add npm script alias**
 
 In `package.json` scripts:
+
 ```json
 "smoke": "./scripts/smoke.sh"
 ```
@@ -2104,12 +2235,14 @@ scripts/smoke.sh builds the image, runs it, and asserts:
 ### Task 12: README quickstart accuracy + CHANGELOG flush
 
 **Files:**
+
 - Modify: `README.md`
 - Modify: `CHANGELOG.md`
 
 - [ ] **Step 1: Update README quickstart**
 
 Replace the Docker section with:
+
 ```bash
 # Docker (recommended)
 docker run -d --name vexa -p 127.0.0.1:3000:3000 \

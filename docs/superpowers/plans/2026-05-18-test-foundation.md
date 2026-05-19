@@ -20,6 +20,7 @@
 ## File structure
 
 ### Create
+
 - `test/fixtures/dmarc/google.xml` — Google/Gmail aggregate report shape
 - `test/fixtures/dmarc/microsoft.xml` — Microsoft 365 / Outlook shape
 - `test/fixtures/dmarc/yahoo.xml` — Yahoo shape
@@ -35,6 +36,7 @@
 - (Tooling) update `package.json` to add `test:coverage` script and `@vitest/coverage-v8` devDep
 
 ### Modify
+
 - `vitest.config.ts` — opt-in coverage block (v8 provider, `coverage.include: ['services/**', 'utils/**', 'actions/**', 'validators/**', 'formatters/**', 'mappers/**']`, `text` + `lcov` reporters)
 - `package.json` — `"test:coverage": "vitest run --coverage --config vitest.config.ts"`
 
@@ -47,6 +49,7 @@
 Each is a small but realistic aggregate report. Use placeholder IPs / domains so no real data leaks.
 
 `test/fixtures/dmarc/google.xml`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <feedback>
@@ -127,6 +130,7 @@ Each is a small but realistic aggregate report. Use placeholder IPs / domains so
 ```
 
 `test/fixtures/dmarc/microsoft.xml` (Outlook uses `enterprise.protection.outlook.com` org name, slightly different metadata field order):
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <feedback>
@@ -170,6 +174,7 @@ Each is a small but realistic aggregate report. Use placeholder IPs / domains so
 ```
 
 `test/fixtures/dmarc/yahoo.xml`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <feedback>
@@ -217,6 +222,7 @@ Each is a small but realistic aggregate report. Use placeholder IPs / domains so
 ```
 
 `test/fixtures/dmarc/single-record.xml`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <feedback>
@@ -257,6 +263,7 @@ Each is a small but realistic aggregate report. Use placeholder IPs / domains so
 `test/fixtures/dmarc/multi-record.xml`: clone of `google.xml` with 4 records (vary source IPs and counts).
 
 `test/fixtures/dmarc/empty-records.xml`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <feedback>
@@ -292,12 +299,42 @@ const cases: Array<{
   reportId: string
   expectedEvents: number
 }> = [
-  { file: 'google.xml',         domain: 'example.com', reportId: '16823942947293847234', expectedEvents: 2 },
-  { file: 'microsoft.xml',      domain: 'example.com', reportId: '78c4f0a3-5681-4ad0-b6f1-2c0a7b441111', expectedEvents: 1 },
-  { file: 'yahoo.xml',          domain: 'example.com', reportId: 'yh20260601.1717372799.example.com', expectedEvents: 1 },
-  { file: 'single-record.xml',  domain: 'example.com', reportId: 'singlerec-2026-06', expectedEvents: 1 },
-  { file: 'multi-record.xml',   domain: 'example.com', reportId: '16823942947293847234', expectedEvents: 4 },
-  { file: 'empty-records.xml',  domain: 'example.com', reportId: 'zerorecs-2026-06', expectedEvents: 0 },
+  {
+    file: 'google.xml',
+    domain: 'example.com',
+    reportId: '16823942947293847234',
+    expectedEvents: 2,
+  },
+  {
+    file: 'microsoft.xml',
+    domain: 'example.com',
+    reportId: '78c4f0a3-5681-4ad0-b6f1-2c0a7b441111',
+    expectedEvents: 1,
+  },
+  {
+    file: 'yahoo.xml',
+    domain: 'example.com',
+    reportId: 'yh20260601.1717372799.example.com',
+    expectedEvents: 1,
+  },
+  {
+    file: 'single-record.xml',
+    domain: 'example.com',
+    reportId: 'singlerec-2026-06',
+    expectedEvents: 1,
+  },
+  {
+    file: 'multi-record.xml',
+    domain: 'example.com',
+    reportId: '16823942947293847234',
+    expectedEvents: 4,
+  },
+  {
+    file: 'empty-records.xml',
+    domain: 'example.com',
+    reportId: 'zerorecs-2026-06',
+    expectedEvents: 0,
+  },
 ]
 
 describe('parseDmarcXml fixtures', () => {
@@ -511,6 +548,7 @@ Edit `package.json` — add to devDependencies (the implementer must run `pnpm a
 ```
 
 Add to scripts:
+
 ```
 "test:coverage": "vitest run --coverage --config vitest.config.ts"
 ```

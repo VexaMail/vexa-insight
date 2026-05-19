@@ -264,9 +264,7 @@
       "indexes": {
         "domains_name_unique": {
           "name": "domains_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -458,23 +456,17 @@
       "indexes": {
         "ip_addresses_ip_unique": {
           "name": "ip_addresses_ip_unique",
-          "columns": [
-            "ip"
-          ],
+          "columns": ["ip"],
           "isUnique": true
         },
         "ip_location_last_update_idx": {
           "name": "ip_location_last_update_idx",
-          "columns": [
-            "location_last_update"
-          ],
+          "columns": ["location_last_update"],
           "isUnique": false
         },
         "ip_country_code_idx": {
           "name": "ip_country_code_idx",
-          "columns": [
-            "country_code"
-          ],
+          "columns": ["country_code"],
           "isUnique": false
         }
       },
@@ -578,38 +570,27 @@
       "indexes": {
         "ip_hostname_enrichments_ip_unique": {
           "name": "ip_hostname_enrichments_ip_unique",
-          "columns": [
-            "ip"
-          ],
+          "columns": ["ip"],
           "isUnique": true
         },
         "ip_hostname_ip_idx": {
           "name": "ip_hostname_ip_idx",
-          "columns": [
-            "ip"
-          ],
+          "columns": ["ip"],
           "isUnique": true
         },
         "ip_hostname_next_lookup_idx": {
           "name": "ip_hostname_next_lookup_idx",
-          "columns": [
-            "next_lookup_at"
-          ],
+          "columns": ["next_lookup_at"],
           "isUnique": false
         },
         "ip_hostname_status_idx": {
           "name": "ip_hostname_status_idx",
-          "columns": [
-            "lookup_status"
-          ],
+          "columns": ["lookup_status"],
           "isUnique": false
         },
         "ip_hostname_status_next_idx": {
           "name": "ip_hostname_status_next_idx",
-          "columns": [
-            "lookup_status",
-            "next_lookup_at"
-          ],
+          "columns": ["lookup_status", "next_lookup_at"],
           "isUnique": false
         }
       },
@@ -684,12 +665,8 @@
           "name": "job_poll_events_job_run_id_job_runs_id_fk",
           "tableFrom": "job_poll_events",
           "tableTo": "job_runs",
-          "columnsFrom": [
-            "job_run_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["job_run_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -697,12 +674,8 @@
           "name": "job_poll_events_imap_account_id_imap_accounts_id_fk",
           "tableFrom": "job_poll_events",
           "tableTo": "imap_accounts",
-          "columnsFrom": [
-            "imap_account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["imap_account_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -879,25 +852,17 @@
       "indexes": {
         "domain_date_idx": {
           "name": "domain_date_idx",
-          "columns": [
-            "domain_id",
-            "report_begin_date"
-          ],
+          "columns": ["domain_id", "report_begin_date"],
           "isUnique": false
         },
         "domain_spf_auth_idx": {
           "name": "domain_spf_auth_idx",
-          "columns": [
-            "domain_id",
-            "spf_auth_result"
-          ],
+          "columns": ["domain_id", "spf_auth_result"],
           "isUnique": false
         },
         "event_report_end_idx": {
           "name": "event_report_end_idx",
-          "columns": [
-            "report_end_date"
-          ],
+          "columns": ["report_end_date"],
           "isUnique": false
         }
       },
@@ -906,12 +871,8 @@
           "name": "normalized_events_raw_report_id_raw_reports_id_fk",
           "tableFrom": "normalized_events",
           "tableTo": "raw_reports",
-          "columnsFrom": [
-            "raw_report_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["raw_report_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -919,12 +880,8 @@
           "name": "normalized_events_domain_id_domains_id_fk",
           "tableFrom": "normalized_events",
           "tableTo": "domains",
-          "columnsFrom": [
-            "domain_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["domain_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -932,12 +889,8 @@
           "name": "normalized_events_ip_address_id_ip_addresses_id_fk",
           "tableFrom": "normalized_events",
           "tableTo": "ip_addresses",
-          "columnsFrom": [
-            "ip_address_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["ip_address_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -995,9 +948,7 @@
       "indexes": {
         "dkim_results_event_id_idx": {
           "name": "dkim_results_event_id_idx",
-          "columns": [
-            "event_id"
-          ],
+          "columns": ["event_id"],
           "isUnique": false
         }
       },
@@ -1006,12 +957,8 @@
           "name": "normalized_event_dkim_results_event_id_normalized_events_id_fk",
           "tableFrom": "normalized_event_dkim_results",
           "tableTo": "normalized_events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1055,9 +1002,7 @@
       "indexes": {
         "policy_overrides_event_id_idx": {
           "name": "policy_overrides_event_id_idx",
-          "columns": [
-            "event_id"
-          ],
+          "columns": ["event_id"],
           "isUnique": false
         }
       },
@@ -1066,12 +1011,8 @@
           "name": "normalized_event_policy_overrides_event_id_normalized_events_id_fk",
           "tableFrom": "normalized_event_policy_overrides",
           "tableTo": "normalized_events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1166,12 +1107,8 @@
           "name": "poll_status_active_job_run_id_job_runs_id_fk",
           "tableFrom": "poll_status",
           "tableTo": "job_runs",
-          "columnsFrom": [
-            "active_job_run_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["active_job_run_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1222,10 +1159,7 @@
       "indexes": {
         "processed_messages_imap_message_idx": {
           "name": "processed_messages_imap_message_idx",
-          "columns": [
-            "imap_account_id",
-            "message_id"
-          ],
+          "columns": ["imap_account_id", "message_id"],
           "isUnique": true
         }
       },
@@ -1234,12 +1168,8 @@
           "name": "processed_messages_imap_account_id_imap_accounts_id_fk",
           "tableFrom": "processed_messages",
           "tableTo": "imap_accounts",
-          "columnsFrom": [
-            "imap_account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["imap_account_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1247,12 +1177,8 @@
           "name": "processed_messages_job_run_id_job_runs_id_fk",
           "tableFrom": "processed_messages",
           "tableTo": "job_runs",
-          "columnsFrom": [
-            "job_run_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["job_run_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1331,9 +1257,7 @@
       "indexes": {
         "raw_reports_report_id_unique": {
           "name": "raw_reports_report_id_unique",
-          "columns": [
-            "report_id"
-          ],
+          "columns": ["report_id"],
           "isUnique": true
         }
       },
@@ -1373,12 +1297,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1555,9 +1475,7 @@
       "indexes": {
         "users_username_unique": {
           "name": "users_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         }
       },
@@ -1651,9 +1569,7 @@
       "indexes": {
         "webhook_endpoints_enabled_idx": {
           "name": "webhook_endpoints_enabled_idx",
-          "columns": [
-            "enabled"
-          ],
+          "columns": ["enabled"],
           "isUnique": false
         }
       },

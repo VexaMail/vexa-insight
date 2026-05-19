@@ -1,6 +1,6 @@
+import { useDashboardFilters } from '@/hooks/dashboard'
 import { useDateFilterParams } from '@/hooks/useDateFilterParams'
 import { fetchTrendData } from '@/lib/charts'
-import { useDashboardFilters } from '@/hooks/dashboard'
 import type { UseTrendChartReturn } from '@/types/charts'
 import {
   getDurationHours,

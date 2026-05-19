@@ -22,7 +22,9 @@ describe('safeFetch', () => {
   })
 
   it('rejects literal AWS metadata IP', async () => {
-    const res = await safeFetch('http://169.254.169.254/latest/', { method: 'GET' })
+    const res = await safeFetch('http://169.254.169.254/latest/', {
+      method: 'GET',
+    })
     expect(res.ok).toBe(false)
     if (!res.ok) expect(res.error.code).toBe('PRIVATE_HOST_NOT_ALLOWED')
   })
