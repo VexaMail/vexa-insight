@@ -1,6 +1,7 @@
 'use server'
 
 import { getDb, users } from '@/lib/db'
+import { recordAuditEvent } from '@/services/audit'
 import { createSession, verifyPassword } from '@/services/auth'
 import { checkRateLimit, getRateLimitKeyFromHeaders } from '@/utils/rateLimit'
 import { eq } from 'drizzle-orm'
@@ -35,16 +36,41 @@ export async function loginAction(
     .where(eq(users.username, username))
     .get()
 
+  const ip = reqHeaders.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
+  const userAgent = reqHeaders.get('user-agent') ?? null
+
   if (!existingUser) {
+    await recordAuditEvent({
+      action: 'auth.login.failure',
+      actorEmail: username,
+      ip,
+      userAgent,
+      metadata: { reason: 'unknown_user' },
+    })
     return { error: 'Invalid username or password' }
   }
 
   const validPassword = verifyPassword(password, existingUser.passwordHash)
   if (!validPassword) {
+    await recordAuditEvent({
+      action: 'auth.login.failure',
+      actorId: existingUser.id,
+      actorEmail: existingUser.username,
+      ip,
+      userAgent,
+      metadata: { reason: 'bad_password' },
+    })
     return { error: 'Invalid username or password' }
   }
 
   await createSession(existingUser.id)
+  await recordAuditEvent({
+    action: 'auth.login.success',
+    actorId: existingUser.id,
+    actorEmail: existingUser.username,
+    ip,
+    userAgent,
+  })
 
   redirect('/')
 }

@@ -1,5 +1,6 @@
 import { invalidateConfigCache } from '@/lib/config'
 import { getDb, users } from '@/lib/db'
+import { recordAuditEvent } from '@/services/audit'
 import { createSession, hashPassword } from '@/services/auth'
 import { updateSettings } from '@/services/settings'
 import type { InstallPayload } from '@/types/install'
@@ -25,6 +26,13 @@ async function completeInstall(
   })
 
   await createSession(userId)
+  await recordAuditEvent({
+    action: 'install.completed',
+    actorId: userId,
+    actorEmail: payload.adminEmail,
+    targetType: 'install',
+    metadata: { partial: isPartial },
+  })
 
   if (isPartial) {
     return // Skip modifying settings if already initialized

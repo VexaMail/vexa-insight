@@ -1,4 +1,5 @@
 export { appSettings } from './app-settings'
+export { auditLog } from './audit-log'
 export { domains } from './domain'
 export { imapAccounts } from './imap-accounts'
 export { ipAddresses } from './ip-addresses'

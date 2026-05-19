@@ -3,6 +3,7 @@ export { resolveDbFilePath } from './resolveDbFilePath'
 export { runMigrations } from './runMigrations'
 export {
   appSettings,
+  auditLog,
   domains,
   imapAccounts,
   ipAddresses,
