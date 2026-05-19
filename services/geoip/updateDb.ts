@@ -1,4 +1,5 @@
 import { appSettings, getDb } from '@/lib/db'
+import { env } from '@/lib/env'
 import { parseProgressLine } from '@/utils/geoip'
 import { eq } from 'drizzle-orm'
 import { fork } from 'node:child_process'
@@ -20,8 +21,7 @@ export async function updateGeoIpDb(
 
   return new Promise((resolve, reject) => {
     // Determine where we store the data. We fallback to project_root/data/geoip
-    const dataDir =
-      process.env.GEODATADIR ?? path.join(process.cwd(), 'data', 'geoip')
+    const dataDir = env.GEODATADIR ?? path.join(process.cwd(), 'data', 'geoip')
 
     // Ensure the directory exists (first-run or fresh deploy)
     mkdirSync(dataDir, { recursive: true })

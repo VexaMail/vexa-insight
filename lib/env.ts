@@ -7,8 +7,11 @@ import { z } from 'zod'
  * Imported from `instrumentation.ts` at server boot so invalid env fails fast
  * with a clear message instead of producing confusing downstream errors.
  *
- * Per-callsite migration (replacing `process.env.X` with `env.X`) is a
- * follow-up task; this module currently exists only for boot-time validation.
+ * Prefer `env.X` over `process.env.X` everywhere. Direct `process.env` reads
+ * are reserved for code paths that run BEFORE this module loads
+ * (`next.config.ts`, `drizzle.config.ts`, the `NEXT_RUNTIME` pre-check inside
+ * `instrumentation.ts`) and for the geoip-lite sentinel that assigns
+ * `process.env.GEODATADIR` as a side effect.
  */
 export const env = z
   .object({
@@ -32,5 +35,15 @@ export const env = z
     INVOCATION_ID: z.string().optional(),
     PM: z.string().optional(),
     CI: z.string().optional(),
+    // PM2 supervisor sentinels (read by detectSupervisor).
+    pm_id: z.string().optional(),
+    PM2_HOME: z.string().optional(),
+    // Auth provider selection (RBAC + SSO/OIDC scaffold).
+    VEXA_AUTH_PROVIDER: z.enum(['local', 'oidc']).default('local'),
+    OIDC_ISSUER_URL: z.string().optional(),
+    OIDC_CLIENT_ID: z.string().optional(),
+    OIDC_CLIENT_SECRET: z.string().optional(),
+    OIDC_REDIRECT_URI: z.string().optional(),
+    OIDC_SCOPES: z.string().default('openid profile email'),
   })
   .parse(process.env)

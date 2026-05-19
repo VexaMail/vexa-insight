@@ -1,10 +1,11 @@
+import { env } from '@/lib/env'
 import type { Metadata } from 'next'
 
 export const siteMetadata: Metadata = (() => {
   const title = 'Vexa Mail Insight'
   const description =
     'DMARC analytics dashboard with domains, reports, ingestion health, authentication diagnostics, and policy compliance.'
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://example.com'
+  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? 'https://example.com'
 
   return {
     metadataBase: new URL(baseUrl),

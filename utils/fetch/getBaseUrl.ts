@@ -1,9 +1,11 @@
+import { env } from '@/lib/env'
+
 export function getBaseUrl(): string {
-  if (typeof process.env.VERCEL_URL === 'string') {
-    return `https://${process.env.VERCEL_URL}`
+  if (typeof env.VERCEL_URL === 'string') {
+    return `https://${env.VERCEL_URL}`
   }
-  if (typeof process.env.NEXT_PUBLIC_APP_URL === 'string') {
-    return process.env.NEXT_PUBLIC_APP_URL
+  if (typeof env.NEXT_PUBLIC_APP_URL === 'string') {
+    return env.NEXT_PUBLIC_APP_URL
   }
   return 'http://localhost:3000'
 }

@@ -1,4 +1,5 @@
 import { getDb, sessions } from '@/lib/db'
+import { env } from '@/lib/env'
 import { cookies } from 'next/headers'
 import crypto from 'node:crypto'
 
@@ -26,7 +27,7 @@ export async function createSession(userId: string) {
   // state-changing endpoint.
   cookieStore.set('session', sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.NODE_ENV === 'production',
     sameSite: 'lax',
     expires: expiresAt,
     path: '/',

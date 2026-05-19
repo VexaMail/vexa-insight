@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import type { SupervisorKind } from '@/types/updates'
 import { isRunningInDocker } from './isRunningInDocker'
 
@@ -15,11 +16,11 @@ import { isRunningInDocker } from './isRunningInDocker'
  */
 export function detectSupervisor(): SupervisorKind {
   if (isRunningInDocker()) return 'docker'
-  if (process.env.INVOCATION_ID) return 'systemd'
-  if (process.env.pm_id !== undefined || process.env.PM2_HOME !== undefined) {
+  if (env.INVOCATION_ID) return 'systemd'
+  if (env.pm_id !== undefined || env.PM2_HOME !== undefined) {
     return 'pm2'
   }
-  const explicit = process.env.VEXA_HAS_SUPERVISOR
+  const explicit = env.VEXA_HAS_SUPERVISOR
   if (explicit && explicit.toLowerCase() === 'true') return 'systemd'
   return 'none'
 }

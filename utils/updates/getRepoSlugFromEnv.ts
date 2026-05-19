@@ -1,4 +1,5 @@
 import { DEFAULT_REPO_SLUG } from '@/constants/updates'
+import { env } from '@/lib/env'
 import type { RepoSlug } from '@/types/updates'
 import { parseRepoSlug } from './parseRepoSlug'
 
@@ -8,7 +9,7 @@ import { parseRepoSlug } from './parseRepoSlug'
  * 2) DEFAULT_REPO_SLUG constant baked at build time
  */
 export function getRepoSlugFromEnv(): RepoSlug {
-  const fromEnv = parseRepoSlug(process.env.VEXA_UPDATE_REPO)
+  const fromEnv = parseRepoSlug(env.VEXA_UPDATE_REPO)
   if (fromEnv) return fromEnv
   const fallback = parseRepoSlug(DEFAULT_REPO_SLUG)
   if (!fallback) {
