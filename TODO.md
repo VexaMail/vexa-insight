@@ -15,7 +15,6 @@
 
 ## Security
 
-- [ ] Add the one-time install token field to the install UI and submit it as `x-install-token` or `installToken`. `app/api/install/route.ts` requires the token for every first-run request, but `components/install/InstallForm.tsx` and `hooks/install/useInstallForm.ts` never collect or send it, so web installs cannot complete.
 - [ ] Migrate the production CSP to nonces. `utils/security/prodCspDirectives.ts` still permits `'unsafe-inline'` for scripts and styles; the launch-security plan deferred the middleware changes.
 - [~] Complete the RBAC rollout and verify every privileged or mutating route enforces the intended permission. The scaffold in `services/auth/requirePermission.ts` is currently used only by the audit-log route.
 

@@ -21,6 +21,33 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
       <h2 id="install-form-heading" className="sr-only">
         Configuration
       </h2>
+      <div>
+        <label
+          htmlFor="install-token"
+          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
+          Install token
+        </label>
+        <input
+          id="install-token"
+          type="password"
+          value={state.installToken}
+          onChange={(e) =>
+            dispatch({ type: 'SET_INSTALL_TOKEN', payload: e.target.value })
+          }
+          required
+          placeholder="One-time token from the server logs"
+          autoComplete="off"
+          aria-describedby="install-token-help"
+          className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
+        />
+        <p
+          id="install-token-help"
+          className="mt-1 text-xs text-zinc-500 dark:text-zinc-400"
+        >
+          Printed to the server console on startup.
+        </p>
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label

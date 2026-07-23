@@ -18,6 +18,7 @@ export function useInstallForm(
   const [state, dispatch] = useReducer(installReducer, {
     adminEmail: '',
     adminPassword: '',
+    installToken: '',
     secretKey: '',
     imapAccounts: [defaultAccount()],
     ingestionIntervalMinutes: DEFAULT_INTERVAL,
@@ -60,6 +61,7 @@ export function useInstallForm(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          installToken: state.installToken.trim(),
           adminEmail: state.adminEmail.trim(),
           adminPassword: state.adminPassword,
           secretKey: state.secretKey.trim(),

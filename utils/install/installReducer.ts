@@ -11,6 +11,8 @@ export function installReducer(
       return { ...state, adminEmail: action.payload }
     case 'SET_ADMIN_PASSWORD':
       return { ...state, adminPassword: action.payload }
+    case 'SET_INSTALL_TOKEN':
+      return { ...state, installToken: action.payload }
     case 'SET_SECRET_KEY':
       return { ...state, secretKey: action.payload }
     case 'ADD_ACCOUNT': {

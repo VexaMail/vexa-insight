@@ -3,6 +3,7 @@ import type { ImapAccountInstall } from '@/types/install'
 export type InstallAction =
   | { type: 'SET_ADMIN_EMAIL'; payload: string }
   | { type: 'SET_ADMIN_PASSWORD'; payload: string }
+  | { type: 'SET_INSTALL_TOKEN'; payload: string }
   | { type: 'SET_SECRET_KEY'; payload: string }
   | { type: 'ADD_ACCOUNT' }
   | {

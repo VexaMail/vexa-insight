@@ -6,6 +6,11 @@
 
 ### 2026-07
 
+- [x] 2026-07-23 — **Security:** Add the one-time install token field to the install UI.
+  - Result: The install form now collects the token and submits it as `installToken`, so first-run web installs can pass the API's token gate.
+  - Evidence: `pnpm exec tsc --noEmit`, ESLint, Prettier, and `pnpm test` (186/186) passed.
+  - Files: `components/install/InstallForm.tsx`, `hooks/install/useInstallForm.ts`, `utils/install/installReducer.ts`, `types/install/InstallState.ts`, `types/install/InstallAction.ts`.
+
 - [x] 2026-07-23 — **Documentation:** Publish the TODO-maintenance rule through a tracked instruction source.
   - Result: Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed `CLAUDE.md` with the backlog, log, and history-index rule.
   - Evidence: commit `7021f658`.
