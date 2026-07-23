@@ -62,8 +62,6 @@ lint-out*.txt
 .codegraph/
 .cocoindex_code/
 scratch/
-AGENTS.md
-CLAUDE.md
 
 # Local MCP server configs (often contain tokens)
 .mcp.json
