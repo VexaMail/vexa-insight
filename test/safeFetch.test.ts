@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-clear-text-protocols -- this file tests that safeFetch rejects http loopback/metadata literals; cleartext URLs are the inputs under test */
 import { describe, expect, it } from 'vitest'
 import { deliverWebhook } from '../services/notifications/deliverWebhook'
 import { safeFetch } from '../services/security/safeFetch'

@@ -15,8 +15,7 @@ export function recordToEvent(
   const sourceIp = str(row?.source_ip ?? '')
   const count = num(row?.count ?? 0)
   const policyEval = row?.policy_evaluated as
-    | Record<string, unknown>
-    | undefined
+    Record<string, unknown> | undefined
   const disposition = lower(policyEval?.disposition ?? 'none')
   const dkimResult = lower(policyEval?.dkim ?? '')
   const spfResult = lower(policyEval?.spf ?? '')

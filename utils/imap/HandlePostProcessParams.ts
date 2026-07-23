@@ -9,8 +9,7 @@ export type HandlePostProcessParams = {
   markAsReadAfterProcess: boolean
   moveToTrashAfterProcess: boolean
   onProgress?:
-    | ((payload: EmailProgressPayload) => Promise<void> | void)
-    | undefined
+    ((payload: EmailProgressPayload) => Promise<void> | void) | undefined
   postProcessAction: string
   postProcessFolder: string | null
   sourceFolder: string

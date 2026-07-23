@@ -25,8 +25,7 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
   }
 
   const metadata = feedback.report_metadata as
-    | Record<string, unknown>
-    | undefined
+    Record<string, unknown> | undefined
   const reportId = str(metadata?.report_id ?? '')
   const orgName = str(metadata?.org_name ?? '')
   const email = str(metadata?.email ?? '')
@@ -35,8 +34,7 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
   const endTs = num(dateRange?.end ?? 0)
 
   const policy = feedback.policy_published as
-    | Record<string, unknown>
-    | undefined
+    Record<string, unknown> | undefined
   const domain = str(policy?.domain ?? '')
 
   const rawReport: RawReportPayload = {

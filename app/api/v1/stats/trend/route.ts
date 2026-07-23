@@ -9,9 +9,7 @@ export const GET = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
     const { searchParams } = new URL(request.url)
     const period = (searchParams.get('period') ?? 'day') as
-      | 'hour'
-      | 'day'
-      | 'week'
+      'hour' | 'day' | 'week'
     if (period !== 'hour' && period !== 'day' && period !== 'week') {
       return NextResponse.json(
         {

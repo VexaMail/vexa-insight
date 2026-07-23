@@ -43,8 +43,7 @@ export function useSettingsConfig(
         body: JSON.stringify({ accountId }),
       })
       const json = (await res.json()) as
-        | { data?: { message?: string } }
-        | { error?: { message?: string } }
+        { data?: { message?: string } } | { error?: { message?: string } }
       if (res.ok) {
         setMessage((json as { data: { message: string } }).data.message)
         setSaveStatus('success')
@@ -148,8 +147,7 @@ export function useSettingsConfig(
         body: JSON.stringify(payload),
       })
       const json = (await res.json()) as
-        | { data?: SettingsPublic }
-        | { error?: { message?: string } }
+        { data?: SettingsPublic } | { error?: { message?: string } }
       if (!res.ok) {
         const err = json as { error?: { message?: string } }
         setMessage(err.error?.message ?? `Error ${res.status}`)

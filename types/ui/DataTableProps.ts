@@ -13,8 +13,7 @@ export type DataTableProps<TData, TValue> = {
   readonly onRowClick?: (row: Row<TData>) => void
   readonly selectedRowId?: string
   readonly toolbarActions?:
-    | React.ReactNode
-    | ((table: ReactTable<TData>) => React.ReactNode)
+    React.ReactNode | ((table: ReactTable<TData>) => React.ReactNode)
   readonly initialSorting?: SortingState
   readonly defaultPageSize?: number
   readonly pageSizeOptions?: (number | 'all')[]

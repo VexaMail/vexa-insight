@@ -169,7 +169,12 @@ const config = defineConfig([
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/filename-case': [
         'error',
-        { cases: { camelCase: true, pascalCase: true } },
+        // checkDirectories (new default in unicorn v72) is off because Next.js
+        // route directories are URL segments and must stay kebab-case.
+        {
+          cases: { camelCase: true, pascalCase: true },
+          checkDirectories: false,
+        },
       ],
 
       /**

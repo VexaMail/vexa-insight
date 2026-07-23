@@ -79,8 +79,7 @@ export function useModelCombobox(
   useEffect(() => {
     if (highlightIndex < 0 || !listRef.current) return
     const el = listRef.current.children[highlightIndex] as
-      | HTMLElement
-      | undefined
+      HTMLElement | undefined
     el?.scrollIntoView({ block: 'nearest' })
   }, [highlightIndex])
 

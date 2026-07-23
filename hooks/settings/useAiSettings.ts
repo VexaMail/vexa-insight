@@ -79,8 +79,7 @@ export function useAiSettings(apiKey: string) {
       })
 
       const json = (await res.json()) as
-        | { data: AIProviderSettingsPublic }
-        | { error: { message: string } }
+        { data: AIProviderSettingsPublic } | { error: { message: string } }
 
       if (!res.ok) {
         const err = json as { error: { message: string } }

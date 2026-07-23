@@ -13,8 +13,7 @@ export type DataTableProps<TData, TValue> = {
   onRowClick?: (row: Row<TData>) => void
   selectedRowId?: string | undefined
   toolbarActions?:
-    | React.ReactNode
-    | ((table: ReactTable<TData>) => React.ReactNode)
+    React.ReactNode | ((table: ReactTable<TData>) => React.ReactNode)
   initialSorting?: SortingState
   defaultPageSize?: number
   pageSizeOptions?: (number | 'all')[]

@@ -11,8 +11,7 @@ export async function fetchFolders(
   })
 
   const json = (await res.json()) as
-    | { data: FolderEntry[] }
-    | { error: { message: string } }
+    { data: FolderEntry[] } | { error: { message: string } }
 
   if (!res.ok || 'error' in json) {
     const msg = 'error' in json ? json.error.message : 'Failed to load folders'

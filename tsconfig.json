@@ -19,7 +19,6 @@
     "useUnknownInCatchVariables": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
       "@supabase/*": ["./services/supabase/*"]

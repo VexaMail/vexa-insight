@@ -1,6 +1,2 @@
 export type AiSettingsSaveStatus =
-  | 'idle'
-  | 'loading'
-  | 'validating'
-  | 'success'
-  | 'error'
+  'idle' | 'loading' | 'validating' | 'success' | 'error'

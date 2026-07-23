@@ -36,6 +36,7 @@
 - [ ] Add tests for `buildDiagnosticsAdminGuides`, the diagnostics AI prompt builders, and the protocol explainers.
 - [ ] Decide whether Vitest should include `.test.tsx`; `vitest.config.ts` currently matches only TypeScript test files, so JSX regression tests must avoid JSX syntax.
 - [ ] Benchmark and improve full-repository lint performance; historical sessions repeatedly abandoned `eslint .` because it ran much longer than type-checking.
+- [ ] `pnpm run test:a11y` exits 1 because `test/a11y/` has no test files; either add the first a11y test or drop the script.
 
 ## Bugs
 
@@ -44,6 +45,9 @@
 ## Infrastructure
 
 - [ ] Decide whether the per-process `withDiagnosticsCache` is sufficient for future multi-replica deployments or replace it with shared caching. Each replica currently resolves DNS independently.
+- [!] Re-upgrade `@radix-ui/react-slot` past 1.2.x once a release ships the module-scope `SlotContext` behind a `"use client"` directive (or an RSC-safe build). 1.3.x calls `React.createContext` at module scope with no directive, which crashes `next build` page-data collection (`e.createContext is not a function`) for every server page importing UI components that use Slot. Smallest unblock: test the next 1.4.x stable release with `pnpm run build`.
+- [ ] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x.
+- [ ] Migrate `boundaries/dependencies` config in `eslint.config.ts` to eslint-plugin-boundaries v7 syntax: rename `rules` to `policies` and replace the 4 legacy selectors with object-based selectors. Currently only deprecation warnings.
 
 ## Refactors
 

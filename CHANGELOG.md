@@ -132,9 +132,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - **Default-deny auth on `/api/v1/**`.** Every route handler is now wrapped
-by `withApiAuth`(delegates to`requireAdminAccess`— session OR`x-api-key`/`Authorization: Bearer`). Explicit public allowlist:
-`/api/v1/health`, `/api/v1/openapi.json`. A structural test
-(`test/apiAuthSmoke.test.ts`) fails the build if any new route is added
+  by `withApiAuth`(delegates to`requireAdminAccess`— session OR`x-api-key`/`Authorization: Bearer`). Explicit public allowlist:
+  `/api/v1/health`, `/api/v1/openapi.json`. A structural test
+  (`test/apiAuthSmoke.test.ts`) fails the build if any new route is added
   without auth.
 - **AI endpoints rate-limited.** `POST /api/v1/ai/report-insights` and
   `/api/v1/ai/diagnostics-insights` enforce 10/min/IP on top of auth so an

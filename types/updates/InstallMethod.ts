@@ -9,7 +9,4 @@
  * - `unknown`           — no `.git` directory; pre-built install (rare).
  */
 export type InstallMethod =
-  | 'docker'
-  | 'source-supervised'
-  | 'source-bare'
-  | 'unknown'
+  'docker' | 'source-supervised' | 'source-bare' | 'unknown'

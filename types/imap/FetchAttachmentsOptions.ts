@@ -6,8 +6,7 @@ import type { EmailProgressPayload } from '@/types/dashboard'
 export type FetchAttachmentsOptions = {
   getAbortRequested?: (() => Promise<boolean>) | undefined
   onEmailProgress?:
-    | ((payload: EmailProgressPayload) => Promise<void> | void)
-    | undefined
+    ((payload: EmailProgressPayload) => Promise<void> | void) | undefined
   onBatchProgress?:
     | ((
         processed: number,

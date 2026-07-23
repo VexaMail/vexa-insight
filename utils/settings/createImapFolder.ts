@@ -10,8 +10,7 @@ export async function createImapFolder(
   })
 
   const json = (await res.json()) as
-    | { data: { path: string } }
-    | { error: { message: string } }
+    { data: { path: string } } | { error: { message: string } }
 
   if (!res.ok || 'error' in json) {
     const msg = 'error' in json ? json.error.message : 'Failed to create folder'

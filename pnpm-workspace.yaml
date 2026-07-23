@@ -7,6 +7,11 @@ allowBuilds:
 # Force patched versions for transitive dependencies flagged by `pnpm audit`.
 # Reviewed individually — see SECURITY.md for the rationale per package.
 overrides:
+  # eslint-config-next pins typescript-eslint 8.59.x, which breaks with
+  # TypeScript 7 — force the TS7-compatible line across the tree.
+  'typescript-eslint': ^8.65.0
+  '@typescript-eslint/eslint-plugin': ^8.65.0
+  '@typescript-eslint/parser': ^8.65.0
   dompurify: ^3.4.0
   esbuild: ^0.25.0
   postcss: ^8.5.10
