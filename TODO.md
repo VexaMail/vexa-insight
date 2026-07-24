@@ -1,7 +1,7 @@
 # TODO
 
 > Consolidated from the accessible Claude, Codex, and Antigravity project
-> history. Last reviewed: 2026-07-23. History coverage: Partial.
+> history. Last reviewed: 2026-07-24. History coverage: Partial.
 >
 > Accessible historical conversations were fully reviewed. One deleted Claude
 > transcript remains available only as a WakaTime stub, and the active
@@ -15,53 +15,39 @@
 
 ## Security
 
-- [ ] Migrate the production CSP to nonces. `utils/security/prodCspDirectives.ts` still permits `'unsafe-inline'` for scripts and styles; the launch-security plan deferred the middleware changes.
-- [~] Complete the RBAC rollout and verify every privileged or mutating route enforces the intended permission. The scaffold in `services/auth/requirePermission.ts` is currently used only by the audit-log route.
+- [ ] Decide whether the shared API key should be excluded from `users:write` (it now maps to the `admin` role via `services/api/getApiKeyRole.ts`, expanding it onto user management and audit-log reads).
+- [ ] Consider an `ai:invoke` permission for per-role AI cost control; AI insights currently require only `reports:read` (rate-limited 10/min/IP).
+- [ ] Move the `update-db-stream` admin key out of the URL query string (proxies can log it); EventSource cannot set headers, so this needs a short-lived token or cookie.
+- [ ] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001).
 
 ## Diagnostics
 
-- [~] Manually verify `/diagnostics/<domain>` in a browser against real domains with and without BIMI, MTA-STS, and TLS-RPT. Historical validation covered type-checking and focused linting, not the real UI flow.
-- [ ] Remove or update the unrendered legacy diagnostics chain: `components/diagnostics/DnsDiagnosticsPanel.tsx`, `DnsRecordsLoader.tsx`, `dns/DkimCard.tsx`, `assessment/DiagnosticsOverallAssessment.tsx`, and `executive/DiagnosticsExecutiveSummary.tsx`.
-- [ ] Implement PDF export for the domain report.
-- [ ] Implement the SPF lookup-tree visualization.
+- [ ] SPF tree follow-up (low priority): consider macro-domain (`%{...}`) handling and conditional `redirect=` semantics (redirect is only honored without `all`, but the lookup is still consumed).
 
 ## Artificial Intelligence
 
-- [ ] Decide how missing OpenRouter model configuration should behave. Development logs fall back to `openrouter/auto`; either select an explicit default or fail clearly.
-- [ ] Make the diagnostics AI response expose an explicit rollout plan or ordered next-steps section instead of leaving sequencing implicit.
+- [ ] Verify the diagnostics AI rollout plan against a live provider call (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run).
+- [ ] Consider requiring a configured model in `isAiConfigured`/`AiConfigurationStatus` so the panels show the setup prompt instead of a 422 error when only provider and key are saved.
 
 ## Testing
 
-- [ ] Add direct unit tests for `computeDomainScore`, `parseDmarcTags`, `parseDkimRecord`, and `analyzeSpfRecord`.
-- [ ] Add tests for `buildDiagnosticsAdminGuides`, the diagnostics AI prompt builders, and the protocol explainers.
-- [ ] Decide whether Vitest should include `.test.tsx`; `vitest.config.ts` currently matches only TypeScript test files, so JSX regression tests must avoid JSX syntax.
-- [ ] Benchmark and improve full-repository lint performance; historical sessions repeatedly abandoned `eslint .` because it ran much longer than type-checking.
-- [ ] `pnpm run test:a11y` exits 1 because `test/a11y/` has no test files; either add the first a11y test or drop the script.
-
-## Bugs
-
-- [~] Confirm in a browser that the `next/image` LCP and aspect-ratio warnings for `/vexa-insight-logo.svg` are gone after the two historical `components/shell/VexaLogo.tsx` changes.
+- [ ] Extend a11y coverage beyond the first three suites (diagnostics components need a public export or lint-sanctioned import path for `ProtocolExplainer`).
 
 ## Infrastructure
 
-- [ ] Decide whether the per-process `withDiagnosticsCache` is sufficient for future multi-replica deployments or replace it with shared caching. Each replica currently resolves DNS independently.
-- [!] Re-upgrade `@radix-ui/react-slot` past 1.2.x once a release ships the module-scope `SlotContext` behind a `"use client"` directive (or an RSC-safe build). 1.3.x calls `React.createContext` at module scope with no directive, which crashes `next build` page-data collection (`e.createContext is not a function`) for every server page importing UI components that use Slot. Smallest unblock: test the next 1.4.x stable release with `pnpm run build`.
-- [ ] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x.
-- [ ] Migrate `boundaries/dependencies` config in `eslint.config.ts` to eslint-plugin-boundaries v7 syntax: rename `rules` to `policies` and replace the 4 legacy selectors with object-based selectors. Currently only deprecation warnings.
+- [!] Re-upgrade `@radix-ui/react-slot` past 1.2.x once a release ships the module-scope `SlotContext` behind a `"use client"` directive (or an RSC-safe build). 1.3.x calls `React.createContext` at module scope with no directive, which crashes `next build` page-data collection (`e.createContext is not a function`) for every server page importing UI components that use Slot. Smallest unblock: test the next 1.4.x stable release with `pnpm run build` (checked 2026-07-24: latest stable is still 1.3.1; 1.4.0 only has RCs).
+- [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Checked 2026-07-24: typescript-eslint@8.65.0 still declares `typescript >=4.8.4 <6.1.0`. See ADR 0005.
 
 ## Refactors
 
-- [ ] Apply Zod validation consistently at route boundaries and move remaining Drizzle queries from `app/**` into services, as deferred by the launch-security plan.
-
-## Documentation
-
-- [ ] Write the architecture decision records listed as a post-launch follow-up.
+- [ ] `app/api/v1/job-runs/[id]/poll-status/route.ts` returns the non-standard `{ error: 'Invalid Job ID' }` for a bad path segment instead of `{ error: { code, message } }`. Path params were out of scope for the boundary-validation pass.
+- [ ] Decide whether `reportId` / `domainId` request bodies should be `.int()`; they currently accept fractional numbers, preserved from the pre-Zod code.
+- [ ] `utils/api/index.ts` still uses `export *`, against the repo barrel policy (`utils/validation/index.ts` was converted 2026-07-24).
 
 ## Pending Decisions
 
-- [ ] Decide whether experimental OIDC SSO is production-ready. `docs/SSO.md` documents liberal JIT provisioning, no SCIM or group sync, and no session revocation.
-- [ ] Confirm whether the domain score must match PowerDMARC exactly or remain only inspired by it. The current SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights were never checked for output parity.
-- [ ] Decide whether to expand the DKIM selector probe list in `services/diagnostics/knownSelectors.ts`.
+- [ ] Decide whether experimental OIDC SSO is production-ready. `docs/SSO.md` documents liberal JIT provisioning, no SCIM or group sync, and no session revocation. (User decision.)
+- [ ] Confirm whether the domain score must match PowerDMARC exactly or remain only inspired by it. The current SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights were never checked for output parity. (User decision; note 2026-07-24: the DKIM key-length estimator fix changed reported bit values.)
 
 ## Future Ideas
 

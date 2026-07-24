@@ -6,6 +6,112 @@
 
 ### 2026-07
 
+- [x] 2026-07-24 — **Security:** Migrate the production CSP to nonces.
+  - Result: Per-request nonce with `'strict-dynamic'` for `script-src` set by the proxy (`utils/proxy/applyProdCspHeaders.ts`); `'unsafe-inline'` removed from scripts (kept for styles — Recharts/framer-motion/next-font constraints, see ADR 0006); dev CSP unchanged via static headers; all pages force-dynamic (login via a server `layout.tsx`).
+  - Evidence: `pnpm run build` shows every page `ƒ` (dynamic); `test/buildProdCspDirectives.test.ts`, `test/createCspNonce.test.ts`; full suite green.
+  - Files: `proxy.ts`, `utils/proxy/applyProdCspHeaders.ts`, `utils/security/`, `app/login/layout.tsx`, eight `page.tsx` files.
+
+- [x] 2026-07-24 — **Security:** Complete the RBAC rollout across privileged and mutating routes.
+  - Result: Every privileged/mutating `/api/v1` route and server action now enforces a catalog permission via `requirePermission`; API key maps to the `admin` role (`services/api/getApiKeyRole.ts`); new `reports:write` permission; closed two previously unauthenticated admin GETs (`/api/v1/admin/settings`, `/api/v1/admin/ai-settings`) that leaked masked IMAP/CORS/AI config; unauthenticated `fetchMoreIp*` server actions now require `reports:read`.
+  - Correction during review: `reports:write` was initially granted only to `admin` and `operator`, which would have 403'd report upload for the legacy `user` role — the DB default, the only non-admin role the app assigns, and one that sees an ungated `/upload` page. Granted `reports:write` to `user` as well; `viewer` stays strictly read-only.
+  - Evidence: `test/apiRbacSmoke.test.ts` structural gate; `pnpm run test` 328/328; inventory in the session report.
+  - Files: `app/api/v1/**` (13 route files), `actions/fetchMoreIp*.ts`, `services/api/`, `services/auth/`, `types/auth/Permission.ts`, `constants/auth/rolePermissions.ts`.
+
+- [x] 2026-07-24 — **Artificial Intelligence:** Decide missing OpenRouter model behavior — fail clearly.
+  - Result: Removed the silent `PROVIDER_DEFAULTS` fallback (`openrouter/auto` et al.); `resolveEffectiveModel` now throws `NOT_CONFIGURED` with an actionable message; routes return 422 and the panels render it.
+  - Evidence: `test/resolveEffectiveModel.test.ts` (7 tests); full suite green.
+  - Files: `services/ai/providers/shared/resolveEffectiveModel.ts` (providerDefaults.ts deleted).
+
+- [x] 2026-07-24 — **Refactors:** Apply Zod at route boundaries and move Drizzle queries out of `app/**`.
+  - Result: All direct Drizzle access removed from `app/**` (only `runMigrations` remains, a service call) into named service functions. Zod validation applied at 22 route boundaries: 6 body-input routes (`validators/{imap,updates,geoip,ai}/`) and 16 query-param routes via a shared `validators/query/` layer. Error codes, statuses and messages preserved verbatim; `stats/trend` `period` moved from a cast to `z.enum`. Removed the now-dead `utils/api/parseDateParams.ts`, 4 route-local constant files, and `utils/validation/coerceNumber.ts`; converted `utils/validation/index.ts` off `export *`.
+  - Evidence: 61 new schema tests; `pnpm run test` 420/420; `pnpm run lint` clean; `pnpm run build` succeeds.
+  - Files: `app/api/**` (22 routes), `validators/query/` (13 files), `validators/{imap,updates,geoip,ai}/`, `services/{reports,geoip,notifications,ip-hostname}/`.
+  - Behavior notes: malformed (never valid) input differs slightly — `z.coerce.number()` uses `Number()` not `parseInt()`, so `?days=30abc` now yields no filter instead of 30; duplicated params take the last value rather than the first.
+
+- [x] 2026-07-24 — **Bugs:** Fix the `next/image` aspect-ratio warning for the sidebar logo.
+  - Result: The logo was declared 140x32 but the artwork's viewBox is 2286.29x592.55 (~3.86), so it always rendered 123px wide — exactly one dimension differing from the attributes, which is what `next/image` warns about. Declared 123x32 with `h-8 w-auto`. The LCP warning was already gone.
+  - Evidence: Captured the real dev-mode console over the Chrome DevTools Protocol: warning present before, absent after; rendered 123 vs attribute "123", `widthModified: false`. `/login`, `/reports`, `/domains`, `/upload`, `/settings` all report a clean console.
+  - Files: `components/shell/VexaLogo.tsx`.
+
+- [x] 2026-07-24 — **Diagnostics:** Verify `/diagnostics/<domain>` against real domains in a browser.
+  - Result: Rendered six real domains from a production build. Both branches exercised for every protocol — BIMI present (paypal.com, cnn.com) and absent (google.com, github.com, example.com, wikipedia.org); MTA-STS and TLS-RPT present (google.com) and absent (the rest). Verdicts cross-checked against live DNS: no false positives or negatives. SPF lookup tree correct, including github.com's 8 direct includes plus 2 nested = 10 total.
+  - Evidence: HTTP 200 on all six; DNS cross-check via `dns.resolveTxt`.
+
+- [x] 2026-07-24 — **Diagnostics:** Implement PDF export for the domain report.
+  - Result: Print-first export (`ExportPdfButton` + `@media print` styles), no new dependency. Verified by generating a real PDF through the browser's own print pipeline: **22 pages**, so the fixed-height shell no longer clips the report to one page (`html`/`body`/`main` all resolve to `overflow: visible` under print media, sidebar hidden). A dark-themed session prints white-on-black-free: body forced to `rgb(255,255,255)` with `rgb(13,13,13)` text.
+  - Correction during review: the grade badge was white text on a gradient, which disappears when "Background graphics" is off (confirmed: backgrounds are dropped, ~131 KB smaller PDF). In print the circle now renders as a 4px colored ring with grade-colored text — both print as foreground. Screen appearance unchanged (white on gradient).
+  - Files: `components/diagnostics/ExportPdfButton.tsx`, `components/diagnostics/score/DomainScoreBadge.tsx`, `components/shell/`, `components/ai/`, `app/globals.css`.
+
+- [x] 2026-07-24 — **Diagnostics:** Implement the SPF lookup-tree visualization.
+  - Result: Recursive include/redirect tree resolver (`services/diagnostics/resolveSpfTree.ts` + single-purpose helpers) with RFC 7208 lookup counting, cycle detection, depth 10 / 30-node budgets, 5-minute cache; rendered as an accessible nested list after the SPF detail section in `DiagnosticsView`.
+  - Evidence: `test/resolveSpfTree.test.ts` (9 tests), `test/SpfLookupTreeSection.test.ts` (4 tests); full suite 347/347.
+  - Files: `services/diagnostics/` (10 new files), `components/diagnostics/spf/` (4 new files), `types/diagnostics/SpfTreeNode.ts`, `getDomainDnsRecords.ts`, `DiagnosticsView.tsx`.
+
+- [x] 2026-07-24 — **Artificial Intelligence:** Expose an explicit rollout plan in the diagnostics AI response.
+  - Result: Response schema extended to `{"insights":[...],"rolloutPlan":[...]}` (protocol-tagged, highest-impact first, max 5 steps); parsed defensively (missing/malformed -> `[]`) and rendered as a numbered Rollout Plan card after the insight sections.
+  - Evidence: `test/diagnosticsAiPrompts.test.ts`, `test/parseDiagnosticsRolloutPlanFromContent.test.ts`; full suite 334/334. Live-provider call not exercised (follow-up in TODO).
+  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`, `services/ai/use-cases/`, `components/ai/DiagnosticsRolloutPlanCard.tsx`, `types/ai/DiagnosticsAnalysisResult.ts`.
+
+- [x] 2026-07-24 — **Diagnostics:** Remove the unrendered legacy diagnostics chain.
+  - Result: Deleted 46 unreachable files (DnsDiagnosticsPanel/DnsRecordsLoader chain, dns card set, assessment/, executive summary, useDnsDiagnostics hook stack, entire lib/diagnostics) and trimmed 4 barrels; live `METRIC_*` style constants and `DnsRecordsSection` preserved.
+  - Evidence: grep unreachability audit + `tsc` + knip; full suite green.
+  - Files: `components/diagnostics/`, `hooks/diagnostics/`, `lib/`.
+
+- [x] 2026-07-24 — **Bugs:** Fix the DKIM key-length estimator.
+  - Result: Base64 padding-aware byte count, RSA SPKI DER overhead subtracted and rounded to the nearest 256 bits (real 2048-bit keys now report 2048, not 2352); standard 32-byte Ed25519 keys are no longer flagged weak.
+  - Evidence: `test/parseDkimRecord.test.ts` (13 tests, updated expectations).
+  - Files: `services/diagnostics/assessDkimKeyStrength.ts`, `decodeBase64ByteLength.ts`, `parseDkimRecord.ts`, `types/diagnostics/DkimKeyAssessment.ts`.
+
+- [x] 2026-07-24 — **Bugs:** Fix SPF third-party include filter and lookup counting.
+  - Result: All `include:` mechanisms are listed as third-party dependencies (the old condition inverted its own intent); `analyzeLimits` now counts qualified (`-a`), CIDR (`a/24`), and record-final `a`/`mx` mechanisms.
+  - Evidence: `test/analyzeSpfRecord.test.ts` (18 tests incl. new counting regression).
+  - Files: `services/diagnostics/analyzeDependencies.ts`, `analyzeLimits.ts`.
+
+- [x] 2026-07-24 — **Testing:** Add direct unit tests for the diagnostics scoring and parsers.
+  - Result: 57 tests covering `computeDomainScore` grade boundaries, `parseDmarcTags`, `parseDkimRecord`, `analyzeSpfRecord` edge cases; they surfaced the two bugs fixed above.
+  - Evidence: `pnpm run test` green.
+  - Files: `test/computeDomainScore.test.ts`, `test/parseDmarcTags.test.ts`, `test/parseDkimRecord.test.ts`, `test/analyzeSpfRecord.test.ts`.
+
+- [x] 2026-07-24 — **Testing:** Add tests for admin guides, AI prompt builders, and protocol explainers.
+  - Result: 34 tests covering guide severity ordering/caps/thresholds, prompt section content and runbook-non-repetition instructions, and server-rendered explainer output.
+  - Evidence: `pnpm run test` green.
+  - Files: `test/buildDiagnosticsAdminGuides.test.ts`, `test/diagnosticsAiPrompts.test.ts`, `test/ProtocolExplainer.test.ts`.
+
+- [x] 2026-07-24 — **Testing:** Enable `.test.tsx` in the unit Vitest config.
+  - Result: `vitest.config.ts` now includes `test/**/*.{test,spec}.{ts,tsx}` (a11y dir excluded to keep it under its own jsdom config); DOM-dependent tests can opt in via the `@vitest-environment jsdom` pragma.
+  - Evidence: full suite green; a11y suite unaffected.
+  - Files: `vitest.config.ts`.
+
+- [x] 2026-07-24 — **Testing:** Make `pnpm run test:a11y` pass by adding the first a11y suites.
+  - Result: axe-based tests for `InstallForm` (full + partial), `UnifiedPagination`, and `EmptyState`; zero violations found; `vitest-axe`'s broken `extend-expect` bypassed by asserting `results.violations` directly.
+  - Evidence: `pnpm run test:a11y` exit 0 (3 files, 5 tests).
+  - Files: `test/a11y/`.
+
+- [-] 2026-07-24 — **Testing:** Consider upgrading or replacing `vitest-axe`.
+  - Resolution: No upgrade exists — `vitest-axe` latest stable is still 0.1.0 (1.0.0 is prerelease `1.0.0-pre.5` only), and its `extend-expect` is a 0-byte no-op under Vitest 4. The a11y suites assert `results.violations` directly, which is fully typed, needs no setup, and still prints complete violation objects on failure. Revisit only if 1.0.0 ships stable.
+
+- [x] 2026-07-24 — **Testing:** Benchmark and improve full-repository lint performance.
+  - Result: Cold `eslint .` is 75.6 s (dominated by type-aware linting); enabled `--cache` in the lint scripts, warm runs now 5.4 s (14x). CI stays effectively cold (no cache file in fresh checkouts). Caveat: cache skips unchanged files even when a dependency's types changed; run a cold lint (`rm .eslintcache`) before releases.
+  - Evidence: timed runs 2026-07-24.
+  - Files: `package.json`, `.gitignore`.
+
+- [x] 2026-07-24 — **Infrastructure:** Migrate `boundaries/dependencies` to eslint-plugin-boundaries v7 syntax.
+  - Result: `rules` -> `policies` and 4 legacy selectors converted to object-based selectors; policy matrix unchanged; deprecation warnings gone; rule still enforcing (verified via debug run).
+  - Evidence: `pnpm run lint` exit 0 with zero boundaries warnings.
+  - Files: `eslint.config.ts`.
+
+- [x] 2026-07-24 — **Infrastructure:** Decide per-process `withDiagnosticsCache` is sufficient — documented in ADR 0003.
+  - Resolution: Deployment is deliberately single-replica (SQLite, RWO PVC, replicas=1 in k8s/Helm); per-replica DNS resolution only matters multi-replica. Revisit together with any multi-replica move.
+
+- [x] 2026-07-24 — **Documentation:** Write the architecture decision records.
+  - Result: 7 ADRs + index under `docs/adr/` (default-deny API, encrypted IMAP credentials, SQLite single-replica, reversible migrations, TS7 dual-alias interop, nonce CSP, explicit AI model), linked from `docs/README.md`; claims verified against code (notably: the "API key" is the shared `SECRET_KEY` admin token, not per-user keys).
+  - Evidence: `docs/adr/README.md`; prettier clean.
+  - Files: `docs/adr/`.
+
+- [x] 2026-07-24 — **Pending Decisions:** Expand the DKIM selector probe list.
+  - Resolution: Expanded from 9 to 28 documented, stable provider selectors (Google, M365, SendGrid, Mailgun, Zoho, Postmark legacy, Fastmail, Proton, iCloud, Constant Contact, Zendesk, Mailchimp/Mandrill); providers with per-account selectors (SES, HubSpot) cannot be probed with a fixed list. Each entry costs one parallel TXT lookup per uncached run.
+  - Files: `services/diagnostics/knownSelectors.ts`.
+
 - [x] 2026-07-23 — **Security:** Add the one-time install token field to the install UI.
   - Result: The install form now collects the token and submits it as `installToken`, so first-run web installs can pass the API's token gate.
   - Evidence: `pnpm exec tsc --noEmit`, ESLint, Prettier, and `pnpm test` (186/186) passed.
