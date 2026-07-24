@@ -367,6 +367,9 @@ const config = defineConfig([
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
+      // Scripts run standalone via tsx and deep-import specific service modules
+      // to avoid pulling barrel side effects (e.g. top-level-await modules).
+      'import/no-internal-modules': 'off',
     },
   },
 

@@ -10,7 +10,10 @@
  * suspect drift. Run while ingestion is idle (SQLite is single-writer).
  */
 import { runMigrations } from '@/lib/db'
-import { rebuildEventRollup } from '@/services/reports'
+// Import the specific module, not the '@/services/reports' barrel: the barrel
+// re-exports ingestParsedReport -> services/geoip/geoip.ts, which uses a
+// top-level await that tsx (CJS output) cannot transform in a standalone script.
+import { rebuildEventRollup } from '@/services/reports/rebuildEventRollup'
 
 export async function main(): Promise<void> {
   runMigrations()

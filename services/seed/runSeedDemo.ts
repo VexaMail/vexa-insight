@@ -1,4 +1,3 @@
-import { rebuildEventRollup } from '@/services/reports'
 import { DAY_MS } from './dayMs'
 import { DAYS_BACK } from './daysBack'
 import { DEMO_DOMAINS } from './demoDomains'
@@ -64,10 +63,6 @@ export async function runSeedDemo({
       summary.events += result.events
     }
   }
-
-  // seedDemoDay inserts events directly; rebuild the derived rollup once so the
-  // dashboard aggregates (which read event_rollup_daily) reflect the demo data.
-  await rebuildEventRollup()
 
   return summary
 }
