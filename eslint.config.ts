@@ -221,29 +221,32 @@ const config = defineConfig([
         'error',
         {
           default: 'disallow',
-          rules: [
+          policies: [
             {
-              from: [{ type: 'app' }],
-              allow: [
-                { to: { type: 'components' } },
-                { to: { type: 'shared' } },
-                { to: { type: 'server' } },
-              ],
+              from: { element: { type: 'app' } },
+              allow: {
+                to: {
+                  element: {
+                    types: { anyOf: ['components', 'shared', 'server'] },
+                  },
+                },
+              },
             },
             {
-              from: [{ type: 'components' }],
-              allow: [
-                { to: { type: 'components' } },
-                { to: { type: 'shared' } },
-              ],
+              from: { element: { type: 'components' } },
+              allow: {
+                to: { element: { types: { anyOf: ['components', 'shared'] } } },
+              },
             },
             {
-              from: [{ type: 'shared' }],
-              allow: [{ to: { type: 'shared' } }],
+              from: { element: { type: 'shared' } },
+              allow: { to: { element: { type: 'shared' } } },
             },
             {
-              from: [{ type: 'server' }],
-              allow: [{ to: { type: 'server' } }, { to: { type: 'shared' } }],
+              from: { element: { type: 'server' } },
+              allow: {
+                to: { element: { types: { anyOf: ['server', 'shared'] } } },
+              },
             },
           ],
         },

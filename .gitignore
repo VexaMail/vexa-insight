@@ -65,3 +65,6 @@ scratch/
 
 # Local MCP server configs (often contain tokens)
 .mcp.json
+
+# ESLint cache
+.eslintcache
