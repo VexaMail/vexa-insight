@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: 'Authentication health and activity for a single sending source',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function IpDetailPage(props: PageProps) {
   const params = await props.params
   const searchParams = await props.searchParams

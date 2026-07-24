@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: 'DMARC Reports',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ReportsPage(props: PageProps) {
   const unresolvedParams = await props.searchParams
   const { days, fromDate, toDate } = parseDateRangeParams(unresolvedParams)

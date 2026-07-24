@@ -1,4 +1,4 @@
-import { buildContentSecurityPolicy } from './buildContentSecurityPolicy'
+import { buildDevContentSecurityPolicy } from './buildDevContentSecurityPolicy'
 
 export function buildSecurityHeaders(isProd: boolean): Array<{
   key: string
@@ -12,15 +12,18 @@ export function buildSecurityHeaders(isProd: boolean): Array<{
       key: 'Permissions-Policy',
       value: 'camera=(), microphone=(), geolocation=(), payment=()',
     },
-    {
-      key: 'Content-Security-Policy',
-      value: buildContentSecurityPolicy(isProd),
-    },
   ]
   if (isProd) {
+    // In production the per-request nonce CSP is set by the proxy
+    // (utils/proxy/applyProdCspHeaders.ts), not by static headers.
     headers.push({
       key: 'Strict-Transport-Security',
       value: 'max-age=31536000; includeSubDomains',
+    })
+  } else {
+    headers.push({
+      key: 'Content-Security-Policy',
+      value: buildDevContentSecurityPolicy(),
     })
   }
   return headers

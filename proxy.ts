@@ -1,6 +1,6 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import type { NextRequest, NextResponse } from 'next/server'
 import { checkInstall } from './services/install/checkInstall'
+import { applyProdCspHeaders } from './utils/proxy/applyProdCspHeaders'
 import { checkAuth } from './utils/proxy/checkAuth'
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
@@ -10,7 +10,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   const authResponse = checkAuth(request)
   if (authResponse) return authResponse
 
-  return NextResponse.next()
+  return applyProdCspHeaders(request)
 }
 
 export const config = {

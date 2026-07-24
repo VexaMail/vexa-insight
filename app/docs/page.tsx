@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     'Interactive reference for the Vexa Mail Insight HTTP API (OpenAPI 3.1).',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function DocsPage() {
   return (
     <main style={{ minHeight: '100vh' }}>

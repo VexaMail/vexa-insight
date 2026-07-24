@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 
 export const metadata = { title: 'Users | Vexa Insight' }
 
+export const dynamic = 'force-dynamic'
+
 export default async function UsersPage() {
   const session = await getSession()
   if (!session || session.user.role !== 'admin') {

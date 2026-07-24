@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: 'Upload DMARC Reports',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function UploadPage() {
   return (
     <PageContainer>
