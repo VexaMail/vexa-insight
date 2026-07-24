@@ -4,5 +4,4 @@
 export * from './config'
 export * from './constants'
 export * from './db'
-export * from './diagnostics'
 export { env } from './env'
