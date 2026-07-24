@@ -10,6 +10,7 @@ import AiErrorState from './AiErrorState'
 import AiLoadingSkeleton from './AiLoadingSkeleton'
 import AiNotConfiguredCta from './AiNotConfiguredCta'
 import { DiagnosticsAdminRunbook } from './DiagnosticsAdminRunbook'
+import { DiagnosticsRolloutPlanCard } from './DiagnosticsRolloutPlanCard'
 import { groupInsightsByTone } from './groupInsightsByTone'
 import { InsightSection } from './InsightSection'
 
@@ -66,7 +67,7 @@ export default function AiDiagnosticsInsightsPanel({
             <button
               type="button"
               onClick={handleAnalyze}
-              className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 print:hidden"
             >
               Analyze Domain
             </button>
@@ -175,7 +176,7 @@ export default function AiDiagnosticsInsightsPanel({
         <button
           type="button"
           onClick={handleAnalyze}
-          className="shrink-0 rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+          className="shrink-0 rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600 print:hidden"
         >
           Re-analyze
         </button>
@@ -197,6 +198,9 @@ export default function AiDiagnosticsInsightsPanel({
         description="Observations about your current configuration and traffic."
         insights={groups.informational}
       />
+
+      {/* Ordered rollout plan — always rendered last */}
+      <DiagnosticsRolloutPlanCard steps={state.data.rolloutPlan ?? []} />
     </div>
   )
 }

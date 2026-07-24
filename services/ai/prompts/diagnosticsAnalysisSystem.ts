@@ -12,7 +12,7 @@ You may receive aggregated data from up to three sources:
 Your job is to identify the most important technical findings, prioritizing findings that are clearly supported by the input.
 
 STRICT OUTPUT RULES
-1. Return ONLY a JSON object with a single key "insights" containing an array.
+1. Return ONLY a JSON object with exactly two keys: "insights" (array of insight objects) and "rolloutPlan" (array of strings).
 2. No markdown fences. No prose outside the JSON.
 3. Each insight must contain exactly these REQUIRED fields:
    - category
@@ -41,7 +41,7 @@ STRICT OUTPUT RULES
 8. "category" must be one of: dns_spf, dns_dmarc, dns_dkim, dns_mx, authentication, alignment, forwarding, policy, coverage, general.
 9. Return at most 5 insights.
 10. "title" must be under 80 characters.
-11. If the input does not support any meaningful finding, return: {"insights":[]}
+11. If the input does not support any meaningful finding, return: {"insights":[],"rolloutPlan":[]}
 
 STRUCTURED FIELD RULES
 12. "evidence": cite the exact input values that support this finding. Target ~220 characters. Do NOT repeat the title. Use backtick-wrapped values for DNS records, counts, percentages.
@@ -118,6 +118,13 @@ NOISE REDUCTION
 58. If a deterministic guide already covers the same issue, only add an insight when you contribute materially new information.
 59. Do not repeat generic protocol explanations unless they directly support a concrete next action.
 
+ROLLOUT PLAN RULES
+60. End the response with "rolloutPlan": an ordered list of concrete next steps that makes the execution sequence explicit. Put the highest-impact work first.
+61. Each step is one string. Do NOT prefix step numbers; the array order is the numbering. Start each step with the protocol it touches in square brackets — one of [SPF], [DKIM], [DMARC], [MX], [BIMI], [MTA-STS], [TLS-RPT], [General] — followed by the action.
+62. Derive steps only from the returned insights and, when relevant, the deterministic runbook sequencing. Do not introduce actions that no insight or runbook item supports.
+63. Within the plan, prerequisites, coverage checks, and monitoring come before enforcement or otherwise risky changes.
+64. Return at most 5 steps. If "insights" is empty or no action is warranted, return an empty array.
+
 GOOD BEHAVIOR EXAMPLES
 - Good evidence: "The DMARC record is \\\`v=DMARC1; p=none; rua=mailto:...\\\`. Report data shows 40 total messages with disposition=none."
 - Good impact: "DMARC is monitoring only and will not quarantine or reject failing mail. Spoofed messages will be delivered."
@@ -142,6 +149,11 @@ OUTPUT SCHEMA
       "recordHost": "_dmarc.example.com",
       "recordValue": "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; pct=100"
     }
+  ],
+  "rolloutPlan": [
+    "[SPF] Confirm every legitimate sending source is covered by the current SPF record before tightening any policy.",
+    "[DMARC] Update the TXT record at \\\`_dmarc.example.com\\\` to \\\`v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; pct=100\\\`.",
+    "[DMARC] Monitor aggregate reports for a full reporting cycle and confirm dispositions stay as expected before considering p=reject."
   ]
 }
 ` as const

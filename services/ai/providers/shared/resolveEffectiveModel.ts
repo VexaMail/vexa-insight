@@ -1,12 +1,13 @@
 import type { AIProviderId } from '../../contracts/AiProviderId'
-import { PROVIDER_DEFAULTS } from './providerDefaults'
+import type { AIServiceError } from '../../contracts/AiServiceError'
 
 /**
  * Resolves the effective model ID for runtime execution.
  *
  * Rules:
- * 1. If selectedModel is set and non-empty, use it.
- * 2. Otherwise, fall back to the provider's hardcoded default.
+ * 1. If selectedModel is set and non-empty, use it (trimmed).
+ * 2. Otherwise, throw AIServiceError (NOT_CONFIGURED) — never fall back to an
+ *    implicit provider default silently.
  */
 export function resolveEffectiveModel(
   providerId: AIProviderId,
@@ -16,9 +17,9 @@ export function resolveEffectiveModel(
     return selectedModel.trim()
   }
 
-  const fallback = PROVIDER_DEFAULTS[providerId]
-  console.info(
-    `[ai:models] no model selected for ${providerId}, using fallback: ${fallback}`,
-  )
-  return fallback
+  const error: AIServiceError = {
+    code: 'NOT_CONFIGURED',
+    message: `AI model is not configured for provider "${providerId}". Select a model in Settings > AI Provider.`,
+  }
+  throw error
 }

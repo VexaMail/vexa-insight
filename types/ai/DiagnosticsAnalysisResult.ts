@@ -3,6 +3,8 @@ import type { DiagnosticsInsight } from './DiagnosticsInsight'
 
 export type DiagnosticsAnalysisResult = {
   insights: DiagnosticsInsight[]
+  /** Ordered next steps (highest impact first), each prefixed with the protocol it touches. */
+  rolloutPlan: string[]
   summary?: string | undefined
   analyzedAt: string
   inputMeta: {

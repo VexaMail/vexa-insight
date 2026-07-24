@@ -1,7 +1,6 @@
 export * from './cache'
 export * from './fetchProviderModels'
 export * from './normalize'
-export * from './providerDefaults'
 export * from './providerError'
 export * from './providerModelFetchers'
 export * from './resolveEffectiveModel'

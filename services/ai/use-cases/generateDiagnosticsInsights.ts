@@ -17,6 +17,7 @@ import { buildDiagnosticsDnsSummary } from './buildDiagnosticsDnsSummary'
 import { buildDiagnosticsStatsSummary } from './buildDiagnosticsStatsSummary'
 import { getDomainDiagnosticsReportAggregate } from './getDomainDiagnosticsReportAggregate'
 import { parseDiagnosticsInsightsFromContent } from './parseDiagnosticsInsightsFromContent'
+import { parseDiagnosticsRolloutPlanFromContent } from './parseDiagnosticsRolloutPlanFromContent'
 import { wrapProviderError } from './wrapProviderError'
 
 /**
@@ -130,6 +131,10 @@ export async function generateDiagnosticsInsights(
     throw error
   }
 
+  const rolloutPlan = parseDiagnosticsRolloutPlanFromContent(
+    rawResponse.content,
+  )
+
   const durationMs = Date.now() - startMs
 
   console.info(
@@ -141,6 +146,7 @@ export async function generateDiagnosticsInsights(
       durationMs,
       promptLength: userPrompt.length,
       insightsCount: insights.length,
+      rolloutPlanSteps: rolloutPlan.length,
       tokensUsed: rawResponse.tokensUsed,
       model: rawResponse.model,
       hasDns: dns !== null,
@@ -152,6 +158,7 @@ export async function generateDiagnosticsInsights(
 
   return {
     insights,
+    rolloutPlan,
     analyzedAt: new Date().toISOString(),
     inputMeta: {
       domainName: options.domainName,
