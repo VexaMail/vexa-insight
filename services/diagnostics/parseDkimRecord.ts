@@ -1,4 +1,5 @@
 import type { DkimParsedRecord, DkimRecord } from '@/types/diagnostics'
+import { assessDkimKeyStrength } from './assessDkimKeyStrength'
 
 export function parseDkimRecord(dkim: DkimRecord): DkimParsedRecord {
   const errors: string[] = []
@@ -41,18 +42,9 @@ export function parseDkimRecord(dkim: DkimRecord): DkimParsedRecord {
   // Estimate key length from base64
   let keyLengthBits: number | null = null
   if (publicKeyPresent) {
-    const byteLength = Math.ceil((publicKeyBase64.length * 3) / 4)
-    keyLengthBits = byteLength * 8
-
-    if (keyLengthBits < 1024) {
-      errors.push(
-        `Key length is approximately ${keyLengthBits} bits. Minimum recommended is 1024 bits.`,
-      )
-    } else if (keyLengthBits < 2048) {
-      errors.push(
-        `Key length is approximately ${keyLengthBits} bits. 2048 bits or higher is recommended for better security.`,
-      )
-    }
+    const assessment = assessDkimKeyStrength(keyType, publicKeyBase64)
+    keyLengthBits = assessment.keyLengthBits
+    errors.push(...assessment.errors)
   }
 
   // Check for duplicate tags

@@ -4,8 +4,8 @@ export function analyzeLimits(spf: string): SpfCheckResult[] {
   const checks: SpfCheckResult[] = []
 
   const includeCount = (spf.match(/include:/gi) ?? []).length
-  const aCount = (spf.match(/ a[: ]/gi) ?? []).length
-  const mxCount = (spf.match(/ mx[: ]/gi) ?? []).length
+  const aCount = (spf.match(/(?:^|[\s+~?-])a(?=[:/\s]|$)/gi) ?? []).length
+  const mxCount = (spf.match(/(?:^|[\s+~?-])mx(?=[:/\s]|$)/gi) ?? []).length
   const redirectCount = (spf.match(/redirect=/gi) ?? []).length
   const existsCount = (spf.match(/exists:/gi) ?? []).length
 

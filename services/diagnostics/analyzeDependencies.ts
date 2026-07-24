@@ -3,11 +3,9 @@ import type { SpfCheckResult } from '@/types/diagnostics'
 export function analyzeDependencies(spf: string): SpfCheckResult[] {
   const checks: SpfCheckResult[] = []
 
-  const includes = spf.match(/include:([^\s;]+)/gi) ?? []
-  const thirdParty = includes.filter((inc) => {
-    const domain = inc.replace('include:', '')
-    return !domain.includes('_spf') || domain.includes('google')
-  })
+  // Every include delegates authorization to an externally controlled
+  // record, so all of them count as third-party dependencies.
+  const thirdParty = spf.match(/include:([^\s;]+)/gi) ?? []
 
   checks.push({
     name: 'Third-party includes',
