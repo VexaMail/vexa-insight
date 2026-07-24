@@ -10,7 +10,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    include: ['test/**/*.{test,spec}.ts'],
+    include: ['test/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['test/a11y/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
