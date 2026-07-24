@@ -11,6 +11,7 @@ import {
 
 import { useDiagnosticsView } from '@/hooks/diagnostics'
 import type { DiagnosticsViewProps } from './DiagnosticsViewProps'
+import { ExportPdfButton } from './ExportPdfButton'
 import { BimiDetailSection } from './bimi/BimiDetailSection'
 import { DkimDetailSection } from './dkim/DkimDetailSection'
 import { DmarcDetailSection } from './dmarc/DmarcDetailSection'
@@ -41,7 +42,7 @@ export function DiagnosticsView({
           Diagnostics
         </h1>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4 print:hidden">
           <Select value={currentDomainName} onValueChange={handleDomainChange}>
             <SelectTrigger className="bg-background w-full sm:w-[220px]">
               <SelectValue placeholder="Select Domain" />
@@ -61,6 +62,8 @@ export function DiagnosticsView({
             from={fromDate}
             to={toDate}
           />
+
+          <ExportPdfButton />
         </div>
       </div>
 

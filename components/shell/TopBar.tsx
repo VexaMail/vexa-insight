@@ -20,7 +20,7 @@ export default function TopBar() {
   } = useTopBar()
 
   return (
-    <header className="border-border/50 bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 backdrop-blur-xl">
+    <header className="border-border/50 bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 backdrop-blur-xl print:hidden">
       <div className="flex flex-1 items-center gap-3">
         <Breadcrumbs />
       </div>

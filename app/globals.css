@@ -255,6 +255,92 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────────────────
+   Print — the browser's native "Save as PDF" is the report export path.
+   Element-level hiding lives on the components as `print:` utilities; only
+   cross-cutting rules belong here.
+   ────────────────────────────────────────────────────────────────────────────── */
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  /* Always print the light palette, whatever theme is active on screen. */
+  :root,
+  .dark {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 30%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 10%;
+    --border: 0 0% 78%;
+    --input: 0 0% 78%;
+    --surface-1: 0 0% 98%;
+    --surface-2: 0 0% 96%;
+    --surface-3: 0 0% 94%;
+  }
+
+  /* The app shell is a fixed-height layout with an inner scroll container.
+     Without this the printed report is clipped to a single page. */
+  html,
+  body {
+    background: #fff !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  main {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Print background colors (score circle, status badges, table headers) and
+     drop screen-only effects that waste ink or render as grey boxes. */
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Keep report cards and table rows whole across page boundaries. */
+  section,
+  .bg-card,
+  .glass-card,
+  .glass-card-hover,
+  tr {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  a[href] {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
    Accessibility
    ────────────────────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

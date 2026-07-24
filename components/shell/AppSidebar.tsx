@@ -12,7 +12,7 @@ export default function AppSidebar() {
   const collapsed = false
 
   return (
-    <aside className="border-border/50 bg-sidebar sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r">
+    <aside className="border-border/50 bg-sidebar sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r print:hidden">
       <div className="border-border/50 flex h-14 items-center border-b px-3">
         <VexaLogo collapsed={collapsed} />
       </div>
