@@ -1,8 +1,10 @@
-import { getDb, jobPollEvents, jobRuns } from '@/lib/db'
+import { getDb, jobRuns } from '@/lib/db'
 import { getConfig } from '@/services/config'
 import { fireAndForgetDispatch } from '@/services/notifications'
 import type { EmailProgressPayload } from '@/types/dashboard'
 import { eq } from 'drizzle-orm'
+import { createJobEventBuffer } from './createJobEventBuffer'
+import { createPollStatusCoalescer } from './createPollStatusCoalescer'
 import { getPollStatusFromDb } from './getPollStatusFromDb'
 import { processAccount } from './processAccount'
 import { repairStuckEvents } from './repairStuckEvents'
@@ -54,25 +56,20 @@ export async function runIngestJob(): Promise<{
   const errors: string[] = []
   let totalProcessed = 0
 
+  const coalescer = createPollStatusCoalescer()
+
   const getAbortRequested = async (): Promise<boolean> => {
     const r = await getPollStatusFromDb()
     return r.abortRequested
   }
 
+  const eventBuffer =
+    jobRunId !== undefined ? createJobEventBuffer(jobRunId) : null
   const onEmailProgress = async (
     payload: EmailProgressPayload,
   ): Promise<void> => {
-    if (jobRunId === undefined) return
-    const label = payload.subject || `UID: ${payload.uid}`
-    await db.insert(jobPollEvents).values({
-      jobRunId,
-      imapAccountId: payload.accountId,
-      messageUid: payload.uid,
-      step: payload.step,
-      messageLabel: label.slice(0, 255),
-      error: payload.error ?? null,
-      createdAt: new Date(),
-    })
+    if (!eventBuffer) return
+    await eventBuffer.add(payload)
   }
 
   const heartbeatInterval = startHeartbeat()
@@ -91,6 +88,7 @@ export async function runIngestJob(): Promise<{
         totalProcessed,
         getAbortRequested,
         onEmailProgress,
+        coalescer,
         jobRunId,
       )
 
@@ -105,6 +103,8 @@ export async function runIngestJob(): Promise<{
     }
   } finally {
     clearInterval(heartbeatInterval)
+    if (eventBuffer) await eventBuffer.flush()
+    await coalescer.flush()
     const errorCount = errors.length
     await setPollStatusInDb({
       isRunning: false,

@@ -1,4 +1,5 @@
 export * from './AggregateStats'
+export * from './DailyRollupDelta'
 export * from './DomainRow'
 export * from './DomainSource'
 export * from './DomainsSummaryResponse'

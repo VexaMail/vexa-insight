@@ -1,49 +1,23 @@
 import { getDb, pollStatus } from '@/lib/db'
-import { eq } from 'drizzle-orm'
 import type { PollStatusUpdate } from './PollStatusUpdate'
 
 /**
- * Updates the persisted poll status. Ensures row exists then updates.
+ * Updates the persisted poll status in a single UPSERT.
+ *
+ * The previous implementation ran a SELECT to decide between INSERT and UPDATE,
+ * which is two statements per call. On the ingest hot path that doubled the
+ * write cost; a single INSERT ... ON CONFLICT DO UPDATE keeps the same "ensure
+ * row 1 exists, then patch the provided fields" semantics in one statement.
+ * Progress callers should route through the coalescer so this runs a few
+ * hundred times per job rather than once per email.
  */
 export async function setPollStatusInDb(
   update: PollStatusUpdate,
 ): Promise<void> {
   const ROW_ID = 1
   const db = getDb()
-  const row = await db
-    .select()
-    .from(pollStatus)
-    .where(eq(pollStatus.id, ROW_ID))
-    .limit(1)
-    .then((rows) => rows[0])
 
-  if (!row) {
-    await db.insert(pollStatus).values({
-      id: ROW_ID,
-      isRunning: update.isRunning ?? false,
-      lastCheck: update.lastCheck ?? null,
-      currentProcessed: update.currentProcessed ?? 0,
-      totalEmails: update.totalEmails ?? 0,
-      processingEmails: update.processingEmails ?? 0,
-      etaMs: update.etaMs ?? 0,
-      abortRequested: update.abortRequested ?? false,
-      activeJobRunId: update.activeJobRunId ?? null,
-      statusText: update.statusText ?? null,
-    })
-    return
-  }
-
-  const set: {
-    isRunning?: boolean
-    lastCheck?: Date | null
-    currentProcessed?: number
-    totalEmails?: number
-    processingEmails?: number
-    etaMs?: number
-    abortRequested?: boolean
-    activeJobRunId?: number | null
-    statusText?: string | null
-  } = {}
+  const set: Partial<typeof pollStatus.$inferInsert> = {}
   if (update.isRunning !== undefined) set.isRunning = update.isRunning
   if (update.lastCheck !== undefined) set.lastCheck = update.lastCheck
   if (update.currentProcessed !== undefined)
@@ -57,6 +31,13 @@ export async function setPollStatusInDb(
   if (update.activeJobRunId !== undefined)
     set.activeJobRunId = update.activeJobRunId
   if (update.statusText !== undefined) set.statusText = update.statusText
-  if (Object.keys(set).length === 0) return
-  await db.update(pollStatus).set(set).where(eq(pollStatus.id, ROW_ID))
+
+  const insert = db.insert(pollStatus).values({ id: ROW_ID, ...set })
+
+  if (Object.keys(set).length === 0) {
+    await insert.onConflictDoNothing({ target: pollStatus.id })
+    return
+  }
+
+  await insert.onConflictDoUpdate({ target: pollStatus.id, set })
 }

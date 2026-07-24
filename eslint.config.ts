@@ -72,6 +72,7 @@ const config = defineConfig([
             'scripts/fix-imports.ts',
             'scripts/rename-constants.ts',
             'scripts/seed-demo.ts',
+            'scripts/backfill-rollup.ts',
           ],
         },
         tsconfigRootDir: import.meta.dirname,

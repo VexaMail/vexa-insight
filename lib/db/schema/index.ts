@@ -1,6 +1,7 @@
 export { appSettings } from './app-settings'
 export { auditLog } from './audit-log'
 export { domains } from './domain'
+export { eventRollupDaily } from './event-rollup-daily'
 export { imapAccounts } from './imap-accounts'
 export { ipAddresses } from './ip-addresses'
 export { ipHostnameEnrichments } from './ip-hostname-enrichments'

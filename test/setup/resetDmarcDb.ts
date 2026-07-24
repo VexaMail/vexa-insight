@@ -1,5 +1,6 @@
 import {
   domains,
+  eventRollupDaily,
   getDb,
   ipAddresses,
   normalizedEventDkimResults,
@@ -18,6 +19,7 @@ export function resetDmarcDb(): void {
   db.delete(normalizedEventDkimResults).run()
   db.delete(normalizedEventPolicyOverrides).run()
   db.delete(normalizedEvents).run()
+  db.delete(eventRollupDaily).run()
   db.delete(rawReports).run()
   db.delete(domains).run()
   db.delete(ipAddresses).run()

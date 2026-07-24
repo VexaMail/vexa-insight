@@ -1,15 +1,18 @@
 import {
+  eventRollupDaily,
   getDb,
   normalizedEventDkimResults,
   normalizedEventPolicyOverrides,
   normalizedEvents,
   rawReports,
 } from '@/lib/db'
-import { upsertIp } from '@/services/geoip'
+import { upsertIpsBatch } from '@/services/geoip'
 import { fireAndForgetDispatch } from '@/services/notifications'
 import type { ParseResult } from '@/types/dmarc'
 import type { IngestResult } from '@/types/reports'
-import { eq } from 'drizzle-orm'
+import { normalizeIp } from '@/utils/geoip'
+import { computeDailyRollupDeltas } from '@/utils/reports'
+import { eq, sql } from 'drizzle-orm'
 import { getOrCreateDomainId } from './getOrCreateDomainId'
 
 /**
@@ -53,19 +56,21 @@ export async function ingestParsedReport(
   // Resolve all async IP upserts BEFORE entering the transaction.
   // SQLite transactions (better-sqlite3) must be synchronous; an async
   // callback causes the "Transaction function cannot return a promise" error.
-  // Dedupe IPs before upsert: many DMARC reports include multiple events
-  // from the same source IP. Without dedup, concurrent upsertIp calls
-  // race on the UNIQUE index and the whole ingest rejects.
-  const uniqueIps = [...new Set(report.events.map((ev) => ev.sourceIp))]
-  const ipIdByValue = new Map<string, number>()
-  for (const ip of uniqueIps) {
-    ipIdByValue.set(ip, await upsertIp(ip))
-  }
+  // upsertIpsBatch dedupes internally and resolves every unique source IP in a
+  // few set-based statements instead of one round-trip per IP.
+  const ipIdByValue = await upsertIpsBatch(
+    report.events.map((ev) => ev.sourceIp),
+  )
   const ipAddressIds = report.events.map((ev) => {
-    const id = ipIdByValue.get(ev.sourceIp)
+    const id = ipIdByValue.get(normalizeIp(ev.sourceIp))
     if (id == null) throw new Error(`Missing ipAddressId for ${ev.sourceIp}`)
     return id
   })
+
+  // Per-day rollup deltas for this report, computed before the (synchronous)
+  // transaction so they can be upserted alongside the event rows and keep
+  // event_rollup_daily consistent with normalized_events.
+  const rollupDeltas = computeDailyRollupDeltas(report.events)
 
   // Use a transaction since we are inserting into multiple tables per event.
   // The callback MUST be synchronous (better-sqlite3 constraint).
@@ -126,6 +131,24 @@ export async function ingestParsedReport(
           )
           .run()
       }
+    }
+
+    for (const [day, delta] of rollupDeltas) {
+      tx.insert(eventRollupDaily)
+        .values({
+          domainId,
+          day,
+          totalCount: delta.totalCount,
+          passedCount: delta.passedCount,
+        })
+        .onConflictDoUpdate({
+          target: [eventRollupDaily.domainId, eventRollupDaily.day],
+          set: {
+            totalCount: sql`${eventRollupDaily.totalCount} + ${delta.totalCount}`,
+            passedCount: sql`${eventRollupDaily.passedCount} + ${delta.passedCount}`,
+          },
+        })
+        .run()
     }
   })
 

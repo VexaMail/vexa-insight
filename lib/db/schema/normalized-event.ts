@@ -43,5 +43,16 @@ export const normalizedEvents = sqliteTable(
     index('domain_date_idx').on(table.domainId, table.reportBeginDate),
     index('domain_spf_auth_idx').on(table.domainId, table.spfAuthResult),
     index('event_report_end_idx').on(table.reportEndDate),
+    // Foreign-key lookups SQLite does not auto-index; per-report and per-IP
+    // scans (getReportSources, getTopIpSenders) were full table scans.
+    index('event_raw_report_idx').on(table.rawReportId),
+    index('event_ip_address_idx').on(table.ipAddressId),
+    // Covering index for scoped SUM(count) over a date window: SQLite can sum
+    // straight from the index without touching the table.
+    index('event_domain_end_count_idx').on(
+      table.domainId,
+      table.reportEndDate,
+      table.count,
+    ),
   ],
 )

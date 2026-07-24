@@ -1,16 +1,16 @@
-import { domains, getDb, normalizedEvents } from '@/lib/db'
+import { domains, eventRollupDaily, getDb } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { DomainsSummaryResponse, DomainSummary } from '@/types/reports'
 import { and, eq, inArray, sql } from 'drizzle-orm'
-import { getDateRangeConditions } from './formatters/dateRangeConditions'
+import { getRollupDayConditions } from './formatters/rollupDayConditions'
 import { getAggregateStats } from './getAggregateStats'
 
 /**
  * Returns all domain summaries plus overall aggregate stats.
  *
- * Performs a single GROUP BY query over normalized_events joined with domains
- * (instead of N+1 per-domain queries). Domains with no events are still
- * included with zero counts.
+ * Single GROUP BY over domains left-joined with event_rollup_daily (instead of
+ * scanning normalized_events), so domains with no events still appear with zero
+ * counts while the totals come from the pre-aggregated rollup.
  */
 export async function getDomainsSummaryAll(
   from?: Date,
@@ -24,23 +24,20 @@ export async function getDomainsSummaryAll(
     return { domains: [], overall }
   }
 
-  const conditions = [...getDateRangeConditions(from, to)]
-  if (allowedIds !== null) {
-    conditions.push(inArray(normalizedEvents.domainId, allowedIds))
-  }
+  const joinConditions = [
+    eq(eventRollupDaily.domainId, domains.id),
+    ...getRollupDayConditions(from, to),
+  ]
 
   const aggregateQuery = db
     .select({
       domainId: domains.id,
       domainName: domains.name,
-      totalMessages: sql<number>`coalesce(sum(${normalizedEvents.count}), 0)`,
-      passedCount: sql<number>`coalesce(sum(case when ${normalizedEvents.spfResult} = 'pass' or ${normalizedEvents.dkimResult} = 'pass' then ${normalizedEvents.count} else 0 end), 0)`,
+      totalMessages: sql<number>`coalesce(sum(${eventRollupDaily.totalCount}), 0)`,
+      passedCount: sql<number>`coalesce(sum(${eventRollupDaily.passedCount}), 0)`,
     })
     .from(domains)
-    .leftJoin(
-      normalizedEvents,
-      and(eq(normalizedEvents.domainId, domains.id), ...conditions),
-    )
+    .leftJoin(eventRollupDaily, and(...joinConditions))
     .groupBy(domains.id, domains.name)
 
   if (allowedIds !== null) {

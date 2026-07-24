@@ -5,6 +5,7 @@ export {
   appSettings,
   auditLog,
   domains,
+  eventRollupDaily,
   imapAccounts,
   ipAddresses,
   ipHostnameEnrichments,

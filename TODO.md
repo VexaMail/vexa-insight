@@ -38,6 +38,13 @@
 - [!] Re-upgrade `@radix-ui/react-slot` past 1.2.x once a release ships the module-scope `SlotContext` behind a `"use client"` directive (or an RSC-safe build). 1.3.x calls `React.createContext` at module scope with no directive, which crashes `next build` page-data collection (`e.createContext is not a function`) for every server page importing UI components that use Slot. Smallest unblock: test the next 1.4.x stable release with `pnpm run build` (checked 2026-07-24: latest stable is still 1.3.1; 1.4.0 only has RCs).
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Checked 2026-07-24: typescript-eslint@8.65.0 still declares `typescript >=4.8.4 <6.1.0`. See ADR 0005.
 
+## Performance
+
+- [ ] Remove the unused `services/imap/getImapTotalCount.ts` (dead code; no callers). If wired into the job it would add a redundant full-mailbox IMAP SEARCH on top of the one `processFolder` already runs. Flagged during the ADR 0008 batched-ingest work.
+- [ ] Document the one-time `pnpm run backfill:rollup` step in the upgrade/deploy notes. On existing installs the dashboard aggregates read `event_rollup_daily`, which lags `normalized_events` until the backfill runs (ADR 0008).
+- [ ] `getReportSources` still builds an `IN (...)` of every event id for a report and does an O(sources x events) JS join; `getReportStats` and `getReportEventSummaries` scan per report. These now use the new `raw_report_id` index but could move to a GROUP BY. (Explore flag, 2026-07-24.)
+- [ ] Consider rollup-style pre-aggregation for `getTopIpSenders` and `getVolumeByOrg`; they benefit from the new `ip_address_id` index but still GROUP BY over `normalized_events`.
+
 ## Refactors
 
 - [ ] `app/api/v1/job-runs/[id]/poll-status/route.ts` returns the non-standard `{ error: 'Invalid Job ID' }` for a bad path segment instead of `{ error: { code, message } }`. Path params were out of scope for the boundary-validation pass.

@@ -1,6 +1,7 @@
 import { getDatabaseUrl } from '@/lib/config'
 import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { applyConnectionPragmas } from './applyConnectionPragmas'
 import { resolveDbFilePath } from './resolveDbFilePath'
 import * as schema from './schema'
 
@@ -12,6 +13,7 @@ export const getDb = (() => {
     const url = getDatabaseUrl()
     const filePath = resolveDbFilePath(url)
     const sqlite = new Database(filePath)
+    applyConnectionPragmas(sqlite)
     db = drizzle(sqlite, { schema })
     return db
   }

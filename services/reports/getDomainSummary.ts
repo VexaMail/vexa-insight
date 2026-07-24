@@ -1,11 +1,15 @@
-import { domains, getDb, normalizedEvents } from '@/lib/db'
+import { domains, eventRollupDaily, getDb } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { DomainSummary } from '@/types/reports'
-import { and, eq } from 'drizzle-orm'
-import { getDateRangeConditions } from './formatters/dateRangeConditions'
+import { and, eq, sql } from 'drizzle-orm'
+import { getRollupDayConditions } from './formatters/rollupDayConditions'
 
 /**
  * Returns aggregated summary for a domain (total, passed, failed, pass rate).
+ *
+ * Reads pre-aggregated per-day totals from event_rollup_daily instead of
+ * loading every normalized_events row into memory and summing in JS, which was
+ * an unbounded per-request scan on high-traffic domains.
  */
 export async function getDomainSummary(
   domainId: number,
@@ -22,26 +26,21 @@ export async function getDomainSummary(
     .where(eq(domains.id, domainId))
     .limit(1)
   if (!domainRow[0]) return null
-  const eventsQuery = db
-    .select({
-      count: normalizedEvents.count,
-      spfResult: normalizedEvents.spfResult,
-      dkimResult: normalizedEvents.dkimResult,
-    })
-    .from(normalizedEvents)
 
   const conditions = [
-    eq(normalizedEvents.domainId, domainId),
-    ...getDateRangeConditions(from, to),
+    eq(eventRollupDaily.domainId, domainId),
+    ...getRollupDayConditions(from, to),
   ]
+  const [sums] = await db
+    .select({
+      total: sql<number>`coalesce(sum(${eventRollupDaily.totalCount}), 0)`,
+      passed: sql<number>`coalesce(sum(${eventRollupDaily.passedCount}), 0)`,
+    })
+    .from(eventRollupDaily)
+    .where(and(...conditions))
 
-  const events = await eventsQuery.where(and(...conditions))
-  let total = 0
-  let passed = 0
-  for (const e of events) {
-    total += e.count
-    if (e.spfResult === 'pass' || e.dkimResult === 'pass') passed += e.count
-  }
+  const total = Number(sums?.total ?? 0)
+  const passed = Number(sums?.passed ?? 0)
   return {
     domainId,
     domainName: domainRow[0].name,
