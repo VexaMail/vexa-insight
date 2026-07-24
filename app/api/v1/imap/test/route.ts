@@ -2,28 +2,11 @@ import { requireAdminAuth } from '@/services/api'
 import { testConnection } from '@/services/imap'
 import { getImapAccountsRow } from '@/services/settings'
 import type { ImapAccountConfig } from '@/types/config'
+import { imapTestRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { parseAccount } from './parseAccount'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  function parseBody(
-    body: unknown,
-  ): { account: ImapAccountConfig } | { accountId: number } | null {
-    if (body === null || typeof body !== 'object' || Array.isArray(body)) {
-      return null
-    }
-    const o = body as Record<string, unknown>
-    if (typeof o.accountId === 'number' && o.accountId > 0) {
-      return { accountId: o.accountId }
-    }
-    const fromNested = parseAccount(o.account)
-    if (fromNested) return { account: fromNested }
-    const fromTop = parseAccount(o)
-    if (fromTop) return { account: fromTop }
-    return null
-  }
-
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -37,8 +20,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 400 },
     )
   }
-  const parsed = parseBody(body)
-  if (!parsed) {
+  const parsed = imapTestRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
       {
         error: {
@@ -50,10 +33,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 400 },
     )
   }
+  const input = parsed.data
   let account: ImapAccountConfig
-  if ('accountId' in parsed) {
+  if ('accountId' in input) {
     const rows = getImapAccountsRow()
-    const row = rows.find((r) => r.id === parsed.accountId)
+    const row = rows.find((r) => r.id === input.accountId)
     if (!row) {
       return NextResponse.json(
         { error: { code: 'NOT_FOUND', message: 'Account not found' } },
@@ -74,7 +58,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       markAsReadAfterProcess: row.markAsReadAfterProcess,
     }
   } else {
-    account = parsed.account
+    account = input.account
   }
   const result = await testConnection(account)
   if (!result.success) {

@@ -1,6 +1,5 @@
-import { getDb, ipHostnameEnrichments } from '@/lib/db'
 import { withApiAuth } from '@/services/api'
-import { eq } from 'drizzle-orm'
+import { getIpHostnameEnrichment } from '@/services/ip-hostname'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -10,21 +9,9 @@ export const GET = withApiAuth(
     { params }: { params: Promise<{ ip: string }> },
   ): Promise<NextResponse> => {
     const { ip } = await params
-    const db = getDb()
 
     try {
-      const [record] = await db
-        .select({
-          ip: ipHostnameEnrichments.ip,
-          hostname: ipHostnameEnrichments.hostname,
-          lookupStatus: ipHostnameEnrichments.lookupStatus,
-          lastLookupAt: ipHostnameEnrichments.lastLookupAt,
-          nextLookupAt: ipHostnameEnrichments.nextLookupAt,
-          error: ipHostnameEnrichments.lookupError,
-        })
-        .from(ipHostnameEnrichments)
-        .where(eq(ipHostnameEnrichments.ip, ip))
-        .limit(1)
+      const record = await getIpHostnameEnrichment(ip)
 
       if (!record) {
         return NextResponse.json(

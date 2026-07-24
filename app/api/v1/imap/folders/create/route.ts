@@ -1,29 +1,12 @@
 import { requireAdminAuth } from '@/services/api'
 import { getImapAccountsRow } from '@/services/settings'
 import type { ImapAccountConfig } from '@/types/config'
+import { imapCreateFolderRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { createFolder } from '../../../../../../services/imap/createFolder'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  function parseBody(
-    body: unknown,
-  ): { accountId: number; folderPath: string } | null {
-    if (body === null || typeof body !== 'object' || Array.isArray(body)) {
-      return null
-    }
-    const o = body as Record<string, unknown>
-    if (
-      typeof o.accountId === 'number' &&
-      o.accountId > 0 &&
-      typeof o.folderPath === 'string' &&
-      o.folderPath.trim().length > 0
-    ) {
-      return { accountId: o.accountId, folderPath: o.folderPath.trim() }
-    }
-    return null
-  }
-
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -37,8 +20,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 400 },
     )
   }
-  const parsed = parseBody(body)
-  if (!parsed) {
+  const parsed = imapCreateFolderRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
       {
         error: {
@@ -50,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     )
   }
   const rows = getImapAccountsRow()
-  const row = rows.find((r) => r.id === parsed.accountId)
+  const row = rows.find((r) => r.id === parsed.data.accountId)
   if (!row) {
     return NextResponse.json(
       { error: { code: 'NOT_FOUND', message: 'Account not found' } },
@@ -71,7 +54,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     markAsReadAfterProcess: row.markAsReadAfterProcess,
   }
   try {
-    const path = await createFolder(account, parsed.folderPath)
+    const path = await createFolder(account, parsed.data.folderPath)
     return NextResponse.json({ data: { path } }, { status: 201 })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

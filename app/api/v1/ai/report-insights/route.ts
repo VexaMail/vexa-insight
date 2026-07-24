@@ -1,7 +1,9 @@
 import type { AIServiceError } from '@/services/ai'
 import { generateReportInsights } from '@/services/ai'
 import { withApiAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
+import { reportInsightsRequestSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -12,6 +14,8 @@ import { NextResponse } from 'next/server'
  */
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
+    const denied = await requirePermission('reports:read')
+    if (denied) return denied
     const AI_LIMIT = 10
     const AI_WINDOW_MS = 60_000
     const rlKey = `ai-report:${getRateLimitKey(request)}`
@@ -27,22 +31,26 @@ export const POST = withApiAuth(
       )
     }
     try {
-      const body = (await request.json()) as { reportId?: number }
-      const reportId = body.reportId
+      const body: unknown = await request.json()
+      const parsed = reportInsightsRequestSchema.safeParse(body)
 
-      if (!reportId || typeof reportId !== 'number' || reportId < 1) {
+      if (!parsed.success) {
         return NextResponse.json(
           {
             error: {
               code: 'INVALID_INPUT',
-              message: 'Valid reportId is required.',
+              message:
+                parsed.error.issues[0]?.message ??
+                'Valid reportId is required.',
             },
           },
           { status: 400 },
         )
       }
 
-      const result = await generateReportInsights({ reportId })
+      const result = await generateReportInsights({
+        reportId: parsed.data.reportId,
+      })
       return NextResponse.json({ data: result })
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'code' in err) {

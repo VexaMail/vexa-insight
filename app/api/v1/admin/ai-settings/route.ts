@@ -2,11 +2,15 @@ import { checkProviderApiKey, updateAiSettings } from '@/services/ai'
 import { requireAdminAuth } from '@/services/api'
 import { getConfig } from '@/services/config'
 import { getAiSettingsPublic } from '@/services/settings'
-import type { AIProviderId } from '@/types/ai'
+import { aiSettingsUpdateSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const auth = requireAdminAuth(request)
+  if (auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status })
+  }
   const data = getAiSettingsPublic()
   return NextResponse.json({ data })
 }
@@ -27,31 +31,25 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     )
   }
 
-  const parsed = body as {
-    providerId?: string | null
-    apiKey?: string | null
-    model?: string | null
-  }
-
-  const validProviders = ['anthropic', 'gemini', 'openai', 'openrouter']
-
-  if (
-    parsed.providerId !== undefined &&
-    parsed.providerId !== null &&
-    !validProviders.includes(parsed.providerId)
-  ) {
+  const parsed = aiSettingsUpdateSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: { code: 'VALIDATION_ERROR', message: 'Invalid AI provider' } },
+      {
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: parsed.error.issues[0]?.message ?? 'Invalid AI settings',
+        },
+      },
       { status: 400 },
     )
   }
 
   const config = getConfig()
 
-  if (parsed.apiKey && parsed.providerId) {
+  if (parsed.data.apiKey && parsed.data.providerId) {
     const isValid = await checkProviderApiKey(
-      parsed.providerId as AIProviderId,
-      parsed.apiKey,
+      parsed.data.providerId,
+      parsed.data.apiKey,
     )
     if (!isValid) {
       return NextResponse.json(
@@ -67,10 +65,10 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
   }
 
   updateAiSettings(
-    (parsed.providerId as AIProviderId) ?? null,
-    parsed.apiKey ?? null,
+    parsed.data.providerId ?? null,
+    parsed.data.apiKey ?? null,
     config.secretKey,
-    parsed.model,
+    parsed.data.model,
   )
 
   const data = getAiSettingsPublic()

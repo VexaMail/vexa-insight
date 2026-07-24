@@ -1,6 +1,7 @@
 import { withApiAuth } from '@/services/api'
 import { getDomainSources } from '@/services/reports'
 import { parseIdParam } from '@/utils/api'
+import { daysFilterQuerySchema } from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -18,13 +19,9 @@ export const GET = withApiAuth(
       )
     }
     const url = new URL(request.url)
-    const daysParam = url.searchParams.get('days')
-    const daysNum =
-      daysParam != null ? Number.parseInt(daysParam, 10) : undefined
-    const daysFilter =
-      typeof daysNum === 'number' && Number.isInteger(daysNum) && daysNum > 0
-        ? daysNum
-        : undefined
+    const daysFilter = daysFilterQuerySchema.parse(
+      url.searchParams.get('days') ?? undefined,
+    )
     const sources = await getDomainSources(domainId, daysFilter)
     return NextResponse.json({ data: sources })
   },

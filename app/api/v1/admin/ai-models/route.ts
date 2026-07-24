@@ -1,6 +1,6 @@
 import { fetchProviderModels, resolveStoredApiKey } from '@/services/ai'
 import { requireAdminAuth } from '@/services/api'
-import type { AIProviderId } from '@/types/ai'
+import { aiModelsRequestSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -11,7 +11,6 @@ import { NextResponse } from 'next/server'
  * Accepts an optional apiKey in the body; falls back to the DB-stored key.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const VALID_PROVIDERS = ['anthropic', 'gemini', 'openai', 'openrouter']
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -27,22 +26,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     )
   }
 
-  const parsed = body as { providerId?: string; apiKey?: string }
-
-  if (!parsed.providerId || !VALID_PROVIDERS.includes(parsed.providerId)) {
+  const parsed = aiModelsRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
       {
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'A valid providerId is required',
+          message:
+            parsed.error.issues[0]?.message ?? 'A valid providerId is required',
         },
       },
       { status: 400 },
     )
   }
 
-  const providerId = parsed.providerId as AIProviderId
-  let apiKey = parsed.apiKey?.trim() ?? ''
+  const providerId = parsed.data.providerId
+  let apiKey = parsed.data.apiKey?.trim() ?? ''
 
   if (!apiKey) {
     apiKey = resolveStoredApiKey()

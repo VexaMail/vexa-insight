@@ -20,6 +20,7 @@ export const ROLE_PERMISSIONS: Readonly<
     'imap:write',
     'imap:rotate',
     'reports:read',
+    'reports:write',
     'audit:read',
     'install:write',
   ],
@@ -29,7 +30,13 @@ export const ROLE_PERMISSIONS: Readonly<
     'imap:write',
     'imap:rotate',
     'reports:read',
+    'reports:write',
   ],
   viewer: ['reports:read'],
-  user: ['reports:read'],
+  // `user` is the DB default and the only non-admin role the app assigns,
+  // so it must keep the abilities pre-RBAC accounts had. Report upload is
+  // reachable from the ungated /upload page for every signed-in user, hence
+  // `reports:write`. `viewer` stays strictly read-only: it is opt-in and was
+  // never auto-assigned.
+  user: ['reports:read', 'reports:write'],
 })

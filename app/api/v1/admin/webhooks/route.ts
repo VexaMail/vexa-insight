@@ -1,12 +1,17 @@
-import { getDb, webhookEndpoints } from '@/lib/db'
 import { withApiAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
+import {
+  createWebhookEndpoint,
+  listWebhookEndpoints,
+} from '@/services/notifications'
 import { webhookEndpointInputSchema } from '@/validators/webhooks'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export const GET = withApiAuth(async (): Promise<NextResponse> => {
-  const db = getDb()
-  const rows = db.select().from(webhookEndpoints).all()
+  const denied = await requirePermission('settings:read')
+  if (denied) return denied
+  const rows = listWebhookEndpoints()
   const data = rows.map((row) => ({
     ...row,
     secret: row.secret ? '••••••••' : null,
@@ -17,6 +22,8 @@ export const GET = withApiAuth(async (): Promise<NextResponse> => {
 
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
+    const denied = await requirePermission('settings:write')
+    if (denied) return denied
     let body: unknown
     try {
       body = await request.json()
@@ -36,21 +43,7 @@ export const POST = withApiAuth(
         { status: 400 },
       )
     }
-    const db = getDb()
-    const now = new Date()
-    const inserted = db
-      .insert(webhookEndpoints)
-      .values({
-        name: parsed.data.name,
-        url: parsed.data.url,
-        enabled: parsed.data.enabled,
-        events: parsed.data.events.join(','),
-        secret: parsed.data.secret ?? null,
-        createdAt: now,
-        updatedAt: now,
-      })
-      .returning()
-      .get()
+    const inserted = createWebhookEndpoint(parsed.data)
     return NextResponse.json(
       {
         data: {

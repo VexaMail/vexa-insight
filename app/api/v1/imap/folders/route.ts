@@ -2,21 +2,11 @@ import { requireAdminAuth } from '@/services/api'
 import { listFolders } from '@/services/imap'
 import { getImapAccountsRow } from '@/services/settings'
 import type { ImapAccountConfig } from '@/types/config'
+import { imapFoldersRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  function parseBody(body: unknown): { accountId: number } | null {
-    if (body === null || typeof body !== 'object' || Array.isArray(body)) {
-      return null
-    }
-    const o = body as Record<string, unknown>
-    if (typeof o.accountId === 'number' && o.accountId > 0) {
-      return { accountId: o.accountId }
-    }
-    return null
-  }
-
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -30,8 +20,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 400 },
     )
   }
-  const parsed = parseBody(body)
-  if (!parsed) {
+  const parsed = imapFoldersRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
       {
         error: {
@@ -43,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     )
   }
   const rows = getImapAccountsRow()
-  const row = rows.find((r) => r.id === parsed.accountId)
+  const row = rows.find((r) => r.id === parsed.data.accountId)
   if (!row) {
     return NextResponse.json(
       { error: { code: 'NOT_FOUND', message: 'Account not found' } },

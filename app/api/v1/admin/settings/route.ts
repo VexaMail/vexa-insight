@@ -5,7 +5,11 @@ import { settingsUpdateSchema } from '@/utils/validation'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const auth = requireAdminAuth(request)
+  if (auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status })
+  }
   const data = getSettingsPublic()
   if (!data) {
     return NextResponse.json(

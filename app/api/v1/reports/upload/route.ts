@@ -1,16 +1,18 @@
 import { withApiAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
 import { parseDmarcFile } from '@/services/dmarc'
 import { ingestParsedReport } from '@/services/reports'
 
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { MAX_FILE_SIZE } from '../../../../../utils/dmarc/maxFileSize'
-import { ALLOWED_EXT } from './allowedExt'
+import { reportUploadSchema } from './reportUploadSchema'
 import { UPLOAD_LIMIT } from './uploadLimit'
 
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
+    const denied = await requirePermission('reports:write')
+    if (denied) return denied
     const UPLOAD_WINDOW_MS = 60_000
     const key = getRateLimitKey(request)
     if (!checkRateLimit(key, UPLOAD_LIMIT, UPLOAD_WINDOW_MS)) {
@@ -30,35 +32,20 @@ export const POST = withApiAuth(
         { status: 400 },
       )
     }
-    const file = formData.get('file')
-    if (file == null || !(file instanceof File)) {
-      return NextResponse.json(
-        { error: { code: 'BAD_REQUEST', message: 'Missing or invalid file' } },
-        { status: 400 },
-      )
-    }
-    if (file.size > MAX_FILE_SIZE) {
+    const parsed = reportUploadSchema.safeParse({ file: formData.get('file') })
+    if (!parsed.success) {
       return NextResponse.json(
         {
           error: {
             code: 'BAD_REQUEST',
-            message: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024} MB`,
+            message:
+              parsed.error.issues[0]?.message ?? 'Missing or invalid file',
           },
         },
         { status: 400 },
       )
     }
-    if (!ALLOWED_EXT.test(file.name)) {
-      return NextResponse.json(
-        {
-          error: {
-            code: 'BAD_REQUEST',
-            message: 'Invalid file type. Allowed: .xml, .gz, .gzip, .zip',
-          },
-        },
-        { status: 400 },
-      )
-    }
+    const { file } = parsed.data
     let buffer: Buffer
     try {
       buffer = Buffer.from(await file.arrayBuffer())

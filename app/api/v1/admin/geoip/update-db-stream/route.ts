@@ -1,5 +1,6 @@
 import { requireAdminAuth } from '@/services/api'
 import { createUpdateDbStream } from '@/services/geoip'
+import { nonEmptyTextQuerySchema } from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -7,7 +8,9 @@ import { NextResponse } from 'next/server'
 // For Server-Sent Events, we return a web Standard Response with a ReadableStream
 export async function GET(request: NextRequest) {
   // EventSource cannot send custom headers easily, so we read from URL query params
-  const apiKey = request.nextUrl.searchParams.get('apiKey')
+  const apiKey = nonEmptyTextQuerySchema.parse(
+    request.nextUrl.searchParams.get('apiKey'),
+  )
 
   // Re-use logic from requireAdminAuth, but we must construct a dummy request headers
   // since requireAdminAuth reads from request.headers.

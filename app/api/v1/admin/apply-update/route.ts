@@ -1,12 +1,12 @@
 import { requireAdminAccess, requireAdminAuth } from '@/services/api'
-import { getSession } from '@/services/auth'
+import { getSession, requirePermission } from '@/services/auth'
 import {
   getSelfUpdateCapability,
   getSelfUpdateStatus,
   runSelfUpdate,
   writeSelfUpdateAuditEntry,
 } from '@/services/updates'
-import { isValidUpdateRef } from '@/utils/updates'
+import { selfUpdateApplySchema } from '@/validators/updates'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -15,6 +15,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (access) {
     return NextResponse.json({ error: access.error }, { status: access.status })
   }
+  const denied = await requirePermission('settings:read')
+  if (denied) return denied
   const data = getSelfUpdateStatus()
   return NextResponse.json({ data })
 }
@@ -46,25 +48,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch {
     body = null
   }
-  const ref =
-    body && typeof body === 'object' && 'ref' in body
-      ? (body as { ref?: unknown }).ref
-      : null
-  if (ref !== null && ref !== undefined) {
-    if (typeof ref !== 'string' || !isValidUpdateRef(ref)) {
-      return NextResponse.json(
-        {
-          error: {
-            code: 'INVALID_REF',
-            message: 'ref must match vMAJOR.MINOR.PATCH',
-          },
+  const parsed = selfUpdateApplySchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: {
+          code: 'INVALID_REF',
+          message:
+            parsed.error.issues[0]?.message ??
+            'ref must match vMAJOR.MINOR.PATCH',
         },
-        { status: 400 },
-      )
-    }
+      },
+      { status: 400 },
+    )
   }
 
-  const refToApply = typeof ref === 'string' ? ref : null
+  const refToApply = parsed.data.ref ?? null
   const session = await getSession()
   const ipHeader =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??

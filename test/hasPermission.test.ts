@@ -12,19 +12,29 @@ describe('hasPermission', () => {
     expect(hasPermission('operator', 'imap:rotate')).toBe(true)
     expect(hasPermission('operator', 'settings:read')).toBe(true)
     expect(hasPermission('operator', 'reports:read')).toBe(true)
+    expect(hasPermission('operator', 'reports:write')).toBe(true)
     expect(hasPermission('operator', 'users:write')).toBe(false)
     expect(hasPermission('operator', 'audit:read')).toBe(false)
   })
 
   it('grants viewer only reports:read', () => {
     expect(hasPermission('viewer', 'reports:read')).toBe(true)
+    expect(hasPermission('viewer', 'reports:write')).toBe(false)
     expect(hasPermission('viewer', 'settings:read')).toBe(false)
     expect(hasPermission('viewer', 'imap:read')).toBe(false)
   })
 
-  it('treats legacy "user" role as viewer-equivalent', () => {
+  it('lets the legacy "user" role read and ingest reports', () => {
     expect(hasPermission('user', 'reports:read')).toBe(true)
+    // The /upload page is not role-gated, so the default role must keep
+    // the ingest ability it had before RBAC landed.
+    expect(hasPermission('user', 'reports:write')).toBe(true)
+  })
+
+  it('denies the legacy "user" role administrative permissions', () => {
     expect(hasPermission('user', 'settings:write')).toBe(false)
+    expect(hasPermission('user', 'users:write')).toBe(false)
+    expect(hasPermission('user', 'audit:read')).toBe(false)
   })
 
   it('denies unknown roles by default', () => {

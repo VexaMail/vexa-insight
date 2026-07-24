@@ -4,32 +4,27 @@ import {
   getReports,
   getReportsByDomainId,
 } from '@/services/reports'
-import { parseDateParams } from '@/utils/api'
-import { coerceNumber } from '@/utils/validation'
+import {
+  dateRangeQuerySchema,
+  domainIdQuerySchema,
+  nonEmptyTextQuerySchema,
+  pageQuerySchema,
+  reportsPageSizeQuerySchema,
+} from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { DEFAULT_PAGE } from './defaultPage'
-import { DEFAULT_PAGE_SIZE } from './defaultPageSize'
 
 export const GET = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
-    const MAX_PAGE_SIZE = 100
     const { searchParams } = new URL(request.url)
-    const pageRaw = coerceNumber(searchParams.get('page')) ?? DEFAULT_PAGE
-    const pageSizeRaw =
-      coerceNumber(searchParams.get('pageSize')) ?? DEFAULT_PAGE_SIZE
-
-    const page = Math.max(1, Math.floor(pageRaw))
-    const pageSize = Math.min(
-      MAX_PAGE_SIZE,
-      Math.max(1, Math.floor(pageSizeRaw)),
+    const page = pageQuerySchema.parse(searchParams.get('page') ?? undefined)
+    const pageSize = reportsPageSizeQuerySchema.parse(
+      searchParams.get('pageSize') ?? undefined,
     )
 
-    const domainId = coerceNumber(searchParams.get('domainId'))
-    const orgRaw = searchParams.get('org')
-    const org = orgRaw && orgRaw.length > 0 ? orgRaw : undefined
-    const domainRaw = searchParams.get('domain')
-    const domain = domainRaw && domainRaw.length > 0 ? domainRaw : undefined
+    const domainId = domainIdQuerySchema.parse(searchParams.get('domainId'))
+    const org = nonEmptyTextQuerySchema.parse(searchParams.get('org'))
+    const domain = nonEmptyTextQuerySchema.parse(searchParams.get('domain'))
 
     if (domainId) {
       const rows = await getReportsByDomainId(domainId, org)
@@ -44,7 +39,9 @@ export const GET = withApiAuth(
       return NextResponse.json({ data })
     }
 
-    const { from, to } = parseDateParams(searchParams)
+    const { from, to } = dateRangeQuerySchema.parse(
+      Object.fromEntries(searchParams),
+    )
     if (from ?? to) {
       const items = await getLatestReports(pageSize, from, to, org, domain)
       return NextResponse.json({

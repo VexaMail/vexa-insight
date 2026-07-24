@@ -5,10 +5,10 @@ import { and, count, eq, ne } from 'drizzle-orm'
 export async function updateUser(
   id: string,
   data: {
-    username?: string
-    role?: string
-    allowedDomains?: string[]
-    password?: string
+    username?: string | undefined
+    role?: string | undefined
+    allowedDomains?: string[] | undefined
+    password?: string | undefined
   },
 ) {
   const db = getDb()

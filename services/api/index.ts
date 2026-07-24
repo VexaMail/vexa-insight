@@ -1,4 +1,5 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
+export { getApiKeyRole } from './getApiKeyRole'
 export { isUsableSecret } from './isUsableSecret'
 export { PUBLIC_API_ROUTES } from './publicApiRoutes'
 export { requireAdminAccess } from './requireAdminAccess'

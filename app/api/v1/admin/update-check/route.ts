@@ -1,4 +1,5 @@
 import { requireAdminAccess, requireAdminAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
 import { checkForUpdates, getUpdateStatus } from '@/services/updates'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -8,6 +9,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (access) {
     return NextResponse.json({ error: access.error }, { status: access.status })
   }
+  const denied = await requirePermission('settings:read')
+  if (denied) return denied
   const data = getUpdateStatus()
   return NextResponse.json({ data })
 }

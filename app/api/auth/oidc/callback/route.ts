@@ -10,6 +10,7 @@ import {
   provisionUserFromUserInfo,
 } from '@/services/auth'
 import { isOidcEnabled } from '@/utils/auth'
+import { oidcCallbackQuerySchema } from '@/validators/query'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -36,14 +37,17 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   const url = new URL(request.url)
-  const code = url.searchParams.get('code')
-  const state = url.searchParams.get('state')
-  if (!code || !state) {
+  const query = oidcCallbackQuerySchema.safeParse({
+    code: url.searchParams.get('code'),
+    state: url.searchParams.get('state'),
+  })
+  if (!query.success) {
     return NextResponse.json(
       { error: { code: 'BAD_REQUEST', message: 'Missing code or state' } },
       { status: 400 },
     )
   }
+  const { code, state } = query.data
 
   const cookieStore = await cookies()
   const expectedState = cookieStore.get(OIDC_STATE_COOKIE)?.value

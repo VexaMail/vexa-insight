@@ -1,6 +1,7 @@
 import { withApiAuth } from '@/services/api'
-import { getSession } from '@/services/auth'
+import { requirePermission } from '@/services/auth'
 import { deleteUser, updateUser } from '@/services/users'
+import { updateUserInputSchema } from '@/validators/users'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -9,19 +10,36 @@ export const PUT = withApiAuth(
     request: NextRequest,
     context: { params: Promise<{ id: string }> },
   ): Promise<NextResponse> => {
-    const session = await getSession()
-    if (!session || session.user.role !== 'admin') {
+    const denied = await requirePermission('users:write')
+    if (denied) return denied
+
+    const { id } = await context.params
+
+    let body: unknown
+    try {
+      body = await request.json()
+    } catch {
       return NextResponse.json(
-        { error: { code: 'UNAUTHORIZED', message: 'Forbidden' } },
-        { status: 403 },
+        { error: { code: 'BAD_REQUEST', message: 'Invalid JSON body' } },
+        { status: 400 },
       )
     }
 
-    const { id } = await context.params
-    const body = await request.json()
+    const parsed = updateUserInputSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: parsed.error.issues[0]?.message ?? 'Invalid user update',
+          },
+        },
+        { status: 400 },
+      )
+    }
 
     try {
-      await updateUser(id, body)
+      await updateUser(id, parsed.data)
       return NextResponse.json({ data: { success: true } })
     } catch (err: unknown) {
       return NextResponse.json(
@@ -42,13 +60,8 @@ export const DELETE = withApiAuth(
     _request: NextRequest,
     context: { params: Promise<{ id: string }> },
   ): Promise<NextResponse> => {
-    const session = await getSession()
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json(
-        { error: { code: 'UNAUTHORIZED', message: 'Forbidden' } },
-        { status: 403 },
-      )
-    }
+    const denied = await requirePermission('users:write')
+    if (denied) return denied
 
     const { id } = await context.params
 

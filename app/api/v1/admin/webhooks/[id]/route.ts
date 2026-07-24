@@ -1,9 +1,12 @@
-import { getDb, webhookEndpoints } from '@/lib/db'
 import { withApiAuth } from '@/services/api'
-import { dispatchWebhookEvent } from '@/services/notifications'
+import { requirePermission } from '@/services/auth'
+import {
+  deleteWebhookEndpoint,
+  dispatchWebhookEvent,
+  updateWebhookEndpoint,
+} from '@/services/notifications'
 import type { IdRouteParams } from '@/types/api'
-import { webhookEndpointInputSchema } from '@/validators/webhooks'
-import { eq } from 'drizzle-orm'
+import { webhookEndpointUpdateSchema } from '@/validators/webhooks'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -12,6 +15,8 @@ export const PATCH = withApiAuth(
     request: NextRequest,
     { params }: IdRouteParams,
   ): Promise<NextResponse> => {
+    const denied = await requirePermission('settings:write')
+    if (denied) return denied
     const { id } = await params
     const numericId = Number.parseInt(id, 10)
     if (!Number.isFinite(numericId)) {
@@ -26,7 +31,7 @@ export const PATCH = withApiAuth(
     } catch {
       body = null
     }
-    const parsed = webhookEndpointInputSchema.partial().safeParse(body)
+    const parsed = webhookEndpointUpdateSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -39,18 +44,7 @@ export const PATCH = withApiAuth(
         { status: 400 },
       )
     }
-    const db = getDb()
-    const updates: Record<string, unknown> = { updatedAt: new Date() }
-    if (parsed.data.name !== undefined) updates.name = parsed.data.name
-    if (parsed.data.url !== undefined) updates.url = parsed.data.url
-    if (parsed.data.enabled !== undefined) updates.enabled = parsed.data.enabled
-    if (parsed.data.events !== undefined)
-      updates.events = parsed.data.events.join(',')
-    if (parsed.data.secret !== undefined) updates.secret = parsed.data.secret
-    db.update(webhookEndpoints)
-      .set(updates)
-      .where(eq(webhookEndpoints.id, numericId))
-      .run()
+    updateWebhookEndpoint(numericId, parsed.data)
     return NextResponse.json({ data: { id: numericId, updated: true } })
   },
 )
@@ -60,6 +54,8 @@ export const DELETE = withApiAuth(
     _request: NextRequest,
     { params }: IdRouteParams,
   ): Promise<NextResponse> => {
+    const denied = await requirePermission('settings:write')
+    if (denied) return denied
     const { id } = await params
     const numericId = Number.parseInt(id, 10)
     if (!Number.isFinite(numericId)) {
@@ -68,8 +64,7 @@ export const DELETE = withApiAuth(
         { status: 400 },
       )
     }
-    const db = getDb()
-    db.delete(webhookEndpoints).where(eq(webhookEndpoints.id, numericId)).run()
+    deleteWebhookEndpoint(numericId)
     return NextResponse.json({ data: { id: numericId, deleted: true } })
   },
 )
@@ -79,6 +74,8 @@ export const POST = withApiAuth(
     _request: NextRequest,
     { params }: IdRouteParams,
   ): Promise<NextResponse> => {
+    const denied = await requirePermission('settings:write')
+    if (denied) return denied
     const { id } = await params
     const numericId = Number.parseInt(id, 10)
     if (!Number.isFinite(numericId)) {

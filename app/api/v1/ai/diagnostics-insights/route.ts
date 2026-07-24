@@ -1,7 +1,9 @@
 import type { AIServiceError } from '@/services/ai'
 import { generateDiagnosticsInsights } from '@/services/ai'
 import { withApiAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
+import { diagnosticsInsightsRequestSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -12,6 +14,8 @@ import { NextResponse } from 'next/server'
  */
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
+    const denied = await requirePermission('reports:read')
+    if (denied) return denied
     const AI_LIMIT = 10
     const AI_WINDOW_MS = 60_000
     const rlKey = `ai-diag:${getRateLimitKey(request)}`
@@ -27,20 +31,10 @@ export const POST = withApiAuth(
       )
     }
     try {
-      const body = (await request.json()) as {
-        domainName?: string
-        domainId?: number
-        startDate?: string
-        endDate?: string
-      }
+      const body: unknown = await request.json()
+      const parsed = diagnosticsInsightsRequestSchema.safeParse(body)
 
-      if (
-        !body.domainName ||
-        typeof body.domainName !== 'string' ||
-        !body.domainId ||
-        typeof body.domainId !== 'number' ||
-        body.domainId < 1
-      ) {
+      if (!parsed.success) {
         return NextResponse.json(
           {
             error: {
@@ -52,11 +46,12 @@ export const POST = withApiAuth(
         )
       }
 
+      const { domainName, domainId, startDate, endDate } = parsed.data
       const result = await generateDiagnosticsInsights({
-        domainName: body.domainName,
-        domainId: body.domainId,
-        startDate: body.startDate ? new Date(body.startDate) : undefined,
-        endDate: body.endDate ? new Date(body.endDate) : undefined,
+        domainName,
+        domainId,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
       })
 
       return NextResponse.json({ data: result })

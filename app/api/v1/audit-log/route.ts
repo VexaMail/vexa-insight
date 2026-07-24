@@ -1,6 +1,7 @@
 import { withApiAuth } from '@/services/api'
 import { listAuditEvents } from '@/services/audit'
 import { requirePermission } from '@/services/auth'
+import { auditLogLimitQuerySchema } from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -14,10 +15,9 @@ export const GET = withApiAuth(
     const denied = await requirePermission('audit:read')
     if (denied) return denied
     const url = new URL(request.url)
-    const rawLimit = Number(url.searchParams.get('limit') ?? '100')
-    const limit = Number.isFinite(rawLimit)
-      ? Math.min(Math.max(Math.trunc(rawLimit), 1), 500)
-      : 100
+    const limit = auditLogLimitQuerySchema.parse(
+      url.searchParams.get('limit') ?? undefined,
+    )
     const data = await listAuditEvents(limit)
     return NextResponse.json({ data })
   },

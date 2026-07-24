@@ -14,5 +14,6 @@ export {
   generateState,
   provisionUserFromUserInfo,
 } from './oidc'
+export { requireActionPermission } from './requireActionPermission'
 export { requirePermission } from './requirePermission'
 export { verifyPassword } from './verifyPassword'

@@ -1,4 +1,5 @@
 import { withApiAuth } from '@/services/api'
+import { requirePermission } from '@/services/auth'
 import { getConfig } from '@/services/config'
 import { IpHostnameEnrichmentService } from '@/services/ip-hostname'
 import type { NextRequest } from 'next/server'
@@ -9,6 +10,8 @@ export const POST = withApiAuth(
     _request: NextRequest,
     { params }: { params: Promise<{ ip: string }> },
   ): Promise<NextResponse> => {
+    const denied = await requirePermission('reports:read')
+    if (denied) return denied
     const { ip } = await params
     const config = getConfig()
 

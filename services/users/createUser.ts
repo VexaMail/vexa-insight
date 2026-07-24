@@ -4,9 +4,9 @@ import crypto from 'node:crypto'
 
 export async function createUser(data: {
   username: string
-  password?: string
-  role?: string
-  allowedDomains?: string[]
+  password?: string | undefined
+  role?: string | undefined
+  allowedDomains?: string[] | undefined
 }) {
   const db = getDb()
   const userId = crypto.randomUUID()

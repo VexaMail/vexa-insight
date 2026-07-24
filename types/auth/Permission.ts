@@ -12,5 +12,6 @@ export type Permission =
   | 'imap:write'
   | 'imap:rotate'
   | 'reports:read'
+  | 'reports:write'
   | 'audit:read'
   | 'install:write'
