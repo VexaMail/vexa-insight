@@ -26,8 +26,14 @@ export default function VexaLogo({
           <Image
             src="/vexa-insight-logo.svg"
             alt="Vexa Insight Logo"
-            width={140}
+            // 123x32 matches the artwork's real proportions (viewBox
+            // 2286.29x592.55). The old 140x32 box was wider than the drawing,
+            // so the rendered width never equalled the declared width and
+            // next/image warned that one dimension was modified without the
+            // other. `w-auto` keeps width tied to the fixed h-8 height.
+            width={123}
             height={32}
+            className="h-8 w-auto"
             priority
           />
         </div>
