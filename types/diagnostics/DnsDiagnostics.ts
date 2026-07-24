@@ -4,6 +4,7 @@ import type { DkimRecord } from './DkimRecord'
 import type { DmarcTagInfo } from './DmarcTagInfo'
 import type { MtaStsResult } from './MtaStsResult'
 import type { MxRecord } from './MxRecord'
+import type { SpfTreeNode } from './SpfTreeNode'
 import type { SpfValidationCategory } from './SpfValidationCategory'
 import type { TlsRptResult } from './TlsRptResult'
 
@@ -14,6 +15,7 @@ export type DnsDiagnostics = {
   spfValid: boolean
   spfWarning: string | null
   spfValidationCategories: SpfValidationCategory[]
+  spfTree: SpfTreeNode | null
   dmarc: string | null
   dmarcPolicy: string | null
   dmarcValid: boolean

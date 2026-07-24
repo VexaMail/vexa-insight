@@ -11,6 +11,7 @@ import { resolveBimi } from './resolveBimi'
 import { resolveMtaSts } from './resolveMtaSts'
 import { resolveMxSafe } from './resolveMxSafe'
 import { resolveNsRecords } from './resolveNsRecords'
+import { resolveSpfTree } from './resolveSpfTree'
 import { resolveTlsRpt } from './resolveTlsRpt'
 import { resolveTxtSafe } from './resolveTxtSafe'
 
@@ -27,6 +28,7 @@ export async function getDomainDnsRecords(
     tlsRpt,
     aRecords,
     nsRecords,
+    spfTree,
   ] = await Promise.all([
     resolveTxtSafe(domain),
     resolveTxtSafe(`_dmarc.${domain}`),
@@ -37,6 +39,7 @@ export async function getDomainDnsRecords(
     resolveTlsRpt(domain),
     resolveARecords(domain),
     resolveNsRecords(domain),
+    resolveSpfTree(domain),
   ])
 
   // SPF
@@ -77,6 +80,7 @@ export async function getDomainDnsRecords(
     dkimParsedRecords,
     mx,
     spfValidationCategories,
+    spfTree,
     bimi,
     mtaSts,
     tlsRpt,

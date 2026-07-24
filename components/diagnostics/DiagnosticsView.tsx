@@ -19,6 +19,7 @@ import { MtaStsDetailSection } from './mtasts/MtaStsDetailSection'
 import { ProtocolOverviewPanel } from './overview/ProtocolOverviewPanel'
 import { DomainScoreBadge } from './score/DomainScoreBadge'
 import { SpfDetailSection } from './spf/SpfDetailSection'
+import { SpfLookupTreeSection } from './spf/SpfLookupTreeSection'
 import { TlsRptDetailSection } from './tlsrpt/TlsRptDetailSection'
 
 export function DiagnosticsView({
@@ -74,6 +75,7 @@ export function DiagnosticsView({
         <DnsRecordsSection dns={dns} />
         <DmarcDetailSection dns={dns} />
         <SpfDetailSection dns={dns} />
+        <SpfLookupTreeSection dns={dns} />
         <DkimDetailSection dns={dns} />
         <BimiDetailSection dns={dns} />
         <MtaStsDetailSection dns={dns} />
