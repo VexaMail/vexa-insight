@@ -6,6 +6,104 @@
 
 ### 2026-07
 
+- [x] 2026-07-25 — **Performance:** Remove the unused `services/imap/getImapTotalCount.ts`.
+  - Result: Deleted the function, its `types/imap/GetImapTotalCountOptions.ts` type, and both barrel entries. It had no callers; wiring it into the job would have re-added the redundant full-mailbox IMAP SEARCH that ADR 0008 removed. ADR 0008's "alternatives considered" note updated to record the deletion.
+  - Evidence: `grep -rn getImapTotalCount` returns only the ADR note; `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424.
+  - Files: `services/imap/{getImapTotalCount.ts,index.ts}`, `types/imap/{GetImapTotalCountOptions.ts,index.ts}`, `docs/adr/0008-batched-ingest-and-daily-rollups.md`.
+
+- [x] 2026-07-25 — **Refactors:** Standardize the poll-status path-param error shape.
+  - Result: `app/api/v1/job-runs/[id]/poll-status/route.ts` now uses the shared `parseIdParam` guard and returns `{ error: { code: 'BAD_REQUEST', message: 'Invalid job run id' } }` instead of the non-standard `{ error: 'Invalid Job ID' }`. This also tightens the guard: `parseInt` accepted `"12abc"` and negative ids, `parseIdParam` requires a positive integer.
+  - Evidence: `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424.
+  - Files: `app/api/v1/job-runs/[id]/poll-status/route.ts`.
+
+- [x] 2026-07-25 — **Refactors:** Require integer ids in the AI request bodies.
+  - Result: Added `.int()` to `reportInsightsRequestSchema.reportId` and `diagnosticsInsightsRequestSchema.domainId`; both accepted fractional numbers, preserved from the pre-Zod code. Row ids are integers everywhere in the schema, so a fractional id could only ever be a client bug.
+  - Evidence: existing `test/reportInsightsRequestSchema.test.ts` and `test/diagnosticsInsightsRequestSchema.test.ts` still pass (error messages unchanged); `pnpm run test` 424/424.
+  - Files: `validators/ai/{reportInsightsRequestSchema,diagnosticsInsightsRequestSchema}.ts`.
+
+- [x] 2026-07-25 — **Refactors:** Convert `utils/api/index.ts` off `export *`.
+  - Result: Replaced the wildcard barrel with an explicit `export { parseIdParam }`, matching the repo barrel policy and the `utils/validation/index.ts` conversion from 2026-07-24.
+  - Evidence: `pnpm run type-check`, `pnpm run lint` clean.
+  - Files: `utils/api/index.ts`.
+
+- [x] 2026-07-25 — **Artificial Intelligence:** Require a configured model in `isAiConfigured`.
+  - Result: `isAiConfigured()` now also requires a non-blank `model`, so with only provider + key saved the diagnostics and report panels render `AiNotConfiguredCta` instead of an Analyze button that always 422s. Since ADR 0007 `resolveEffectiveModel` refuses to guess a provider default, provider+key alone is not a usable configuration.
+  - Evidence: new `test/isAiConfigured.test.ts` (3 cases: no provider, provider+key without a model incl. blank/whitespace, provider+key+model); `pnpm run test` 424/424.
+  - Files: `services/ai/core/isAiConfigured.ts`, `test/isAiConfigured.test.ts`.
+  - Note: `services/ai/contracts/AiConfigurationStatus.ts` (`AIConfigurationStatus`) has no consumers at all; left in place as pre-existing dead code, tracked in `TODO.md`.
+
+- [x] 2026-07-25 — **Testing / Bugs:** Extend a11y coverage to the interactive surfaces, and fix an unnamed combobox it found.
+  - Result: Covered the surfaces with focus management and Radix portals that the earlier static pass could not reach — `DataTable` (populated, empty, and chrome-hidden), `Select` (closed and with the listbox open), and `DateRangeFilter` (preset and custom-range).
+  - Real defect found and fixed: the date-range `SelectTrigger` had no accessible name (axe `button-name`, serious). Its only text comes from `SelectValue`, which renders nothing until the matching `SelectItem` mounts, so screen readers announced an unnamed button. Added an explicit `aria-label="Date range"`, pinned by a `getByRole('combobox', { name: 'Date range' })` assertion.
+  - Harness: `test/setupA11y.ts` now stubs `scrollIntoView`, the pointer-capture methods, and `ResizeObserver`. jsdom has no layout engine and Radix calls these while opening, so without them the component threw before axe could audit the portalled content. Axe checks roles, names, and relationships, none of which depend on real geometry.
+  - The open-listbox audit runs against `document.body`, not the render container, because Radix portals the content out — auditing the container would have silently skipped the popover. The `region` rule is disabled for that one audit only, with the reason inline: the portal mounts as a direct child of `<body>` by design, so it fires in every correct implementation.
+  - Also covered `Dialog` (closed, and open with an asserted accessible name + description) and the `Command` palette. Suites 7 -> 12, tests 15 -> 26.
+  - Second real finding, not fixed: cmdk puts `role="listbox"` on `CommandList` unconditionally, so with no results the listbox has no `option` children and axe raises `aria-required-children` (wcag2a). Not silently patched — the fix changes a shared UI primitive's ARIA semantics and belongs in `components/ui/CommandList.tsx`, so it is filed in `TODO.md`. The empty-state test asserts that this is the _only_ violation, so any other empty-state regression still fails, and the test fails once the issue is fixed.
+  - Evidence: `pnpm run test:a11y` 26/26 (the `DateRangeFilter` cases fail before the `aria-label` fix); `pnpm run check:ci` exit 0 (type-check, lint, format:check, 443/443 tests, migrations) from cleared `tsconfig.tsbuildinfo` and `.eslintcache`; `pnpm run build` exit 0.
+  - Files: `components/filters/DateRangeFilterContent.tsx`, `test/setupA11y.ts`, `test/a11y/{DataTable,Select,DateRangeFilter,Dialog,Command}.test.tsx`.
+
+- [x] 2026-07-25 — **Security:** Add an `ai:invoke` permission for per-role AI cost control.
+  - Result: AI insight generation spends the operator's paid provider quota but was gated only by `reports:read`, so any role that could look at a report could spend money. Added `ai:invoke` to the permission union and switched both `/api/v1/ai/report-insights` and `/api/v1/ai/diagnostics-insights` to require it. Mechanism only, no policy change: `ai:invoke` is granted to exactly the roles that hold `reports:read` today (admin, operator, viewer, user), so nobody's access changed. Revoking AI spend from `viewer`/`user` is now a one-line edit in `constants/auth/rolePermissions.ts`. The 10/min/IP rate limit is unchanged. Who _should_ hold it is the owner's call and stays open in `TODO.md`.
+  - Evidence: new case in `test/hasPermission.test.ts` asserting `ai:invoke` matches `reports:read` for every role (so the no-op-today property is pinned and a future change is deliberate); `test/apiRbacSmoke.test.ts` still green; `pnpm run test` 443/443, `pnpm run test:a11y` 15/15, cold type-check/lint clean, `pnpm run build` exit 0.
+  - Files: `types/auth/Permission.ts`, `constants/auth/rolePermissions.ts`, `app/api/v1/ai/{report-insights,diagnostics-insights}/route.ts`, `test/hasPermission.test.ts`.
+
+- [x] 2026-07-25 — **Refactors:** Delete the dead `formatters/index.ts` aggregator barrel.
+  - Result: The TODO asked to convert its 14 `export *` lines to explicit re-exports. It turned out to have zero importers: its own header says "Import from '@/utils'", but no `utils/index.ts` exists and `@/*` maps straight to the repo root, so that entrypoint was never resolvable. Deleted rather than converted — the barrel-policy violation and ~80 symbols of re-export churn both disappear. The real formatters are still reached directly (`@/formatters/metrics`, `utils/format/index.ts`).
+  - Evidence: `grep` for `@/formatters`, `@/utils`, and relative `../formatters` imports found only `@/formatters/metrics` (a different file); cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run build` exit 0.
+  - Files: `formatters/index.ts` (deleted).
+
+- [x] 2026-07-25 — **Artificial Intelligence:** Remove the dead `AIConfigurationStatus` type.
+  - Result: `services/ai/contracts/AiConfigurationStatus.ts` had no consumers anywhere; the panels take a boolean `isAiConfigured`. Deleted with its barrel entry.
+  - Evidence: cold `pnpm run type-check` clean; `pnpm run test` 442/442.
+  - Files: `services/ai/contracts/{AiConfigurationStatus.ts,index.ts}`.
+
+- [x] 2026-07-25 — **Testing:** Deduplicate the `makeDns` DNS fixture.
+  - Result: `test/computeDomainScore.test.ts` carried its own 30-line copy. The two fixtures were not interchangeable — the shared `makeDnsDiagnostics` defaults to a healthy domain, the scoring one to a fully unconfigured domain — so rather than force one on the other, added `makeEmptyDnsDiagnostics`, which derives the unconfigured baseline from the shared fixture. Intent stays explicit at both call sites.
+  - Evidence: `test/computeDomainScore.test.ts` 15/15 unchanged assertions; `pnpm run test` 442/442.
+  - Files: `test/setup/makeEmptyDnsDiagnostics.ts`, `test/computeDomainScore.test.ts`.
+
+- [x] 2026-07-25 — **Infrastructure:** Unblock and re-upgrade `@radix-ui/react-slot` past the 1.2.x pin.
+  - Result: Blocker resolved upstream. Bumped `~1.2.4` -> `^1.3.3`. The 1.3.0/1.3.1 failure was a module-scope `SlotContext` (`React.createContext`) shipped without a `"use client"` directive, which crashed `next build` page-data collection with `e.createContext is not a function`; 1.3.3's dist contains no `createContext` at all, so the failure mode is gone.
+  - Evidence: `pnpm run build` exit 0, "Compiled successfully", 49/49 static pages generated, no `createContext` error; `grep createContext node_modules/@radix-ui/react-slot/dist/` returns nothing. Cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run test:a11y` 15/15. Lockfile diff is additive (slot 1.3.3 + its `react-compose-refs@1.1.5`), no unrelated version moves.
+  - Files: `package.json`, `pnpm-lock.yaml`.
+  - Note: 1.4.0 remains RC-only; 1.3.3 is the current stable and is sufficient. The standing lesson is unchanged and still worth keeping: Radix bumps must be verified with `pnpm run build`, since type-check, lint, and vitest were all green while the RSC build was broken.
+
+- [x] 2026-07-25 — **Diagnostics:** Handle SPF macro targets and conditional `redirect=` in the lookup tree.
+  - Result: Two real misreports fixed. (1) A macro target (`include:%{d}...`, `exists:%{ir}.%{v}...`) was fed to DNS literally; the query always failed, so the tree rendered a child badged "No SPF record" — a misconfiguration warning for a perfectly valid record. Macro mechanisms are now counted as lookups but not expanded, and surfaced as `macroMechanisms` with a "not expanded (resolved per sender)" line. (2) A `redirect=` in a record that also has an `all` was followed and its whole subtree rolled into `lookupCount`, though RFC 7208 6.1 requires receivers to ignore it "regardless of the relative ordering of the terms". It is now excluded from `mechanisms`, not followed, not counted, and reported as `ignoredRedirect` with an explanation of why the redirect is dead. A redirect with no `all` is unchanged.
+  - Deviation from the original note: the TODO assumed an ignored redirect still consumes its lookup. It does not — an ignored term is never evaluated, so it issues no DNS query. Counted as 0, which also means `exceedsLookupLimit` no longer fires on lookups the receiver will never perform.
+  - Evidence: 5 new cases in `test/resolveSpfTree.test.ts` (redirect ignored with `all`; redirect honored without `all`; redirect ignored when written before a `~all`; macro counted but not queried, asserting no DNS call contains `%{`; macro include not rendered as a missing record) and 2 in `test/SpfLookupTreeSection.test.ts`. `pnpm run test` 442/442, `pnpm run test:a11y` 15/15, `pnpm run check:migrations` OK, cold `pnpm run type-check` and `pnpm run lint` clean.
+  - Files: `services/diagnostics/{hasSpfAllMechanism,containsSpfMacro,extractSpfEffectiveLookupMechanisms,extractSpfIgnoredRedirect,extractSpfMacroMechanisms,extractSpfChildDomains,buildSpfTreeNode}.ts`, `types/diagnostics/SpfTreeNode.ts`, `components/diagnostics/spf/SpfLookupTreeNodeItem.tsx`, `test/{resolveSpfTree,SpfLookupTreeSection}.test.ts`.
+  - Process note: an earlier "type-check clean" in this run was a stale `tsconfig.tsbuildinfo`; adding two required fields to `SpfTreeNode` only surfaced after deleting the incremental cache. Final verification ran cold.
+
+- [x] 2026-07-25 — **Security:** Move the `update-db-stream` admin key out of the URL query string.
+  - Result: The GeoIP update SSE stream no longer takes `?apiKey=<SECRET_KEY>`. New `POST /api/v1/admin/geoip/update-db-ticket` authenticates the normal header way (`requireAdminAuth`) and mints a 24-byte random ticket; the stream takes `?ticket=` and redeems it through `consumeStreamTicket`, which deletes it on first read and rejects anything past `STREAM_TICKET_TTL_MS` (30s). What lands in proxy logs and browser history is now a spent, short-lived value instead of the long-lived admin secret. Ticket store is in-process, which matches the single-replica topology (ADR 0003). ADR 0001 records the SSE exception.
+  - Evidence: new `test/streamTicket.test.ts` (single-use, unknown/empty/undefined rejected, 48-hex distinctness over 50 mints, TTL expiry); `test/apiAuthSmoke.test.ts` extended with a per-file allowlist that still requires the route to call `consumeStreamTicket`; `pnpm run test` 435/435, `pnpm run test:a11y` 15/15, `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean, `pnpm run build` exit 0.
+  - Files: `app/api/v1/admin/geoip/{update-db-ticket,update-db-stream}/route.ts`, `services/api/{issueStreamTicket,consumeStreamTicket,streamTicketStorePrivate,index}.ts`, `constants/api/`, `utils/settings/{fetchGeoIpStreamTicket,attachGeoIpStreamHandlers}.ts`, `types/settings/GeoIpStreamHandlers.ts`, `hooks/settings/useGeoIp.ts`, `test/{streamTicket,apiAuthSmoke}.test.ts`, `docs/adr/0001-default-deny-api-surface.md`.
+  - Behavior note: a mid-stream transport drop can no longer silently reconnect on the same URL (the ticket is spent) — the client surfaces the error and the operator restarts the update. That is the intended trade for non-replayable URLs.
+
+- [x] 2026-07-25 — **Performance:** Aggregate `getReportSources` in SQL instead of a JS join.
+  - Result: Dropped the two extra per-report event-id scans and the `IN (...)` list of every event id in the report (unbounded — SQLite's parameter/expression limits were a real ceiling on large reports), plus the O(sources x events) JS join. Override types are now a `GROUP BY ip, type` in SQL, and the primary DKIM identity comes from one ordered join taking the first row per IP. Five queries down to three, all scoped by `rawReportId` and served by `event_raw_report_idx`. Per-IP (not per-group) resolution semantics preserved exactly, and DKIM selection is now deterministically ordered by event id rather than relying on unordered scan order.
+  - Evidence: new `test/getReportSources.test.ts` (5 cases) written against the _old_ implementation first and passing unchanged after the rewrite — grouping/collapse + volume ordering, hostname enrichment vs null, per-IP override union, first-DKIM-wins, empty report. `pnpm run test` 435/435.
+  - Files: `services/reports/getReportSources.ts`, `test/getReportSources.test.ts`, `test/setup/{seedReportSourcesFixture,SeedReportSourcesResult,requireInsertedId,resetDmarcDb}.ts`.
+  - Note: `resetDmarcDb` now also clears `ip_hostname_enrichments`; it was leaking rows across tests in the same file.
+  - Not done: the same TODO named `getReportStats` and `getReportEventSummaries`. Inspected both — `getReportStats` is already two SQL aggregates over the indexed predicate, and `getReportEventSummaries` intentionally returns row-level detail for the AI prompt, so neither has a GROUP BY to move to.
+
+- [x] 2026-07-25 — **Testing:** Extend a11y coverage beyond the first three suites.
+  - Result: Unblocked the import path by re-exporting `ProtocolExplainer`, `RecordDisplay`, and `SectionHeader` from `components/diagnostics/index.ts`, so consumers no longer have to reach into `./shared/*` (which `import/no-internal-modules` forbids) or dodge the rule with a relative import. Added four a11y suites: the three shared primitives plus the real `SpfDetailSection` / `DmarcDetailSection` in both healthy and missing-record states. Suites 3 -> 7, tests 5 -> 15.
+  - Evidence: `pnpm run test:a11y` 15/15 with zero axe violations; `pnpm run test` 435/435.
+  - Files: `components/diagnostics/index.ts`, `test/a11y/{ProtocolExplainer,RecordDisplay,SectionHeader,DiagnosticsDetailSections}.test.tsx`, `test/setup/makeDnsDiagnostics.ts`, `test/ProtocolExplainer.test.ts`.
+  - Note: the `makeDns` fixture exported from `test/ProtocolExplainer.test.ts` moved to `test/setup/makeDnsDiagnostics.ts`. A second copy still lives inside `test/computeDomainScore.test.ts`; left alone as unrelated churn.
+
+- [x] 2026-07-25 — **Infrastructure:** Declare `tsx` as a devDependency.
+  - Result: `seed:demo` and `backfill:rollup` both shell out to `tsx`, but it was only present transitively (`drizzle-kit` -> `tsx@4.22.1`) and hoisted into `node_modules/.bin`. A drizzle-kit bump that drops or replaces it would have silently broken both documented scripts. Declared `tsx: ^4.22.1`, resolving to the version already in the lockfile.
+  - Evidence: `pnpm-lock.yaml` diff is 3 additive lines in the importer block, no dependency versions changed; `pnpm exec tsx --version` -> `tsx v4.22.1`; `pnpm install --lockfile-only` reports the lockfile up to date. Found 2026-07-25 while documenting the backfill step.
+  - Files: `package.json`, `pnpm-lock.yaml`.
+
+- [x] 2026-07-25 — **Performance:** Document the one-time `pnpm run backfill:rollup` upgrade step.
+  - Result: Added a "One-time post-upgrade steps" section to `docs/UPDATING.md` explaining that `event_rollup_daily` starts empty on existing installs, so dashboard totals lag until the backfill runs; documents idempotency, the ingestion-idle requirement (single-writer SQLite, ADR 0003), the Docker `docker compose exec web` form, and that new installs need nothing. README's Updating section links to it.
+  - Evidence: `pnpm run format:check` clean; ADR links resolve to real files under `docs/adr/`.
+  - Files: `docs/UPDATING.md`, `README.md`.
+
 - [x] 2026-07-24 — **Performance:** Batched ingestion and daily rollups for large-volume DMARC data (ADR 0008).
   - Result: Replaced per-email writes and full-table dashboard scans that made large ingests stall for minutes/hours with no visible progress. WAL + `synchronous=NORMAL` + `busy_timeout` (`lib/db/applyConnectionPragmas.ts`); a `poll_status` coalescer flushing at most every ~500 ms / ~500 events (`createPollStatusCoalescer`); buffered multi-row `job_poll_events` inserts (`createJobEventBuffer`); set-based IP resolution (`upsertIpsBatch`) replacing the per-IP loop. New `event_rollup_daily` (per domain, per UTC day) maintained inside the ingest transaction; `getAggregateStats`, `getDomainSummary`, `getDomainsSummaryAll` now read the rollup instead of scanning `normalized_events`. Added indexes on `normalized_events(raw_report_id)`, `(ip_address_id)`, and covering `(domain_id, report_end_date, count)`. Idempotent backfill `pnpm run backfill:rollup`.
   - Correction during review: initially set `PRAGMA foreign_keys = ON`, which would have broken `resetDmarcDb`/other delete paths (FK enforcement was never on); removed it. The generated migration `0029` also re-created `audit_log` (drizzle snapshot lagged behind the hand-authored `0028`); trimmed it to only the rollup table + indexes.

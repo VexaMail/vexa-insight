@@ -1,7 +1,7 @@
 # TODO
 
 > Consolidated from the accessible Claude, Codex, and Antigravity project
-> history. Last reviewed: 2026-07-24. History coverage: Partial.
+> history. Last reviewed: 2026-07-25. History coverage: Partial.
 >
 > Accessible historical conversations were fully reviewed. One deleted Claude
 > transcript remains available only as a WakaTime stub, and the active
@@ -15,41 +15,26 @@
 
 ## Security
 
-- [ ] Decide whether the shared API key should be excluded from `users:write` (it now maps to the `admin` role via `services/api/getApiKeyRole.ts`, expanding it onto user management and audit-log reads).
-- [ ] Consider an `ai:invoke` permission for per-role AI cost control; AI insights currently require only `reports:read` (rate-limited 10/min/IP).
-- [ ] Move the `update-db-stream` admin key out of the URL query string (proxies can log it); EventSource cannot set headers, so this needs a short-lived token or cookie.
-- [ ] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001).
-
-## Diagnostics
-
-- [ ] SPF tree follow-up (low priority): consider macro-domain (`%{...}`) handling and conditional `redirect=` semantics (redirect is only honored without `all`, but the lookup is still consumed).
+- [ ] Decide who should hold the new `ai:invoke` permission. It was added 2026-07-25 granted to exactly the roles holding `reports:read` (admin, operator, viewer, user), so behavior is unchanged; the point of the permission is that AI spend can now be revoked per role in `constants/auth/rolePermissions.ts`. Whether `viewer` and `user` should be able to spend provider quota is a policy call. (User decision.)
+- [ ] Decide whether the shared API key should be excluded from `users:write` (it now maps to the `admin` role via `services/api/getApiKeyRole.ts`, expanding it onto user management and audit-log reads). (User decision.)
+- [ ] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. (User decision, then a sizeable change.)
 
 ## Artificial Intelligence
 
-- [ ] Verify the diagnostics AI rollout plan against a live provider call (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run).
-- [ ] Consider requiring a configured model in `isAiConfigured`/`AiConfigurationStatus` so the panels show the setup prompt instead of a 422 error when only provider and key are saved.
+- [!] Verify the diagnostics AI rollout plan against a live provider call (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run). Blocked: needs a real provider API key and spends paid model quota, which this run has no authorization for. Smallest unblock: the user names the provider/key and authorizes one metered call.
 
 ## Testing
 
-- [ ] Extend a11y coverage beyond the first three suites (diagnostics components need a public export or lint-sanctioned import path for `ProtocolExplainer`).
+- [ ] Fix the empty-state ARIA of `components/ui/CommandList.tsx`. cmdk sets `role="listbox"` unconditionally, so with no results the listbox has no `option` children and axe raises `aria-required-children` (wcag2a). Found 2026-07-25 by `test/a11y/Command.test.tsx`, which currently asserts this is the only violation and will fail once it is fixed. Likely fix: drop or swap the role when the list is empty, or give `CommandEmpty` a role the listbox accepts. Touches a shared UI primitive, so check every `Command` consumer.
+- [ ] Extend a11y coverage to the settings forms (`AiSettingsSection`, `ImapAccountsSection`, `IngestionSection`, `ApiKeySection`). As of 2026-07-25 there are 12 suites covering the diagnostics primitives and detail sections, `DataTable`, `Select`, `DateRangeFilter`, `Dialog`, and `Command`; `test/setupA11y.ts` already carries the jsdom stubs Radix needs to open a portal, so these should be additive. The settings sections need their fetch/hook dependencies mocked, which the covered components did not.
 
 ## Infrastructure
 
-- [!] Re-upgrade `@radix-ui/react-slot` past 1.2.x once a release ships the module-scope `SlotContext` behind a `"use client"` directive (or an RSC-safe build). 1.3.x calls `React.createContext` at module scope with no directive, which crashes `next build` page-data collection (`e.createContext is not a function`) for every server page importing UI components that use Slot. Smallest unblock: test the next 1.4.x stable release with `pnpm run build` (checked 2026-07-24: latest stable is still 1.3.1; 1.4.0 only has RCs).
-- [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Checked 2026-07-24: typescript-eslint@8.65.0 still declares `typescript >=4.8.4 <6.1.0`. See ADR 0005.
+- [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Re-checked 2026-07-25: 8.65.0 is still latest and both it and the 8.65.1 canary declare `typescript >=4.8.4 <6.1.0`. See ADR 0005.
 
 ## Performance
 
-- [ ] Remove the unused `services/imap/getImapTotalCount.ts` (dead code; no callers). If wired into the job it would add a redundant full-mailbox IMAP SEARCH on top of the one `processFolder` already runs. Flagged during the ADR 0008 batched-ingest work.
-- [ ] Document the one-time `pnpm run backfill:rollup` step in the upgrade/deploy notes. On existing installs the dashboard aggregates read `event_rollup_daily`, which lags `normalized_events` until the backfill runs (ADR 0008).
-- [ ] `getReportSources` still builds an `IN (...)` of every event id for a report and does an O(sources x events) JS join; `getReportStats` and `getReportEventSummaries` scan per report. These now use the new `raw_report_id` index but could move to a GROUP BY. (Explore flag, 2026-07-24.)
-- [ ] Consider rollup-style pre-aggregation for `getTopIpSenders` and `getVolumeByOrg`; they benefit from the new `ip_address_id` index but still GROUP BY over `normalized_events`.
-
-## Refactors
-
-- [ ] `app/api/v1/job-runs/[id]/poll-status/route.ts` returns the non-standard `{ error: 'Invalid Job ID' }` for a bad path segment instead of `{ error: { code, message } }`. Path params were out of scope for the boundary-validation pass.
-- [ ] Decide whether `reportId` / `domainId` request bodies should be `.int()`; they currently accept fractional numbers, preserved from the pre-Zod code.
-- [ ] `utils/api/index.ts` still uses `export *`, against the repo barrel policy (`utils/validation/index.ts` was converted 2026-07-24).
+- [ ] Consider rollup-style pre-aggregation for `getTopIpSenders` and `getVolumeByOrg`; they benefit from the new `ip_address_id` index but still GROUP BY over `normalized_events`. Not attempted 2026-07-25: unlike the `getReportSources` rewrite this is not a query-shape change but new derived state — a new rollup table plus a migration, incremental maintenance inside the ingest transaction, a backfill path, and an ADR 0008-style consistency test. Worth its own session, and it should follow the same "rollup is derived state" invariant ADR 0008 established.
 
 ## Pending Decisions
 
@@ -57,6 +42,10 @@
 - [ ] Confirm whether the domain score must match PowerDMARC exactly or remain only inspired by it. The current SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights were never checked for output parity. (User decision; note 2026-07-24: the DKIM key-length estimator fix changed reported bit values.)
 
 ## Future Ideas
+
+Product/design work, deliberately not started autonomously: each one changes what
+the diagnostics page _is_, so it wants a brief on the intended reading order and
+information hierarchy before any code.
 
 - [ ] Redesign the diagnostics page as one editorial narrative instead of stacked cards.
 - [ ] Add expand/collapse controls to each protocol section.
