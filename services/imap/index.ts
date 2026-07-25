@@ -1,6 +1,5 @@
 export * from './createClient'
 export * from './fetchAttachments'
-export * from './getImapTotalCount'
 export * from './listFolders'
 export * from './processOneMessageUid'
 export * from './runFetchAndIngest'

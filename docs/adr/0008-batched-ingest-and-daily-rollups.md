@@ -67,8 +67,8 @@ non-destructive migration policy (ADR 0004) both constrain the solution.
 - Materialized view / triggers: rejected; SQLite triggers on the hot insert
   path add per-row overhead and hide logic from the app layer.
 - Computing the total up front for progress: rejected; that is the redundant
-  full scan being removed. The unused `getImapTotalCount` is left in place but
-  flagged for cleanup rather than wired into the job.
+  full scan being removed. The unused `getImapTotalCount` was flagged for
+  cleanup rather than wired into the job, and deleted on 2026-07-25.
 - Backfill inside a boot migration: rejected; recomputing millions of rows at
   startup violates the "migrations are cheap and safe at boot" expectation of
   ADR 0004.
