@@ -1,42 +1,8 @@
-import type { DnsDiagnostics } from '@/types/diagnostics'
 import { describe, expect, it } from 'vitest'
 import { computeDomainScore } from '../services/diagnostics/computeDomainScore'
+import { makeEmptyDnsDiagnostics as makeDns } from './setup/makeEmptyDnsDiagnostics'
 
 describe('computeDomainScore', () => {
-  function makeDns(overrides: Partial<DnsDiagnostics> = {}): DnsDiagnostics {
-    return {
-      domain: 'example.com',
-      txtRecords: [],
-      spf: null,
-      spfValid: false,
-      spfWarning: null,
-      spfValidationCategories: [],
-      spfTree: null,
-      dmarc: null,
-      dmarcPolicy: null,
-      dmarcValid: false,
-      dmarcWarnings: [],
-      dmarcTags: [],
-      dkim: [],
-      dkimParsedRecords: [],
-      mx: [],
-      bimi: { raw: null, valid: false, logoUrl: null, certificateUrl: null },
-      mtaSts: {
-        raw: null,
-        valid: false,
-        policyFileAccessible: false,
-        policyHost: null,
-        mode: null,
-        fileAge: null,
-        mxRecords: [],
-      },
-      tlsRpt: { raw: null, valid: false, ruaAddresses: [] },
-      aRecords: [],
-      nsRecords: [],
-      ...overrides,
-    }
-  }
-
   const validSpf = {
     spf: 'v=spf1 include:_spf.google.com -all',
     spfValid: true,

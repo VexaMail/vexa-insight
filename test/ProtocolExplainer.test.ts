@@ -2,45 +2,12 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 
-import { DmarcDetailSection, SpfDetailSection } from '@/components/diagnostics'
-import type { DnsDiagnostics } from '@/types/diagnostics'
-import { ProtocolExplainer } from '../components/diagnostics/shared'
-
-export function makeDns(
-  overrides: Partial<DnsDiagnostics> = {},
-): DnsDiagnostics {
-  return {
-    domain: 'example.com',
-    txtRecords: [],
-    spf: 'v=spf1 include:_spf.example.net -all',
-    spfValid: true,
-    spfWarning: null,
-    spfValidationCategories: [],
-    spfTree: null,
-    dmarc: 'v=DMARC1; p=reject; rua=mailto:dmarc@example.com',
-    dmarcPolicy: 'reject',
-    dmarcValid: true,
-    dmarcWarnings: [],
-    dmarcTags: [],
-    dkim: [],
-    dkimParsedRecords: [],
-    mx: [],
-    bimi: { raw: null, valid: false, logoUrl: null, certificateUrl: null },
-    mtaSts: {
-      raw: null,
-      valid: false,
-      policyFileAccessible: false,
-      policyHost: null,
-      mode: null,
-      fileAge: null,
-      mxRecords: [],
-    },
-    tlsRpt: { raw: null, valid: false, ruaAddresses: [] },
-    aRecords: [],
-    nsRecords: [],
-    ...overrides,
-  }
-}
+import {
+  DmarcDetailSection,
+  ProtocolExplainer,
+  SpfDetailSection,
+} from '@/components/diagnostics'
+import { makeDnsDiagnostics } from './setup/makeDnsDiagnostics'
 
 describe('ProtocolExplainer', () => {
   it('renders title, summary, and both example blocks when provided', () => {
@@ -108,7 +75,7 @@ describe('ProtocolExplainer', () => {
 describe('protocol explainer content in detail sections', () => {
   it('SpfDetailSection embeds the SPF explainer with a domain-based example', () => {
     const markup = renderToStaticMarkup(
-      React.createElement(SpfDetailSection, { dns: makeDns() }),
+      React.createElement(SpfDetailSection, { dns: makeDnsDiagnostics() }),
     )
 
     expect(markup).toContain('How to read SPF')
@@ -121,7 +88,7 @@ describe('protocol explainer content in detail sections', () => {
 
   it('DmarcDetailSection embeds the DMARC explainer with _dmarc host and policy example', () => {
     const markup = renderToStaticMarkup(
-      React.createElement(DmarcDetailSection, { dns: makeDns() }),
+      React.createElement(DmarcDetailSection, { dns: makeDnsDiagnostics() }),
     )
 
     expect(markup).toContain('What this record is for')
