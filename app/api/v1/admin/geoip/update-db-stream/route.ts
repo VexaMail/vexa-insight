@@ -1,30 +1,35 @@
-import { requireAdminAuth } from '@/services/api'
+import { consumeStreamTicket } from '@/services/api'
 import { createUpdateDbStream } from '@/services/geoip'
 import { nonEmptyTextQuerySchema } from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-// We need to use Edge, or Node with Server-Sent Events pattern
-// For Server-Sent Events, we return a web Standard Response with a ReadableStream
+export const dynamic = 'force-dynamic'
+
+/**
+ * Streams GeoIP database update progress as Server-Sent Events.
+ *
+ * EventSource cannot set request headers, so this is the one route that
+ * authenticates from the query string. It accepts a single-use, short-lived
+ * ticket from `POST /api/v1/admin/geoip/update-db-ticket` rather than the
+ * long-lived `SECRET_KEY`: the value that ends up in proxy logs and browser
+ * history is already spent by the time it is written there.
+ */
 export async function GET(request: NextRequest) {
-  // EventSource cannot send custom headers easily, so we read from URL query params
-  const apiKey = nonEmptyTextQuerySchema.parse(
-    request.nextUrl.searchParams.get('apiKey'),
+  const ticket = nonEmptyTextQuerySchema.parse(
+    request.nextUrl.searchParams.get('ticket'),
   )
 
-  // Re-use logic from requireAdminAuth, but we must construct a dummy request headers
-  // since requireAdminAuth reads from request.headers.
-  const authHeaders = new Headers()
-  if (apiKey) {
-    authHeaders.set('x-api-key', apiKey)
-  }
-  const dummyRequest = new Request(request.url, {
-    headers: authHeaders,
-  }) as NextRequest
-
-  const auth = requireAdminAuth(dummyRequest)
-  if (auth) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status })
+  if (!consumeStreamTicket(ticket)) {
+    return NextResponse.json(
+      {
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Invalid or expired stream ticket',
+        },
+      },
+      { status: 401 },
+    )
   }
 
   const stream = createUpdateDbStream()

@@ -1,6 +1,7 @@
 export type { AiSettingsFormState } from './AiSettingsFormState'
 export type { AiSettingsSaveStatus } from './AiSettingsSaveStatus'
 export type { GeoIpAdminSettingsRow } from './GeoIpAdminSettingsRow'
+export type { GeoIpStreamHandlers } from './GeoIpStreamHandlers'
 export type { UseGeoIpReturn } from './UseGeoIpReturn'
 export type { UseModelComboboxReturn } from './UseModelComboboxReturn'
 export type { UseSelfUpdateReturn } from './UseSelfUpdateReturn'

@@ -30,6 +30,14 @@ mutating endpoints CSRF-prone.
   `app/api/v1/**` and fails if any route file lacks `withApiAuth`,
   `requireAdminAuth`, or the equivalent explicit pair. Only an explicit
   allowlist (`health`, `openapi.json`) may skip auth.
+- Server-Sent Events routes are the one exception to header-based auth, because
+  `EventSource` cannot set request headers. Instead of putting the `SECRET_KEY`
+  in the query string, where proxies and browser history record it, they redeem
+  a stream ticket: `issueStreamTicket` mints a 24-byte random value behind
+  normal `requireAdminAuth` on a separate POST route, and `consumeStreamTicket`
+  redeems it exactly once within 30 seconds (`STREAM_TICKET_TTL_MS`). The smoke
+  test pins this to a per-file allowlist and still requires the route to call
+  `consumeStreamTicket`.
 
 ## Consequences
 

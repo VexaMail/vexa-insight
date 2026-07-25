@@ -1,5 +1,7 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
+export { consumeStreamTicket } from './consumeStreamTicket'
 export { getApiKeyRole } from './getApiKeyRole'
+export { issueStreamTicket } from './issueStreamTicket'
 export { isUsableSecret } from './isUsableSecret'
 export { PUBLIC_API_ROUTES } from './publicApiRoutes'
 export { requireAdminAccess } from './requireAdminAccess'

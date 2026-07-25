@@ -17,6 +17,14 @@ describe('every /api/v1/** route handler enforces auth', () => {
     'app/api/v1/health/route.ts',
     'app/api/v1/openapi.json/route.ts',
   ])
+  // Server-Sent Events routes: EventSource cannot set request headers, so
+  // these authenticate a single-use ticket from the query string instead. The
+  // ticket is only mintable behind `requireAdminAuth`, so the allowance is
+  // pinned to the exact files rather than granted to any route that happens to
+  // call `consumeStreamTicket`.
+  const streamTicketAllow = new Set([
+    'app/api/v1/admin/geoip/update-db-stream/route.ts',
+  ])
   const root = path.resolve(__dirname, '..')
   const routes = walk(path.resolve(root, 'app/api/v1'))
   for (const file of routes) {
@@ -24,6 +32,13 @@ describe('every /api/v1/** route handler enforces auth', () => {
     if (publicAllow.has(rel)) continue
     it(rel, () => {
       const src = readFileSync(file, 'utf8')
+      if (streamTicketAllow.has(rel)) {
+        expect(
+          src.includes('consumeStreamTicket('),
+          `${rel} is allow-listed as an SSE route and must redeem a stream ticket`,
+        ).toBe(true)
+        return
+      }
       const usesWithApiAuth = src.includes('withApiAuth(')
       const usesRequireAdminAuth = src.includes('requireAdminAuth(')
       const usesRequireAdminAccess = src.includes('requireAdminAccess(')

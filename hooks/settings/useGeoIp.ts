@@ -1,8 +1,12 @@
 'use client'
 
 import type { GeoIpProgressEvent } from '@/types/geoipProgress'
-import type { UseGeoIpReturn } from '@/types/settings'
+import type { GeoIpStreamHandlers, UseGeoIpReturn } from '@/types/settings'
 import { getEtaText } from '@/utils/geoip'
+import {
+  attachGeoIpStreamHandlers,
+  fetchGeoIpStreamTicket,
+} from '@/utils/settings'
 import { useEffect, useState } from 'react'
 
 export function useGeoIp(apiKey: string): UseGeoIpReturn {
@@ -79,54 +83,44 @@ export function useGeoIp(apiKey: string): UseGeoIpReturn {
     setProgressData({ step: 'Starting download...', progress: 0 })
     setStartTime(Date.now())
 
-    const eventSource = new EventSource(
-      `/api/v1/admin/geoip/update-db-stream?apiKey=${encodeURIComponent(apiKey)}`,
-    )
-
-    eventSource.addEventListener('progress', (e: Event) => {
-      try {
-        const msgEvent = e as MessageEvent
-        const data = JSON.parse(msgEvent.data) as GeoIpProgressEvent
-        setProgressData(data)
-      } catch (err) {
-        console.error('Failed to parse progress event', err)
-      }
-    })
-
-    eventSource.addEventListener('done', (e: Event) => {
-      try {
-        const msgEvent = e as MessageEvent
-        const data = JSON.parse(msgEvent.data) as GeoIpProgressEvent
-        setProgressData(data)
-      } catch {
-        // ignore parse error on done event
-      }
-      setTimeout(() => {
+    const handlers: GeoIpStreamHandlers = {
+      onProgress: setProgressData,
+      onDone: () => {
+        setTimeout(() => {
+          setIsUpdatingDb(false)
+          setMessage('Database updated successfully!')
+          setLastUpdate(new Date().toISOString())
+          setErrorStatus(null)
+          setProgressData(null)
+        }, 1000)
+      },
+      onError: (errMsg: string) => {
         setIsUpdatingDb(false)
-        setMessage('Database updated successfully!')
-        setLastUpdate(new Date().toISOString())
-        setErrorStatus(null)
+        setMessage(errMsg)
         setProgressData(null)
-        eventSource.close()
-      }, 1000)
-    })
+      },
+    }
 
-    eventSource.addEventListener('error', (e: Event) => {
-      let errMsg = 'Update request failed.'
+    // EventSource cannot set headers, so the stream is authorized by a
+    // single-use ticket minted over an authenticated POST. The admin key
+    // itself never reaches the URL.
+    const openStream = async (): Promise<void> => {
       try {
-        const msgEvent = e as MessageEvent
-        if (msgEvent.data) {
-          const data = JSON.parse(msgEvent.data) as { message?: string }
-          if (data.message) errMsg = data.message
-        }
-      } catch {
-        // ignore parse error on transport close
+        const ticket = await fetchGeoIpStreamTicket(apiKey)
+        attachGeoIpStreamHandlers(
+          new EventSource(
+            `/api/v1/admin/geoip/update-db-stream?ticket=${encodeURIComponent(ticket)}`,
+          ),
+          handlers,
+        )
+      } catch (err: unknown) {
+        handlers.onError(
+          err instanceof Error ? err.message : 'Update request failed.',
+        )
       }
-      setIsUpdatingDb(false)
-      setMessage(errMsg)
-      setProgressData(null)
-      eventSource.close()
-    })
+    }
+
+    void openStream()
   }
 
   const etaText = getEtaText(isUpdatingDb, progressData, startTime)
