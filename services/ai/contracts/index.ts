@@ -1,4 +1,3 @@
-export * from './AiConfigurationStatus'
 export * from './AiProviderAdapter'
 export * from './AiProviderId'
 export * from './AiProviderSettings'
