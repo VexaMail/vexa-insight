@@ -1,1 +1,1 @@
-export * from './parseIdParam'
+export { parseIdParam } from './parseIdParam'
