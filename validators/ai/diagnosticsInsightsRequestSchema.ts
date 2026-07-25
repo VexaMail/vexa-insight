@@ -6,7 +6,7 @@ import { z } from 'zod'
  */
 export const diagnosticsInsightsRequestSchema = z.object({
   domainName: z.string().min(1),
-  domainId: z.number().min(1),
+  domainId: z.number().int().min(1),
   startDate: z.string().nullish(),
   endDate: z.string().nullish(),
 })
