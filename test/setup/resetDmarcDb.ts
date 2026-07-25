@@ -3,6 +3,7 @@ import {
   eventRollupDaily,
   getDb,
   ipAddresses,
+  ipHostnameEnrichments,
   normalizedEventDkimResults,
   normalizedEventPolicyOverrides,
   normalizedEvents,
@@ -22,5 +23,6 @@ export function resetDmarcDb(): void {
   db.delete(eventRollupDaily).run()
   db.delete(rawReports).run()
   db.delete(domains).run()
+  db.delete(ipHostnameEnrichments).run()
   db.delete(ipAddresses).run()
 }
