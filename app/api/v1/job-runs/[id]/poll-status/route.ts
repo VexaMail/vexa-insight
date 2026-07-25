@@ -1,5 +1,6 @@
 import { withApiAuth } from '@/services/api'
 import { getPollStatus } from '@/services/job'
+import { parseIdParam } from '@/utils/api'
 import {
   pageQuerySchema,
   pollStatusPageSizeQuerySchema,
@@ -21,10 +22,13 @@ export const GET = withApiAuth(
     )
 
     const resolvedParams = await params
-    const jobRunId = parseInt(resolvedParams.id, 10)
+    const jobRunId = parseIdParam(resolvedParams.id)
 
-    if (isNaN(jobRunId)) {
-      return NextResponse.json({ error: 'Invalid Job ID' }, { status: 400 })
+    if (jobRunId == null) {
+      return NextResponse.json(
+        { error: { code: 'BAD_REQUEST', message: 'Invalid job run id' } },
+        { status: 400 },
+      )
     }
 
     const status = await getPollStatus(page, pageSize, jobRunId)
