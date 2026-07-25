@@ -1,6 +1,8 @@
 import type { SpfTreeBuildState, SpfTreeNode } from '@/types/diagnostics'
 import { extractSpfChildDomains } from './extractSpfChildDomains'
-import { extractSpfLookupMechanisms } from './extractSpfLookupMechanisms'
+import { extractSpfEffectiveLookupMechanisms } from './extractSpfEffectiveLookupMechanisms'
+import { extractSpfIgnoredRedirect } from './extractSpfIgnoredRedirect'
+import { extractSpfMacroMechanisms } from './extractSpfMacroMechanisms'
 import { extractSpfRecordFromTxt } from './extractSpfRecordFromTxt'
 import { resolveTxtSafe } from './resolveTxtSafe'
 import { SPF_LOOKUP_LIMIT } from './spfLookupLimit'
@@ -32,6 +34,8 @@ export async function buildSpfTreeNode(
       missingRecord: false,
       cycleDetected: true,
       exceedsLookupLimit: false,
+      ignoredRedirect: null,
+      macroMechanisms: [],
     }
   }
   state.visited.add(normalized)
@@ -48,10 +52,12 @@ export async function buildSpfTreeNode(
       missingRecord: true,
       cycleDetected: false,
       exceedsLookupLimit: false,
+      ignoredRedirect: null,
+      macroMechanisms: [],
     }
   }
 
-  const mechanisms = extractSpfLookupMechanisms(record)
+  const mechanisms = extractSpfEffectiveLookupMechanisms(record)
 
   const children: SpfTreeNode[] = []
   if (depth < SPF_TREE_MAX_DEPTH) {
@@ -72,5 +78,7 @@ export async function buildSpfTreeNode(
     missingRecord: false,
     cycleDetected: false,
     exceedsLookupLimit: depth === 0 && lookupCount > SPF_LOOKUP_LIMIT,
+    ignoredRedirect: extractSpfIgnoredRedirect(record),
+    macroMechanisms: extractSpfMacroMechanisms(record),
   }
 }

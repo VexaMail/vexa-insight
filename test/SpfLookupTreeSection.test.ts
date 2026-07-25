@@ -16,6 +16,8 @@ describe('SpfLookupTreeSection', () => {
       missingRecord: false,
       cycleDetected: false,
       exceedsLookupLimit: false,
+      ignoredRedirect: null,
+      macroMechanisms: [],
       ...overrides,
     }
   }
@@ -128,6 +130,42 @@ describe('SpfLookupTreeSection', () => {
     expect(markup).toContain('Lookup limit exceeded')
     expect(markup).toContain('Exceeds 10-lookup limit')
     expect(markup).toContain('12 DNS lookups')
+  })
+
+  it('explains a redirect that is ignored because the record has an all', () => {
+    const markup = renderToStaticMarkup(
+      React.createElement(SpfLookupTreeSection, {
+        dns: makeDnsWithTree(
+          makeTreeNode({
+            record:
+              'v=spf1 include:_spf.example.net redirect=other.example -all',
+            ignoredRedirect: 'other.example',
+          }),
+        ),
+      }),
+    )
+
+    expect(markup).toContain('redirect=other.example')
+    expect(markup).toContain('is ignored because this record has an')
+    expect(markup).toContain('RFC 7208 6.1')
+  })
+
+  it('flags macro targets as not expanded', () => {
+    const markup = renderToStaticMarkup(
+      React.createElement(SpfLookupTreeSection, {
+        dns: makeDnsWithTree(
+          makeTreeNode({
+            record: 'v=spf1 exists:%{ir}.%{v}._spf.example.com -all',
+            mechanisms: ['exists:%{ir}.%{v}._spf.example.com'],
+            macroMechanisms: ['exists:%{ir}.%{v}._spf.example.com'],
+          }),
+        ),
+      }),
+    )
+
+    expect(markup).toContain('Macro target')
+    expect(markup).toContain('not expanded')
+    expect(markup).toContain('_spf.example.com')
   })
 
   it('renders a fallback when no tree data is available', () => {

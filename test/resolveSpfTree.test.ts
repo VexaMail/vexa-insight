@@ -81,6 +81,109 @@ describe('buildSpfTreeNode', () => {
     expect(root?.lookupCount).toBe(2)
   })
 
+  it('ignores redirect= when the record also has an all mechanism', async () => {
+    const { buildSpfTreeNode } =
+      await import('../services/diagnostics/buildSpfTreeNode')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 'example.com') {
+        return [['v=spf1 include:a.example redirect=_spf.example.net -all']]
+      }
+      if (host === 'a.example') return [['v=spf1 ip4:203.0.113.10 -all']]
+      if (host === '_spf.example.net') return [['v=spf1 mx mx:b.example -all']]
+      return []
+    })
+
+    const root = await buildSpfTreeNode('example.com', 0, freshState())
+
+    // RFC 7208 6.1: the redirect is never evaluated, so it is not followed and
+    // consumes no lookup. Only the include remains.
+    expect(root?.mechanisms).toEqual(['include:a.example'])
+    expect(root?.children.map((c) => c.domain)).toEqual(['a.example'])
+    expect(root?.lookupCount).toBe(1)
+    expect(root?.ignoredRedirect).toBe('_spf.example.net')
+  })
+
+  it('honors redirect= and reports no ignored redirect without an all', async () => {
+    const { buildSpfTreeNode } =
+      await import('../services/diagnostics/buildSpfTreeNode')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 'example.com') return [['v=spf1 redirect=_spf.example.net']]
+      if (host === '_spf.example.net') return [['v=spf1 a -all']]
+      return []
+    })
+
+    const root = await buildSpfTreeNode('example.com', 0, freshState())
+
+    expect(root?.ignoredRedirect).toBeNull()
+    expect(root?.children.map((c) => c.domain)).toEqual(['_spf.example.net'])
+    expect(root?.lookupCount).toBe(2)
+  })
+
+  it('ignores redirect= placed before the all mechanism too', async () => {
+    const { buildSpfTreeNode } =
+      await import('../services/diagnostics/buildSpfTreeNode')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 'example.com') {
+        return [['v=spf1 redirect=_spf.example.net ~all']]
+      }
+      if (host === '_spf.example.net') return [['v=spf1 a -all']]
+      return []
+    })
+
+    const root = await buildSpfTreeNode('example.com', 0, freshState())
+
+    // "regardless of the relative ordering of the terms", and any qualifier.
+    expect(root?.ignoredRedirect).toBe('_spf.example.net')
+    expect(root?.children).toEqual([])
+    expect(root?.lookupCount).toBe(0)
+  })
+
+  it('counts macro mechanisms without trying to resolve them', async () => {
+    const { buildSpfTreeNode } =
+      await import('../services/diagnostics/buildSpfTreeNode')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 'example.com') {
+        return [
+          ['v=spf1 exists:%{ir}.%{v}._spf.example.com include:a.example -all'],
+        ]
+      }
+      if (host === 'a.example') return [['v=spf1 -all']]
+      return []
+    })
+
+    const root = await buildSpfTreeNode('example.com', 0, freshState())
+
+    expect(root?.macroMechanisms).toEqual([
+      'exists:%{ir}.%{v}._spf.example.com',
+    ])
+    // The exists still consumes a lookup at evaluation time.
+    expect(root?.lookupCount).toBe(2)
+    // ...but no node is created for it, and no literal macro DNS query is made.
+    expect(root?.children.map((c) => c.domain)).toEqual(['a.example'])
+    expect(
+      mockResolveTxt.mock.calls.some(([host]) => String(host).includes('%{')),
+    ).toBe(false)
+  })
+
+  it('does not expand a macro include as a missing-record child', async () => {
+    const { buildSpfTreeNode } =
+      await import('../services/diagnostics/buildSpfTreeNode')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 'example.com') {
+        return [['v=spf1 include:%{d}.spf.example.net -all']]
+      }
+      return []
+    })
+
+    const root = await buildSpfTreeNode('example.com', 0, freshState())
+
+    // Previously this produced a child flagged "No SPF record", which reads as
+    // a misconfiguration rather than an unresolvable target.
+    expect(root?.children).toEqual([])
+    expect(root?.macroMechanisms).toEqual(['include:%{d}.spf.example.net'])
+    expect(root?.lookupCount).toBe(1)
+  })
+
   it('detects include cycles and marks the repeated node', async () => {
     const { buildSpfTreeNode } =
       await import('../services/diagnostics/buildSpfTreeNode')
