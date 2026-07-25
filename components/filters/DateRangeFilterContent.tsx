@@ -37,7 +37,15 @@ export function DateRangeFilterContent({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Select value={selectValue} onValueChange={handleQuickRangeChange}>
-        <SelectTrigger className="bg-background h-9 w-[160px]">
+        {/*
+          The trigger's only text comes from SelectValue, which renders nothing
+          until the matching SelectItem has mounted. Screen readers would
+          announce an unnamed button in that window, so name it explicitly.
+        */}
+        <SelectTrigger
+          aria-label="Date range"
+          className="bg-background h-9 w-[160px]"
+        >
           <SelectValue placeholder="Select Range" />
         </SelectTrigger>
         <SelectContent>
