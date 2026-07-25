@@ -236,6 +236,11 @@ The dashboard checks GitHub once per day for new stable releases and shows an "U
 
 The check itself is notification-only — Vexa never modifies your filesystem on its own. Full details: [docs/UPDATING.md](docs/UPDATING.md).
 
+Migrations run on boot, but existing installs must run the one-time
+`pnpm run backfill:rollup` after upgrading to the release that introduced the
+`event_rollup_daily` table — until then the dashboard totals lag your data. See
+[One-time post-upgrade steps](docs/UPDATING.md#one-time-post-upgrade-steps).
+
 ---
 
 ## Roadmap

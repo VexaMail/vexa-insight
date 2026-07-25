@@ -123,6 +123,44 @@ pnpm run start
 Migrations run automatically on boot (`instrumentation.ts`). Back up your
 database (`./data/vexa.db` by default) before any major version bump.
 
+## One-time post-upgrade steps
+
+Migrations are automatic, but a few releases add derived tables that must be
+computed once from your existing data. Migrations deliberately do not do this
+work at boot (see [ADR 0004](adr/0004-reversible-migrations-policy.md) and
+[ADR 0008](adr/0008-batched-ingest-and-daily-rollups.md)): recomputing
+millions of rows during startup would stall a large install.
+
+### `event_rollup_daily` backfill (from the release that introduced it)
+
+The dashboard aggregates (`getAggregateStats`, `getDomainSummary`,
+`getDomainsSummaryAll`) read the per-domain, per-day `event_rollup_daily`
+table instead of scanning `normalized_events`. On an existing install that
+table starts empty, so **dashboard totals stay behind your real data until you
+run the backfill once**:
+
+```bash
+pnpm run backfill:rollup
+```
+
+Properties:
+
+- **Idempotent** — a full recompute, safe to re-run at any time, and the way
+  to repair suspected drift.
+- **Run while ingestion is idle.** SQLite is single-writer (ADR 0003); a
+  concurrent ingest and a full rebuild will contend for the write lock.
+- **Only needed once per install.** After the backfill, ingestion maintains
+  the rollup incrementally inside its own transaction.
+
+Docker installs run it against the container's database:
+
+```bash
+docker compose exec web pnpm run backfill:rollup
+```
+
+Newly created installs need nothing: the rollup is maintained from the first
+ingested report.
+
 ## Apply updates from the dashboard (WordPress-style)
 
 If the app is supervised by **systemd** or **PM2**, the Settings → Updates
