@@ -14,7 +14,7 @@ import { NextResponse } from 'next/server'
  */
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
-    const denied = await requirePermission('reports:read')
+    const denied = await requirePermission('ai:invoke')
     if (denied) return denied
     const AI_LIMIT = 10
     const AI_WINDOW_MS = 60_000

@@ -37,6 +37,17 @@ describe('hasPermission', () => {
     expect(hasPermission('user', 'audit:read')).toBe(false)
   })
 
+  it('grants ai:invoke to exactly the roles that can read reports', () => {
+    // Introducing ai:invoke must not have changed anyone's access; it exists so
+    // AI spend can be revoked per role without touching the routes.
+    for (const role of ['admin', 'operator', 'viewer', 'user']) {
+      expect(hasPermission(role, 'ai:invoke')).toBe(
+        hasPermission(role, 'reports:read'),
+      )
+    }
+    expect(hasPermission('superadmin', 'ai:invoke')).toBe(false)
+  })
+
   it('denies unknown roles by default', () => {
     expect(hasPermission('superadmin', 'reports:read')).toBe(false)
     expect(hasPermission('', 'reports:read')).toBe(false)

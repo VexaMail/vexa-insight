@@ -15,3 +15,6 @@ export type Permission =
   | 'reports:write'
   | 'audit:read'
   | 'install:write'
+  // Invoking an AI provider spends the operator's paid quota, so it is a
+  // separate permission from reading the reports the analysis is built on.
+  | 'ai:invoke'
