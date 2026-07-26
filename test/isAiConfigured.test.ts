@@ -5,6 +5,12 @@ vi.mock('@/services/ai/settings', () => ({
   getAiSettings: vi.fn(),
 }))
 
+// The first case pays for importing the whole `@/services/ai` barrel, which
+// exceeds the 5s default when vitest starts on a cold transform cache — as it
+// does under `check:ci`, after type-check and lint. The tests assert behavior,
+// not import speed, so the timeout is raised rather than the graph trimmed.
+vi.setConfig({ testTimeout: 30_000 })
+
 describe('isAiConfigured', () => {
   const settingsWithModel = (model: string | null): AIProviderSettings => ({
     providerId: 'openai',

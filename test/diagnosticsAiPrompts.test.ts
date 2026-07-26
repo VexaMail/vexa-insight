@@ -128,9 +128,9 @@ describe('buildDiagnosticsAnalysisPrompt', () => {
 
     expect(systemPrompt).toBe(DIAGNOSTICS_ANALYSIS_SYSTEM)
     expect(systemPrompt).toContain('deterministic operator runbook')
-    expect(systemPrompt).toContain('Do NOT simply restate it')
+    expect(systemPrompt).toContain('Do not restate it')
     expect(systemPrompt).toContain(
-      'If a deterministic guide already covers the same issue',
+      'add an insight only when you contribute materially new information',
     )
   })
 
@@ -138,13 +138,13 @@ describe('buildDiagnosticsAnalysisPrompt', () => {
     const { systemPrompt } = buildDiagnosticsAnalysisPrompt(makeFullInput())
 
     expect(systemPrompt).toContain(
-      '"insights" (array of insight objects) and "rolloutPlan" (array of strings)',
+      '"insights" (array) and "rolloutPlan" (array of strings)',
     )
-    expect(systemPrompt).toContain('ROLLOUT PLAN RULES')
+    expect(systemPrompt).toContain('ROLLOUT PLAN')
     expect(systemPrompt).toContain(
-      'End the response with "rolloutPlan": an ordered list of concrete next steps',
+      'End with "rolloutPlan": an ordered list of concrete next steps',
     )
-    expect(systemPrompt).toContain('Put the highest-impact work first.')
+    expect(systemPrompt).toContain('highest-impact first')
     expect(systemPrompt).toContain(
       'Start each step with the protocol it touches in square brackets',
     )
