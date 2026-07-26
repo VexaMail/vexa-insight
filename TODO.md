@@ -16,7 +16,6 @@
 ## Security
 
 - [ ] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to `admin` and got the fixed `API_KEY_PERMISSIONS` set instead, but the remaining gaps are unchanged: one secret for every client, no per-client attribution, no revocation without rotating for everyone. Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. (User decision, then a sizeable change.)
-- [ ] Revoke a user's other sessions when their password changes. `services/users/updateUser.ts` rewrites `passwordHash` without touching the `sessions` rows, so a stolen session cookie outlives the password reset meant to kill it. The other revocation paths are already covered: deleting a user cascades to `sessions`, and `getSession` joins `users` on every request, so role and allow-list changes take effect immediately. Named by the 2026-07-26 decision as the condition for reconsidering whether OIDC SSO is production-ready. Two sub-decisions before implementing: whether an admin changing their OWN password is logged out too (simplest correct behavior, but surprising in the settings UI), and whether the revocation is silent or surfaced in the audit log.
 
 ## Artificial Intelligence
 
@@ -32,7 +31,7 @@
 
 ## Pending Decisions
 
-- [ ] Confirm whether the domain score must match PowerDMARC exactly or remain only inspired by it. The current SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights were never checked for output parity. (User decision; note 2026-07-24: the DKIM key-length estimator fix changed reported bit values.)
+- [!] Match the domain score to PowerDMARC's output exactly. Decided 2026-07-26: parity is the goal, so any divergence in the SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights is a bug, not a design choice. Blocked on reference data this run cannot obtain: PowerDMARC's scores are behind their account, and scraping or signing up for a third-party service is not something to do unattended. Smallest unblock: the user supplies a handful of domains with PowerDMARC's reported score for each (a spread of good/partial/broken configurations is worth more than many similar ones); then `computeDomainScore` can be diffed against them and the weights tuned, with the reference set pinned as a test. Note 2026-07-24: the DKIM key-length estimator fix changed reported bit values, so any reference capture must post-date it.
 
 ## Future Ideas
 

@@ -6,6 +6,12 @@
 
 ### 2026-07
 
+- [x] 2026-07-26 — **Security:** Revoke a user's sessions when their password changes.
+  - Result: `updateUser` rewrote `passwordHash` without touching `sessions`, so a stolen cookie outlived the reset meant to kill it. New `services/auth/revokeUserSessions.ts` deletes every session row for the user; `updateUser` calls it only on a password change and records one `auth.sessions.revoked` audit event with the target and the number of cookies killed. Per the 2026-07-26 decision this is unconditional: an admin who changes their own password is signed out too. The actor is read from the session before the delete, otherwise a self-reset would erase its own attribution.
+  - The two neighbouring revocation paths were already covered and needed no change: deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` per request, so role and allow-list changes apply on the next request rather than at expiry.
+  - Evidence: `pnpm run check:ci` clean (466/466, migrations OK). New `test/revokeUserSessions.test.ts` (4 cases); 2 of them fail with the `updateUser` change stashed, verified by re-running against the stash.
+  - Files: `services/auth/revokeUserSessions.ts`, `services/users/updateUser.ts`, `types/audit/AuditAction.ts`, `test/revokeUserSessions.test.ts`.
+
 - [x] 2026-07-26 — **Security:** Decide whether the shared API key should be excluded from `users:write`.
   - Decision: yes. The shared `SECRET_KEY` no longer maps to the `admin` role; it now carries the fixed set `API_KEY_PERMISSIONS` = `reports:read`, `reports:write`, `settings:read`, `ai:invoke`. One secret shared by every automation client must not be able to create users, change roles, or read the audit log — that is the difference between a leaked key and account takeover.
   - Result: `services/api/getApiKeyRole.ts` (returned `'admin'`) replaced by `services/api/hasValidApiKey.ts` (returns a boolean); `requirePermission` checks a session against its user's role and a keyed request against `API_KEY_PERMISSIONS`, keeping 401-vs-403 semantics. `getAllowedDomainIds` still treats a valid key as unrestricted, otherwise every domain-scoped query returns nothing to API callers.

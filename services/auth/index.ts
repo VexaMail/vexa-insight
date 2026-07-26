@@ -16,4 +16,5 @@ export {
 } from './oidc'
 export { requireActionPermission } from './requireActionPermission'
 export { requirePermission } from './requirePermission'
+export { revokeUserSessions } from './revokeUserSessions'
 export { verifyPassword } from './verifyPassword'

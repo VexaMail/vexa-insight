@@ -17,3 +17,4 @@ export type AuditAction =
   | 'imap.account.updated'
   | 'imap.account.deleted'
   | 'imap.secret.rotated'
+  | 'auth.sessions.revoked'

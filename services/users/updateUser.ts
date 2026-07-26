@@ -1,5 +1,6 @@
 import { getDb, users } from '@/lib/db'
-import { hashPassword } from '@/services/auth'
+import { recordAuditEvent } from '@/services/audit'
+import { getSession, hashPassword, revokeUserSessions } from '@/services/auth'
 import { and, count, eq, ne } from 'drizzle-orm'
 
 export async function updateUser(
@@ -47,5 +48,23 @@ export async function updateUser(
   if (data.password) updateData.passwordHash = hashPassword(data.password)
 
   await db.update(users).set(updateData).where(eq(users.id, id))
+
+  // A new password must not leave the old cookies working, so every session
+  // for this account goes -- including the caller's own when they changed
+  // their own password.
+  if (data.password) {
+    // Read the actor first: revoking may delete the caller's own session.
+    const session = await getSession()
+    const revoked = await revokeUserSessions(id)
+    await recordAuditEvent({
+      action: 'auth.sessions.revoked',
+      actorId: session?.user.id ?? null,
+      actorEmail: session?.user.username ?? null,
+      targetType: 'user',
+      targetId: id,
+      metadata: { reason: 'password_change', revoked },
+    })
+  }
+
   return { success: true }
 }
