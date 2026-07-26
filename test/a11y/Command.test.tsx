@@ -41,19 +41,38 @@ describe('Command palette accessibility', () => {
     expect(results.violations).toEqual([])
   })
 
-  // Characterization, not an endorsement: cmdk puts `role="listbox"` on
-  // CommandList unconditionally, so with no results the listbox has no `option`
-  // children and axe raises `aria-required-children` (wcag2a). The fix belongs
-  // in the shared `CommandList` primitive and is tracked in the backlog; this test
-  // pins the exact scope of the known issue so any *other* regression in the
-  // empty state still fails loudly, and so it fails when the issue is fixed.
-  it('has only the known cmdk empty-listbox violation in the empty state', async () => {
+  // cmdk puts `role="listbox"` on CommandList unconditionally, so an empty
+  // state whose message is only `role="presentation"` leaves the listbox with
+  // no `option` child and trips axe's `aria-required-children` (wcag2a).
+  // `CommandEmpty` exposes the message as a disabled option instead. Removing
+  // the listbox is not an option: the input's `aria-controls` would dangle,
+  // which axe reports as `aria-valid-attr-value`.
+  it('has no axe violations in the empty state', async () => {
     const { container } = renderCommand([])
 
-    const results = await axe(container)
+    expect(screen.getByText('No domains found.')).toBeVisible()
 
-    expect(results.violations.map((v) => v.id)).toEqual([
-      'aria-required-children',
-    ])
+    const results = await axe(container)
+    expect(results.violations).toEqual([])
+  })
+
+  it('exposes the empty message as a disabled option of the listbox', () => {
+    renderCommand([])
+
+    const listbox = screen.getByRole('listbox')
+    const emptyOption = screen.getByRole('option', {
+      name: 'No domains found.',
+    })
+
+    expect(listbox).toContainElement(emptyOption)
+    expect(emptyOption).toHaveAttribute('aria-disabled', 'true')
+    expect(emptyOption).toHaveAttribute('aria-selected', 'false')
+  })
+
+  it('drops the empty message once results come back', () => {
+    renderCommand(['example.com'])
+
+    expect(screen.queryByText('No domains found.')).toBeNull()
+    expect(screen.getAllByRole('option')).toHaveLength(1)
   })
 })
