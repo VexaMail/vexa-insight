@@ -4,16 +4,19 @@ import {
   ipHostnameEnrichments,
   normalizedEvents,
 } from '@/lib/db'
+import { getAllowedDomainIds } from '@/services/auth'
 import type { IpDateRange } from '@/types/filters'
 import type { IpSummaryData } from '@/types/ips'
 import { computeRate } from '@/utils/ips'
-import { and, eq, gte, lte, sql } from 'drizzle-orm'
+import { and, eq, gte, inArray, lte, sql } from 'drizzle-orm'
 
 export async function getIpDetail(
   ip: string,
   dateRange?: IpDateRange,
 ): Promise<IpSummaryData | null> {
   const db = getDb()
+  const allowedIds = await getAllowedDomainIds()
+  if (allowedIds !== null && allowedIds.length === 0) return null
 
   const rows = await db
     .select({
@@ -22,7 +25,8 @@ export async function getIpDetail(
       hostname: ipHostnameEnrichments.hostname,
       hostnameLastLookupAt: ipHostnameEnrichments.lastLookupAt,
       emailsSentCount: ipAddresses.emailsSentCount,
-      totalMessages: sql<number>`sum(${normalizedEvents.count})`.as(
+      // LEFT JOIN: sum() is NULL, not 0, when the IP has no matching events.
+      totalMessages: sql<number | null>`sum(${normalizedEvents.count})`.as(
         'total_messages',
       ),
       firstSeen: sql<number>`min(${normalizedEvents.reportBeginDate})`.as(
@@ -61,6 +65,9 @@ export async function getIpDetail(
       normalizedEvents,
       and(
         eq(normalizedEvents.ipAddressId, ipAddresses.id),
+        allowedIds !== null
+          ? inArray(normalizedEvents.domainId, allowedIds)
+          : undefined,
         dateRange?.fromTs
           ? gte(normalizedEvents.reportEndDate, dateRange.fromTs)
           : undefined,
@@ -83,6 +90,13 @@ export async function getIpDetail(
 
   const r = rows[0]
   if (!r) return null
+
+  // The domain filter lives in the LEFT JOIN, so a restricted caller still gets
+  // the ipAddresses row back with null aggregates when the IP never sent to one
+  // of their domains. Treat that as not-found rather than rendering a zeroed
+  // page for an IP they are not entitled to see. Unrestricted callers keep the
+  // old behaviour (a zeroed row when the date range is simply empty).
+  if (allowedIds !== null && r.totalMessages === null) return null
 
   const totalMessages = Number(r.totalMessages)
   const spfPassCount = Number(r.spfPassCount)

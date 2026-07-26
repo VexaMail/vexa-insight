@@ -1,7 +1,8 @@
 import { getDb, ipAddresses, normalizedEvents, rawReports } from '@/lib/db'
+import { getAllowedDomainIds } from '@/services/auth'
 import type { IpRelatedReportRow } from '@/types/IpRelatedReportRow'
 import type { IpDateRange } from '@/types/filters'
-import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm'
 
 export async function getIpReports(
   ip: string,
@@ -10,6 +11,8 @@ export async function getIpReports(
   offset: number = 0,
 ): Promise<IpRelatedReportRow[]> {
   const db = getDb()
+  const allowedIds = await getAllowedDomainIds()
+  if (allowedIds !== null && allowedIds.length === 0) return []
 
   const rows = await db
     .select({
@@ -29,6 +32,9 @@ export async function getIpReports(
     .where(
       and(
         eq(ipAddresses.ip, ip),
+        allowedIds !== null
+          ? inArray(normalizedEvents.domainId, allowedIds)
+          : undefined,
         dateRange?.fromTs
           ? gte(rawReports.endDate, dateRange.fromTs)
           : undefined,

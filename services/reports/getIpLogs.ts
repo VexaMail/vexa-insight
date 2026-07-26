@@ -5,9 +5,10 @@ import {
   normalizedEvents,
   rawReports,
 } from '@/lib/db'
+import { getAllowedDomainIds } from '@/services/auth'
 import type { IpLogRow } from '@/types/IpLogRow'
 import type { IpDateRange } from '@/types/filters'
-import { and, desc, eq, gte, lte } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
 
 export async function getIpLogs(
   ip: string,
@@ -16,6 +17,8 @@ export async function getIpLogs(
   offset: number = 0,
 ): Promise<IpLogRow[]> {
   const db = getDb()
+  const allowedIds = await getAllowedDomainIds()
+  if (allowedIds !== null && allowedIds.length === 0) return []
 
   const rows = await db
     .select({
@@ -38,6 +41,9 @@ export async function getIpLogs(
     .where(
       and(
         eq(ipAddresses.ip, ip),
+        allowedIds !== null
+          ? inArray(normalizedEvents.domainId, allowedIds)
+          : undefined,
         dateRange?.fromTs
           ? gte(normalizedEvents.reportBeginDate, dateRange.fromTs)
           : undefined,

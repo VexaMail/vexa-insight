@@ -4,15 +4,18 @@ import {
   ipHostnameEnrichments,
   normalizedEvents,
 } from '@/lib/db'
+import { getAllowedDomainIds } from '@/services/auth'
 import type { IpDateRange } from '@/types/filters'
 import type { IpsSummaryResponse } from '@/types/ips'
 import { computeRate } from '@/utils/ips'
-import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm'
 
 export async function getIpsSummary(
   dateRange?: IpDateRange,
 ): Promise<IpsSummaryResponse> {
   const db = getDb()
+  const allowedIds = await getAllowedDomainIds()
+  if (allowedIds !== null && allowedIds.length === 0) return { ips: [] }
 
   const rows = await db
     .select({
@@ -66,6 +69,9 @@ export async function getIpsSummary(
     )
     .where(
       and(
+        allowedIds !== null
+          ? inArray(normalizedEvents.domainId, allowedIds)
+          : undefined,
         dateRange?.fromTs
           ? gte(normalizedEvents.reportEndDate, dateRange.fromTs)
           : undefined,
