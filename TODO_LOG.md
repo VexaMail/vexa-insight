@@ -6,6 +6,37 @@
 
 ### 2026-07
 
+- [x] 2026-07-26 — **Artificial Intelligence:** Restructure the diagnostics system prompt around the 2026 model prompting guidance.
+  - Context: Anthropic's per-model guides (Opus 5, Fable 5) and OpenAI's GPT-5.6 guidance now agree that prompts written for older models reduce quality on current ones, and that most of the work is deletion. `DIAGNOSTICS_ANALYSIS_SYSTEM` was 64 numbered rules; `REPORT_ANALYSIS_SYSTEM` was already lean and was left alone.
+  - Result: named sections instead of the numbered list, 12,897 -> 10,025 system characters (-22%), with every enum, required and optional field, severity/tone/evidenceStrength definition, correlation rule, recommendation constraint, and example preserved.
+  - The first attempt was a measured regression, caught by the eval harness rather than by reading: promoting "prefer fewer, higher-confidence insights" into the opening paragraph cost the `policy` enforcement finding in 2 of 2 runs, which took `tone: improvement` from 2/9 insights to 0/6 — and with it every insight eligible for `recordValue`/`verifyCommand`, since those require that tone. Moving the sentence back into NOISE REDUCTION and naming enforcement posture as a first-class finding restored it.
+  - Evidence: `pnpm run eval:ai diagnostics` on the free Max lane, same domain and model (`claude-sonnet-5`) across all arms. Baseline 2 runs: 9 insights, 2 improvement-tone, 2 verifyCommand, ~11,486 tokens. First rewrite 2 runs: 6 / 0 / 1, ~9,993 tokens. Corrected 6 runs: improvement-tone present in 6/6, `rolloutPlan` 5 well-formed `[PROTOCOL]`-prefixed steps every run, `parseError` null on all 10 runs, ~10,755 tokens (-6% against baseline). `pnpm run check:ci` clean (504/504, migrations OK).
+  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`, `test/diagnosticsAiPrompts.test.ts`, `test/isAiConfigured.test.ts`.
+  - Two assertions in `diagnosticsAiPrompts.test.ts` pinned prompt prose (`'Do NOT simply restate it'`, `'ROLLOUT PLAN RULES'`) and were reworded to the new phrasing; the instructions they guard are unchanged. `isAiConfigured.test.ts` got an explicit 30s timeout: it imports the whole `@/services/ai` barrel and began failing reproducibly under `check:ci`, where vitest starts on a cold transform cache after type-check and lint.
+  - Open: 2 of 6 runs on the new wording wrapped the JSON in a markdown fence where 0 of 2 baseline runs did. The parser strips them and nothing breaks; too few baseline samples to call it a regression, so it is tracked in `TODO.md` rather than fixed blind.
+
+- [x] 2026-07-26 — **Artificial Intelligence:** Stop sending `temperature` to Claude 5 models on the metered Anthropic path.
+  - Decision: gate the field on the model rather than dropping it everywhere. A blanket drop would silently move the older Claude models from `temperature: 0.2` to the API default of 1.0, which is a real loss for prompts whose output is parsed as JSON. Anthropic removed the sampling parameters starting with Opus 4.7, so the split is by model generation, not by provider.
+  - Result: `utils/ai/supportsAnthropicTemperature.ts` matches the configured model against `TEMPERATURE_CAPABLE_CLAUDE_MODEL_PREFIXES` (Claude 2/3, Opus 4.0/4.1/4.5/4.6, Sonnet 4.0/4.5/4.6, Haiku 4.5) as prefixes, so dated ids resolve too; `createAnthropicAdapter` spreads `temperature` into the body only when that returns true. The list is an allow-list of the older families on purpose: an unrecognised id is far more likely to be newer than this code than older, and losing the field is recoverable where an HTTP 400 is not. The Max OAuth lane still strips the field in `applyMaxOAuthRequestShape` and is unchanged.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 488/488 tests, migrations OK). New `test/createAnthropicAdapter.test.ts` asserts the request body over a stubbed `fetch` — `temperature` present for `claude-sonnet-4-6`, absent for `claude-opus-5`; `test/supportsAnthropicTemperature.test.ts` (4 cases) pins both model sets, the unknown-model default, and the casing/whitespace handling. No live provider call was made, so the HTTP 400 itself is still only reproduced from the 2026-07-26 Max OAuth session.
+  - Files: `constants/ai/temperatureCapableClaudeModelPrefixes.ts`, `utils/ai/supportsAnthropicTemperature.ts`, `services/ai/providers/anthropic/createAnthropicAdapter.ts`, `test/{createAnthropicAdapter,supportsAnthropicTemperature}.test.ts`.
+  - Left open: the Gemini and OpenRouter adapters send `temperature` unconditionally and were not examined; tracked in `TODO.md`.
+
+- [x] 2026-07-26 — **Artificial Intelligence:** Check whether the OpenAI adapter has the same `temperature` problem the Anthropic one had.
+  - Result: it does, and it came with a second half. OpenAI's reasoning families (`o1`/`o3`/`o4`, `gpt-5`) reject a non-default `temperature` (`Unsupported value: 'temperature' does not support 0.2 with this model. Only the default (1) value is supported.`) **and** `max_tokens`, which has to be `max_completion_tokens` there. Either one is an HTTP 400, so gating only the temperature would have left those models exactly as unusable. `utils/ai/usesLegacyOpenAiChatParams.ts` picks one shape or the other from `LEGACY_OPENAI_CHAT_MODEL_PREFIXES` (`gpt-3.5`, `gpt-4*`, `chatgpt-4o`): legacy models keep `max_tokens` + `temperature`, everything else gets `max_completion_tokens` and no sampling controls. `gpt-5-chat` is deliberately excluded — reports disagree on whether the non-reasoning chat variant accepts `temperature`, and the modern shape is the harmless side of that.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 504/504 tests, migrations OK). New `test/createOpenAiAdapter.test.ts` asserts the whole request body over a stubbed `fetch` — `max_tokens` + `temperature` and no `max_completion_tokens` for `gpt-4o`, the inverse for `gpt-5`; `test/usesLegacyOpenAiChatParams.test.ts` (4 cases) pins both model sets, the unknown-model default, and casing. The 400s come from published reports and Microsoft's Azure OpenAI reasoning docs, not from a call made here: `platform.openai.com` returned 403 to an unauthenticated fetch, so no primary-doc quote was captured and no metered call was made.
+  - Files: `constants/ai/legacyOpenAiChatModelPrefixes.ts`, `utils/ai/usesLegacyOpenAiChatParams.ts`, `services/ai/providers/openai/createOpenAiAdapter.ts`, `test/{createOpenAiAdapter,usesLegacyOpenAiChatParams}.test.ts`.
+  - Still unverified: whether those models accept `response_format: { type: 'json_object' }`, which the adapter sends unconditionally and every prompt here relies on. Left in `TODO.md` rather than guessed at.
+
+- [x] 2026-07-26 — **Artificial Intelligence:** Run the LLM prompts on the Claude Max subscription so prompt work costs nothing.
+  - Result: two entry points sharing one auth layer. `pnpm run dev:max` (`LLM_BACKEND=max-oauth next dev`) reroutes the running app's Anthropic calls onto the Claude Code OAuth token in the macOS Keychain; `pnpm run eval:ai <report|diagnostics> ...` runs a production prompt N times offline against real local rows and writes one artifact per invocation to `evals/results/`. Neither path sends the stored API key.
+  - The lane only serves requests that look like Claude Code: the `oauth-2025-04-20,claude-code-20250219` betas, `x-app: cli`, the CLI user agent, and the identity line as a distinct FIRST `system` block are all load-bearing — without them the answer is a `rate_limit_error` unrelated to quota.
+  - Two findings while wiring it up. Claude 5 models reject `temperature` (HTTP 400), so `applyMaxOAuthRequestShape` strips it; the metered path still sends it and stays broken for those models, left open in `TODO.md`. And the harness cannot call `getReportById`, whose domain scoping resolves through `getSession()` and needs request cookies — `loadEvalReport` reads the row unscoped instead, which is right for a run served for nobody.
+  - Safety: `isMaxOAuthBackendEnabled` requires the flag AND `NODE_ENV === 'development'`, failing closed on staging/test/unset. Verified by probe: flag on in development returned `OK` with a dummy API key; flag off returned `invalid x-api-key`; flag on with `NODE_ENV=production` also returned `invalid x-api-key`.
+  - Evidence: `pnpm run check:ci` clean (474/474, migrations OK). Both harness targets were also run live against a local development database: the report target returned 5 parsed insights per sample at ~2.5k tokens, the diagnostics target 4 parsed insights at ~11.5k tokens. Artifacts are gitignored, since they embed whatever report and domain rows the local database holds.
+  - Files: `services/ai/maxOAuth/*` (9), `services/ai/evals/*` (10), `services/ai/contracts/{AnthropicMessagesRequest,MaxOAuthCredentials,AiEval*}.ts`, `services/ai/use-cases/buildDiagnosticsAnalysisInput.ts`, `services/ai/providers/anthropic/createAnthropicAdapter.ts`, `scripts/run-ai-eval.ts`, `utils/{cli,errors}/*`, `test/{isMaxOAuthBackendEnabled,applyMaxOAuthRequestShape}.test.ts`, `docs/ai-max-oauth-backend.md`, `eslint.config.ts`, `package.json`.
+  - Note: `buildDiagnosticsAnalysisInput` was extracted out of `generateDiagnosticsInsights` so the runtime and the harness assemble the diagnostics prompt from one place. Behavior unchanged — same sources, same graceful degradation, same `INSUFFICIENT_DATA` throw.
+
 - [x] 2026-07-26 — **Security:** Revoke a user's sessions when their password changes.
   - Result: `updateUser` rewrote `passwordHash` without touching `sessions`, so a stolen cookie outlived the reset meant to kill it. New `services/auth/revokeUserSessions.ts` deletes every session row for the user; `updateUser` calls it only on a password change and records one `auth.sessions.revoked` audit event with the target and the number of cookies killed. Per the 2026-07-26 decision this is unconditional: an admin who changes their own password is signed out too. The actor is read from the session before the delete, otherwise a self-reset would erase its own attribution.
   - The two neighbouring revocation paths were already covered and needed no change: deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` per request, so role and allow-list changes apply on the next request rather than at expiry.
@@ -277,12 +308,12 @@
   - Files: `components/install/InstallForm.tsx`, `hooks/install/useInstallForm.ts`, `utils/install/installReducer.ts`, `types/install/InstallState.ts`, `types/install/InstallAction.ts`.
 
 - [x] 2026-07-23 — **Documentation:** Publish the TODO-maintenance rule through a tracked instruction source.
-  - Result: Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed `CLAUDE.md` with the backlog, log, and history-index rule.
+  - Result: Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed `CLAUDE.md` with the backlog and work-log conventions.
   - Evidence: commit `7021f658`.
   - Files: `.gitignore`, `CLAUDE.md`.
 
 - [x] 2026-07-23 — **Testing:** Complete the full repository quality gate over the diagnostics work.
-  - Result: Ran the full Vitest suite outside the DNS-restricted sandbox; the previously failing live-DNS assertion passed.
+  - Result: Ran the full Vitest suite with outbound DNS available; the previously failing live-DNS assertion passed.
   - Evidence: `pnpm test` — 27 files, 186/186 tests passed.
   - Files: `test/safeFetch.test.ts`.
 
@@ -387,47 +418,47 @@
 
 - [x] 2026-04-22 — **Diagnostics:** Add the domain security score.
   - Result: Added letter grades and percentages with protocol-specific scoring functions coordinated by `computeDomainScore`.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `services/diagnostics/computeDomainScore.ts`, `services/diagnostics/score*.ts`.
 
 - [x] 2026-04-22 — **Diagnostics:** Resolve the expanded protocol and DNS dataset with caching.
   - Result: Added BIMI, MTA-STS, TLS-RPT, A, and NS resolution plus a five-minute in-memory TTL cache.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `services/diagnostics/getDomainDnsRecords.ts`, `services/diagnostics/withDiagnosticsCache.ts`.
 
 - [x] 2026-04-22 — **Diagnostics:** Feed all domain TXT records into SPF analysis.
   - Result: Restored duplicate and conflict detection by passing the resolved TXT set to `analyzeSpfRecord`.
-  - Evidence: Historical Codex type-check and focused ESLint passed; current integration coverage in `test/getDomainDnsRecords.test.ts`.
+  - Evidence: Type-check and focused ESLint passed; current integration coverage in `test/getDomainDnsRecords.test.ts`.
   - Files: `services/diagnostics/getDomainDnsRecords.ts`.
 
 - [x] 2026-04-22 — **Diagnostics:** Add a deterministic administrator runbook.
   - Result: Added why-it-matters, remediation, and verification guidance derived from DNS, score, and report data.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `services/diagnostics/buildDiagnosticsAdminGuides.ts`, `components/ai/DiagnosticsAdminRunbook.tsx`.
 
 - [x] 2026-04-22 — **Diagnostics:** Reclassify valid SPF `~all` guidance.
   - Result: Changed soft-fail guidance from a high-severity correction to a low-priority hardening suggestion.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `services/diagnostics/`.
 
 - [x] 2026-04-22 — **Diagnostics:** Add contextual protocol help and examples.
   - Result: Added tooltips and protocol explainers with example DNS hosts and values.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `components/diagnostics/shared/InfoTooltip.tsx`, `components/diagnostics/shared/ProtocolExplainer.tsx`.
 
 - [x] 2026-04-22 — **Diagnostics:** Remove duplicate legacy blocks from the active diagnostics view.
   - Result: Removed the old DNS panel, executive summary, assessment, and authentication breakdown from `DiagnosticsView`.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `components/diagnostics/DiagnosticsView.tsx`.
 
 - [x] 2026-04-22 — **Diagnostics:** Restore English-only report copy.
   - Result: Reverted an accidental Spanish/English mix while retaining the functional guidance changes.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `components/diagnostics/`, `services/diagnostics/`.
 
 - [x] 2026-04-22 — **Artificial Intelligence:** Expand diagnostics analysis context.
   - Result: Included score, deterministic guides, SPF checks, DMARC tags, DKIM details, A/NS, BIMI, MTA-STS, TLS-RPT, statistics, and aggregate report data while asking the model not to repeat the runbook.
-  - Evidence: Historical Codex type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
   - Files: `services/ai/prompts/`, `services/ai/use-cases/`, `components/ai/`.
 
 - [x] 2026-04-22 — **Testing:** Add regression tests for report-detail rendering failures.

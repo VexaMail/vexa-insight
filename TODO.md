@@ -1,13 +1,8 @@
 # TODO
 
-> Consolidated from the accessible Claude, Codex, and Antigravity project
-> history. Last reviewed: 2026-07-26. History coverage: Partial.
->
-> Accessible historical conversations were fully reviewed. One deleted Claude
-> transcript remains available only as a WakaTime stub, and the active
-> Claude/Codex audit handoff is indexed as partial. No Antigravity conversation
-> belongs to this repository. Project-scoped MemPalace search was inaccessible
-> because its database is read-only in this sandbox.
+> Known work that is not yet done, with enough context to pick each item up
+> cold. Last reviewed: 2026-07-26. Bug reports and feature requests belong in
+> GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked ·
 > `[x]` verified complete · `[-]` obsolete or superseded. Closed work moves to
@@ -15,10 +10,13 @@
 
 ## Security
 
-- [ ] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to `admin` and got the fixed `API_KEY_PERMISSIONS` set instead, but the remaining gaps are unchanged: one secret for every client, no per-client attribution, no revocation without rotating for everyone. Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. (User decision, then a sizeable change.)
+- [!] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to `admin` and got the fixed `API_KEY_PERMISSIONS` set instead, but the remaining gaps are unchanged: one secret for every client, no per-client attribution, no revocation without rotating for everyone. Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. Blocked on those four answers, not on effort: an implementation that guesses them is worse than none. Smallest unblock: the owner picks a scoping model and a revocation story, ideally as an ADR alongside 0001, and the schema plus migration follow from it.
 
 ## Artificial Intelligence
 
+- [ ] Confirm that OpenAI's reasoning models accept `response_format: { type: 'json_object' }`. `createOpenAiAdapter` sends it on every call and every prompt here depends on JSON mode, so if the o-series and GPT-5 reject it those models are still unusable despite the 2026-07-26 parameter gate. Unresolved that day: the sources consulted confirmed the `max_tokens`/`temperature` split for reasoning models but said nothing definite about JSON mode, and `platform.openai.com` answered 403 to an unauthenticated fetch. Same sources also note reasoning models are steered towards the Responses API rather than chat completions, which may be the real answer here. Smallest next step: read the structured-outputs guide with an account, or make one cheap metered call against a reasoning model.
+- [ ] Check whether the Gemini and OpenRouter adapters need the same sampling-parameter gate. Both pass `temperature` through unconditionally. Checked partially on 2026-07-26 and left open rather than guessed at: Gemini takes the field in `generationConfig` and 2.5 Flash documents it (default 1, range 0-2), but nothing found covers the 3.x thinking models, and at least one upstream tracker treats per-model temperature support as varying — so "Gemini accepts it everywhere" is an assumption, not a finding. OpenRouter is a different shape entirely: it proxies models from every vendor, including the Claude 5 and GPT-5 families already known to reject the field, so the allow-list used for the direct providers would strip `temperature` from nearly everything; it more likely wants a deny-list keyed on the upstream family in the model slug. Smallest next step: read Gemini's current model-parameter table for the 3.x line, and decide the OpenRouter shape before writing any of it.
+- [ ] Decide whether the diagnostics prompt should stop the model emitting markdown fences. The rewritten prompt still says "No markdown fences", and the parser strips them (`parseError` was null on all 10 eval runs), but 2 of 6 runs on the new wording wrapped the JSON in a ```json fence where 0 of 2 baseline runs did. Two baseline samples cannot establish that as a regression, and nothing breaks today. Smallest next step: 4 more baseline runs to see whether the rates actually differ before touching the wording.
 - [!] Verify the diagnostics AI rollout plan against a live provider call (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run). Blocked: needs a real provider API key and spends paid model quota, which this run has no authorization for. Smallest unblock: the user names the provider/key and authorizes one metered call.
 
 ## Infrastructure
