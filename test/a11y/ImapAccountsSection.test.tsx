@@ -1,6 +1,6 @@
 import { ImapAccountsSection } from '@/components/settings'
 import type { ImapAccountFormEntry } from '@/types/settings'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { axe } from 'vitest-axe'
 
@@ -90,6 +90,47 @@ describe('ImapAccountsSection accessibility', () => {
     const ids = screen
       .getAllByRole('textbox', { name: 'Account Label' })
       .map((input) => input.id)
+
+    expect(ids).toHaveLength(2)
+    expect(new Set(ids).size).toBe(2)
+  })
+
+  // The checkbox captions used to be loose text above unrelated checkboxes,
+  // so AT announced "Include Trash folder" with no hint of which group it
+  // belonged to. Named groups are what carry that relationship; axe does not
+  // flag their absence, hence the explicit assertion.
+  it('groups the checkboxes under their captions', () => {
+    renderSection([unsaved])
+
+    const fetchOptions = screen.getByRole('group', { name: 'Fetch Options' })
+    const postProcessing = screen.getByRole('group', {
+      name: 'Post-Processing',
+    })
+
+    expect(
+      within(fetchOptions).getByRole('checkbox', {
+        name: 'Include Trash folder',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(fetchOptions).queryByRole('checkbox', { name: 'Mark as read' }),
+    ).toBeNull()
+    expect(
+      within(postProcessing).getByRole('checkbox', { name: 'Mark as read' }),
+    ).toBeInTheDocument()
+  })
+
+  // Group ids are derived from the row index like every other id here, so two
+  // expanded accounts must not produce four groups sharing two names.
+  it('scopes the group captions to their own account', () => {
+    renderSection([
+      account({ id: 0, label: '' }),
+      account({ id: 0, label: '', username: 'second@example.com' }),
+    ])
+
+    const ids = screen
+      .getAllByRole('group', { name: 'Fetch Options' })
+      .map((group) => group.getAttribute('aria-labelledby'))
 
     expect(ids).toHaveLength(2)
     expect(new Set(ids).size).toBe(2)

@@ -220,11 +220,23 @@ export default function ImapAccountsSection({
                   </div>
 
                   <div className="border-border/20 mt-4 grid gap-4 border-t pt-2 sm:grid-cols-2">
-                    {/* Fetch Options */}
-                    <div className="space-y-3 pt-1">
-                      {/* A group caption, not a field label: it has no control
-                          to point at, so `label` would be a lie to AT. */}
-                      <span className="text-foreground text-xs font-semibold">
+                    {/* Fetch Options. `role="group"` + `aria-labelledby`
+                        rather than `fieldset`/`legend`: the native pair is
+                        equivalent to AT, but a legend is laid out by the
+                        fieldset's own rendering rules and cannot be made to
+                        match the current spacing (measured: every row shifts
+                        4px and the group grows 4px, with or without `inline`).
+                        The caption stays a span -- it labels the group, not a
+                        control, so `label` would be a lie to AT. */}
+                    <div
+                      className="space-y-3 pt-1"
+                      role="group"
+                      aria-labelledby={`imap-account-${index}-fetch-options`}
+                    >
+                      <span
+                        id={`imap-account-${index}-fetch-options`}
+                        className="text-foreground text-xs font-semibold"
+                      >
                         Fetch Options
                       </span>
                       <label className="flex items-center gap-2 text-xs">
@@ -259,10 +271,16 @@ export default function ImapAccountsSection({
                       </label>
                     </div>
 
-                    {/* Post-Processing */}
-                    <div className="space-y-3 pt-1">
-                      {/* See the Fetch Options caption above. */}
-                      <span className="text-foreground text-xs font-semibold">
+                    {/* Post-Processing. See the Fetch Options group above. */}
+                    <div
+                      className="space-y-3 pt-1"
+                      role="group"
+                      aria-labelledby={`imap-account-${index}-post-processing`}
+                    >
+                      <span
+                        id={`imap-account-${index}-post-processing`}
+                        className="text-foreground text-xs font-semibold"
+                      >
                         Post-Processing
                       </span>
                       <label className="flex items-center gap-2 text-xs">
