@@ -1,6 +1,6 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
 export { consumeStreamTicket } from './consumeStreamTicket'
-export { getApiKeyRole } from './getApiKeyRole'
+export { hasValidApiKey } from './hasValidApiKey'
 export { issueStreamTicket } from './issueStreamTicket'
 export { isUsableSecret } from './isUsableSecret'
 export { PUBLIC_API_ROUTES } from './publicApiRoutes'

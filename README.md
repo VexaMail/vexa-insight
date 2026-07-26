@@ -278,6 +278,7 @@ Contributions welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, code s
 - Store IMAP credentials securely; never commit `.env`.
 - Do not expose `/api/v1/admin/*` publicly. Protect with `SECRET_KEY` and run behind authentication in production.
 - Admin API auth uses timing-safe comparison and refuses to authenticate when `SECRET_KEY` is unset or under 32 characters.
+- `SECRET_KEY` is not an all-access role. On permission-checked routes it grants report reads/writes, settings reads and AI invocation only; user management, the audit log and configuration writes require a signed-in admin session.
 - Login is rate-limited (5 attempts / minute / IP).
 - HTTP security headers (CSP, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy) enabled by default.
 - SQLite is fine for development. For production, consider PostgreSQL/MySQL plus appropriate file/network controls.

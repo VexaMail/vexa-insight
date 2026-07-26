@@ -1,5 +1,5 @@
 import { domains, getDb } from '@/lib/db'
-import { getApiKeyRole } from '@/services/api'
+import { hasValidApiKey } from '@/services/api'
 import { inArray } from 'drizzle-orm'
 import { getSession } from './getSession'
 
@@ -17,11 +17,11 @@ import { getSession } from './getSession'
  */
 export async function getAllowedDomainIds(): Promise<number[] | null> {
   const session = await getSession()
-  // Key-based automation has no session cookie. A valid shared admin key is
-  // the `admin` role everywhere else (see `requirePermission`), so it must be
-  // unrestricted here too -- otherwise every domain-scoped query silently
-  // returns nothing for API callers.
-  if (!session) return (await getApiKeyRole()) === 'admin' ? null : []
+  // Key-based automation has no session cookie. The shared key holds the
+  // report permissions (see `API_KEY_PERMISSIONS`), so it must be unrestricted
+  // here too -- otherwise every domain-scoped query silently returns nothing
+  // for API callers.
+  if (!session) return (await hasValidApiKey()) ? null : []
 
   const user = session.user
   if (user.role === 'admin') return null

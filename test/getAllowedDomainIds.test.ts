@@ -3,7 +3,7 @@ import { insertSeedDomains } from './setup/insertSeedDomains'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/api', () => ({
-  getApiKeyRole: vi.fn(async () => null),
+  hasValidApiKey: vi.fn(async () => false),
 }))
 
 vi.mock('@/services/auth/getSession', () => ({
@@ -36,15 +36,15 @@ describe('getAllowedDomainIds', () => {
     const { resetDmarcDb } = await import('./setup/resetDmarcDb')
     resetDmarcDb()
     const { getSession } = await import('@/services/auth')
-    const { getApiKeyRole } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/api')
     vi.mocked(getSession).mockResolvedValue(null)
-    vi.mocked(getApiKeyRole).mockResolvedValue(null)
+    vi.mocked(hasValidApiKey).mockResolvedValue(false)
   })
 
   it('treats a valid shared API key as unrestricted', async () => {
-    const { getApiKeyRole } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/api')
     const { getAllowedDomainIds } = await import('@/services/auth')
-    vi.mocked(getApiKeyRole).mockResolvedValue('admin')
+    vi.mocked(hasValidApiKey).mockResolvedValue(true)
 
     expect(await getAllowedDomainIds()).toBeNull()
   })

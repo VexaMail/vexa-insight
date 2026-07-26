@@ -47,6 +47,15 @@ mutating endpoints CSRF-prone.
   get CSRF protection without CSRF tokens in forms.
 - The admin token is a single shared secret (the `SECRET_KEY`), not per-user
   API keys; finer-grained keys would need a new ADR.
+- Passing `requireAdminAccess` is not the same as holding every permission.
+  On routes that also call `requirePermission`, a key-authenticated request is
+  checked against `API_KEY_PERMISSIONS`
+  (`constants/auth/apiKeyPermissions.ts`), which grants `reports:read`,
+  `reports:write`, `settings:read` and `ai:invoke` only. User management
+  (`/api/v1/users/**`), the audit log (`/api/v1/audit-log`) and configuration
+  writes such as webhook management answer 403 to the shared key; they need a
+  session whose role grants the permission. Routes gated by `requireAdminAuth`
+  (IMAP, GeoIP, admin settings) check the raw key and are unaffected.
 
 ## Alternatives considered
 
