@@ -1,3 +1,4 @@
+import { usesLegacyOpenAiChatParams } from '@/utils/ai'
 import type {
   AIProviderAdapter,
   ProviderRawResponse,
@@ -8,6 +9,11 @@ import { resolveEffectiveModel } from '../shared/resolveEffectiveModel'
 
 /**
  * OpenAI-compatible chat completions adapter.
+ *
+ * The output cap and `temperature` are chosen together per model: the older
+ * families take `max_tokens` plus a real `temperature`, while the reasoning
+ * models take `max_completion_tokens` and reject any sampling parameter with
+ * HTTP 400.
  */
 export function createOpenAiAdapter(
   apiKey: string,
@@ -38,8 +44,12 @@ export function createOpenAiAdapter(
               { role: 'system', content: systemPrompt },
               { role: 'user', content: userPrompt },
             ],
-            max_tokens: options.maxTokens,
-            temperature: options.temperature,
+            ...(usesLegacyOpenAiChatParams(resolvedModel)
+              ? {
+                  max_tokens: options.maxTokens,
+                  temperature: options.temperature,
+                }
+              : { max_completion_tokens: options.maxTokens }),
             response_format: { type: 'json_object' },
           }),
           signal: AbortSignal.timeout(options.timeoutMs),
