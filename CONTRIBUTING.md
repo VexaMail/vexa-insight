@@ -62,6 +62,28 @@ pnpm run db:migrate    # apply pending migrations to local data/vexa.db
 
 Always commit the generated `drizzle/<timestamp>_<name>.sql` file alongside the schema change.
 
+## Working on the AI prompts
+
+The prompts under `services/ai/prompts/` are iterated by running them, not by
+reading them. `pnpm run eval:ai` runs a production prompt N times against real
+rows in your local database and writes one comparable artifact per invocation:
+
+```bash
+pnpm run eval:ai report <reportId>
+pnpm run eval:ai diagnostics <domainId> <domainName>
+```
+
+The harness deliberately spends no API credit, so it does not read your provider
+settings at all: it calls Anthropic with a Claude subscription OAuth token from
+the macOS Keychain, which means it currently requires macOS with Claude Code
+signed in. See [docs/ai-max-oauth-backend.md](docs/ai-max-oauth-backend.md) for
+the setup, the safety gate, and how to read an artifact. Without that setup,
+prompt changes still need review through the normal app path with a provider key
+configured.
+
+Artifacts land in `evals/results/` and are gitignored — they embed real report
+contents and domain names from your database. Never commit one.
+
 ## Quality gate
 
 Before opening a PR, run:

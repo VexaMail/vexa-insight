@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "dev": "next dev",
+    "dev:max": "LLM_BACKEND=max-oauth next dev",
     "build": "next build",
     "build:dev": "next build",
     "start": "next start",
@@ -44,6 +45,7 @@
     "db:migrate": "drizzle-kit migrate",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "backfill:rollup": "tsx scripts/backfill-rollup.ts",
+    "eval:ai": "tsx scripts/run-ai-eval.ts",
     "check": "pnpm run type-check && pnpm run format && pnpm run lint:fix",
     "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run test",
     "check:ci": "pnpm run type-check && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run check:migrations",

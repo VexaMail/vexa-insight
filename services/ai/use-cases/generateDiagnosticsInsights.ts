@@ -1,21 +1,12 @@
-import {
-  buildDiagnosticsAdminGuides,
-  computeDomainScore,
-  getDiagnosticStats,
-  getDomainDnsRecords,
-} from '@/services/diagnostics'
 import type { DiagnosticsAnalysisResult } from '@/types/ai'
 import type {
   AIServiceError,
-  DiagnosticsAnalysisInput,
   GenerateDiagnosticsInsightsOptions,
 } from '../contracts'
 import { AI_REQUEST_TIMEOUT_MS } from '../core/aiRequestTimeoutMs'
 import { resolveProvider } from '../core/resolveProvider'
 import { buildDiagnosticsAnalysisPrompt } from '../prompts/buildDiagnosticsAnalysisPrompt'
-import { buildDiagnosticsDnsSummary } from './buildDiagnosticsDnsSummary'
-import { buildDiagnosticsStatsSummary } from './buildDiagnosticsStatsSummary'
-import { getDomainDiagnosticsReportAggregate } from './getDomainDiagnosticsReportAggregate'
+import { buildDiagnosticsAnalysisInput } from './buildDiagnosticsAnalysisInput'
 import { parseDiagnosticsInsightsFromContent } from './parseDiagnosticsInsightsFromContent'
 import { parseDiagnosticsRolloutPlanFromContent } from './parseDiagnosticsRolloutPlanFromContent'
 import { wrapProviderError } from './wrapProviderError'
@@ -30,74 +21,8 @@ export async function generateDiagnosticsInsights(
 ): Promise<DiagnosticsAnalysisResult> {
   const startMs = Date.now()
 
-  // Fetch all three sources in parallel
-  const [dnsResult, statsResult, reportAggregateResult] =
-    await Promise.allSettled([
-      getDomainDnsRecords(options.domainName),
-      getDiagnosticStats({
-        domainId: options.domainId,
-        startDate: options.startDate,
-        endDate: options.endDate,
-      }),
-      getDomainDiagnosticsReportAggregate(
-        options.domainId,
-        options.startDate,
-        options.endDate,
-      ),
-    ])
-
-  const dns =
-    dnsResult.status === 'fulfilled'
-      ? buildDiagnosticsDnsSummary(dnsResult.value)
-      : null
-  const score =
-    dnsResult.status === 'fulfilled'
-      ? computeDomainScore(dnsResult.value)
-      : null
-  const stats =
-    statsResult.status === 'fulfilled'
-      ? buildDiagnosticsStatsSummary(statsResult.value)
-      : null
-  const reportAggregate =
-    reportAggregateResult.status === 'fulfilled'
-      ? reportAggregateResult.value
-      : null
-
-  const adminGuides =
-    dnsResult.status === 'fulfilled' &&
-    statsResult.status === 'fulfilled' &&
-    score
-      ? buildDiagnosticsAdminGuides(
-          dnsResult.value,
-          statsResult.value,
-          score,
-        ).map((guide) => ({
-          severity: guide.severity,
-          title: guide.title,
-          summary: guide.summary,
-          howToFix: guide.howToFix,
-          verifySteps: guide.verifySteps,
-        }))
-      : []
-
-  // DNS and stats are required; report data is optional
-  if (!dns && !stats) {
-    const error: AIServiceError = {
-      code: 'INSUFFICIENT_DATA',
-      message:
-        'Could not retrieve DNS records or diagnostic statistics for this domain.',
-    }
-    throw error
-  }
-
-  const input: DiagnosticsAnalysisInput = {
-    domainName: options.domainName,
-    score,
-    dns,
-    stats,
-    reportAggregate,
-    adminGuides,
-  }
+  const input = await buildDiagnosticsAnalysisInput(options)
+  const { dns, stats, reportAggregate } = input
 
   const { systemPrompt, userPrompt } = buildDiagnosticsAnalysisPrompt(input)
 

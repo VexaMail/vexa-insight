@@ -4,6 +4,9 @@
 
 export * from './contracts'
 export * from './core'
+// `evals` stays out on purpose: it writes files and is only ever driven by
+// `scripts/run-ai-eval.ts`, which imports it by path.
+export * from './maxOAuth'
 export * from './prompts'
 export * from './providers'
 export * from './settings'

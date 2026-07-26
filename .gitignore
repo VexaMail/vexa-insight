@@ -68,3 +68,12 @@ scratch/
 
 # ESLint cache
 .eslintcache
+
+# Local bookkeeping for AI assistants reviewing past conversations. Machine-
+# and account-specific; never useful to another checkout.
+TODO_HISTORY_INDEX.jsonl
+
+# AI prompt eval artifacts: generated from whatever rows the local database
+# holds, so they contain real report and domain data. Keep them local.
+/evals/results/*
+!/evals/results/.gitkeep
