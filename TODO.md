@@ -1,7 +1,7 @@
 # TODO
 
 > Consolidated from the accessible Claude, Codex, and Antigravity project
-> history. Last reviewed: 2026-07-25. History coverage: Partial.
+> history. Last reviewed: 2026-07-26. History coverage: Partial.
 >
 > Accessible historical conversations were fully reviewed. One deleted Claude
 > transcript remains available only as a WakaTime stub, and the active
@@ -25,8 +25,7 @@
 
 ## Testing
 
-- [ ] Fix the empty-state ARIA of `components/ui/CommandList.tsx`. cmdk sets `role="listbox"` unconditionally, so with no results the listbox has no `option` children and axe raises `aria-required-children` (wcag2a). Found 2026-07-25 by `test/a11y/Command.test.tsx`, which currently asserts this is the only violation and will fail once it is fixed. Likely fix: drop or swap the role when the list is empty, or give `CommandEmpty` a role the listbox accepts. Touches a shared UI primitive, so check every `Command` consumer.
-- [ ] Extend a11y coverage to the settings forms (`AiSettingsSection`, `ImapAccountsSection`, `IngestionSection`, `ApiKeySection`). As of 2026-07-25 there are 12 suites covering the diagnostics primitives and detail sections, `DataTable`, `Select`, `DateRangeFilter`, `Dialog`, and `Command`; `test/setupA11y.ts` already carries the jsdom stubs Radix needs to open a portal, so these should be additive. The settings sections need their fetch/hook dependencies mocked, which the covered components did not.
+- [ ] Give the IMAP account checkbox groups real grouping semantics. `ImapAccountsSection` renders "Fetch Options" and "Post-Processing" as plain spans above loose checkboxes; a `fieldset`/`legend` per group is the correct markup and would let AT announce which group a checkbox belongs to. Not done 2026-07-26 with the rest of the a11y pass because axe does not flag it and the change is a visual risk that cannot be verified from jsdom — it needs a look at the real settings page.
 
 ## Infrastructure
 

@@ -6,6 +6,18 @@
 
 ### 2026-07
 
+- [x] 2026-07-26 — **Testing:** Fix the empty-state ARIA of the `Command` palette.
+  - Result: The fix landed in `components/ui/CommandEmpty.tsx`, not `CommandList.tsx` as the backlog assumed. cmdk hardcodes `role` _after_ the caller's prop spread in both `List` and `Empty`, so neither role can be overridden from outside. Both candidate fixes were measured with axe rather than reasoned about: dropping the listbox while the filtered count is zero only trades one violation for another (`aria-valid-attr-value`, because the input's `aria-controls` then dangles), while exposing the empty message as `role="option" aria-disabled="true"` reports zero violations. `CommandEmpty` now renders its own element instead of `Command.Empty`, keeping the `[cmdk-item]` attribute off it so arrow-key navigation still skips it.
+  - Evidence: `pnpm run test:a11y` 42/42 (the two empty-state cases fail before the change); `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run build` succeeds.
+  - Files: `components/ui/CommandEmpty.tsx`, `test/a11y/Command.test.tsx`.
+
+- [x] 2026-07-26 — **Testing:** Extend a11y coverage to the settings forms.
+  - Result: Four new suites (`AiSettingsSection`, `ImapAccountsSection`, `IngestionSection`, `ApiKeySection`); suites 12 -> 16, tests 26 -> 42. Three real defects found and fixed, all in the IMAP section: the collapsed account header was a `role="button"` div wrapping a real `<button>` (axe `nested-interactive`, serious/wcag2a) and is now a real `<button aria-expanded>` with the Edit/Close affordance rendered via `Button asChild` as a span; none of the five account fields were associated with their labels (`htmlFor`/`id` per row index) so every one had an empty accessible name; and `FolderPicker`'s folder `select` plus its new-folder input had no accessible name at all. The two `<label>` elements used as group captions ("Fetch Options", "Post-Processing") labelled no control and are now spans.
+  - Also fixed: `components/settings/index.ts` had five dead `export *` lines. Every section in that folder is a default export, and `export *` never re-exports a default, so the barrel exported nothing for `AdvancedSection`, `ApiKeySection`, `ImapAccountsSection`, `IngestionSection`, and `SettingsConfigForm`. Rewritten with explicit named re-exports, `AiSettingsSection` added, and that component switched from a relative deep import of its hooks to the `@/hooks/settings` barrel like its siblings.
+  - Note: assertions use `toBeInTheDocument` rather than `toBeVisible`. Every section is a framer-motion element starting at `opacity: 0` and jsdom never advances the animation, so `toBeVisible` fails for a reason unrelated to accessibility. axe still audits the subtree, which the `nested-interactive` finding proves — the passing suites are not vacuous.
+  - Evidence: `pnpm run test:a11y` 42/42; `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run format:check` and `pnpm run check:migrations` clean; `pnpm run build` succeeds.
+  - Files: `components/settings/{ImapAccountsSection,FolderPicker,AiSettingsSection,index}.tsx|ts`, `test/a11y/{AiSettingsSection,ImapAccountsSection,IngestionSection,ApiKeySection}.test.tsx`.
+
 - [x] 2026-07-25 — **Performance:** Remove the unused `services/imap/getImapTotalCount.ts`.
   - Result: Deleted the function, its `types/imap/GetImapTotalCountOptions.ts` type, and both barrel entries. It had no callers; wiring it into the job would have re-added the redundant full-mailbox IMAP SEARCH that ADR 0008 removed. ADR 0008's "alternatives considered" note updated to record the deletion.
   - Evidence: `grep -rn getImapTotalCount` returns only the ADR note; `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424.
