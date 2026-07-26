@@ -1,11 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui'
+import { useAiSettings, useProviderModels } from '@/hooks/settings'
 import type { AIProviderId } from '@/types/ai'
 import { m as motion } from 'framer-motion'
 import { AlertCircle, CheckCircle, Sparkles, Trash2 } from 'lucide-react'
-import { useAiSettings } from '../../hooks/settings/useAiSettings'
-import { useProviderModels } from '../../hooks/settings/useProviderModels'
 import { AI_PROVIDERS } from './aiProviders'
 import type { AiSettingsSectionProps } from './AiSettingsSectionProps'
 import { getAiSaveButtonLabel } from './getAiSaveButtonLabel'

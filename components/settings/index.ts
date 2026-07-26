@@ -1,10 +1,12 @@
-export * from './AdvancedSection'
-export * from './ApiKeySection'
-export * from './ImapAccountsSection'
-export * from './IngestionSection'
+// `export *` never re-exports a default, and every section below is a default
+// export, so the previous wildcard lines exported nothing at all.
+export { default as AdvancedSection } from './AdvancedSection'
+export { AiSettingsSection } from './AiSettingsSection'
+export { default as ApiKeySection } from './ApiKeySection'
+export { default as ImapAccountsSection } from './ImapAccountsSection'
+export { default as IngestionSection } from './IngestionSection'
 export { default as SelfUpdateLogViewer } from './SelfUpdateLogViewer'
 export { default as SelfUpdatePanel } from './SelfUpdatePanel'
-export * from './SettingsConfigForm'
 export { default as SettingsConfigForm } from './SettingsConfigForm'
 export { default as UpdateAvailableCard } from './UpdateAvailableCard'
 export { default as UpdateLastErrorNotice } from './UpdateLastErrorNotice'

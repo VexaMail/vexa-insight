@@ -57,20 +57,19 @@ export default function ImapAccountsSection({
               key={acc.id ? acc.id : `new-${acc.server}-${acc.username}`}
               className="bg-surface-1 border-border/30 overflow-hidden rounded-lg border"
             >
-              {/* Collapsed header */}
-              <div
+              {/* Collapsed header. A real button rather than a `role="button"`
+                  div, which also gets Enter/Space for free. The Edit/Close
+                  affordance only toggles this same panel, so it is rendered as
+                  a styled span: a real button nested inside another control is
+                  axe `nested-interactive` (serious, wcag2a) and is not reliably
+                  announced. `asChild` keeps the visual identical. */}
+              <button
+                type="button"
                 onClick={() => toggleExpand(index)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    toggleExpand(index)
-                  }
-                }}
-                role="button"
-                tabIndex={0}
+                aria-expanded={isExpanded}
                 className="hover:bg-accent/50 focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-2 px-4 py-3 text-left transition-colors focus-visible:ring-1 focus-visible:outline-none"
               >
-                <div className="flex items-center gap-2">
+                <span className="flex items-center gap-2">
                   {isExpanded ? (
                     <ChevronDown className="text-muted-foreground h-4 w-4" />
                   ) : (
@@ -80,22 +79,18 @@ export default function ImapAccountsSection({
                   <span className="text-foreground text-sm font-medium">
                     {displayLabel}
                   </span>
-                </div>
-                <div className="flex items-center gap-2">
+                </span>
+                <span className="flex items-center gap-2">
                   <Button
-                    type="button"
+                    asChild
                     variant="ghost"
                     size="sm"
                     className="text-primary h-7 text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleExpand(index)
-                    }}
                   >
-                    {isExpanded ? 'Close' : 'Edit'}
+                    <span>{isExpanded ? 'Close' : 'Edit'}</span>
                   </Button>
-                </div>
-              </div>
+                </span>
+              </button>
 
               {/* Expanded form */}
               {isExpanded && (
@@ -123,10 +118,14 @@ export default function ImapAccountsSection({
                     )}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-foreground text-xs font-medium">
+                    <label
+                      htmlFor={`imap-account-${index}-label`}
+                      className="text-foreground text-xs font-medium"
+                    >
                       Account Label
                     </label>
                     <Input
+                      id={`imap-account-${index}-label`}
                       type="text"
                       value={acc.label}
                       onChange={(e) =>
@@ -138,10 +137,14 @@ export default function ImapAccountsSection({
                   </div>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div className="space-y-1.5 sm:col-span-2">
-                      <label className="text-foreground text-xs font-medium">
+                      <label
+                        htmlFor={`imap-account-${index}-server`}
+                        className="text-foreground text-xs font-medium"
+                      >
                         IMAP Server
                       </label>
                       <Input
+                        id={`imap-account-${index}-server`}
                         type="text"
                         value={acc.server}
                         onChange={(e) =>
@@ -152,10 +155,14 @@ export default function ImapAccountsSection({
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-foreground text-xs font-medium">
+                      <label
+                        htmlFor={`imap-account-${index}-port`}
+                        className="text-foreground text-xs font-medium"
+                      >
                         Port
                       </label>
                       <Input
+                        id={`imap-account-${index}-port`}
                         type="number"
                         min={1}
                         max={65535}
@@ -172,10 +179,14 @@ export default function ImapAccountsSection({
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label className="text-foreground text-xs font-medium">
+                      <label
+                        htmlFor={`imap-account-${index}-username`}
+                        className="text-foreground text-xs font-medium"
+                      >
                         Username
                       </label>
                       <Input
+                        id={`imap-account-${index}-username`}
                         type="text"
                         value={acc.username}
                         onChange={(e) =>
@@ -186,10 +197,14 @@ export default function ImapAccountsSection({
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-foreground text-xs font-medium">
+                      <label
+                        htmlFor={`imap-account-${index}-password`}
+                        className="text-foreground text-xs font-medium"
+                      >
                         Password / App Password
                       </label>
                       <Input
+                        id={`imap-account-${index}-password`}
                         type="password"
                         value={acc.passwordNew ?? ''}
                         onChange={(e) =>
@@ -207,9 +222,11 @@ export default function ImapAccountsSection({
                   <div className="border-border/20 mt-4 grid gap-4 border-t pt-2 sm:grid-cols-2">
                     {/* Fetch Options */}
                     <div className="space-y-3 pt-1">
-                      <label className="text-foreground text-xs font-semibold">
+                      {/* A group caption, not a field label: it has no control
+                          to point at, so `label` would be a lie to AT. */}
+                      <span className="text-foreground text-xs font-semibold">
                         Fetch Options
-                      </label>
+                      </span>
                       <label className="flex items-center gap-2 text-xs">
                         <input
                           type="checkbox"
@@ -244,9 +261,10 @@ export default function ImapAccountsSection({
 
                     {/* Post-Processing */}
                     <div className="space-y-3 pt-1">
-                      <label className="text-foreground text-xs font-semibold">
+                      {/* See the Fetch Options caption above. */}
+                      <span className="text-foreground text-xs font-semibold">
                         Post-Processing
-                      </label>
+                      </span>
                       <label className="flex items-center gap-2 text-xs">
                         <input
                           type="checkbox"

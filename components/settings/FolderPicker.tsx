@@ -31,6 +31,7 @@ export function FolderPicker({
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <select
+          aria-label="Destination folder"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value || null)}
           className="bg-card border-border/50 text-foreground min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none"
@@ -74,6 +75,7 @@ export function FolderPicker({
       {showCreate && (
         <div className="space-y-1.5">
           <Input
+            aria-label="New folder path"
             type="text"
             value={newFolderPath}
             onChange={(e) => handleNewFolderPathChange(e.target.value)}
