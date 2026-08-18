@@ -19,6 +19,31 @@
 - [ ] Decide whether the diagnostics prompt should stop the model emitting markdown fences. The rewritten prompt still says "No markdown fences", and the parser strips them (`parseError` was null on all 10 eval runs), but 2 of 6 runs on the new wording wrapped the JSON in a ```json fence where 0 of 2 baseline runs did. Two baseline samples cannot establish that as a regression, and nothing breaks today. Smallest next step: 4 more baseline runs to see whether the rates actually differ before touching the wording.
 - [!] Verify the diagnostics AI rollout plan against a live provider call (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run). Blocked: needs a real provider API key and spends paid model quota, which this run has no authorization for. Smallest unblock: the user names the provider/key and authorizes one metered call.
 
+## Agent Access
+
+- [ ] Build a machine-first access surface so agents can query the instance
+  without driving the UI (owner request, 2026-08-18). Concrete first consumer:
+  the hosting-estate sessions, where an agent answered "is the estate clean
+  enough to raise p=none -> quarantine?" by SSH-ing into the mail server and
+  parsing 979 RUA reports with ad-hoc scripts — everything it needed
+  (per-domain pass/fail, failing sources, alignment detail for own-server
+  mail) already exists behind the dashboard, but only as rendered pages.
+  Wants a product decision on shape before code: (a) a documented read-only
+  REST surface over the existing queries (domains, top senders, per-domain
+  alignment breakdown, ingestion health) returning JSON; (b) a CLI wrapper on
+  top of that; (c) an MCP server exposing the same queries as tools, which is
+  the shape agents consume natively. These are layers, not alternatives —
+  (a) is the foundation either way. Auth is the real coupling: today the only
+  key is the shared `SECRET_KEY` with fixed `API_KEY_PERMISSIONS`, so a
+  read-only agent key ties directly into the blocked per-user API-key item
+  above (ADR 0001) — an agent surface is exactly the client that wants a
+  scoped, revocable key rather than the master secret. Smallest next step:
+  pick the endpoint list from the queries the 2026-08-18 hosting-estate session
+  actually ran (they are the demand, written down in that repo's
+  `scripts/dmarc-report-summary.sh` and `TODO_LOG.md`), and decide whether
+  the agent key rides the existing shared-key model or waits for ADR 0001's
+  successor.
+
 ## Infrastructure
 
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Re-checked 2026-07-26: unchanged — 8.65.0 is still `latest` and both it and the 8.65.1-alpha.7 canary declare `typescript >=4.8.4 <6.1.0`. See ADR 0005.
