@@ -22,27 +22,27 @@
 ## Agent Access
 
 - [ ] Build a machine-first access surface so agents can query the instance
-  without driving the UI (owner request, 2026-08-18). Concrete first consumer:
-  the hosting-estate sessions, where an agent answered "is the estate clean
-  enough to raise p=none -> quarantine?" by SSH-ing into the mail server and
-  parsing 979 RUA reports with ad-hoc scripts — everything it needed
-  (per-domain pass/fail, failing sources, alignment detail for own-server
-  mail) already exists behind the dashboard, but only as rendered pages.
-  Wants a product decision on shape before code: (a) a documented read-only
-  REST surface over the existing queries (domains, top senders, per-domain
-  alignment breakdown, ingestion health) returning JSON; (b) a CLI wrapper on
-  top of that; (c) an MCP server exposing the same queries as tools, which is
-  the shape agents consume natively. These are layers, not alternatives —
-  (a) is the foundation either way. Auth is the real coupling: today the only
-  key is the shared `SECRET_KEY` with fixed `API_KEY_PERMISSIONS`, so a
-  read-only agent key ties directly into the blocked per-user API-key item
-  above (ADR 0001) — an agent surface is exactly the client that wants a
-  scoped, revocable key rather than the master secret. Smallest next step:
-  pick the endpoint list from the queries the 2026-08-18 hosting-estate session
-  actually ran (they are the demand, written down in that repo's
-  `scripts/dmarc-report-summary.sh` and `TODO_LOG.md`), and decide whether
-  the agent key rides the existing shared-key model or waits for ADR 0001's
-  successor.
+      without driving the UI (owner request, 2026-08-18). Concrete first consumer:
+      the hosting-estate sessions, where an agent answered "is the estate clean
+      enough to raise p=none -> quarantine?" by SSH-ing into the mail server and
+      parsing 979 RUA reports with ad-hoc scripts — everything it needed
+      (per-domain pass/fail, failing sources, alignment detail for own-server
+      mail) already exists behind the dashboard, but only as rendered pages.
+      Wants a product decision on shape before code: (a) a documented read-only
+      REST surface over the existing queries (domains, top senders, per-domain
+      alignment breakdown, ingestion health) returning JSON; (b) a CLI wrapper on
+      top of that; (c) an MCP server exposing the same queries as tools, which is
+      the shape agents consume natively. These are layers, not alternatives —
+      (a) is the foundation either way. Auth is the real coupling: today the only
+      key is the shared `SECRET_KEY` with fixed `API_KEY_PERMISSIONS`, so a
+      read-only agent key ties directly into the blocked per-user API-key item
+      above (ADR 0001) — an agent surface is exactly the client that wants a
+      scoped, revocable key rather than the master secret. Smallest next step:
+      pick the endpoint list from the queries the 2026-08-18 hosting-estate session
+      actually ran (they are the demand, written down in that repo's
+      `scripts/dmarc-report-summary.sh` and `TODO_LOG.md`), and decide whether
+      the agent key rides the existing shared-key model or waits for ADR 0001's
+      successor.
 
 ## Infrastructure
 
@@ -65,3 +65,16 @@ information hierarchy before any code.
 - [ ] Redesign the diagnostics page as one editorial narrative instead of stacked cards.
 - [ ] Add expand/collapse controls to each protocol section.
 - [ ] Generate copy-ready DNS examples from the inspected domain's real values instead of generic placeholders.
+
+## Limpieza de ramas
+
+- [ ] **15 ramas `dependabot/*` abiertas en origin.** Son PRs de bot, no
+      trabajo: borrarlas no pierde nada porque Dependabot las regenera si la
+      actualizacion sigue aplicando. Se dejaron el 2026-08-25 al limpiar el
+      resto de ramas, para no cerrar PRs sin mirarlos. O se mergean los que
+      sigan siendo validos, o se borran de golpe.
+
+```bash
+git ls-remote --heads origin | grep dependabot \
+  | sed 's|.*refs/heads/||' | xargs -n 20 git push origin --delete
+```
