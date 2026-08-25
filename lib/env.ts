@@ -29,6 +29,7 @@ export const env = z
     VEXA_UPDATE_REPO: z.string().optional(),
     VEXA_LOG_FORMAT: z.enum(['json', 'text']).optional(),
     VEXA_HAS_SUPERVISOR: z.string().optional(),
+    VEXA_IMAP_DEBUG: z.string().default('false'),
     VEXA_FORCE_SEED_DEMO: z.string().optional(),
     VEXA_BASH: z.string().optional(),
     GEODATADIR: z.string().optional(),

@@ -1,4 +1,5 @@
 import type { ImapAccountConfig } from '@/types/config'
+import { createImapLogger } from '@/utils/imap'
 import { ImapFlow } from 'imapflow'
 
 /**
@@ -11,6 +12,7 @@ export function createClient(account: ImapAccountConfig): ImapFlow {
     port,
     secure: port === 993,
     auth: { user: username, pass: password },
+    logger: createImapLogger(),
   })
   return client
 }

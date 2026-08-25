@@ -10,6 +10,8 @@ data:
   DATABASE_URL: 'file:./data/vexa.db'
   # Logging
   VEXA_LOG_FORMAT: 'json'
+  # IMAP protocol trace (contains subjects and addresses); "true" to enable
+  VEXA_IMAP_DEBUG: 'false'
   # Update checks (set to "false" to disable outbound calls)
   VEXA_UPDATE_CHECK_ENABLED: 'true'
   # Comma-separated extra origins allowed for server actions. Edit per cluster.

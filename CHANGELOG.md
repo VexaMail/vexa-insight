@@ -131,6 +131,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **IMAP protocol traces no longer reach the logs by default.** ImapFlow's
+  debug/info output (subjects, envelopes, addresses, Message-IDs of every
+  scanned message) was written to stdout on every run and ended up in
+  journald/container logs. Only warnings and errors are logged now; set
+  `VEXA_IMAP_DEBUG=true` to restore the full trace while diagnosing.
 - **Default-deny auth on `/api/v1/**`.** Every route handler is now wrapped
   by `withApiAuth`(delegates to`requireAdminAccess`— session OR`x-api-key`/`Authorization: Bearer`). Explicit public allowlist:
   `/api/v1/health`, `/api/v1/openapi.json`. A structural test

@@ -17,6 +17,8 @@ config:
   NEXT_TELEMETRY_DISABLED: '1'
   DATABASE_URL: 'file:./data/vexa.db'
   VEXA_LOG_FORMAT: 'json'
+  # IMAP protocol trace (contains subjects and addresses); "true" to enable.
+  VEXA_IMAP_DEBUG: 'false'
   VEXA_UPDATE_CHECK_ENABLED: 'true'
   # Comma-separated list of extra allowed origins for server actions.
   VEXA_ALLOWED_ORIGINS: ''
