@@ -4,6 +4,16 @@
 
 ## 2026
 
+### 2026-08
+
+- [x] 2026-08-25 — **Infrastructure:** Fix the install check so an installed instance stops redirecting to `/install` behind a reverse proxy.
+  - Symptom: a first production deployment behind a TLS-terminating proxy answered `307 -> /install` on every route, while `/install` bounced back to the dashboard — an infinite redirect loop (`curl` exit 47). `GET /api/install/check` on the loopback returned `{"installed":true}` throughout, so the database was never the problem.
+  - Two independent defects in `checkInstall`, both in the self-fetch it uses to reach that endpoint. First, it passed `headers: request.headers`, forwarding the incoming `cf-connecting-ip`; Cloudflare answers 403 to any request carrying that header from outside its own network, and `res.json()` then threw on the HTML error body. The route reads no headers at all, so forwarding them was never needed. Second, and the one that actually bricked this deploy: `new URL(INSTALL_CHECK, request.url)` inherits the forwarded `https` scheme while the host stays the local listener, producing `https://localhost:3002/...` — TLS spoken to a plaintext port, `ERR_SSL_PACKET_LENGTH_TOO_LONG`.
+  - Result: the self-fetch sends no headers, and downgrades the scheme to `http` when the target hostname is the loopback (`utils/proxy/isLoopbackHostname.ts`). The silent `catch` now logs the failing URL and error before falling back — a failed check sends every route to `/install`, which is indistinguishable from a genuinely uninstalled app, and it did so here without a single log line.
+  - Evidence: before, `curl https://<host>/login` returned `307 -> /install` and the journal showed `[install-check] https://localhost:3002/api/install/check failed: [TypeError: fetch failed] ... ERR_SSL_PACKET_LENGTH_TOO_LONG`; after, `/login` returns 200 and `/` returns `307 -> /login`. `pnpm run check` clean, `pnpm run test` 508/508 across 69 files, including four new cases in `test/checkInstall.test.ts` covering both properties and the redirect fallback.
+  - Files: `services/install/checkInstall.ts`, `utils/proxy/isLoopbackHostname.ts`, `test/checkInstall.test.ts`.
+  - The same deployment surfaced five further defects that are not fixed here and are tracked in `TODO.md`: the missing `.dockerignore`, the live database copied into `.next/standalone`, the clean-checkout build failure on GeoIP data, `VEXA_ALLOWED_ORIGINS` being baked at build time, and the broken `deploy/vexa.service` example.
+
 ### 2026-07
 
 - [x] 2026-07-26 — **Artificial Intelligence:** Restructure the diagnostics system prompt around the 2026 model prompting guidance.

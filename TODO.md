@@ -10,6 +10,30 @@
 
 ## Security
 
+- [ ] Add a `.dockerignore`. The `Dockerfile` does `COPY . .` and the repository
+      has no `.dockerignore`, so `docker build` from any working checkout copies
+      `data/` into the image — including `data/vexa.db`, which holds the
+      operator's `SECRET_KEY` in `app_settings`, the AES-GCM-encrypted IMAP
+      password, and every ingested report with real domains and IP addresses.
+      `.env` and `.env.local` go in the same way. Anyone who builds and pushes
+      an image from a configured checkout publishes their own instance's
+      secrets. Found 2026-08-25 while deploying to a real host. Smallest next
+      step: add `.dockerignore` covering `data/`, `.env*`, `.next/`,
+      `node_modules/`, `coverage/`, `evals/results/`, `.git/`, then confirm with
+      `docker build` + `docker run --rm <img> ls /app/data` that the image
+      carries no database.
+- [ ] Keep the live database out of the build artifact. Next's file tracing
+      follows the `DirAssetReference` that `services/geoip/updateDb.ts` creates
+      on the data directory and copies the whole of `data/` into
+      `.next/standalone/data` — 261 MB on the nova deploy, `vexa.db` included.
+      So the secrets above leak into the build output even without Docker, and
+      a stale duplicate of the database sits next to the real one waiting to be
+      picked up by anything resolving `data/vexa.db` relative to the standalone
+      root. The nova deploy script deletes it after every build, which is a
+      workaround, not a fix. Smallest next step: declare
+      `outputFileTracingExcludes` for `data/**` in `next.config.ts` and check
+      that `.next/standalone/data` is absent after a build while GeoIP lookups
+      still work through the absolute `GEODATADIR`.
 - [!] Consider per-user API keys with real role mapping to replace the single shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to `admin` and got the fixed `API_KEY_PERMISSIONS` set instead, but the remaining gaps are unchanged: one secret for every client, no per-client attribution, no revocation without rotating for everyone. Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. Blocked on those four answers, not on effort: an implementation that guesses them is worse than none. Smallest unblock: the owner picks a scoping model and a revocation story, ideally as an ADR alongside 0001, and the schema plus migration follow from it.
 
 ## Artificial Intelligence
@@ -46,7 +70,65 @@
 
 ## Infrastructure
 
+- [ ] Make a clean checkout build. `pnpm run build` fails on a machine that has
+      never run the app: `geoip-lite` is loaded while Next collects page data
+      for `/api/v1/admin/geoip/refresh` and opens
+      `data/geoip/geoip-country.dat`, which `.gitignore` excludes and which only
+      exists after an authenticated MaxMind download triggered from the running
+      app. The error is `Failed to collect page data`, with no hint that GeoIP
+      data is the cause. This breaks every first-time contributor, every CI
+      image build, and it blocked the nova deploy on 2026-08-25 until 210 MB of
+      `.dat` files were copied over by hand. Smallest next step: stop pulling
+      `geoip-lite` into the module graph at build time — a lazy `await import`
+      inside the handler, or `export const dynamic = 'force-dynamic'` on that
+      route — then verify with `git clone` into a fresh directory,
+      `pnpm install && pnpm run build`, no `data/` present.
+- [ ] Make `VEXA_ALLOWED_ORIGINS` a runtime value. `next.config.ts` calls
+      `getAllowedOriginsFromEnv()` and bakes the result into
+      `serverActions.allowedOrigins` at build time, but `.env.example`,
+      `docs/DEPLOY-BEHIND-PROXY.md` and `docker-compose.yml` all present it as
+      runtime configuration. The published image therefore ships
+      `allowedOrigins: []` and every Server Action answers 403 behind any proxy
+      with a hostname of its own — the exact deployment the doc describes.
+      Confirmed on nova 2026-08-25 by reading the baked config out of
+      `.next/standalone/server.js`; the deploy works only because the build
+      itself is given the variable. Smallest next step: decide between reading
+      the origin at request time (a proxy check against the `Host`/forwarded
+      headers) and documenting the variable as build-time-only; either way the
+      Docker path needs to stop promising something it cannot deliver.
+- [ ] Fix `deploy/vexa.service`. Its `ExecStart=/usr/bin/env pnpm run start`
+      runs `next start`, which Next 16 rejects for this project —
+      `"next start" does not work with "output: standalone" configuration` — and
+      the unit sets no `HOSTNAME`, so the server binds `0.0.0.0` and publishes
+      itself on every interface of the host. On nova that briefly exposed
+      port 3002 on the public IP, saved only by the firewall. Smallest next
+      step: point `ExecStart` at `node .next/standalone/server.js`, add
+      `Environment=HOSTNAME=127.0.0.1`, and document the standalone assembly
+      step (`public/`, `.next/static/` and `drizzle/` have to be copied into
+      `.next/standalone/`) that the unit silently assumes.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Re-checked 2026-07-26: unchanged — 8.65.0 is still `latest` and both it and the 8.65.1-alpha.7 canary declare `typescript >=4.8.4 <6.1.0`. See ADR 0005.
+
+## Documentation
+
+- [ ] Stop advertising PostgreSQL and MySQL. `README.md` says the database is
+      switchable "via `DATABASE_URL`; no app code changes" and carries a
+      "Switching to PostgreSQL or MySQL" section, and `.env.example` repeats it.
+      The code supports neither: `lib/db/client.ts` imports `better-sqlite3` and
+      `drizzle-orm/better-sqlite3` directly, every schema file uses
+      `drizzle-orm/sqlite-core`, `drizzle.config.ts` pins `dialect: 'sqlite'`,
+      and all 30+ migrations are SQLite DDL. Someone who points `DATABASE_URL`
+      at Postgres gets a crash, not a database. Decide which: delete the claim,
+      or implement multi-dialect support behind it. Deleting is the honest
+      default until someone needs it — this is a public repository and the
+      promise is load-bearing for anyone choosing the project.
+- [ ] Correct the health endpoint in `docs/DEPLOY-BEHIND-PROXY.md`. It documents
+      `/api/health` returning `{ "ok": true }` in the nginx snippet, the
+      Kubernetes probes and the smoke-test command. The route is
+      `/api/v1/health` and it returns `{"data":{"status":"ok"}}`; `/api/health`
+      answers 404, verified on the nova deploy 2026-08-25. Anyone copying those
+      probes gets pods that never pass readiness. `Dockerfile` and
+      `deploy/k8s/deployment.yaml` already use the correct path, so only the doc
+      is wrong.
 
 ## Performance
 
