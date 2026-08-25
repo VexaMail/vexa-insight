@@ -35,7 +35,7 @@ describe('IngestionSection accessibility', () => {
       screen.getByRole('spinbutton', { name: 'Interval (minutes)' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('spinbutton', { name: 'Days back (0 = no limit)' }),
+      screen.getByRole('spinbutton', { name: 'Days back' }),
     ).toBeInTheDocument()
   })
 })

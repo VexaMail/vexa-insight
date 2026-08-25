@@ -4,13 +4,14 @@ import { Button } from '@/components/ui'
 import type { TriggerPollFormProps } from '@/types/ingest'
 import { Play, RotateCw } from 'lucide-react'
 import { useTriggerPoll } from '../../hooks/ingest/useTriggerPoll'
+import FullRescanDialog from './FullRescanDialog'
 
 export default function TriggerPollForm({
   className = '',
   hideApiKeyWhenPrefilled = false,
   initialApiKey = '',
 }: Readonly<TriggerPollFormProps>) {
-  const { apiKey, setApiKey, status, message, handleSubmit } =
+  const { apiKey, setApiKey, status, message, handleSubmit, handleFullRescan } =
     useTriggerPoll(initialApiKey)
 
   const showApiKeyInput = !(hideApiKeyWhenPrefilled && initialApiKey.trim())
@@ -60,6 +61,12 @@ export default function TriggerPollForm({
           </>
         )}
       </Button>
+      <FullRescanDialog
+        disabled={status === 'loading' || !apiKey.trim()}
+        onConfirm={() => {
+          void handleFullRescan()
+        }}
+      />
       {message && (
         <p
           role="status"

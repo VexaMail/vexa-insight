@@ -11,7 +11,7 @@ export const appSettings = sqliteTable('app_settings', {
   ingestionIntervalMinutes: integer('ingestion_interval_minutes')
     .notNull()
     .default(60),
-  ingestionDaysBack: integer('ingestion_days_back').notNull().default(0),
+  ingestionDaysBack: integer('ingestion_days_back').notNull().default(30),
   ingestionIncludeTrash: integer('ingestion_include_trash', {
     mode: 'boolean',
   })

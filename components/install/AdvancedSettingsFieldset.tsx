@@ -35,19 +35,19 @@ export function AdvancedSettingsFieldset({
           htmlFor="install-days-back"
           className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
         >
-          Ingestion days back (0 = no limit)
+          Ingestion days back
         </label>
         <input
           id="install-days-back"
           type="number"
-          min={0}
+          min={1}
           max={365}
           value={daysBack}
           onChange={(e) => {
             const n = parseInt(e.target.value, 10)
             dispatch({
               type: 'SET_DAYS_BACK',
-              payload: Number.isFinite(n) && n >= 0 ? n : DEFAULT_DAYS_BACK,
+              payload: Number.isFinite(n) && n >= 1 ? n : DEFAULT_DAYS_BACK,
             })
           }}
           className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"

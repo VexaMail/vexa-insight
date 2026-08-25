@@ -5,7 +5,7 @@ export const settingsUpdateSchema = z.object({
   apiV1Str: z.string().min(1).optional(),
   imapAccounts: z.array(imapAccountSchema).optional(),
   ingestionIntervalMinutes: z.number().int().min(1).max(1440).optional(),
-  ingestionDaysBack: z.number().int().min(0).max(365).optional(),
+  ingestionDaysBack: z.number().int().min(1).max(365).optional(),
   ingestionIncludeTrash: z.boolean().optional(),
   ingestionIncludeAllFolders: z.boolean().optional(),
   secretKey: z.string().min(32).optional(),

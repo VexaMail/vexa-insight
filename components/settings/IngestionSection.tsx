@@ -1,6 +1,7 @@
 'use client'
 
 import { Input } from '@/components/ui'
+import { DEFAULT_DAYS_BACK } from '@/utils/install'
 import { m as motion } from 'framer-motion'
 import { Clock } from 'lucide-react'
 import type { IngestionSectionProps } from './IngestionSectionProps'
@@ -31,7 +32,8 @@ export default function IngestionSection({
             Ingestion Settings
           </h2>
           <p className="text-muted-foreground text-xs">
-            How often to check mail and how many days back
+            How often to check mail and how far back each run looks. Older mail
+            is only picked up by a full rescan.
           </p>
         </div>
       </div>
@@ -61,17 +63,19 @@ export default function IngestionSection({
               htmlFor="settings-ingestion-days"
               className="text-foreground mb-1.5 block text-xs font-medium"
             >
-              Days back (0 = no limit)
+              Days back
             </label>
             <Input
               id="settings-ingestion-days"
               type="number"
-              min={0}
+              min={1}
               max={365}
               value={daysBack}
               onChange={(e) => {
                 const n = parseInt(e.target.value, 10)
-                onDaysBackChange(Number.isFinite(n) && n >= 0 ? n : 0)
+                onDaysBackChange(
+                  Number.isFinite(n) && n >= 1 ? n : DEFAULT_DAYS_BACK,
+                )
               }}
               className="bg-secondary border-border/50 text-xs"
             />

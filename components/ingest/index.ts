@@ -3,6 +3,9 @@ export { default as CronsSection } from './CronsSection'
 export * from './EmailPipelineCard'
 export { default as EmailPipelineCard } from './EmailPipelineCard'
 
+export * from './FullRescanDialog'
+export { default as FullRescanDialog } from './FullRescanDialog'
+
 export * from './IngestStoreProvider'
 export * from './IngestTabs'
 export { default as IngestTabs } from './IngestTabs'

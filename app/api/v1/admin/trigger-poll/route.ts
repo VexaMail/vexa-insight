@@ -7,6 +7,7 @@ import {
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { parseFullRescanFlag } from './parseFullRescanFlag'
 import { TRIGGER_LIMIT } from './triggerLimit'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 429 },
     )
   }
+  const fullRescan = await parseFullRescanFlag(request)
   await checkAndRecoverStuckJob()
   const status = await getPollStatus()
   if (status.isRunning) {
@@ -39,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // This ensures the process is decoupled from the browser connection/HTTP request.
   void (async () => {
     try {
-      await runIngestJob()
+      await runIngestJob({ fullRescan })
     } catch (err) {
       console.error('[ingest] Background job failed:', err)
       // The finally block inside runIngestJob will still clear the flag,
@@ -60,7 +62,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     {
       data: {
         success: true,
-        message: 'Job started in background',
+        message: fullRescan
+          ? 'Full rescan started in background'
+          : 'Job started in background',
       },
     },
     { status: 202 },

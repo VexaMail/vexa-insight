@@ -141,6 +141,23 @@ export function buildOpenApiDocument(): Record<string, unknown> {
       '/api/v1/admin/trigger-poll': {
         post: {
           summary: 'Trigger an ingest job',
+          requestBody: {
+            required: false,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    fullRescan: {
+                      type: 'boolean',
+                      description:
+                        'Ignore the configured ingestion window and scan the whole mailbox. Already-processed messages are still skipped.',
+                    },
+                  },
+                },
+              },
+            },
+          },
           responses: {
             '202': {
               description: 'Job started',

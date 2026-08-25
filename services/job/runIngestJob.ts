@@ -8,21 +8,25 @@ import { createPollStatusCoalescer } from './createPollStatusCoalescer'
 import { getPollStatusFromDb } from './getPollStatusFromDb'
 import { processAccount } from './processAccount'
 import { repairStuckEvents } from './repairStuckEvents'
+import type { RunIngestJobOptions } from './RunIngestJobOptions'
 import { setPollStatusInDb } from './setPollStatusInDb'
 import { startHeartbeat } from './startHeartbeat'
 
 /**
- * Runs IMAP fetch+ingest for all configured accounts. Uses config.ingestionDaysBack.
+ * Runs IMAP fetch+ingest for all configured accounts. Uses config.ingestionDaysBack,
+ * or the whole mailbox when options.fullRescan is set.
  * Updates poll_status for progress and abort; records one job_runs row; returns result summary.
  */
-export async function runIngestJob(): Promise<{
+export async function runIngestJob(options: RunIngestJobOptions = {}): Promise<{
   processed: number
   ingested: number
   skipped: number
   errorCount: number
 }> {
   const config = getConfig()
-  const days = config.ingestionDaysBack
+  const fullRescan = options.fullRescan === true
+  // getSinceDate() maps 0 to the epoch, i.e. no date filter at all.
+  const days = fullRescan ? 0 : config.ingestionDaysBack
   const accounts = config.imapAccounts
 
   await repairStuckEvents()
@@ -47,7 +51,9 @@ export async function runIngestJob(): Promise<{
     totalEmails: 0,
     abortRequested: false,
     activeJobRunId: jobRunId ?? null,
-    statusText: 'Connecting to mail servers...',
+    statusText: fullRescan
+      ? 'Connecting to mail servers (full rescan)...'
+      : 'Connecting to mail servers...',
   })
 
   let processed = 0

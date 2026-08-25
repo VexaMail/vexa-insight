@@ -1,4 +1,5 @@
 import { appSettings, getDb } from '@/lib/db'
+import { parseIngestionDaysBack } from '@/utils/install'
 import { eq } from 'drizzle-orm'
 import { getSettingsRow } from './getSettingsRow'
 import { SETTINGS_ID } from './settingsId'
@@ -20,7 +21,7 @@ function seedSettingsFromEnv(): void {
         ? parseInt(env.INGESTION_INTERVAL_MINUTES, 10)
         : row.ingestionIntervalMinutes,
       ingestionDaysBack: env.INGESTION_DAYS_BACK
-        ? parseInt(env.INGESTION_DAYS_BACK, 10)
+        ? parseIngestionDaysBack(env.INGESTION_DAYS_BACK)
         : row.ingestionDaysBack,
       secretKey: env.SECRET_KEY,
       backendCorsOrigins: env.BACKEND_CORS_ORIGINS ?? row.backendCorsOrigins,

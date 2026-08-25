@@ -89,6 +89,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Ingestion always uses a bounded window.** `ingestion_days_back` no longer
+  accepts `0` ("no limit"): every scheduled run now searches from
+  `today - days` instead of walking the whole mailbox each time. Migration
+  `0030_ingestion_days_back_floor` moves existing `0` settings to the 30-day
+  default, `rowToConfig` floors whatever the row holds so a restored or
+  hand-edited database cannot reintroduce the unbounded scan, and
+  `INGESTION_DAYS_BACK` is validated the same way when it seeds a fresh
+  install. The unbounded pass is still available on demand: **Full rescan**
+  on the ingest page (confirmation dialog explaining the cost), backed by
+  `POST /api/v1/admin/trigger-poll` with `{"fullRescan": true}`. Messages
+  already ingested stay deduplicated by Message-ID.
 - `GET /api/v1/admin/update-check` and `GET /api/v1/admin/apply-update`
   now require authentication (session cookie or admin API key).
   Previously they were public.

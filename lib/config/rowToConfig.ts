@@ -1,5 +1,6 @@
 import { APP_NAME } from '@/lib/constants'
 import type { AppConfig, ImapAccountConfig } from '@/types/config'
+import { parseIngestionDaysBack } from '@/utils/install'
 import type { ImapRow } from './ImapRow'
 import type { SettingsRow } from './SettingsRow'
 
@@ -33,7 +34,9 @@ function rowToConfig(
     databaseUrl,
     imapAccounts,
     ingestionIntervalMinutes: row.ingestionIntervalMinutes,
-    ingestionDaysBack: row.ingestionDaysBack,
+    // Scheduled runs always use a bounded window; a stored 0 (the pre-0030
+    // "no limit" default, or a hand-edited row) would re-scan every message.
+    ingestionDaysBack: parseIngestionDaysBack(row.ingestionDaysBack),
     ingestionIncludeTrash: row.ingestionIncludeTrash,
     ingestionIncludeAllFolders: row.ingestionIncludeAllFolders,
     secretKey: row.secretKey,

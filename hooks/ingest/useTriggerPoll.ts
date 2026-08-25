@@ -11,8 +11,7 @@ export function useTriggerPoll(initialApiKey: string) {
   >('idle')
   const [message, setMessage] = useState('')
 
-  async function handleSubmit(e: React.SyntheticEvent) {
-    e.preventDefault()
+  async function run(fullRescan: boolean) {
     setStatus('loading')
     setMessage('')
     setActiveTab('pollResults')
@@ -24,6 +23,7 @@ export function useTriggerPoll(initialApiKey: string) {
           'Content-Type': 'application/json',
           'X-API-Key': apiKey,
         },
+        body: JSON.stringify({ fullRescan }),
       })
       const json = (await res.json()) as
         | {
@@ -63,11 +63,21 @@ export function useTriggerPoll(initialApiKey: string) {
     }
   }
 
+  async function handleSubmit(e: React.SyntheticEvent) {
+    e.preventDefault()
+    await run(false)
+  }
+
+  async function handleFullRescan() {
+    await run(true)
+  }
+
   return {
     apiKey,
     setApiKey,
     status,
     message,
     handleSubmit,
+    handleFullRescan,
   }
 }
