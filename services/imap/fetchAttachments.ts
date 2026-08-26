@@ -4,7 +4,11 @@ import type {
   FetchAttachmentsOptions,
   MailboxListItem,
 } from '@/types/imap'
-import { buildFetchAttachmentsContext, isNoConnectionError } from '@/utils/imap'
+import {
+  buildFetchAttachmentsContext,
+  getTrashPath,
+  isNoConnectionError,
+} from '@/utils/imap'
 import { createClient } from './createClient'
 import { processFolder } from './processFolder'
 
@@ -30,6 +34,9 @@ export async function* fetchAttachments(
     mailboxes,
     options,
   )
+  // The trash mailbox is only knowable once the server has listed its
+  // mailboxes, so it is resolved here rather than by the caller.
+  const folderOptions = { ...options, trashPath: getTrashPath(mailboxes) }
   try {
     for (const folder of folders) {
       if (options.getAbortRequested && (await options.getAbortRequested()))
@@ -56,7 +63,7 @@ export async function* fetchAttachments(
         lock = await client.getMailboxLock(folder)
       }
       try {
-        yield* processFolder(client, account, folder, since, options)
+        yield* processFolder(client, account, folder, since, folderOptions)
       } finally {
         lock.release()
       }

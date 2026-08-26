@@ -1,5 +1,5 @@
 /**
- * Context for fetchAttachments execution: since date, folder list, and optional trash path.
+ * Context for fetchAttachments execution: since date and folder list.
  */
 export type FetchAttachmentsContext = {
   since: Date

@@ -21,6 +21,11 @@ export type FetchAttachmentsOptions = {
   fetchIncludeTrash: boolean
   fetchIncludeAllFolders: boolean
   moveToTrashAfterProcess: boolean
+  /**
+   * Path of the mailbox flagged \\Trash. Resolved by `fetchAttachments` once
+   * the mailbox list is known, not supplied by callers.
+   */
+  trashPath?: string | null | undefined
   markAsReadAfterProcess: boolean
   jobRunId?: number | undefined
 }

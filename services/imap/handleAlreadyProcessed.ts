@@ -33,6 +33,7 @@ export async function handleAlreadyProcessed(
     postProcessFolder: options.postProcessFolder ?? null,
     sourceFolder: folder,
     subject: info.subject,
+    trashPath: options.trashPath ?? null,
     uidStr: String(uid),
   })
   if (options.onEmailProgress) {

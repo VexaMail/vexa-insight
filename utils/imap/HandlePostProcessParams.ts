@@ -14,5 +14,6 @@ export type HandlePostProcessParams = {
   postProcessFolder: string | null
   sourceFolder: string
   subject?: string | undefined
+  trashPath: string | null
   uidStr: string
 }

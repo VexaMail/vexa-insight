@@ -94,6 +94,7 @@ export async function processOneMessageUid(
       postProcessFolder: options.postProcessFolder ?? null,
       sourceFolder: folder,
       subject,
+      trashPath: options.trashPath ?? null,
       uidStr,
     })
     await notifyProgress(options, {
