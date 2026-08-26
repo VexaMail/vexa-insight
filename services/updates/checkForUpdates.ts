@@ -10,6 +10,7 @@ import {
 } from '@/utils/updates'
 import { fetchLatestRelease } from './fetchLatestRelease'
 import { getUpdateStateRow } from './getUpdateStateRow'
+import { NoPublishedReleaseError } from './NoPublishedReleaseError'
 import { upsertUpdateState } from './upsertUpdateState'
 
 /**
@@ -70,6 +71,18 @@ export async function checkForUpdates(): Promise<CheckForUpdatesOutcome> {
     }
     return { ok: true }
   } catch (err) {
+    if (err instanceof NoPublishedReleaseError) {
+      // A repo with no tagged release yet is a normal state, not a failure:
+      // record the check and clear any stale error instead of raising one.
+      upsertUpdateState({
+        currentVersion: APP_VERSION,
+        latestVersion: null,
+        lastCheckedAt: new Date(),
+        lastError: null,
+        lastErrorAt: null,
+      })
+      return { ok: true, skipped: 'no-releases' }
+    }
     const message = err instanceof Error ? err.message : 'Unknown error'
     upsertUpdateState({
       currentVersion: APP_VERSION,

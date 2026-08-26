@@ -1,6 +1,7 @@
 import { GITHUB_FETCH_TIMEOUT_MS } from '@/constants/updates'
 import type { GithubReleaseResponse, RepoSlug } from '@/types/updates'
 import { buildLatestReleaseUrl, buildUserAgent } from '@/utils/updates'
+import { NoPublishedReleaseError } from './NoPublishedReleaseError'
 
 /**
  * Fetch the latest stable, non-draft release for a repo from the GitHub REST API.
@@ -24,7 +25,7 @@ export async function fetchLatestRelease(
       cache: 'no-store',
     })
     if (response.status === 404) {
-      throw new Error('No published releases for this repository')
+      throw new NoPublishedReleaseError()
     }
     if (!response.ok) {
       throw new Error(`GitHub API responded with status ${response.status}`)
