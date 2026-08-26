@@ -12,22 +12,22 @@
     ImapFlow's `client.messageDelete()`, which is `EXPUNGE` — the message was
     destroyed on the server, not moved. The trash folder held 0 messages after
     3,141 ingested reports, while the setting name, the UI label, the
-    `moving_to_trash` progress step and the `move_to_trash_after_process`
-    column all promised something recoverable.
-  - Result: the handler now issues `client.messageMove()` to the mailbox
-    flagged `\Trash`, resolved by `fetchAttachments` from the server's mailbox
-    list and threaded to both post-process call sites. A server with no
-    `\Trash` mailbox raises instead of falling back to the destructive path,
-    so the message is left in place and the failure is logged; a message
-    already in the trash is skipped. Decision recorded 2026-08-26: honour the
-    label rather than rename the setting to `delete`, because the safe
-    direction for an ambiguous promise is the non-destructive one.
+    `moving_to_trash` progress step and the `move_to_trash_after_process` column
+    all promised something recoverable.
+  - Result: the handler now issues `client.messageMove()` to the mailbox flagged
+    `\Trash`, resolved by `fetchAttachments` from the server's mailbox list and
+    threaded to both post-process call sites. A server with no `\Trash` mailbox
+    raises instead of falling back to the destructive path, so the message is
+    left in place and the failure is logged; a message already in the trash is
+    skipped. Decision recorded 2026-08-26: honour the label rather than rename
+    the setting to `delete`, because the safe direction for an ambiguous promise
+    is the non-destructive one.
   - Evidence: `pnpm run check:ci` green in a clean worktree (540 tests). New
-    `test/moveToTrashIsAMove.test.ts` asserts the move, asserts
-    `messageDelete` is never called, and asserts the message survives a failed
-    move. Confirmed on nova after deploy that the server advertises
-    `INBOX.Trash` with `specialUse="\Trash"`, so `getTrashPath` resolves and
-    the non-destructive path is the one that runs.
+    `test/moveToTrashIsAMove.test.ts` asserts the move, asserts `messageDelete`
+    is never called, and asserts the message survives a failed move. Confirmed
+    on nova after deploy that the server advertises `INBOX.Trash` with
+    `specialUse="\Trash"`, so `getTrashPath` resolves and the non-destructive
+    path is the one that runs.
   - Files: `utils/imap/handleMoveToTrash.ts`,
     `utils/imap/HandlePostProcessParams.ts`,
     `types/imap/FetchAttachmentsOptions.ts`,
@@ -40,409 +40,1141 @@
   - Symptom: git tracked `components/ui/select.tsx` while
     `components/ui/index.ts` re-exports `'./Select'`. Invisible on macOS
     (case-insensitive APFS) and invisible on nova too, because `vexa-deploy`
-    rsyncs the working tree, whose directory entry reads `Select.tsx`. Any
-    fresh clone on a case-sensitive filesystem fails type-check with
+    rsyncs the working tree, whose directory entry reads `Select.tsx`. Any fresh
+    clone on a case-sensitive filesystem fails type-check with
     `TS1261 ... differs from file name ... only in casing`.
   - Result: renamed the tracked file to `Select.tsx`, matching every sibling
     (`SelectContent`, `SelectItem`, `SelectTrigger`) and the convention that a
     component file is named after its exported symbol.
-  - Evidence: surfaced by running `pnpm run check:ci` in a clean worktree,
-    which is also what proved the fix — 540 tests green there afterwards.
+  - Evidence: surfaced by running `pnpm run check:ci` in a clean worktree, which
+    is also what proved the fix — 540 tests green there afterwards.
   - Files: `components/ui/Select.tsx`.
 
 - [-] 2026-08-26 — **Performance:** Stop re-fetching envelopes for folders that
-      never carry DMARC mail.
+  never carry DMARC mail.
   - Superseded by an owner decision, not by code. Measured on the nova mailbox:
     a `.Logs` folder holds 5,038 messages of which 5,037 fall inside the 30-day
     window, so every hourly run bulk-fetches ~5,000 envelopes and discards them
     against 1-22 real reports. The envelope fetch is unavoidable — both the
-    DMARC subject test and the `processed_messages` de-duplication need it —
-    so the only levers were a folder allow-list or a narrower server-side
-    SEARCH.
+    DMARC subject test and the `processed_messages` de-duplication need it — so
+    the only levers were a folder allow-list or a narrower server-side SEARCH.
   - Result: the owner is moving that log mail to a separate processor, which
     removes the cost at source. No folder allow-list, no migration, no UI.
     Reopen only if a mailbox shows the same cost with no way to drain the noisy
     folder.
 
-- [x] 2026-08-25 — **Ingestion:** Bound the scheduled ingest window and keep the full-mailbox pass as an explicit action.
-  - Symptom found while auditing the nova deployment: `ingestion_days_back` was `0`, and `getSinceDate` maps `0` to the year 2000, so every hourly run searched the whole mailbox (`poll_status.total_emails` = 4962) instead of a window. Nothing was broken, but each run re-enumerated the entire INBOX.
-  - Result: `ingestion_days_back` is now floored at 1 (default 30) in `parseIngestionDaysBack`, in `settingsUpdateSchema`, and in both numeric inputs; migration `0030_ingestion_days_back_floor` moves stored `0` values to 30. The invariant is enforced on the read path too (`rowToConfig`), so a restored database, a hand-edited row or `INGESTION_DAYS_BACK=0` in the environment cannot bring the unbounded scan back; the Drizzle column default moved from 0 to 30. The unbounded pass survives as a one-off: **Full rescan** on the ingest page opens a confirmation dialog explaining the cost, and posts `{"fullRescan": true}` to `/api/v1/admin/trigger-poll`, which forwards it to `runIngestJob({ fullRescan })`. Dedup by Message-ID is untouched, so a rescan cannot duplicate reports.
-  - Evidence on nova after deploy: `app_settings.ingestion_days_back` = 30 and `__app_migrations` holds `0030_ingestion_days_back_floor`; a normal trigger recorded `total_emails` = 4957 (30-day window) and a `fullRescan` trigger recorded 4962 (whole mailbox), both HTTP 202 with `error_count` 0. `pnpm run check:ci` clean, 530/530 tests across 72 files including the new `test/ingestionWindow.test.ts` and `test/rowToConfigIngestionWindow.test.ts`; `pnpm run test:a11y` 47/47 with `test/a11y/FullRescanDialog.test.tsx` covering the warning, the confirm and the cancel path.
-  - Files: `utils/install/parseIngestionDaysBack.ts`, `utils/validation/settingsUpdateSchema.ts`, `components/settings/IngestionSection.tsx`, `components/install/AdvancedSettingsFieldset.tsx`, `drizzle/0030_ingestion_days_back_floor.sql`, `services/job/runIngestJob.ts`, `services/job/RunIngestJobOptions.ts`, `app/api/v1/admin/trigger-poll/{route,parseFullRescanFlag}.ts`, `components/ingest/FullRescanDialog.tsx`, `hooks/ingest/{useTriggerPoll,useFullRescanDialog}.ts`, `lib/config/rowToConfig.ts`, `services/settings/seedSettingsFromEnv.ts`, `lib/db/schema/app-settings.ts`, `test/{ingestionWindow,rowToConfigIngestionWindow}.test.ts`, `test/a11y/FullRescanDialog.test.tsx`.
+- [x] 2026-08-25 — **Ingestion:** Bound the scheduled ingest window and keep the
+      full-mailbox pass as an explicit action.
+  - Symptom found while auditing the nova deployment: `ingestion_days_back` was
+    `0`, and `getSinceDate` maps `0` to the year 2000, so every hourly run
+    searched the whole mailbox (`poll_status.total_emails` = 4962) instead of a
+    window. Nothing was broken, but each run re-enumerated the entire INBOX.
+  - Result: `ingestion_days_back` is now floored at 1 (default 30) in
+    `parseIngestionDaysBack`, in `settingsUpdateSchema`, and in both numeric
+    inputs; migration `0030_ingestion_days_back_floor` moves stored `0` values
+    to 30. The invariant is enforced on the read path too (`rowToConfig`), so a
+    restored database, a hand-edited row or `INGESTION_DAYS_BACK=0` in the
+    environment cannot bring the unbounded scan back; the Drizzle column default
+    moved from 0 to 30. The unbounded pass survives as a one-off: **Full
+    rescan** on the ingest page opens a confirmation dialog explaining the cost,
+    and posts `{"fullRescan": true}` to `/api/v1/admin/trigger-poll`, which
+    forwards it to `runIngestJob({ fullRescan })`. Dedup by Message-ID is
+    untouched, so a rescan cannot duplicate reports.
+  - Evidence on nova after deploy: `app_settings.ingestion_days_back` = 30 and
+    `__app_migrations` holds `0030_ingestion_days_back_floor`; a normal trigger
+    recorded `total_emails` = 4957 (30-day window) and a `fullRescan` trigger
+    recorded 4962 (whole mailbox), both HTTP 202 with `error_count` 0.
+    `pnpm run check:ci` clean, 530/530 tests across 72 files including the new
+    `test/ingestionWindow.test.ts` and
+    `test/rowToConfigIngestionWindow.test.ts`; `pnpm run test:a11y` 47/47 with
+    `test/a11y/FullRescanDialog.test.tsx` covering the warning, the confirm and
+    the cancel path.
+  - Files: `utils/install/parseIngestionDaysBack.ts`,
+    `utils/validation/settingsUpdateSchema.ts`,
+    `components/settings/IngestionSection.tsx`,
+    `components/install/AdvancedSettingsFieldset.tsx`,
+    `drizzle/0030_ingestion_days_back_floor.sql`,
+    `services/job/runIngestJob.ts`, `services/job/RunIngestJobOptions.ts`,
+    `app/api/v1/admin/trigger-poll/{route,parseFullRescanFlag}.ts`,
+    `components/ingest/FullRescanDialog.tsx`,
+    `hooks/ingest/{useTriggerPoll,useFullRescanDialog}.ts`,
+    `lib/config/rowToConfig.ts`, `services/settings/seedSettingsFromEnv.ts`,
+    `lib/db/schema/app-settings.ts`,
+    `test/{ingestionWindow,rowToConfigIngestionWindow}.test.ts`,
+    `test/a11y/FullRescanDialog.test.tsx`.
 
-- [x] 2026-08-25 — **Security:** Stop writing the IMAP protocol trace to the production logs.
-  - Symptom: `createClient` passed no `logger` to ImapFlow, so its default pino instance wrote every protocol line to stdout. On nova that meant journald held the subject, envelope, sender, recipient and Message-ID of all 4962 scanned messages on each hourly run — mailbox content sitting in the system log with no retention control.
-  - Result: `createImapLogger` drops debug and info, forwards warn and error to the console, and restores the full trace only when `VEXA_IMAP_DEBUG` is `true`/`1`. Documented in `.env.example` and the README env table.
-  - Evidence: after the deploy, `journalctl -u vexa` across two ingest runs contains zero `imap-connection` lines (9 log lines total since restart, all startup and systemd), while ingest still completed with `error_count` 0.
-  - Files: `services/imap/createClient.ts`, `utils/imap/createImapLogger.ts`, `utils/imap/isImapDebugEnabled.ts`, `lib/env.ts`, `test/imapLogging.test.ts`, `.env.example`, `README.md`, `docker-compose.yml`, `deploy/k8s/configmap.yaml`, `deploy/helm/vexa-insight-dashboard/values.yaml`.
+- [x] 2026-08-25 — **Security:** Stop writing the IMAP protocol trace to the
+      production logs.
+  - Symptom: `createClient` passed no `logger` to ImapFlow, so its default pino
+    instance wrote every protocol line to stdout. On nova that meant journald
+    held the subject, envelope, sender, recipient and Message-ID of all 4962
+    scanned messages on each hourly run — mailbox content sitting in the system
+    log with no retention control.
+  - Result: `createImapLogger` drops debug and info, forwards warn and error to
+    the console, and restores the full trace only when `VEXA_IMAP_DEBUG` is
+    `true`/`1`. Documented in `.env.example` and the README env table.
+  - Evidence: after the deploy, `journalctl -u vexa` across two ingest runs
+    contains zero `imap-connection` lines (9 log lines total since restart, all
+    startup and systemd), while ingest still completed with `error_count` 0.
+  - Files: `services/imap/createClient.ts`, `utils/imap/createImapLogger.ts`,
+    `utils/imap/isImapDebugEnabled.ts`, `lib/env.ts`,
+    `test/imapLogging.test.ts`, `.env.example`, `README.md`,
+    `docker-compose.yml`, `deploy/k8s/configmap.yaml`,
+    `deploy/helm/vexa-insight-dashboard/values.yaml`.
 
-- [x] 2026-08-25 — **Infrastructure:** Fix the install check so an installed instance stops redirecting to `/install` behind a reverse proxy.
-  - Symptom: a first production deployment behind a TLS-terminating proxy answered `307 -> /install` on every route, while `/install` bounced back to the dashboard — an infinite redirect loop (`curl` exit 47). `GET /api/install/check` on the loopback returned `{"installed":true}` throughout, so the database was never the problem.
-  - Two independent defects in `checkInstall`, both in the self-fetch it uses to reach that endpoint. First, it passed `headers: request.headers`, forwarding the incoming `cf-connecting-ip`; Cloudflare answers 403 to any request carrying that header from outside its own network, and `res.json()` then threw on the HTML error body. The route reads no headers at all, so forwarding them was never needed. Second, and the one that actually bricked this deploy: `new URL(INSTALL_CHECK, request.url)` inherits the forwarded `https` scheme while the host stays the local listener, producing `https://localhost:3002/...` — TLS spoken to a plaintext port, `ERR_SSL_PACKET_LENGTH_TOO_LONG`.
-  - Result: the self-fetch sends no headers, and downgrades the scheme to `http` when the target hostname is the loopback (`utils/proxy/isLoopbackHostname.ts`). The silent `catch` now logs the failing URL and error before falling back — a failed check sends every route to `/install`, which is indistinguishable from a genuinely uninstalled app, and it did so here without a single log line.
-  - Evidence: before, `curl https://<host>/login` returned `307 -> /install` and the journal showed `[install-check] https://localhost:3002/api/install/check failed: [TypeError: fetch failed] ... ERR_SSL_PACKET_LENGTH_TOO_LONG`; after, `/login` returns 200 and `/` returns `307 -> /login`. `pnpm run check` clean, `pnpm run test` 508/508 across 69 files, including four new cases in `test/checkInstall.test.ts` covering both properties and the redirect fallback.
-  - Files: `services/install/checkInstall.ts`, `utils/proxy/isLoopbackHostname.ts`, `test/checkInstall.test.ts`.
-  - The same deployment surfaced five further defects that are not fixed here and are tracked in `TODO.md`: the missing `.dockerignore`, the live database copied into `.next/standalone`, the clean-checkout build failure on GeoIP data, `VEXA_ALLOWED_ORIGINS` being baked at build time, and the broken `deploy/vexa.service` example.
+- [x] 2026-08-25 — **Infrastructure:** Fix the install check so an installed
+      instance stops redirecting to `/install` behind a reverse proxy.
+  - Symptom: a first production deployment behind a TLS-terminating proxy
+    answered `307 -> /install` on every route, while `/install` bounced back to
+    the dashboard — an infinite redirect loop (`curl` exit 47).
+    `GET /api/install/check` on the loopback returned `{"installed":true}`
+    throughout, so the database was never the problem.
+  - Two independent defects in `checkInstall`, both in the self-fetch it uses to
+    reach that endpoint. First, it passed `headers: request.headers`, forwarding
+    the incoming `cf-connecting-ip`; Cloudflare answers 403 to any request
+    carrying that header from outside its own network, and `res.json()` then
+    threw on the HTML error body. The route reads no headers at all, so
+    forwarding them was never needed. Second, and the one that actually bricked
+    this deploy: `new URL(INSTALL_CHECK, request.url)` inherits the forwarded
+    `https` scheme while the host stays the local listener, producing
+    `https://localhost:3002/...` — TLS spoken to a plaintext port,
+    `ERR_SSL_PACKET_LENGTH_TOO_LONG`.
+  - Result: the self-fetch sends no headers, and downgrades the scheme to `http`
+    when the target hostname is the loopback
+    (`utils/proxy/isLoopbackHostname.ts`). The silent `catch` now logs the
+    failing URL and error before falling back — a failed check sends every route
+    to `/install`, which is indistinguishable from a genuinely uninstalled app,
+    and it did so here without a single log line.
+  - Evidence: before, `curl https://<host>/login` returned `307 -> /install` and
+    the journal showed
+    `[install-check] https://localhost:3002/api/install/check failed: [TypeError: fetch failed] ... ERR_SSL_PACKET_LENGTH_TOO_LONG`;
+    after, `/login` returns 200 and `/` returns `307 -> /login`.
+    `pnpm run check` clean, `pnpm run test` 508/508 across 69 files, including
+    four new cases in `test/checkInstall.test.ts` covering both properties and
+    the redirect fallback.
+  - Files: `services/install/checkInstall.ts`,
+    `utils/proxy/isLoopbackHostname.ts`, `test/checkInstall.test.ts`.
+  - The same deployment surfaced five further defects that are not fixed here
+    and are tracked in `TODO.md`: the missing `.dockerignore`, the live database
+    copied into `.next/standalone`, the clean-checkout build failure on GeoIP
+    data, `VEXA_ALLOWED_ORIGINS` being baked at build time, and the broken
+    `deploy/vexa.service` example.
 
 ### 2026-07
 
-- [x] 2026-07-26 — **Artificial Intelligence:** Restructure the diagnostics system prompt around the 2026 model prompting guidance.
-  - Context: Anthropic's per-model guides (Opus 5, Fable 5) and OpenAI's GPT-5.6 guidance now agree that prompts written for older models reduce quality on current ones, and that most of the work is deletion. `DIAGNOSTICS_ANALYSIS_SYSTEM` was 64 numbered rules; `REPORT_ANALYSIS_SYSTEM` was already lean and was left alone.
-  - Result: named sections instead of the numbered list, 12,897 -> 10,025 system characters (-22%), with every enum, required and optional field, severity/tone/evidenceStrength definition, correlation rule, recommendation constraint, and example preserved.
-  - The first attempt was a measured regression, caught by the eval harness rather than by reading: promoting "prefer fewer, higher-confidence insights" into the opening paragraph cost the `policy` enforcement finding in 2 of 2 runs, which took `tone: improvement` from 2/9 insights to 0/6 — and with it every insight eligible for `recordValue`/`verifyCommand`, since those require that tone. Moving the sentence back into NOISE REDUCTION and naming enforcement posture as a first-class finding restored it.
-  - Evidence: `pnpm run eval:ai diagnostics` on the free Max lane, same domain and model (`claude-sonnet-5`) across all arms. Baseline 2 runs: 9 insights, 2 improvement-tone, 2 verifyCommand, ~11,486 tokens. First rewrite 2 runs: 6 / 0 / 1, ~9,993 tokens. Corrected 6 runs: improvement-tone present in 6/6, `rolloutPlan` 5 well-formed `[PROTOCOL]`-prefixed steps every run, `parseError` null on all 10 runs, ~10,755 tokens (-6% against baseline). `pnpm run check:ci` clean (504/504, migrations OK).
-  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`, `test/diagnosticsAiPrompts.test.ts`, `test/isAiConfigured.test.ts`.
-  - Two assertions in `diagnosticsAiPrompts.test.ts` pinned prompt prose (`'Do NOT simply restate it'`, `'ROLLOUT PLAN RULES'`) and were reworded to the new phrasing; the instructions they guard are unchanged. `isAiConfigured.test.ts` got an explicit 30s timeout: it imports the whole `@/services/ai` barrel and began failing reproducibly under `check:ci`, where vitest starts on a cold transform cache after type-check and lint.
-  - Open: 2 of 6 runs on the new wording wrapped the JSON in a markdown fence where 0 of 2 baseline runs did. The parser strips them and nothing breaks; too few baseline samples to call it a regression, so it is tracked in `TODO.md` rather than fixed blind.
+- [x] 2026-07-26 — **Artificial Intelligence:** Restructure the diagnostics
+      system prompt around the 2026 model prompting guidance.
+  - Context: Anthropic's per-model guides (Opus 5, Fable 5) and OpenAI's GPT-5.6
+    guidance now agree that prompts written for older models reduce quality on
+    current ones, and that most of the work is deletion.
+    `DIAGNOSTICS_ANALYSIS_SYSTEM` was 64 numbered rules;
+    `REPORT_ANALYSIS_SYSTEM` was already lean and was left alone.
+  - Result: named sections instead of the numbered list, 12,897 -> 10,025 system
+    characters (-22%), with every enum, required and optional field,
+    severity/tone/evidenceStrength definition, correlation rule, recommendation
+    constraint, and example preserved.
+  - The first attempt was a measured regression, caught by the eval harness
+    rather than by reading: promoting "prefer fewer, higher-confidence insights"
+    into the opening paragraph cost the `policy` enforcement finding in 2 of 2
+    runs, which took `tone: improvement` from 2/9 insights to 0/6 — and with it
+    every insight eligible for `recordValue`/`verifyCommand`, since those
+    require that tone. Moving the sentence back into NOISE REDUCTION and naming
+    enforcement posture as a first-class finding restored it.
+  - Evidence: `pnpm run eval:ai diagnostics` on the free Max lane, same domain
+    and model (`claude-sonnet-5`) across all arms. Baseline 2 runs: 9 insights,
+    2 improvement-tone, 2 verifyCommand, ~11,486 tokens. First rewrite 2 runs: 6
+    / 0 / 1, ~9,993 tokens. Corrected 6 runs: improvement-tone present in 6/6,
+    `rolloutPlan` 5 well-formed `[PROTOCOL]`-prefixed steps every run,
+    `parseError` null on all 10 runs, ~10,755 tokens (-6% against baseline).
+    `pnpm run check:ci` clean (504/504, migrations OK).
+  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`,
+    `test/diagnosticsAiPrompts.test.ts`, `test/isAiConfigured.test.ts`.
+  - Two assertions in `diagnosticsAiPrompts.test.ts` pinned prompt prose
+    (`'Do NOT simply restate it'`, `'ROLLOUT PLAN RULES'`) and were reworded to
+    the new phrasing; the instructions they guard are unchanged.
+    `isAiConfigured.test.ts` got an explicit 30s timeout: it imports the whole
+    `@/services/ai` barrel and began failing reproducibly under `check:ci`,
+    where vitest starts on a cold transform cache after type-check and lint.
+  - Open: 2 of 6 runs on the new wording wrapped the JSON in a markdown fence
+    where 0 of 2 baseline runs did. The parser strips them and nothing breaks;
+    too few baseline samples to call it a regression, so it is tracked in
+    `TODO.md` rather than fixed blind.
 
-- [x] 2026-07-26 — **Artificial Intelligence:** Stop sending `temperature` to Claude 5 models on the metered Anthropic path.
-  - Decision: gate the field on the model rather than dropping it everywhere. A blanket drop would silently move the older Claude models from `temperature: 0.2` to the API default of 1.0, which is a real loss for prompts whose output is parsed as JSON. Anthropic removed the sampling parameters starting with Opus 4.7, so the split is by model generation, not by provider.
-  - Result: `utils/ai/supportsAnthropicTemperature.ts` matches the configured model against `TEMPERATURE_CAPABLE_CLAUDE_MODEL_PREFIXES` (Claude 2/3, Opus 4.0/4.1/4.5/4.6, Sonnet 4.0/4.5/4.6, Haiku 4.5) as prefixes, so dated ids resolve too; `createAnthropicAdapter` spreads `temperature` into the body only when that returns true. The list is an allow-list of the older families on purpose: an unrecognised id is far more likely to be newer than this code than older, and losing the field is recoverable where an HTTP 400 is not. The Max OAuth lane still strips the field in `applyMaxOAuthRequestShape` and is unchanged.
-  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 488/488 tests, migrations OK). New `test/createAnthropicAdapter.test.ts` asserts the request body over a stubbed `fetch` — `temperature` present for `claude-sonnet-4-6`, absent for `claude-opus-5`; `test/supportsAnthropicTemperature.test.ts` (4 cases) pins both model sets, the unknown-model default, and the casing/whitespace handling. No live provider call was made, so the HTTP 400 itself is still only reproduced from the 2026-07-26 Max OAuth session.
-  - Files: `constants/ai/temperatureCapableClaudeModelPrefixes.ts`, `utils/ai/supportsAnthropicTemperature.ts`, `services/ai/providers/anthropic/createAnthropicAdapter.ts`, `test/{createAnthropicAdapter,supportsAnthropicTemperature}.test.ts`.
-  - Left open: the Gemini and OpenRouter adapters send `temperature` unconditionally and were not examined; tracked in `TODO.md`.
+- [x] 2026-07-26 — **Artificial Intelligence:** Stop sending `temperature` to
+      Claude 5 models on the metered Anthropic path.
+  - Decision: gate the field on the model rather than dropping it everywhere. A
+    blanket drop would silently move the older Claude models from
+    `temperature: 0.2` to the API default of 1.0, which is a real loss for
+    prompts whose output is parsed as JSON. Anthropic removed the sampling
+    parameters starting with Opus 4.7, so the split is by model generation, not
+    by provider.
+  - Result: `utils/ai/supportsAnthropicTemperature.ts` matches the configured
+    model against `TEMPERATURE_CAPABLE_CLAUDE_MODEL_PREFIXES` (Claude 2/3, Opus
+    4.0/4.1/4.5/4.6, Sonnet 4.0/4.5/4.6, Haiku 4.5) as prefixes, so dated ids
+    resolve too; `createAnthropicAdapter` spreads `temperature` into the body
+    only when that returns true. The list is an allow-list of the older families
+    on purpose: an unrecognised id is far more likely to be newer than this code
+    than older, and losing the field is recoverable where an HTTP 400 is not.
+    The Max OAuth lane still strips the field in `applyMaxOAuthRequestShape` and
+    is unchanged.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 488/488
+    tests, migrations OK). New `test/createAnthropicAdapter.test.ts` asserts the
+    request body over a stubbed `fetch` — `temperature` present for
+    `claude-sonnet-4-6`, absent for `claude-opus-5`;
+    `test/supportsAnthropicTemperature.test.ts` (4 cases) pins both model sets,
+    the unknown-model default, and the casing/whitespace handling. No live
+    provider call was made, so the HTTP 400 itself is still only reproduced from
+    the 2026-07-26 Max OAuth session.
+  - Files: `constants/ai/temperatureCapableClaudeModelPrefixes.ts`,
+    `utils/ai/supportsAnthropicTemperature.ts`,
+    `services/ai/providers/anthropic/createAnthropicAdapter.ts`,
+    `test/{createAnthropicAdapter,supportsAnthropicTemperature}.test.ts`.
+  - Left open: the Gemini and OpenRouter adapters send `temperature`
+    unconditionally and were not examined; tracked in `TODO.md`.
 
-- [x] 2026-07-26 — **Artificial Intelligence:** Check whether the OpenAI adapter has the same `temperature` problem the Anthropic one had.
-  - Result: it does, and it came with a second half. OpenAI's reasoning families (`o1`/`o3`/`o4`, `gpt-5`) reject a non-default `temperature` (`Unsupported value: 'temperature' does not support 0.2 with this model. Only the default (1) value is supported.`) **and** `max_tokens`, which has to be `max_completion_tokens` there. Either one is an HTTP 400, so gating only the temperature would have left those models exactly as unusable. `utils/ai/usesLegacyOpenAiChatParams.ts` picks one shape or the other from `LEGACY_OPENAI_CHAT_MODEL_PREFIXES` (`gpt-3.5`, `gpt-4*`, `chatgpt-4o`): legacy models keep `max_tokens` + `temperature`, everything else gets `max_completion_tokens` and no sampling controls. `gpt-5-chat` is deliberately excluded — reports disagree on whether the non-reasoning chat variant accepts `temperature`, and the modern shape is the harmless side of that.
-  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 504/504 tests, migrations OK). New `test/createOpenAiAdapter.test.ts` asserts the whole request body over a stubbed `fetch` — `max_tokens` + `temperature` and no `max_completion_tokens` for `gpt-4o`, the inverse for `gpt-5`; `test/usesLegacyOpenAiChatParams.test.ts` (4 cases) pins both model sets, the unknown-model default, and casing. The 400s come from published reports and Microsoft's Azure OpenAI reasoning docs, not from a call made here: `platform.openai.com` returned 403 to an unauthenticated fetch, so no primary-doc quote was captured and no metered call was made.
-  - Files: `constants/ai/legacyOpenAiChatModelPrefixes.ts`, `utils/ai/usesLegacyOpenAiChatParams.ts`, `services/ai/providers/openai/createOpenAiAdapter.ts`, `test/{createOpenAiAdapter,usesLegacyOpenAiChatParams}.test.ts`.
-  - Still unverified: whether those models accept `response_format: { type: 'json_object' }`, which the adapter sends unconditionally and every prompt here relies on. Left in `TODO.md` rather than guessed at.
+- [x] 2026-07-26 — **Artificial Intelligence:** Check whether the OpenAI adapter
+      has the same `temperature` problem the Anthropic one had.
+  - Result: it does, and it came with a second half. OpenAI's reasoning families
+    (`o1`/`o3`/`o4`, `gpt-5`) reject a non-default `temperature`
+    (`Unsupported value: 'temperature' does not support 0.2 with this model. Only the default (1) value is supported.`)
+    **and** `max_tokens`, which has to be `max_completion_tokens` there. Either
+    one is an HTTP 400, so gating only the temperature would have left those
+    models exactly as unusable. `utils/ai/usesLegacyOpenAiChatParams.ts` picks
+    one shape or the other from `LEGACY_OPENAI_CHAT_MODEL_PREFIXES` (`gpt-3.5`,
+    `gpt-4*`, `chatgpt-4o`): legacy models keep `max_tokens` + `temperature`,
+    everything else gets `max_completion_tokens` and no sampling controls.
+    `gpt-5-chat` is deliberately excluded — reports disagree on whether the
+    non-reasoning chat variant accepts `temperature`, and the modern shape is
+    the harmless side of that.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 504/504
+    tests, migrations OK). New `test/createOpenAiAdapter.test.ts` asserts the
+    whole request body over a stubbed `fetch` — `max_tokens` + `temperature` and
+    no `max_completion_tokens` for `gpt-4o`, the inverse for `gpt-5`;
+    `test/usesLegacyOpenAiChatParams.test.ts` (4 cases) pins both model sets,
+    the unknown-model default, and casing. The 400s come from published reports
+    and Microsoft's Azure OpenAI reasoning docs, not from a call made here:
+    `platform.openai.com` returned 403 to an unauthenticated fetch, so no
+    primary-doc quote was captured and no metered call was made.
+  - Files: `constants/ai/legacyOpenAiChatModelPrefixes.ts`,
+    `utils/ai/usesLegacyOpenAiChatParams.ts`,
+    `services/ai/providers/openai/createOpenAiAdapter.ts`,
+    `test/{createOpenAiAdapter,usesLegacyOpenAiChatParams}.test.ts`.
+  - Still unverified: whether those models accept
+    `response_format: { type: 'json_object' }`, which the adapter sends
+    unconditionally and every prompt here relies on. Left in `TODO.md` rather
+    than guessed at.
 
-- [x] 2026-07-26 — **Artificial Intelligence:** Run the LLM prompts on the Claude Max subscription so prompt work costs nothing.
-  - Result: two entry points sharing one auth layer. `pnpm run dev:max` (`LLM_BACKEND=max-oauth next dev`) reroutes the running app's Anthropic calls onto the Claude Code OAuth token in the macOS Keychain; `pnpm run eval:ai <report|diagnostics> ...` runs a production prompt N times offline against real local rows and writes one artifact per invocation to `evals/results/`. Neither path sends the stored API key.
-  - The lane only serves requests that look like Claude Code: the `oauth-2025-04-20,claude-code-20250219` betas, `x-app: cli`, the CLI user agent, and the identity line as a distinct FIRST `system` block are all load-bearing — without them the answer is a `rate_limit_error` unrelated to quota.
-  - Two findings while wiring it up. Claude 5 models reject `temperature` (HTTP 400), so `applyMaxOAuthRequestShape` strips it; the metered path still sends it and stays broken for those models, left open in `TODO.md`. And the harness cannot call `getReportById`, whose domain scoping resolves through `getSession()` and needs request cookies — `loadEvalReport` reads the row unscoped instead, which is right for a run served for nobody.
-  - Safety: `isMaxOAuthBackendEnabled` requires the flag AND `NODE_ENV === 'development'`, failing closed on staging/test/unset. Verified by probe: flag on in development returned `OK` with a dummy API key; flag off returned `invalid x-api-key`; flag on with `NODE_ENV=production` also returned `invalid x-api-key`.
-  - Evidence: `pnpm run check:ci` clean (474/474, migrations OK). Both harness targets were also run live against a local development database: the report target returned 5 parsed insights per sample at ~2.5k tokens, the diagnostics target 4 parsed insights at ~11.5k tokens. Artifacts are gitignored, since they embed whatever report and domain rows the local database holds.
-  - Files: `services/ai/maxOAuth/*` (9), `services/ai/evals/*` (10), `services/ai/contracts/{AnthropicMessagesRequest,MaxOAuthCredentials,AiEval*}.ts`, `services/ai/use-cases/buildDiagnosticsAnalysisInput.ts`, `services/ai/providers/anthropic/createAnthropicAdapter.ts`, `scripts/run-ai-eval.ts`, `utils/{cli,errors}/*`, `test/{isMaxOAuthBackendEnabled,applyMaxOAuthRequestShape}.test.ts`, `docs/ai-max-oauth-backend.md`, `eslint.config.ts`, `package.json`.
-  - Note: `buildDiagnosticsAnalysisInput` was extracted out of `generateDiagnosticsInsights` so the runtime and the harness assemble the diagnostics prompt from one place. Behavior unchanged — same sources, same graceful degradation, same `INSUFFICIENT_DATA` throw.
+- [x] 2026-07-26 — **Artificial Intelligence:** Run the LLM prompts on the
+      Claude Max subscription so prompt work costs nothing.
+  - Result: two entry points sharing one auth layer. `pnpm run dev:max`
+    (`LLM_BACKEND=max-oauth next dev`) reroutes the running app's Anthropic
+    calls onto the Claude Code OAuth token in the macOS Keychain;
+    `pnpm run eval:ai <report|diagnostics> ...` runs a production prompt N times
+    offline against real local rows and writes one artifact per invocation to
+    `evals/results/`. Neither path sends the stored API key.
+  - The lane only serves requests that look like Claude Code: the
+    `oauth-2025-04-20,claude-code-20250219` betas, `x-app: cli`, the CLI user
+    agent, and the identity line as a distinct FIRST `system` block are all
+    load-bearing — without them the answer is a `rate_limit_error` unrelated to
+    quota.
+  - Two findings while wiring it up. Claude 5 models reject `temperature` (HTTP
+    400), so `applyMaxOAuthRequestShape` strips it; the metered path still sends
+    it and stays broken for those models, left open in `TODO.md`. And the
+    harness cannot call `getReportById`, whose domain scoping resolves through
+    `getSession()` and needs request cookies — `loadEvalReport` reads the row
+    unscoped instead, which is right for a run served for nobody.
+  - Safety: `isMaxOAuthBackendEnabled` requires the flag AND
+    `NODE_ENV === 'development'`, failing closed on staging/test/unset. Verified
+    by probe: flag on in development returned `OK` with a dummy API key; flag
+    off returned `invalid x-api-key`; flag on with `NODE_ENV=production` also
+    returned `invalid x-api-key`.
+  - Evidence: `pnpm run check:ci` clean (474/474, migrations OK). Both harness
+    targets were also run live against a local development database: the report
+    target returned 5 parsed insights per sample at ~2.5k tokens, the
+    diagnostics target 4 parsed insights at ~11.5k tokens. Artifacts are
+    gitignored, since they embed whatever report and domain rows the local
+    database holds.
+  - Files: `services/ai/maxOAuth/*` (9), `services/ai/evals/*` (10),
+    `services/ai/contracts/{AnthropicMessagesRequest,MaxOAuthCredentials,AiEval*}.ts`,
+    `services/ai/use-cases/buildDiagnosticsAnalysisInput.ts`,
+    `services/ai/providers/anthropic/createAnthropicAdapter.ts`,
+    `scripts/run-ai-eval.ts`, `utils/{cli,errors}/*`,
+    `test/{isMaxOAuthBackendEnabled,applyMaxOAuthRequestShape}.test.ts`,
+    `docs/ai-max-oauth-backend.md`, `eslint.config.ts`, `package.json`.
+  - Note: `buildDiagnosticsAnalysisInput` was extracted out of
+    `generateDiagnosticsInsights` so the runtime and the harness assemble the
+    diagnostics prompt from one place. Behavior unchanged — same sources, same
+    graceful degradation, same `INSUFFICIENT_DATA` throw.
 
-- [x] 2026-07-26 — **Security:** Revoke a user's sessions when their password changes.
-  - Result: `updateUser` rewrote `passwordHash` without touching `sessions`, so a stolen cookie outlived the reset meant to kill it. New `services/auth/revokeUserSessions.ts` deletes every session row for the user; `updateUser` calls it only on a password change and records one `auth.sessions.revoked` audit event with the target and the number of cookies killed. Per the 2026-07-26 decision this is unconditional: an admin who changes their own password is signed out too. The actor is read from the session before the delete, otherwise a self-reset would erase its own attribution.
-  - The two neighbouring revocation paths were already covered and needed no change: deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` per request, so role and allow-list changes apply on the next request rather than at expiry.
-  - Evidence: `pnpm run check:ci` clean (466/466, migrations OK). New `test/revokeUserSessions.test.ts` (4 cases); 2 of them fail with the `updateUser` change stashed, verified by re-running against the stash.
-  - Files: `services/auth/revokeUserSessions.ts`, `services/users/updateUser.ts`, `types/audit/AuditAction.ts`, `test/revokeUserSessions.test.ts`.
+- [x] 2026-07-26 — **Security:** Revoke a user's sessions when their password
+      changes.
+  - Result: `updateUser` rewrote `passwordHash` without touching `sessions`, so
+    a stolen cookie outlived the reset meant to kill it. New
+    `services/auth/revokeUserSessions.ts` deletes every session row for the
+    user; `updateUser` calls it only on a password change and records one
+    `auth.sessions.revoked` audit event with the target and the number of
+    cookies killed. Per the 2026-07-26 decision this is unconditional: an admin
+    who changes their own password is signed out too. The actor is read from the
+    session before the delete, otherwise a self-reset would erase its own
+    attribution.
+  - The two neighbouring revocation paths were already covered and needed no
+    change: deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`),
+    and `getSession` joins `users` per request, so role and allow-list changes
+    apply on the next request rather than at expiry.
+  - Evidence: `pnpm run check:ci` clean (466/466, migrations OK). New
+    `test/revokeUserSessions.test.ts` (4 cases); 2 of them fail with the
+    `updateUser` change stashed, verified by re-running against the stash.
+  - Files: `services/auth/revokeUserSessions.ts`,
+    `services/users/updateUser.ts`, `types/audit/AuditAction.ts`,
+    `test/revokeUserSessions.test.ts`.
 
-- [x] 2026-07-26 — **Security:** Decide whether the shared API key should be excluded from `users:write`.
-  - Decision: yes. The shared `SECRET_KEY` no longer maps to the `admin` role; it now carries the fixed set `API_KEY_PERMISSIONS` = `reports:read`, `reports:write`, `settings:read`, `ai:invoke`. One secret shared by every automation client must not be able to create users, change roles, or read the audit log — that is the difference between a leaked key and account takeover.
-  - Result: `services/api/getApiKeyRole.ts` (returned `'admin'`) replaced by `services/api/hasValidApiKey.ts` (returns a boolean); `requirePermission` checks a session against its user's role and a keyed request against `API_KEY_PERMISSIONS`, keeping 401-vs-403 semantics. `getAllowedDomainIds` still treats a valid key as unrestricted, otherwise every domain-scoped query returns nothing to API callers.
-  - Behavior change to know about: `/api/v1/users/**` (`users:read`/`users:write`) and `/api/v1/audit-log` (`audit:read`) now answer 403 to the shared key, and so do the webhook writes on `/api/v1/admin/webhooks*` (`settings:write`), which were not part of the original question. Routes gated by `requireAdminAuth` (IMAP, GeoIP, admin settings, poll control) check the raw key directly and are unaffected.
-  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 462/462 tests, migrations OK). New `test/requirePermission.test.ts` (5 cases) pins the grant set, the 403s, the 401-without-credentials path, and that an admin session still holds what the key does not.
-  - Files: `constants/auth/apiKeyPermissions.ts`, `services/api/hasValidApiKey.ts`, `services/auth/{requirePermission,domainAccess}.ts`, `test/requirePermission.test.ts`, `docs/adr/0001-default-deny-api-surface.md`, `README.md`.
+- [x] 2026-07-26 — **Security:** Decide whether the shared API key should be
+      excluded from `users:write`.
+  - Decision: yes. The shared `SECRET_KEY` no longer maps to the `admin` role;
+    it now carries the fixed set `API_KEY_PERMISSIONS` = `reports:read`,
+    `reports:write`, `settings:read`, `ai:invoke`. One secret shared by every
+    automation client must not be able to create users, change roles, or read
+    the audit log — that is the difference between a leaked key and account
+    takeover.
+  - Result: `services/api/getApiKeyRole.ts` (returned `'admin'`) replaced by
+    `services/api/hasValidApiKey.ts` (returns a boolean); `requirePermission`
+    checks a session against its user's role and a keyed request against
+    `API_KEY_PERMISSIONS`, keeping 401-vs-403 semantics. `getAllowedDomainIds`
+    still treats a valid key as unrestricted, otherwise every domain-scoped
+    query returns nothing to API callers.
+  - Behavior change to know about: `/api/v1/users/**`
+    (`users:read`/`users:write`) and `/api/v1/audit-log` (`audit:read`) now
+    answer 403 to the shared key, and so do the webhook writes on
+    `/api/v1/admin/webhooks*` (`settings:write`), which were not part of the
+    original question. Routes gated by `requireAdminAuth` (IMAP, GeoIP, admin
+    settings, poll control) check the raw key directly and are unaffected.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 462/462
+    tests, migrations OK). New `test/requirePermission.test.ts` (5 cases) pins
+    the grant set, the 403s, the 401-without-credentials path, and that an admin
+    session still holds what the key does not.
+  - Files: `constants/auth/apiKeyPermissions.ts`,
+    `services/api/hasValidApiKey.ts`,
+    `services/auth/{requirePermission,domainAccess}.ts`,
+    `test/requirePermission.test.ts`,
+    `docs/adr/0001-default-deny-api-surface.md`, `README.md`.
 
-- [x] 2026-07-26 — **Security:** Decide who should hold the `ai:invoke` permission.
-  - Decision: keep it as-is on all four roles (admin, operator, viewer, user), i.e. exactly the roles holding `reports:read`. AI spend stays governed by the 10/min/IP rate limit rather than by role. No code change; `constants/auth/rolePermissions.ts` already documents that revoking it from `viewer`/`user` is a one-line edit if that changes.
-  - Evidence: `test/hasPermission.test.ts` already pins `ai:invoke` to the `reports:read` role set, so the decision is enforced by an existing test.
+- [x] 2026-07-26 — **Security:** Decide who should hold the `ai:invoke`
+      permission.
+  - Decision: keep it as-is on all four roles (admin, operator, viewer, user),
+    i.e. exactly the roles holding `reports:read`. AI spend stays governed by
+    the 10/min/IP rate limit rather than by role. No code change;
+    `constants/auth/rolePermissions.ts` already documents that revoking it from
+    `viewer`/`user` is a one-line edit if that changes.
+  - Evidence: `test/hasPermission.test.ts` already pins `ai:invoke` to the
+    `reports:read` role set, so the decision is enforced by an existing test.
 
-- [-] 2026-07-26 — **Performance:** Decide how a pre-aggregated `getVolumeByOrg` should count reports.
-  - Resolution: dropped in favor of leaving the query live. It measures ~35ms on the dev DB, and no rollup reproduces its `count(distinct raw_reports.id)` exactly once a domain filter is applied later — a per-`(org, domain, day)` bucket double-counts any report whose events span more than one allowed domain. The two alternatives (an approximate count, or a `report_domains` bridge table) both cost correctness or a migration for no measured gain. Reconsider only if the query becomes slow; the bridge table is the option that keeps the count exact.
+- [-] 2026-07-26 — **Performance:** Decide how a pre-aggregated `getVolumeByOrg`
+  should count reports.
+  - Resolution: dropped in favor of leaving the query live. It measures ~35ms on
+    the dev DB, and no rollup reproduces its `count(distinct raw_reports.id)`
+    exactly once a domain filter is applied later — a per-`(org, domain, day)`
+    bucket double-counts any report whose events span more than one allowed
+    domain. The two alternatives (an approximate count, or a `report_domains`
+    bridge table) both cost correctness or a migration for no measured gain.
+    Reconsider only if the query becomes slow; the bridge table is the option
+    that keeps the count exact.
 
-- [x] 2026-07-26 — **Pending Decisions:** Decide whether experimental OIDC SSO is production-ready.
-  - Decision: no, it stays experimental, with session revocation named as the condition to revisit. `docs/SSO.md` keeps its experimental banner and known-gaps list.
-  - Finding while scoping the condition: two of the three gaps the backlog attributed to SSO are already covered — deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` on every request, so a role or allow-list change applies on the next request rather than at session expiry. The real gap is that a password change leaves existing sessions alive; that is now a concrete `[ ]` item in `TODO.md` rather than an open-ended decision.
+- [x] 2026-07-26 — **Pending Decisions:** Decide whether experimental OIDC SSO
+      is production-ready.
+  - Decision: no, it stays experimental, with session revocation named as the
+    condition to revisit. `docs/SSO.md` keeps its experimental banner and
+    known-gaps list.
+  - Finding while scoping the condition: two of the three gaps the backlog
+    attributed to SSO are already covered — deleting a user cascades to
+    `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` on
+    every request, so a role or allow-list change applies on the next request
+    rather than at session expiry. The real gap is that a password change leaves
+    existing sessions alive; that is now a concrete `[ ]` item in `TODO.md`
+    rather than an open-ended decision.
 
-- [x] 2026-07-26 — **Security:** Apply the per-user domain allow-list to the IP views (found during this run, not previously in the backlog).
-  - Result: `getAllowedDomainIds` gates 16 report services but none of the six IP services, so a `viewer`/`user` restricted to one domain saw `/ips`, `/ips/[ip]` and `/api/v1/stats/top-ips` computed over every domain -- and `getIpDomains` returned the out-of-scope domain names themselves. All six (`getIpsSummary`, `getIpDetail`, `getIpDomains`, `getIpLogs`, `getIpReports`, `getTopIpSenders`) now filter on `normalizedEvents.domainId`. `getIpDetail` puts the filter in its LEFT JOIN and returns null when a restricted caller's aggregates come back null, so an IP that never sent to their domains reads as not-found instead of a zeroed page; its `total_messages` alias was typed `sql<number>` while the LEFT JOIN can yield NULL, now `sql<number | null>`.
-  - Two fail-open paths in `getAllowedDomainIds` closed at the same time: a present-but-unusable allow-list (unparseable JSON, non-array, or `[]`) returned null (= all domains) and now returns `[]`. `[]` is reachable through the API -- `updateUserInputSchema` accepts an empty array and only the modal blocks it client-side.
-  - Third, opposite-direction bug found while checking the first fix: `getAllowedDomainIds` reads only the session cookie, but a valid shared `SECRET_KEY` authenticates without one. Every domain-scoped query therefore returned nothing to API-key callers -- `/api/v1/stats/by-org` was already broken this way before this change. It now mirrors `requirePermission`: no session plus a valid key resolves to unrestricted.
-  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 454/454 tests, migrations). New `test/ipDomainScoping.test.ts` (5 cases, 4 fail without the service fix) and `test/getAllowedDomainIds.test.ts` (6 cases, 2 fail without the auth fix), both verified by stashing the fix and re-running.
-  - Files: `services/auth/domainAccess.ts`, `services/reports/getIp{sSummary,Detail,Domains,Logs,Reports}.ts`, `services/reports/getTopIpSenders.ts`, `test/{ipDomainScoping,getAllowedDomainIds}.test.ts`, `test/setup/insertSeedIp.ts`.
-  - Note: `ipAddresses.emailsSentCount` is a denormalized global per-IP counter and is still shown unscoped; tracked in `TODO.md`.
+- [x] 2026-07-26 — **Security:** Apply the per-user domain allow-list to the IP
+      views (found during this run, not previously in the backlog).
+  - Result: `getAllowedDomainIds` gates 16 report services but none of the six
+    IP services, so a `viewer`/`user` restricted to one domain saw `/ips`,
+    `/ips/[ip]` and `/api/v1/stats/top-ips` computed over every domain -- and
+    `getIpDomains` returned the out-of-scope domain names themselves. All six
+    (`getIpsSummary`, `getIpDetail`, `getIpDomains`, `getIpLogs`,
+    `getIpReports`, `getTopIpSenders`) now filter on
+    `normalizedEvents.domainId`. `getIpDetail` puts the filter in its LEFT JOIN
+    and returns null when a restricted caller's aggregates come back null, so an
+    IP that never sent to their domains reads as not-found instead of a zeroed
+    page; its `total_messages` alias was typed `sql<number>` while the LEFT JOIN
+    can yield NULL, now `sql<number | null>`.
+  - Two fail-open paths in `getAllowedDomainIds` closed at the same time: a
+    present-but-unusable allow-list (unparseable JSON, non-array, or `[]`)
+    returned null (= all domains) and now returns `[]`. `[]` is reachable
+    through the API -- `updateUserInputSchema` accepts an empty array and only
+    the modal blocks it client-side.
+  - Third, opposite-direction bug found while checking the first fix:
+    `getAllowedDomainIds` reads only the session cookie, but a valid shared
+    `SECRET_KEY` authenticates without one. Every domain-scoped query therefore
+    returned nothing to API-key callers -- `/api/v1/stats/by-org` was already
+    broken this way before this change. It now mirrors `requirePermission`: no
+    session plus a valid key resolves to unrestricted.
+  - Evidence: `pnpm run check:ci` clean (type-check, lint, format, 454/454
+    tests, migrations). New `test/ipDomainScoping.test.ts` (5 cases, 4 fail
+    without the service fix) and `test/getAllowedDomainIds.test.ts` (6 cases, 2
+    fail without the auth fix), both verified by stashing the fix and
+    re-running.
+  - Files: `services/auth/domainAccess.ts`,
+    `services/reports/getIp{sSummary,Detail,Domains,Logs,Reports}.ts`,
+    `services/reports/getTopIpSenders.ts`,
+    `test/{ipDomainScoping,getAllowedDomainIds}.test.ts`,
+    `test/setup/insertSeedIp.ts`.
+  - Note: `ipAddresses.emailsSentCount` is a denormalized global per-IP counter
+    and is still shown unscoped; tracked in `TODO.md`.
 
-- [x] 2026-07-26 — **Security:** Reject an empty `allowedDomains` array at the API boundary (found while fixing the IP scoping leak above).
-  - Result: `createUserInputSchema` and `updateUserInputSchema` now require `.min(1)` on `allowedDomains`. The field was `z.array(z.string()).optional()`, so `POST/PUT /api/v1/users` could store `"[]"` while only the modal blocked it client-side. Since `getAllowedDomainIds` now reads an empty list as deny-all, that was a way to create a user who silently sees nothing; omitting the field (or sending null) remains the way to express "all domains". Both routes already `safeParse`, so this surfaces as a 400 `VALIDATION_ERROR`, not a 500.
-  - Evidence: `pnpm run check:ci` clean (457/457, migrations OK); new `test/userInputSchemas.test.ts`.
-  - Files: `validators/users/{create,update}UserInputSchema.ts`, `test/userInputSchemas.test.ts`.
+- [x] 2026-07-26 — **Security:** Reject an empty `allowedDomains` array at the
+      API boundary (found while fixing the IP scoping leak above).
+  - Result: `createUserInputSchema` and `updateUserInputSchema` now require
+    `.min(1)` on `allowedDomains`. The field was
+    `z.array(z.string()).optional()`, so `POST/PUT /api/v1/users` could store
+    `"[]"` while only the modal blocked it client-side. Since
+    `getAllowedDomainIds` now reads an empty list as deny-all, that was a way to
+    create a user who silently sees nothing; omitting the field (or sending
+    null) remains the way to express "all domains". Both routes already
+    `safeParse`, so this surfaces as a 400 `VALIDATION_ERROR`, not a 500.
+  - Evidence: `pnpm run check:ci` clean (457/457, migrations OK); new
+    `test/userInputSchemas.test.ts`.
+  - Files: `validators/users/{create,update}UserInputSchema.ts`,
+    `test/userInputSchemas.test.ts`.
 
-- [x] 2026-07-26 — **Testing:** Give the IMAP account checkbox groups real grouping semantics.
-  - Result: Both captions in `ImapAccountsSection` now name a `role="group"` via `aria-labelledby`, with per-row-index ids like the other fields, so AT announces which group a checkbox belongs to. Landed as ARIA rather than the `fieldset`/`legend` the backlog asked for: the visual risk the entry flagged is real and was measured, not guessed. The two markups were rendered side by side against the app's own compiled CSS and their boxes compared in a real browser -- native `fieldset`/`legend` pushes every row down 4px and grows each group 4px, because a legend is laid out by the fieldset's rendering rules (adding `inline` does not change it), while Tailwind v4's `space-y-3` sets `margin-block-end` on all but the last child, which is inert on today's inline span. `role="group"` measured pixel-identical to the current markup and is equivalent to AT.
-  - Evidence: `pnpm run test:a11y` 44/44 (the two new grouping cases fail before the change, verified by stashing it); `pnpm run check:ci` clean (454/454, migrations OK).
-  - Files: `components/settings/ImapAccountsSection.tsx`, `test/a11y/ImapAccountsSection.test.tsx`.
+- [x] 2026-07-26 — **Testing:** Give the IMAP account checkbox groups real
+      grouping semantics.
+  - Result: Both captions in `ImapAccountsSection` now name a `role="group"` via
+    `aria-labelledby`, with per-row-index ids like the other fields, so AT
+    announces which group a checkbox belongs to. Landed as ARIA rather than the
+    `fieldset`/`legend` the backlog asked for: the visual risk the entry flagged
+    is real and was measured, not guessed. The two markups were rendered side by
+    side against the app's own compiled CSS and their boxes compared in a real
+    browser -- native `fieldset`/`legend` pushes every row down 4px and grows
+    each group 4px, because a legend is laid out by the fieldset's rendering
+    rules (adding `inline` does not change it), while Tailwind v4's `space-y-3`
+    sets `margin-block-end` on all but the last child, which is inert on today's
+    inline span. `role="group"` measured pixel-identical to the current markup
+    and is equivalent to AT.
+  - Evidence: `pnpm run test:a11y` 44/44 (the two new grouping cases fail before
+    the change, verified by stashing it); `pnpm run check:ci` clean (454/454,
+    migrations OK).
+  - Files: `components/settings/ImapAccountsSection.tsx`,
+    `test/a11y/ImapAccountsSection.test.tsx`.
 
-- [x] 2026-07-26 — **Testing:** Fix the empty-state ARIA of the `Command` palette.
-  - Result: The fix landed in `components/ui/CommandEmpty.tsx`, not `CommandList.tsx` as the backlog assumed. cmdk hardcodes `role` _after_ the caller's prop spread in both `List` and `Empty`, so neither role can be overridden from outside. Both candidate fixes were measured with axe rather than reasoned about: dropping the listbox while the filtered count is zero only trades one violation for another (`aria-valid-attr-value`, because the input's `aria-controls` then dangles), while exposing the empty message as `role="option" aria-disabled="true"` reports zero violations. `CommandEmpty` now renders its own element instead of `Command.Empty`, keeping the `[cmdk-item]` attribute off it so arrow-key navigation still skips it.
-  - Evidence: `pnpm run test:a11y` 42/42 (the two empty-state cases fail before the change); `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run build` succeeds.
+- [x] 2026-07-26 — **Testing:** Fix the empty-state ARIA of the `Command`
+      palette.
+  - Result: The fix landed in `components/ui/CommandEmpty.tsx`, not
+    `CommandList.tsx` as the backlog assumed. cmdk hardcodes `role` _after_ the
+    caller's prop spread in both `List` and `Empty`, so neither role can be
+    overridden from outside. Both candidate fixes were measured with axe rather
+    than reasoned about: dropping the listbox while the filtered count is zero
+    only trades one violation for another (`aria-valid-attr-value`, because the
+    input's `aria-controls` then dangles), while exposing the empty message as
+    `role="option" aria-disabled="true"` reports zero violations. `CommandEmpty`
+    now renders its own element instead of `Command.Empty`, keeping the
+    `[cmdk-item]` attribute off it so arrow-key navigation still skips it.
+  - Evidence: `pnpm run test:a11y` 42/42 (the two empty-state cases fail before
+    the change); `pnpm run check:all` clean, `pnpm run test` 443/443;
+    `pnpm run build` succeeds.
   - Files: `components/ui/CommandEmpty.tsx`, `test/a11y/Command.test.tsx`.
 
 - [x] 2026-07-26 — **Testing:** Extend a11y coverage to the settings forms.
-  - Result: Four new suites (`AiSettingsSection`, `ImapAccountsSection`, `IngestionSection`, `ApiKeySection`); suites 12 -> 16, tests 26 -> 42. Three real defects found and fixed, all in the IMAP section: the collapsed account header was a `role="button"` div wrapping a real `<button>` (axe `nested-interactive`, serious/wcag2a) and is now a real `<button aria-expanded>` with the Edit/Close affordance rendered via `Button asChild` as a span; none of the five account fields were associated with their labels (`htmlFor`/`id` per row index) so every one had an empty accessible name; and `FolderPicker`'s folder `select` plus its new-folder input had no accessible name at all. The two `<label>` elements used as group captions ("Fetch Options", "Post-Processing") labelled no control and are now spans.
-  - Also fixed: `components/settings/index.ts` had five dead `export *` lines. Every section in that folder is a default export, and `export *` never re-exports a default, so the barrel exported nothing for `AdvancedSection`, `ApiKeySection`, `ImapAccountsSection`, `IngestionSection`, and `SettingsConfigForm`. Rewritten with explicit named re-exports, `AiSettingsSection` added, and that component switched from a relative deep import of its hooks to the `@/hooks/settings` barrel like its siblings.
-  - Note: assertions use `toBeInTheDocument` rather than `toBeVisible`. Every section is a framer-motion element starting at `opacity: 0` and jsdom never advances the animation, so `toBeVisible` fails for a reason unrelated to accessibility. axe still audits the subtree, which the `nested-interactive` finding proves — the passing suites are not vacuous.
-  - Evidence: `pnpm run test:a11y` 42/42; `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run format:check` and `pnpm run check:migrations` clean; `pnpm run build` succeeds.
-  - Files: `components/settings/{ImapAccountsSection,FolderPicker,AiSettingsSection,index}.tsx|ts`, `test/a11y/{AiSettingsSection,ImapAccountsSection,IngestionSection,ApiKeySection}.test.tsx`.
+  - Result: Four new suites (`AiSettingsSection`, `ImapAccountsSection`,
+    `IngestionSection`, `ApiKeySection`); suites 12 -> 16, tests 26 -> 42. Three
+    real defects found and fixed, all in the IMAP section: the collapsed account
+    header was a `role="button"` div wrapping a real `<button>` (axe
+    `nested-interactive`, serious/wcag2a) and is now a real
+    `<button aria-expanded>` with the Edit/Close affordance rendered via
+    `Button asChild` as a span; none of the five account fields were associated
+    with their labels (`htmlFor`/`id` per row index) so every one had an empty
+    accessible name; and `FolderPicker`'s folder `select` plus its new-folder
+    input had no accessible name at all. The two `<label>` elements used as
+    group captions ("Fetch Options", "Post-Processing") labelled no control and
+    are now spans.
+  - Also fixed: `components/settings/index.ts` had five dead `export *` lines.
+    Every section in that folder is a default export, and `export *` never
+    re-exports a default, so the barrel exported nothing for `AdvancedSection`,
+    `ApiKeySection`, `ImapAccountsSection`, `IngestionSection`, and
+    `SettingsConfigForm`. Rewritten with explicit named re-exports,
+    `AiSettingsSection` added, and that component switched from a relative deep
+    import of its hooks to the `@/hooks/settings` barrel like its siblings.
+  - Note: assertions use `toBeInTheDocument` rather than `toBeVisible`. Every
+    section is a framer-motion element starting at `opacity: 0` and jsdom never
+    advances the animation, so `toBeVisible` fails for a reason unrelated to
+    accessibility. axe still audits the subtree, which the `nested-interactive`
+    finding proves — the passing suites are not vacuous.
+  - Evidence: `pnpm run test:a11y` 42/42; `pnpm run check:all` clean,
+    `pnpm run test` 443/443; `pnpm run format:check` and
+    `pnpm run check:migrations` clean; `pnpm run build` succeeds.
+  - Files:
+    `components/settings/{ImapAccountsSection,FolderPicker,AiSettingsSection,index}.tsx|ts`,
+    `test/a11y/{AiSettingsSection,ImapAccountsSection,IngestionSection,ApiKeySection}.test.tsx`.
 
-- [x] 2026-07-25 — **Performance:** Remove the unused `services/imap/getImapTotalCount.ts`.
-  - Result: Deleted the function, its `types/imap/GetImapTotalCountOptions.ts` type, and both barrel entries. It had no callers; wiring it into the job would have re-added the redundant full-mailbox IMAP SEARCH that ADR 0008 removed. ADR 0008's "alternatives considered" note updated to record the deletion.
-  - Evidence: `grep -rn getImapTotalCount` returns only the ADR note; `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424.
-  - Files: `services/imap/{getImapTotalCount.ts,index.ts}`, `types/imap/{GetImapTotalCountOptions.ts,index.ts}`, `docs/adr/0008-batched-ingest-and-daily-rollups.md`.
+- [x] 2026-07-25 — **Performance:** Remove the unused
+      `services/imap/getImapTotalCount.ts`.
+  - Result: Deleted the function, its `types/imap/GetImapTotalCountOptions.ts`
+    type, and both barrel entries. It had no callers; wiring it into the job
+    would have re-added the redundant full-mailbox IMAP SEARCH that ADR 0008
+    removed. ADR 0008's "alternatives considered" note updated to record the
+    deletion.
+  - Evidence: `grep -rn getImapTotalCount` returns only the ADR note;
+    `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean;
+    `pnpm run test` 424/424.
+  - Files: `services/imap/{getImapTotalCount.ts,index.ts}`,
+    `types/imap/{GetImapTotalCountOptions.ts,index.ts}`,
+    `docs/adr/0008-batched-ingest-and-daily-rollups.md`.
 
-- [x] 2026-07-25 — **Refactors:** Standardize the poll-status path-param error shape.
-  - Result: `app/api/v1/job-runs/[id]/poll-status/route.ts` now uses the shared `parseIdParam` guard and returns `{ error: { code: 'BAD_REQUEST', message: 'Invalid job run id' } }` instead of the non-standard `{ error: 'Invalid Job ID' }`. This also tightens the guard: `parseInt` accepted `"12abc"` and negative ids, `parseIdParam` requires a positive integer.
-  - Evidence: `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424.
+- [x] 2026-07-25 — **Refactors:** Standardize the poll-status path-param error
+      shape.
+  - Result: `app/api/v1/job-runs/[id]/poll-status/route.ts` now uses the shared
+    `parseIdParam` guard and returns
+    `{ error: { code: 'BAD_REQUEST', message: 'Invalid job run id' } }` instead
+    of the non-standard `{ error: 'Invalid Job ID' }`. This also tightens the
+    guard: `parseInt` accepted `"12abc"` and negative ids, `parseIdParam`
+    requires a positive integer.
+  - Evidence: `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check`
+    clean; `pnpm run test` 424/424.
   - Files: `app/api/v1/job-runs/[id]/poll-status/route.ts`.
 
 - [x] 2026-07-25 — **Refactors:** Require integer ids in the AI request bodies.
-  - Result: Added `.int()` to `reportInsightsRequestSchema.reportId` and `diagnosticsInsightsRequestSchema.domainId`; both accepted fractional numbers, preserved from the pre-Zod code. Row ids are integers everywhere in the schema, so a fractional id could only ever be a client bug.
-  - Evidence: existing `test/reportInsightsRequestSchema.test.ts` and `test/diagnosticsInsightsRequestSchema.test.ts` still pass (error messages unchanged); `pnpm run test` 424/424.
-  - Files: `validators/ai/{reportInsightsRequestSchema,diagnosticsInsightsRequestSchema}.ts`.
+  - Result: Added `.int()` to `reportInsightsRequestSchema.reportId` and
+    `diagnosticsInsightsRequestSchema.domainId`; both accepted fractional
+    numbers, preserved from the pre-Zod code. Row ids are integers everywhere in
+    the schema, so a fractional id could only ever be a client bug.
+  - Evidence: existing `test/reportInsightsRequestSchema.test.ts` and
+    `test/diagnosticsInsightsRequestSchema.test.ts` still pass (error messages
+    unchanged); `pnpm run test` 424/424.
+  - Files:
+    `validators/ai/{reportInsightsRequestSchema,diagnosticsInsightsRequestSchema}.ts`.
 
 - [x] 2026-07-25 — **Refactors:** Convert `utils/api/index.ts` off `export *`.
-  - Result: Replaced the wildcard barrel with an explicit `export { parseIdParam }`, matching the repo barrel policy and the `utils/validation/index.ts` conversion from 2026-07-24.
+  - Result: Replaced the wildcard barrel with an explicit
+    `export { parseIdParam }`, matching the repo barrel policy and the
+    `utils/validation/index.ts` conversion from 2026-07-24.
   - Evidence: `pnpm run type-check`, `pnpm run lint` clean.
   - Files: `utils/api/index.ts`.
 
-- [x] 2026-07-25 — **Artificial Intelligence:** Require a configured model in `isAiConfigured`.
-  - Result: `isAiConfigured()` now also requires a non-blank `model`, so with only provider + key saved the diagnostics and report panels render `AiNotConfiguredCta` instead of an Analyze button that always 422s. Since ADR 0007 `resolveEffectiveModel` refuses to guess a provider default, provider+key alone is not a usable configuration.
-  - Evidence: new `test/isAiConfigured.test.ts` (3 cases: no provider, provider+key without a model incl. blank/whitespace, provider+key+model); `pnpm run test` 424/424.
+- [x] 2026-07-25 — **Artificial Intelligence:** Require a configured model in
+      `isAiConfigured`.
+  - Result: `isAiConfigured()` now also requires a non-blank `model`, so with
+    only provider + key saved the diagnostics and report panels render
+    `AiNotConfiguredCta` instead of an Analyze button that always 422s. Since
+    ADR 0007 `resolveEffectiveModel` refuses to guess a provider default,
+    provider+key alone is not a usable configuration.
+  - Evidence: new `test/isAiConfigured.test.ts` (3 cases: no provider,
+    provider+key without a model incl. blank/whitespace, provider+key+model);
+    `pnpm run test` 424/424.
   - Files: `services/ai/core/isAiConfigured.ts`, `test/isAiConfigured.test.ts`.
-  - Note: `services/ai/contracts/AiConfigurationStatus.ts` (`AIConfigurationStatus`) has no consumers at all; left in place as pre-existing dead code, tracked in `TODO.md`.
+  - Note: `services/ai/contracts/AiConfigurationStatus.ts`
+    (`AIConfigurationStatus`) has no consumers at all; left in place as
+    pre-existing dead code, tracked in `TODO.md`.
 
-- [x] 2026-07-25 — **Testing / Bugs:** Extend a11y coverage to the interactive surfaces, and fix an unnamed combobox it found.
-  - Result: Covered the surfaces with focus management and Radix portals that the earlier static pass could not reach — `DataTable` (populated, empty, and chrome-hidden), `Select` (closed and with the listbox open), and `DateRangeFilter` (preset and custom-range).
-  - Real defect found and fixed: the date-range `SelectTrigger` had no accessible name (axe `button-name`, serious). Its only text comes from `SelectValue`, which renders nothing until the matching `SelectItem` mounts, so screen readers announced an unnamed button. Added an explicit `aria-label="Date range"`, pinned by a `getByRole('combobox', { name: 'Date range' })` assertion.
-  - Harness: `test/setupA11y.ts` now stubs `scrollIntoView`, the pointer-capture methods, and `ResizeObserver`. jsdom has no layout engine and Radix calls these while opening, so without them the component threw before axe could audit the portalled content. Axe checks roles, names, and relationships, none of which depend on real geometry.
-  - The open-listbox audit runs against `document.body`, not the render container, because Radix portals the content out — auditing the container would have silently skipped the popover. The `region` rule is disabled for that one audit only, with the reason inline: the portal mounts as a direct child of `<body>` by design, so it fires in every correct implementation.
-  - Also covered `Dialog` (closed, and open with an asserted accessible name + description) and the `Command` palette. Suites 7 -> 12, tests 15 -> 26.
-  - Second real finding, not fixed: cmdk puts `role="listbox"` on `CommandList` unconditionally, so with no results the listbox has no `option` children and axe raises `aria-required-children` (wcag2a). Not silently patched — the fix changes a shared UI primitive's ARIA semantics and belongs in `components/ui/CommandList.tsx`, so it is filed in `TODO.md`. The empty-state test asserts that this is the _only_ violation, so any other empty-state regression still fails, and the test fails once the issue is fixed.
-  - Evidence: `pnpm run test:a11y` 26/26 (the `DateRangeFilter` cases fail before the `aria-label` fix); `pnpm run check:ci` exit 0 (type-check, lint, format:check, 443/443 tests, migrations) from cleared `tsconfig.tsbuildinfo` and `.eslintcache`; `pnpm run build` exit 0.
-  - Files: `components/filters/DateRangeFilterContent.tsx`, `test/setupA11y.ts`, `test/a11y/{DataTable,Select,DateRangeFilter,Dialog,Command}.test.tsx`.
+- [x] 2026-07-25 — **Testing / Bugs:** Extend a11y coverage to the interactive
+      surfaces, and fix an unnamed combobox it found.
+  - Result: Covered the surfaces with focus management and Radix portals that
+    the earlier static pass could not reach — `DataTable` (populated, empty, and
+    chrome-hidden), `Select` (closed and with the listbox open), and
+    `DateRangeFilter` (preset and custom-range).
+  - Real defect found and fixed: the date-range `SelectTrigger` had no
+    accessible name (axe `button-name`, serious). Its only text comes from
+    `SelectValue`, which renders nothing until the matching `SelectItem` mounts,
+    so screen readers announced an unnamed button. Added an explicit
+    `aria-label="Date range"`, pinned by a
+    `getByRole('combobox', { name: 'Date range' })` assertion.
+  - Harness: `test/setupA11y.ts` now stubs `scrollIntoView`, the pointer-capture
+    methods, and `ResizeObserver`. jsdom has no layout engine and Radix calls
+    these while opening, so without them the component threw before axe could
+    audit the portalled content. Axe checks roles, names, and relationships,
+    none of which depend on real geometry.
+  - The open-listbox audit runs against `document.body`, not the render
+    container, because Radix portals the content out — auditing the container
+    would have silently skipped the popover. The `region` rule is disabled for
+    that one audit only, with the reason inline: the portal mounts as a direct
+    child of `<body>` by design, so it fires in every correct implementation.
+  - Also covered `Dialog` (closed, and open with an asserted accessible name +
+    description) and the `Command` palette. Suites 7 -> 12, tests 15 -> 26.
+  - Second real finding, not fixed: cmdk puts `role="listbox"` on `CommandList`
+    unconditionally, so with no results the listbox has no `option` children and
+    axe raises `aria-required-children` (wcag2a). Not silently patched — the fix
+    changes a shared UI primitive's ARIA semantics and belongs in
+    `components/ui/CommandList.tsx`, so it is filed in `TODO.md`. The
+    empty-state test asserts that this is the _only_ violation, so any other
+    empty-state regression still fails, and the test fails once the issue is
+    fixed.
+  - Evidence: `pnpm run test:a11y` 26/26 (the `DateRangeFilter` cases fail
+    before the `aria-label` fix); `pnpm run check:ci` exit 0 (type-check, lint,
+    format:check, 443/443 tests, migrations) from cleared `tsconfig.tsbuildinfo`
+    and `.eslintcache`; `pnpm run build` exit 0.
+  - Files: `components/filters/DateRangeFilterContent.tsx`, `test/setupA11y.ts`,
+    `test/a11y/{DataTable,Select,DateRangeFilter,Dialog,Command}.test.tsx`.
 
-- [x] 2026-07-25 — **Security:** Add an `ai:invoke` permission for per-role AI cost control.
-  - Result: AI insight generation spends the operator's paid provider quota but was gated only by `reports:read`, so any role that could look at a report could spend money. Added `ai:invoke` to the permission union and switched both `/api/v1/ai/report-insights` and `/api/v1/ai/diagnostics-insights` to require it. Mechanism only, no policy change: `ai:invoke` is granted to exactly the roles that hold `reports:read` today (admin, operator, viewer, user), so nobody's access changed. Revoking AI spend from `viewer`/`user` is now a one-line edit in `constants/auth/rolePermissions.ts`. The 10/min/IP rate limit is unchanged. Who _should_ hold it is the owner's call and stays open in `TODO.md`.
-  - Evidence: new case in `test/hasPermission.test.ts` asserting `ai:invoke` matches `reports:read` for every role (so the no-op-today property is pinned and a future change is deliberate); `test/apiRbacSmoke.test.ts` still green; `pnpm run test` 443/443, `pnpm run test:a11y` 15/15, cold type-check/lint clean, `pnpm run build` exit 0.
-  - Files: `types/auth/Permission.ts`, `constants/auth/rolePermissions.ts`, `app/api/v1/ai/{report-insights,diagnostics-insights}/route.ts`, `test/hasPermission.test.ts`.
+- [x] 2026-07-25 — **Security:** Add an `ai:invoke` permission for per-role AI
+      cost control.
+  - Result: AI insight generation spends the operator's paid provider quota but
+    was gated only by `reports:read`, so any role that could look at a report
+    could spend money. Added `ai:invoke` to the permission union and switched
+    both `/api/v1/ai/report-insights` and `/api/v1/ai/diagnostics-insights` to
+    require it. Mechanism only, no policy change: `ai:invoke` is granted to
+    exactly the roles that hold `reports:read` today (admin, operator, viewer,
+    user), so nobody's access changed. Revoking AI spend from `viewer`/`user` is
+    now a one-line edit in `constants/auth/rolePermissions.ts`. The 10/min/IP
+    rate limit is unchanged. Who _should_ hold it is the owner's call and stays
+    open in `TODO.md`.
+  - Evidence: new case in `test/hasPermission.test.ts` asserting `ai:invoke`
+    matches `reports:read` for every role (so the no-op-today property is pinned
+    and a future change is deliberate); `test/apiRbacSmoke.test.ts` still green;
+    `pnpm run test` 443/443, `pnpm run test:a11y` 15/15, cold type-check/lint
+    clean, `pnpm run build` exit 0.
+  - Files: `types/auth/Permission.ts`, `constants/auth/rolePermissions.ts`,
+    `app/api/v1/ai/{report-insights,diagnostics-insights}/route.ts`,
+    `test/hasPermission.test.ts`.
 
-- [x] 2026-07-25 — **Refactors:** Delete the dead `formatters/index.ts` aggregator barrel.
-  - Result: The TODO asked to convert its 14 `export *` lines to explicit re-exports. It turned out to have zero importers: its own header says "Import from '@/utils'", but no `utils/index.ts` exists and `@/*` maps straight to the repo root, so that entrypoint was never resolvable. Deleted rather than converted — the barrel-policy violation and ~80 symbols of re-export churn both disappear. The real formatters are still reached directly (`@/formatters/metrics`, `utils/format/index.ts`).
-  - Evidence: `grep` for `@/formatters`, `@/utils`, and relative `../formatters` imports found only `@/formatters/metrics` (a different file); cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run build` exit 0.
+- [x] 2026-07-25 — **Refactors:** Delete the dead `formatters/index.ts`
+      aggregator barrel.
+  - Result: The TODO asked to convert its 14 `export *` lines to explicit
+    re-exports. It turned out to have zero importers: its own header says
+    "Import from '@/utils'", but no `utils/index.ts` exists and `@/*` maps
+    straight to the repo root, so that entrypoint was never resolvable. Deleted
+    rather than converted — the barrel-policy violation and ~80 symbols of
+    re-export churn both disappear. The real formatters are still reached
+    directly (`@/formatters/metrics`, `utils/format/index.ts`).
+  - Evidence: `grep` for `@/formatters`, `@/utils`, and relative `../formatters`
+    imports found only `@/formatters/metrics` (a different file); cold
+    `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442;
+    `pnpm run build` exit 0.
   - Files: `formatters/index.ts` (deleted).
 
-- [x] 2026-07-25 — **Artificial Intelligence:** Remove the dead `AIConfigurationStatus` type.
-  - Result: `services/ai/contracts/AiConfigurationStatus.ts` had no consumers anywhere; the panels take a boolean `isAiConfigured`. Deleted with its barrel entry.
+- [x] 2026-07-25 — **Artificial Intelligence:** Remove the dead
+      `AIConfigurationStatus` type.
+  - Result: `services/ai/contracts/AiConfigurationStatus.ts` had no consumers
+    anywhere; the panels take a boolean `isAiConfigured`. Deleted with its
+    barrel entry.
   - Evidence: cold `pnpm run type-check` clean; `pnpm run test` 442/442.
   - Files: `services/ai/contracts/{AiConfigurationStatus.ts,index.ts}`.
 
 - [x] 2026-07-25 — **Testing:** Deduplicate the `makeDns` DNS fixture.
-  - Result: `test/computeDomainScore.test.ts` carried its own 30-line copy. The two fixtures were not interchangeable — the shared `makeDnsDiagnostics` defaults to a healthy domain, the scoring one to a fully unconfigured domain — so rather than force one on the other, added `makeEmptyDnsDiagnostics`, which derives the unconfigured baseline from the shared fixture. Intent stays explicit at both call sites.
-  - Evidence: `test/computeDomainScore.test.ts` 15/15 unchanged assertions; `pnpm run test` 442/442.
-  - Files: `test/setup/makeEmptyDnsDiagnostics.ts`, `test/computeDomainScore.test.ts`.
+  - Result: `test/computeDomainScore.test.ts` carried its own 30-line copy. The
+    two fixtures were not interchangeable — the shared `makeDnsDiagnostics`
+    defaults to a healthy domain, the scoring one to a fully unconfigured domain
+    — so rather than force one on the other, added `makeEmptyDnsDiagnostics`,
+    which derives the unconfigured baseline from the shared fixture. Intent
+    stays explicit at both call sites.
+  - Evidence: `test/computeDomainScore.test.ts` 15/15 unchanged assertions;
+    `pnpm run test` 442/442.
+  - Files: `test/setup/makeEmptyDnsDiagnostics.ts`,
+    `test/computeDomainScore.test.ts`.
 
-- [x] 2026-07-25 — **Infrastructure:** Unblock and re-upgrade `@radix-ui/react-slot` past the 1.2.x pin.
-  - Result: Blocker resolved upstream. Bumped `~1.2.4` -> `^1.3.3`. The 1.3.0/1.3.1 failure was a module-scope `SlotContext` (`React.createContext`) shipped without a `"use client"` directive, which crashed `next build` page-data collection with `e.createContext is not a function`; 1.3.3's dist contains no `createContext` at all, so the failure mode is gone.
-  - Evidence: `pnpm run build` exit 0, "Compiled successfully", 49/49 static pages generated, no `createContext` error; `grep createContext node_modules/@radix-ui/react-slot/dist/` returns nothing. Cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run test:a11y` 15/15. Lockfile diff is additive (slot 1.3.3 + its `react-compose-refs@1.1.5`), no unrelated version moves.
+- [x] 2026-07-25 — **Infrastructure:** Unblock and re-upgrade
+      `@radix-ui/react-slot` past the 1.2.x pin.
+  - Result: Blocker resolved upstream. Bumped `~1.2.4` -> `^1.3.3`. The
+    1.3.0/1.3.1 failure was a module-scope `SlotContext` (`React.createContext`)
+    shipped without a `"use client"` directive, which crashed `next build`
+    page-data collection with `e.createContext is not a function`; 1.3.3's dist
+    contains no `createContext` at all, so the failure mode is gone.
+  - Evidence: `pnpm run build` exit 0, "Compiled successfully", 49/49 static
+    pages generated, no `createContext` error;
+    `grep createContext node_modules/@radix-ui/react-slot/dist/` returns
+    nothing. Cold `pnpm run type-check` and `pnpm run lint` clean;
+    `pnpm run test` 442/442; `pnpm run test:a11y` 15/15. Lockfile diff is
+    additive (slot 1.3.3 + its `react-compose-refs@1.1.5`), no unrelated version
+    moves.
   - Files: `package.json`, `pnpm-lock.yaml`.
-  - Note: 1.4.0 remains RC-only; 1.3.3 is the current stable and is sufficient. The standing lesson is unchanged and still worth keeping: Radix bumps must be verified with `pnpm run build`, since type-check, lint, and vitest were all green while the RSC build was broken.
+  - Note: 1.4.0 remains RC-only; 1.3.3 is the current stable and is sufficient.
+    The standing lesson is unchanged and still worth keeping: Radix bumps must
+    be verified with `pnpm run build`, since type-check, lint, and vitest were
+    all green while the RSC build was broken.
 
-- [x] 2026-07-25 — **Diagnostics:** Handle SPF macro targets and conditional `redirect=` in the lookup tree.
-  - Result: Two real misreports fixed. (1) A macro target (`include:%{d}...`, `exists:%{ir}.%{v}...`) was fed to DNS literally; the query always failed, so the tree rendered a child badged "No SPF record" — a misconfiguration warning for a perfectly valid record. Macro mechanisms are now counted as lookups but not expanded, and surfaced as `macroMechanisms` with a "not expanded (resolved per sender)" line. (2) A `redirect=` in a record that also has an `all` was followed and its whole subtree rolled into `lookupCount`, though RFC 7208 6.1 requires receivers to ignore it "regardless of the relative ordering of the terms". It is now excluded from `mechanisms`, not followed, not counted, and reported as `ignoredRedirect` with an explanation of why the redirect is dead. A redirect with no `all` is unchanged.
-  - Deviation from the original note: the TODO assumed an ignored redirect still consumes its lookup. It does not — an ignored term is never evaluated, so it issues no DNS query. Counted as 0, which also means `exceedsLookupLimit` no longer fires on lookups the receiver will never perform.
-  - Evidence: 5 new cases in `test/resolveSpfTree.test.ts` (redirect ignored with `all`; redirect honored without `all`; redirect ignored when written before a `~all`; macro counted but not queried, asserting no DNS call contains `%{`; macro include not rendered as a missing record) and 2 in `test/SpfLookupTreeSection.test.ts`. `pnpm run test` 442/442, `pnpm run test:a11y` 15/15, `pnpm run check:migrations` OK, cold `pnpm run type-check` and `pnpm run lint` clean.
-  - Files: `services/diagnostics/{hasSpfAllMechanism,containsSpfMacro,extractSpfEffectiveLookupMechanisms,extractSpfIgnoredRedirect,extractSpfMacroMechanisms,extractSpfChildDomains,buildSpfTreeNode}.ts`, `types/diagnostics/SpfTreeNode.ts`, `components/diagnostics/spf/SpfLookupTreeNodeItem.tsx`, `test/{resolveSpfTree,SpfLookupTreeSection}.test.ts`.
-  - Process note: an earlier "type-check clean" in this run was a stale `tsconfig.tsbuildinfo`; adding two required fields to `SpfTreeNode` only surfaced after deleting the incremental cache. Final verification ran cold.
+- [x] 2026-07-25 — **Diagnostics:** Handle SPF macro targets and conditional
+      `redirect=` in the lookup tree.
+  - Result: Two real misreports fixed. (1) A macro target (`include:%{d}...`,
+    `exists:%{ir}.%{v}...`) was fed to DNS literally; the query always failed,
+    so the tree rendered a child badged "No SPF record" — a misconfiguration
+    warning for a perfectly valid record. Macro mechanisms are now counted as
+    lookups but not expanded, and surfaced as `macroMechanisms` with a "not
+    expanded (resolved per sender)" line. (2) A `redirect=` in a record that
+    also has an `all` was followed and its whole subtree rolled into
+    `lookupCount`, though RFC 7208 6.1 requires receivers to ignore it
+    "regardless of the relative ordering of the terms". It is now excluded from
+    `mechanisms`, not followed, not counted, and reported as `ignoredRedirect`
+    with an explanation of why the redirect is dead. A redirect with no `all` is
+    unchanged.
+  - Deviation from the original note: the TODO assumed an ignored redirect still
+    consumes its lookup. It does not — an ignored term is never evaluated, so it
+    issues no DNS query. Counted as 0, which also means `exceedsLookupLimit` no
+    longer fires on lookups the receiver will never perform.
+  - Evidence: 5 new cases in `test/resolveSpfTree.test.ts` (redirect ignored
+    with `all`; redirect honored without `all`; redirect ignored when written
+    before a `~all`; macro counted but not queried, asserting no DNS call
+    contains `%{`; macro include not rendered as a missing record) and 2 in
+    `test/SpfLookupTreeSection.test.ts`. `pnpm run test` 442/442,
+    `pnpm run test:a11y` 15/15, `pnpm run check:migrations` OK, cold
+    `pnpm run type-check` and `pnpm run lint` clean.
+  - Files:
+    `services/diagnostics/{hasSpfAllMechanism,containsSpfMacro,extractSpfEffectiveLookupMechanisms,extractSpfIgnoredRedirect,extractSpfMacroMechanisms,extractSpfChildDomains,buildSpfTreeNode}.ts`,
+    `types/diagnostics/SpfTreeNode.ts`,
+    `components/diagnostics/spf/SpfLookupTreeNodeItem.tsx`,
+    `test/{resolveSpfTree,SpfLookupTreeSection}.test.ts`.
+  - Process note: an earlier "type-check clean" in this run was a stale
+    `tsconfig.tsbuildinfo`; adding two required fields to `SpfTreeNode` only
+    surfaced after deleting the incremental cache. Final verification ran cold.
 
-- [x] 2026-07-25 — **Security:** Move the `update-db-stream` admin key out of the URL query string.
-  - Result: The GeoIP update SSE stream no longer takes `?apiKey=<SECRET_KEY>`. New `POST /api/v1/admin/geoip/update-db-ticket` authenticates the normal header way (`requireAdminAuth`) and mints a 24-byte random ticket; the stream takes `?ticket=` and redeems it through `consumeStreamTicket`, which deletes it on first read and rejects anything past `STREAM_TICKET_TTL_MS` (30s). What lands in proxy logs and browser history is now a spent, short-lived value instead of the long-lived admin secret. Ticket store is in-process, which matches the single-replica topology (ADR 0003). ADR 0001 records the SSE exception.
-  - Evidence: new `test/streamTicket.test.ts` (single-use, unknown/empty/undefined rejected, 48-hex distinctness over 50 mints, TTL expiry); `test/apiAuthSmoke.test.ts` extended with a per-file allowlist that still requires the route to call `consumeStreamTicket`; `pnpm run test` 435/435, `pnpm run test:a11y` 15/15, `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean, `pnpm run build` exit 0.
-  - Files: `app/api/v1/admin/geoip/{update-db-ticket,update-db-stream}/route.ts`, `services/api/{issueStreamTicket,consumeStreamTicket,streamTicketStorePrivate,index}.ts`, `constants/api/`, `utils/settings/{fetchGeoIpStreamTicket,attachGeoIpStreamHandlers}.ts`, `types/settings/GeoIpStreamHandlers.ts`, `hooks/settings/useGeoIp.ts`, `test/{streamTicket,apiAuthSmoke}.test.ts`, `docs/adr/0001-default-deny-api-surface.md`.
-  - Behavior note: a mid-stream transport drop can no longer silently reconnect on the same URL (the ticket is spent) — the client surfaces the error and the operator restarts the update. That is the intended trade for non-replayable URLs.
+- [x] 2026-07-25 — **Security:** Move the `update-db-stream` admin key out of
+      the URL query string.
+  - Result: The GeoIP update SSE stream no longer takes `?apiKey=<SECRET_KEY>`.
+    New `POST /api/v1/admin/geoip/update-db-ticket` authenticates the normal
+    header way (`requireAdminAuth`) and mints a 24-byte random ticket; the
+    stream takes `?ticket=` and redeems it through `consumeStreamTicket`, which
+    deletes it on first read and rejects anything past `STREAM_TICKET_TTL_MS`
+    (30s). What lands in proxy logs and browser history is now a spent,
+    short-lived value instead of the long-lived admin secret. Ticket store is
+    in-process, which matches the single-replica topology (ADR 0003). ADR 0001
+    records the SSE exception.
+  - Evidence: new `test/streamTicket.test.ts` (single-use,
+    unknown/empty/undefined rejected, 48-hex distinctness over 50 mints, TTL
+    expiry); `test/apiAuthSmoke.test.ts` extended with a per-file allowlist that
+    still requires the route to call `consumeStreamTicket`; `pnpm run test`
+    435/435, `pnpm run test:a11y` 15/15, `pnpm run type-check`, `pnpm run lint`,
+    `pnpm run format:check` clean, `pnpm run build` exit 0.
+  - Files:
+    `app/api/v1/admin/geoip/{update-db-ticket,update-db-stream}/route.ts`,
+    `services/api/{issueStreamTicket,consumeStreamTicket,streamTicketStorePrivate,index}.ts`,
+    `constants/api/`,
+    `utils/settings/{fetchGeoIpStreamTicket,attachGeoIpStreamHandlers}.ts`,
+    `types/settings/GeoIpStreamHandlers.ts`, `hooks/settings/useGeoIp.ts`,
+    `test/{streamTicket,apiAuthSmoke}.test.ts`,
+    `docs/adr/0001-default-deny-api-surface.md`.
+  - Behavior note: a mid-stream transport drop can no longer silently reconnect
+    on the same URL (the ticket is spent) — the client surfaces the error and
+    the operator restarts the update. That is the intended trade for
+    non-replayable URLs.
 
-- [x] 2026-07-25 — **Performance:** Aggregate `getReportSources` in SQL instead of a JS join.
-  - Result: Dropped the two extra per-report event-id scans and the `IN (...)` list of every event id in the report (unbounded — SQLite's parameter/expression limits were a real ceiling on large reports), plus the O(sources x events) JS join. Override types are now a `GROUP BY ip, type` in SQL, and the primary DKIM identity comes from one ordered join taking the first row per IP. Five queries down to three, all scoped by `rawReportId` and served by `event_raw_report_idx`. Per-IP (not per-group) resolution semantics preserved exactly, and DKIM selection is now deterministically ordered by event id rather than relying on unordered scan order.
-  - Evidence: new `test/getReportSources.test.ts` (5 cases) written against the _old_ implementation first and passing unchanged after the rewrite — grouping/collapse + volume ordering, hostname enrichment vs null, per-IP override union, first-DKIM-wins, empty report. `pnpm run test` 435/435.
-  - Files: `services/reports/getReportSources.ts`, `test/getReportSources.test.ts`, `test/setup/{seedReportSourcesFixture,SeedReportSourcesResult,requireInsertedId,resetDmarcDb}.ts`.
-  - Note: `resetDmarcDb` now also clears `ip_hostname_enrichments`; it was leaking rows across tests in the same file.
-  - Not done: the same TODO named `getReportStats` and `getReportEventSummaries`. Inspected both — `getReportStats` is already two SQL aggregates over the indexed predicate, and `getReportEventSummaries` intentionally returns row-level detail for the AI prompt, so neither has a GROUP BY to move to.
+- [x] 2026-07-25 — **Performance:** Aggregate `getReportSources` in SQL instead
+      of a JS join.
+  - Result: Dropped the two extra per-report event-id scans and the `IN (...)`
+    list of every event id in the report (unbounded — SQLite's
+    parameter/expression limits were a real ceiling on large reports), plus the
+    O(sources x events) JS join. Override types are now a `GROUP BY ip, type` in
+    SQL, and the primary DKIM identity comes from one ordered join taking the
+    first row per IP. Five queries down to three, all scoped by `rawReportId`
+    and served by `event_raw_report_idx`. Per-IP (not per-group) resolution
+    semantics preserved exactly, and DKIM selection is now deterministically
+    ordered by event id rather than relying on unordered scan order.
+  - Evidence: new `test/getReportSources.test.ts` (5 cases) written against the
+    _old_ implementation first and passing unchanged after the rewrite —
+    grouping/collapse + volume ordering, hostname enrichment vs null, per-IP
+    override union, first-DKIM-wins, empty report. `pnpm run test` 435/435.
+  - Files: `services/reports/getReportSources.ts`,
+    `test/getReportSources.test.ts`,
+    `test/setup/{seedReportSourcesFixture,SeedReportSourcesResult,requireInsertedId,resetDmarcDb}.ts`.
+  - Note: `resetDmarcDb` now also clears `ip_hostname_enrichments`; it was
+    leaking rows across tests in the same file.
+  - Not done: the same TODO named `getReportStats` and
+    `getReportEventSummaries`. Inspected both — `getReportStats` is already two
+    SQL aggregates over the indexed predicate, and `getReportEventSummaries`
+    intentionally returns row-level detail for the AI prompt, so neither has a
+    GROUP BY to move to.
 
-- [x] 2026-07-25 — **Testing:** Extend a11y coverage beyond the first three suites.
-  - Result: Unblocked the import path by re-exporting `ProtocolExplainer`, `RecordDisplay`, and `SectionHeader` from `components/diagnostics/index.ts`, so consumers no longer have to reach into `./shared/*` (which `import/no-internal-modules` forbids) or dodge the rule with a relative import. Added four a11y suites: the three shared primitives plus the real `SpfDetailSection` / `DmarcDetailSection` in both healthy and missing-record states. Suites 3 -> 7, tests 5 -> 15.
-  - Evidence: `pnpm run test:a11y` 15/15 with zero axe violations; `pnpm run test` 435/435.
-  - Files: `components/diagnostics/index.ts`, `test/a11y/{ProtocolExplainer,RecordDisplay,SectionHeader,DiagnosticsDetailSections}.test.tsx`, `test/setup/makeDnsDiagnostics.ts`, `test/ProtocolExplainer.test.ts`.
-  - Note: the `makeDns` fixture exported from `test/ProtocolExplainer.test.ts` moved to `test/setup/makeDnsDiagnostics.ts`. A second copy still lives inside `test/computeDomainScore.test.ts`; left alone as unrelated churn.
+- [x] 2026-07-25 — **Testing:** Extend a11y coverage beyond the first three
+      suites.
+  - Result: Unblocked the import path by re-exporting `ProtocolExplainer`,
+    `RecordDisplay`, and `SectionHeader` from `components/diagnostics/index.ts`,
+    so consumers no longer have to reach into `./shared/*` (which
+    `import/no-internal-modules` forbids) or dodge the rule with a relative
+    import. Added four a11y suites: the three shared primitives plus the real
+    `SpfDetailSection` / `DmarcDetailSection` in both healthy and missing-record
+    states. Suites 3 -> 7, tests 5 -> 15.
+  - Evidence: `pnpm run test:a11y` 15/15 with zero axe violations;
+    `pnpm run test` 435/435.
+  - Files: `components/diagnostics/index.ts`,
+    `test/a11y/{ProtocolExplainer,RecordDisplay,SectionHeader,DiagnosticsDetailSections}.test.tsx`,
+    `test/setup/makeDnsDiagnostics.ts`, `test/ProtocolExplainer.test.ts`.
+  - Note: the `makeDns` fixture exported from `test/ProtocolExplainer.test.ts`
+    moved to `test/setup/makeDnsDiagnostics.ts`. A second copy still lives
+    inside `test/computeDomainScore.test.ts`; left alone as unrelated churn.
 
 - [x] 2026-07-25 — **Infrastructure:** Declare `tsx` as a devDependency.
-  - Result: `seed:demo` and `backfill:rollup` both shell out to `tsx`, but it was only present transitively (`drizzle-kit` -> `tsx@4.22.1`) and hoisted into `node_modules/.bin`. A drizzle-kit bump that drops or replaces it would have silently broken both documented scripts. Declared `tsx: ^4.22.1`, resolving to the version already in the lockfile.
-  - Evidence: `pnpm-lock.yaml` diff is 3 additive lines in the importer block, no dependency versions changed; `pnpm exec tsx --version` -> `tsx v4.22.1`; `pnpm install --lockfile-only` reports the lockfile up to date. Found 2026-07-25 while documenting the backfill step.
+  - Result: `seed:demo` and `backfill:rollup` both shell out to `tsx`, but it
+    was only present transitively (`drizzle-kit` -> `tsx@4.22.1`) and hoisted
+    into `node_modules/.bin`. A drizzle-kit bump that drops or replaces it would
+    have silently broken both documented scripts. Declared `tsx: ^4.22.1`,
+    resolving to the version already in the lockfile.
+  - Evidence: `pnpm-lock.yaml` diff is 3 additive lines in the importer block,
+    no dependency versions changed; `pnpm exec tsx --version` -> `tsx v4.22.1`;
+    `pnpm install --lockfile-only` reports the lockfile up to date. Found
+    2026-07-25 while documenting the backfill step.
   - Files: `package.json`, `pnpm-lock.yaml`.
 
-- [x] 2026-07-25 — **Performance:** Document the one-time `pnpm run backfill:rollup` upgrade step.
-  - Result: Added a "One-time post-upgrade steps" section to `docs/UPDATING.md` explaining that `event_rollup_daily` starts empty on existing installs, so dashboard totals lag until the backfill runs; documents idempotency, the ingestion-idle requirement (single-writer SQLite, ADR 0003), the Docker `docker compose exec web` form, and that new installs need nothing. README's Updating section links to it.
-  - Evidence: `pnpm run format:check` clean; ADR links resolve to real files under `docs/adr/`.
+- [x] 2026-07-25 — **Performance:** Document the one-time
+      `pnpm run backfill:rollup` upgrade step.
+  - Result: Added a "One-time post-upgrade steps" section to `docs/UPDATING.md`
+    explaining that `event_rollup_daily` starts empty on existing installs, so
+    dashboard totals lag until the backfill runs; documents idempotency, the
+    ingestion-idle requirement (single-writer SQLite, ADR 0003), the Docker
+    `docker compose exec web` form, and that new installs need nothing. README's
+    Updating section links to it.
+  - Evidence: `pnpm run format:check` clean; ADR links resolve to real files
+    under `docs/adr/`.
   - Files: `docs/UPDATING.md`, `README.md`.
 
-- [x] 2026-07-24 — **Performance:** Batched ingestion and daily rollups for large-volume DMARC data (ADR 0008).
-  - Result: Replaced per-email writes and full-table dashboard scans that made large ingests stall for minutes/hours with no visible progress. WAL + `synchronous=NORMAL` + `busy_timeout` (`lib/db/applyConnectionPragmas.ts`); a `poll_status` coalescer flushing at most every ~500 ms / ~500 events (`createPollStatusCoalescer`); buffered multi-row `job_poll_events` inserts (`createJobEventBuffer`); set-based IP resolution (`upsertIpsBatch`) replacing the per-IP loop. New `event_rollup_daily` (per domain, per UTC day) maintained inside the ingest transaction; `getAggregateStats`, `getDomainSummary`, `getDomainsSummaryAll` now read the rollup instead of scanning `normalized_events`. Added indexes on `normalized_events(raw_report_id)`, `(ip_address_id)`, and covering `(domain_id, report_end_date, count)`. Idempotent backfill `pnpm run backfill:rollup`.
-  - Correction during review: initially set `PRAGMA foreign_keys = ON`, which would have broken `resetDmarcDb`/other delete paths (FK enforcement was never on); removed it. The generated migration `0029` also re-created `audit_log` (drizzle snapshot lagged behind the hand-authored `0028`); trimmed it to only the rollup table + indexes.
-  - Evidence: `test/eventRollup.test.ts` (ingest-vs-rollup consistency + idempotent rebuild); `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check`, `pnpm run check:migrations` clean; `pnpm run test` 421/421.
-  - Files: `lib/db/{applyConnectionPragmas,client}.ts`, `lib/db/schema/{event-rollup-daily,normalized-event}.ts`, `drizzle/0029_silent_wrecking_crew.sql`, `services/job/{createPollStatusCoalescer,createJobEventBuffer,setPollStatusInDb,processAccount,runIngestJob}.ts`, `services/geoip/upsertIpsBatch.ts`, `services/reports/{ingestParsedReport,getAggregateStats,getDomainSummary,getDomainsSummaryAll,rebuildEventRollup}.ts`, `utils/{reports/computeDailyRollupDeltas,geoip/normalizeIp,dates/daySeconds}.ts`, `scripts/backfill-rollup.ts`, ADR 0008.
-  - Note: date filtering on the rollup is day-granular (DMARC reports are day-aligned). Existing installs must run `backfill:rollup` once after upgrading.
+- [x] 2026-07-24 — **Performance:** Batched ingestion and daily rollups for
+      large-volume DMARC data (ADR 0008).
+  - Result: Replaced per-email writes and full-table dashboard scans that made
+    large ingests stall for minutes/hours with no visible progress. WAL +
+    `synchronous=NORMAL` + `busy_timeout` (`lib/db/applyConnectionPragmas.ts`);
+    a `poll_status` coalescer flushing at most every ~500 ms / ~500 events
+    (`createPollStatusCoalescer`); buffered multi-row `job_poll_events` inserts
+    (`createJobEventBuffer`); set-based IP resolution (`upsertIpsBatch`)
+    replacing the per-IP loop. New `event_rollup_daily` (per domain, per UTC
+    day) maintained inside the ingest transaction; `getAggregateStats`,
+    `getDomainSummary`, `getDomainsSummaryAll` now read the rollup instead of
+    scanning `normalized_events`. Added indexes on
+    `normalized_events(raw_report_id)`, `(ip_address_id)`, and covering
+    `(domain_id, report_end_date, count)`. Idempotent backfill
+    `pnpm run backfill:rollup`.
+  - Correction during review: initially set `PRAGMA foreign_keys = ON`, which
+    would have broken `resetDmarcDb`/other delete paths (FK enforcement was
+    never on); removed it. The generated migration `0029` also re-created
+    `audit_log` (drizzle snapshot lagged behind the hand-authored `0028`);
+    trimmed it to only the rollup table + indexes.
+  - Evidence: `test/eventRollup.test.ts` (ingest-vs-rollup consistency +
+    idempotent rebuild); `pnpm run type-check`, `pnpm run lint`,
+    `pnpm run format:check`, `pnpm run check:migrations` clean; `pnpm run test`
+    421/421.
+  - Files: `lib/db/{applyConnectionPragmas,client}.ts`,
+    `lib/db/schema/{event-rollup-daily,normalized-event}.ts`,
+    `drizzle/0029_silent_wrecking_crew.sql`,
+    `services/job/{createPollStatusCoalescer,createJobEventBuffer,setPollStatusInDb,processAccount,runIngestJob}.ts`,
+    `services/geoip/upsertIpsBatch.ts`,
+    `services/reports/{ingestParsedReport,getAggregateStats,getDomainSummary,getDomainsSummaryAll,rebuildEventRollup}.ts`,
+    `utils/{reports/computeDailyRollupDeltas,geoip/normalizeIp,dates/daySeconds}.ts`,
+    `scripts/backfill-rollup.ts`, ADR 0008.
+  - Note: date filtering on the rollup is day-granular (DMARC reports are
+    day-aligned). Existing installs must run `backfill:rollup` once after
+    upgrading.
 
 - [x] 2026-07-24 — **Security:** Migrate the production CSP to nonces.
-  - Result: Per-request nonce with `'strict-dynamic'` for `script-src` set by the proxy (`utils/proxy/applyProdCspHeaders.ts`); `'unsafe-inline'` removed from scripts (kept for styles — Recharts/framer-motion/next-font constraints, see ADR 0006); dev CSP unchanged via static headers; all pages force-dynamic (login via a server `layout.tsx`).
-  - Evidence: `pnpm run build` shows every page `ƒ` (dynamic); `test/buildProdCspDirectives.test.ts`, `test/createCspNonce.test.ts`; full suite green.
-  - Files: `proxy.ts`, `utils/proxy/applyProdCspHeaders.ts`, `utils/security/`, `app/login/layout.tsx`, eight `page.tsx` files.
+  - Result: Per-request nonce with `'strict-dynamic'` for `script-src` set by
+    the proxy (`utils/proxy/applyProdCspHeaders.ts`); `'unsafe-inline'` removed
+    from scripts (kept for styles — Recharts/framer-motion/next-font
+    constraints, see ADR 0006); dev CSP unchanged via static headers; all pages
+    force-dynamic (login via a server `layout.tsx`).
+  - Evidence: `pnpm run build` shows every page `ƒ` (dynamic);
+    `test/buildProdCspDirectives.test.ts`, `test/createCspNonce.test.ts`; full
+    suite green.
+  - Files: `proxy.ts`, `utils/proxy/applyProdCspHeaders.ts`, `utils/security/`,
+    `app/login/layout.tsx`, eight `page.tsx` files.
 
-- [x] 2026-07-24 — **Security:** Complete the RBAC rollout across privileged and mutating routes.
-  - Result: Every privileged/mutating `/api/v1` route and server action now enforces a catalog permission via `requirePermission`; API key maps to the `admin` role (`services/api/getApiKeyRole.ts`); new `reports:write` permission; closed two previously unauthenticated admin GETs (`/api/v1/admin/settings`, `/api/v1/admin/ai-settings`) that leaked masked IMAP/CORS/AI config; unauthenticated `fetchMoreIp*` server actions now require `reports:read`.
-  - Correction during review: `reports:write` was initially granted only to `admin` and `operator`, which would have 403'd report upload for the legacy `user` role — the DB default, the only non-admin role the app assigns, and one that sees an ungated `/upload` page. Granted `reports:write` to `user` as well; `viewer` stays strictly read-only.
-  - Evidence: `test/apiRbacSmoke.test.ts` structural gate; `pnpm run test` 328/328; inventory in the session report.
-  - Files: `app/api/v1/**` (13 route files), `actions/fetchMoreIp*.ts`, `services/api/`, `services/auth/`, `types/auth/Permission.ts`, `constants/auth/rolePermissions.ts`.
+- [x] 2026-07-24 — **Security:** Complete the RBAC rollout across privileged and
+      mutating routes.
+  - Result: Every privileged/mutating `/api/v1` route and server action now
+    enforces a catalog permission via `requirePermission`; API key maps to the
+    `admin` role (`services/api/getApiKeyRole.ts`); new `reports:write`
+    permission; closed two previously unauthenticated admin GETs
+    (`/api/v1/admin/settings`, `/api/v1/admin/ai-settings`) that leaked masked
+    IMAP/CORS/AI config; unauthenticated `fetchMoreIp*` server actions now
+    require `reports:read`.
+  - Correction during review: `reports:write` was initially granted only to
+    `admin` and `operator`, which would have 403'd report upload for the legacy
+    `user` role — the DB default, the only non-admin role the app assigns, and
+    one that sees an ungated `/upload` page. Granted `reports:write` to `user`
+    as well; `viewer` stays strictly read-only.
+  - Evidence: `test/apiRbacSmoke.test.ts` structural gate; `pnpm run test`
+    328/328; inventory in the session report.
+  - Files: `app/api/v1/**` (13 route files), `actions/fetchMoreIp*.ts`,
+    `services/api/`, `services/auth/`, `types/auth/Permission.ts`,
+    `constants/auth/rolePermissions.ts`.
 
-- [x] 2026-07-24 — **Artificial Intelligence:** Decide missing OpenRouter model behavior — fail clearly.
-  - Result: Removed the silent `PROVIDER_DEFAULTS` fallback (`openrouter/auto` et al.); `resolveEffectiveModel` now throws `NOT_CONFIGURED` with an actionable message; routes return 422 and the panels render it.
+- [x] 2026-07-24 — **Artificial Intelligence:** Decide missing OpenRouter model
+      behavior — fail clearly.
+  - Result: Removed the silent `PROVIDER_DEFAULTS` fallback (`openrouter/auto`
+    et al.); `resolveEffectiveModel` now throws `NOT_CONFIGURED` with an
+    actionable message; routes return 422 and the panels render it.
   - Evidence: `test/resolveEffectiveModel.test.ts` (7 tests); full suite green.
-  - Files: `services/ai/providers/shared/resolveEffectiveModel.ts` (providerDefaults.ts deleted).
+  - Files: `services/ai/providers/shared/resolveEffectiveModel.ts`
+    (providerDefaults.ts deleted).
 
-- [x] 2026-07-24 — **Refactors:** Apply Zod at route boundaries and move Drizzle queries out of `app/**`.
-  - Result: All direct Drizzle access removed from `app/**` (only `runMigrations` remains, a service call) into named service functions. Zod validation applied at 22 route boundaries: 6 body-input routes (`validators/{imap,updates,geoip,ai}/`) and 16 query-param routes via a shared `validators/query/` layer. Error codes, statuses and messages preserved verbatim; `stats/trend` `period` moved from a cast to `z.enum`. Removed the now-dead `utils/api/parseDateParams.ts`, 4 route-local constant files, and `utils/validation/coerceNumber.ts`; converted `utils/validation/index.ts` off `export *`.
-  - Evidence: 61 new schema tests; `pnpm run test` 420/420; `pnpm run lint` clean; `pnpm run build` succeeds.
-  - Files: `app/api/**` (22 routes), `validators/query/` (13 files), `validators/{imap,updates,geoip,ai}/`, `services/{reports,geoip,notifications,ip-hostname}/`.
-  - Behavior notes: malformed (never valid) input differs slightly — `z.coerce.number()` uses `Number()` not `parseInt()`, so `?days=30abc` now yields no filter instead of 30; duplicated params take the last value rather than the first.
+- [x] 2026-07-24 — **Refactors:** Apply Zod at route boundaries and move Drizzle
+      queries out of `app/**`.
+  - Result: All direct Drizzle access removed from `app/**` (only
+    `runMigrations` remains, a service call) into named service functions. Zod
+    validation applied at 22 route boundaries: 6 body-input routes
+    (`validators/{imap,updates,geoip,ai}/`) and 16 query-param routes via a
+    shared `validators/query/` layer. Error codes, statuses and messages
+    preserved verbatim; `stats/trend` `period` moved from a cast to `z.enum`.
+    Removed the now-dead `utils/api/parseDateParams.ts`, 4 route-local constant
+    files, and `utils/validation/coerceNumber.ts`; converted
+    `utils/validation/index.ts` off `export *`.
+  - Evidence: 61 new schema tests; `pnpm run test` 420/420; `pnpm run lint`
+    clean; `pnpm run build` succeeds.
+  - Files: `app/api/**` (22 routes), `validators/query/` (13 files),
+    `validators/{imap,updates,geoip,ai}/`,
+    `services/{reports,geoip,notifications,ip-hostname}/`.
+  - Behavior notes: malformed (never valid) input differs slightly —
+    `z.coerce.number()` uses `Number()` not `parseInt()`, so `?days=30abc` now
+    yields no filter instead of 30; duplicated params take the last value rather
+    than the first.
 
-- [x] 2026-07-24 — **Bugs:** Fix the `next/image` aspect-ratio warning for the sidebar logo.
-  - Result: The logo was declared 140x32 but the artwork's viewBox is 2286.29x592.55 (~3.86), so it always rendered 123px wide — exactly one dimension differing from the attributes, which is what `next/image` warns about. Declared 123x32 with `h-8 w-auto`. The LCP warning was already gone.
-  - Evidence: Captured the real dev-mode console over the Chrome DevTools Protocol: warning present before, absent after; rendered 123 vs attribute "123", `widthModified: false`. `/login`, `/reports`, `/domains`, `/upload`, `/settings` all report a clean console.
+- [x] 2026-07-24 — **Bugs:** Fix the `next/image` aspect-ratio warning for the
+      sidebar logo.
+  - Result: The logo was declared 140x32 but the artwork's viewBox is
+    2286.29x592.55 (~3.86), so it always rendered 123px wide — exactly one
+    dimension differing from the attributes, which is what `next/image` warns
+    about. Declared 123x32 with `h-8 w-auto`. The LCP warning was already gone.
+  - Evidence: Captured the real dev-mode console over the Chrome DevTools
+    Protocol: warning present before, absent after; rendered 123 vs attribute
+    "123", `widthModified: false`. `/login`, `/reports`, `/domains`, `/upload`,
+    `/settings` all report a clean console.
   - Files: `components/shell/VexaLogo.tsx`.
 
-- [x] 2026-07-24 — **Diagnostics:** Verify `/diagnostics/<domain>` against real domains in a browser.
-  - Result: Rendered six real domains from a production build. Both branches exercised for every protocol — BIMI present (paypal.com, cnn.com) and absent (google.com, github.com, example.com, wikipedia.org); MTA-STS and TLS-RPT present (google.com) and absent (the rest). Verdicts cross-checked against live DNS: no false positives or negatives. SPF lookup tree correct, including github.com's 8 direct includes plus 2 nested = 10 total.
+- [x] 2026-07-24 — **Diagnostics:** Verify `/diagnostics/<domain>` against real
+      domains in a browser.
+  - Result: Rendered six real domains from a production build. Both branches
+    exercised for every protocol — BIMI present (paypal.com, cnn.com) and absent
+    (google.com, github.com, example.com, wikipedia.org); MTA-STS and TLS-RPT
+    present (google.com) and absent (the rest). Verdicts cross-checked against
+    live DNS: no false positives or negatives. SPF lookup tree correct,
+    including github.com's 8 direct includes plus 2 nested = 10 total.
   - Evidence: HTTP 200 on all six; DNS cross-check via `dns.resolveTxt`.
 
 - [x] 2026-07-24 — **Diagnostics:** Implement PDF export for the domain report.
-  - Result: Print-first export (`ExportPdfButton` + `@media print` styles), no new dependency. Verified by generating a real PDF through the browser's own print pipeline: **22 pages**, so the fixed-height shell no longer clips the report to one page (`html`/`body`/`main` all resolve to `overflow: visible` under print media, sidebar hidden). A dark-themed session prints white-on-black-free: body forced to `rgb(255,255,255)` with `rgb(13,13,13)` text.
-  - Correction during review: the grade badge was white text on a gradient, which disappears when "Background graphics" is off (confirmed: backgrounds are dropped, ~131 KB smaller PDF). In print the circle now renders as a 4px colored ring with grade-colored text — both print as foreground. Screen appearance unchanged (white on gradient).
-  - Files: `components/diagnostics/ExportPdfButton.tsx`, `components/diagnostics/score/DomainScoreBadge.tsx`, `components/shell/`, `components/ai/`, `app/globals.css`.
+  - Result: Print-first export (`ExportPdfButton` + `@media print` styles), no
+    new dependency. Verified by generating a real PDF through the browser's own
+    print pipeline: **22 pages**, so the fixed-height shell no longer clips the
+    report to one page (`html`/`body`/`main` all resolve to `overflow: visible`
+    under print media, sidebar hidden). A dark-themed session prints
+    white-on-black-free: body forced to `rgb(255,255,255)` with `rgb(13,13,13)`
+    text.
+  - Correction during review: the grade badge was white text on a gradient,
+    which disappears when "Background graphics" is off (confirmed: backgrounds
+    are dropped, ~131 KB smaller PDF). In print the circle now renders as a 4px
+    colored ring with grade-colored text — both print as foreground. Screen
+    appearance unchanged (white on gradient).
+  - Files: `components/diagnostics/ExportPdfButton.tsx`,
+    `components/diagnostics/score/DomainScoreBadge.tsx`, `components/shell/`,
+    `components/ai/`, `app/globals.css`.
 
 - [x] 2026-07-24 — **Diagnostics:** Implement the SPF lookup-tree visualization.
-  - Result: Recursive include/redirect tree resolver (`services/diagnostics/resolveSpfTree.ts` + single-purpose helpers) with RFC 7208 lookup counting, cycle detection, depth 10 / 30-node budgets, 5-minute cache; rendered as an accessible nested list after the SPF detail section in `DiagnosticsView`.
-  - Evidence: `test/resolveSpfTree.test.ts` (9 tests), `test/SpfLookupTreeSection.test.ts` (4 tests); full suite 347/347.
-  - Files: `services/diagnostics/` (10 new files), `components/diagnostics/spf/` (4 new files), `types/diagnostics/SpfTreeNode.ts`, `getDomainDnsRecords.ts`, `DiagnosticsView.tsx`.
+  - Result: Recursive include/redirect tree resolver
+    (`services/diagnostics/resolveSpfTree.ts` + single-purpose helpers) with RFC
+    7208 lookup counting, cycle detection, depth 10 / 30-node budgets, 5-minute
+    cache; rendered as an accessible nested list after the SPF detail section in
+    `DiagnosticsView`.
+  - Evidence: `test/resolveSpfTree.test.ts` (9 tests),
+    `test/SpfLookupTreeSection.test.ts` (4 tests); full suite 347/347.
+  - Files: `services/diagnostics/` (10 new files), `components/diagnostics/spf/`
+    (4 new files), `types/diagnostics/SpfTreeNode.ts`, `getDomainDnsRecords.ts`,
+    `DiagnosticsView.tsx`.
 
-- [x] 2026-07-24 — **Artificial Intelligence:** Expose an explicit rollout plan in the diagnostics AI response.
-  - Result: Response schema extended to `{"insights":[...],"rolloutPlan":[...]}` (protocol-tagged, highest-impact first, max 5 steps); parsed defensively (missing/malformed -> `[]`) and rendered as a numbered Rollout Plan card after the insight sections.
-  - Evidence: `test/diagnosticsAiPrompts.test.ts`, `test/parseDiagnosticsRolloutPlanFromContent.test.ts`; full suite 334/334. Live-provider call not exercised (follow-up in TODO).
-  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`, `services/ai/use-cases/`, `components/ai/DiagnosticsRolloutPlanCard.tsx`, `types/ai/DiagnosticsAnalysisResult.ts`.
+- [x] 2026-07-24 — **Artificial Intelligence:** Expose an explicit rollout plan
+      in the diagnostics AI response.
+  - Result: Response schema extended to `{"insights":[...],"rolloutPlan":[...]}`
+    (protocol-tagged, highest-impact first, max 5 steps); parsed defensively
+    (missing/malformed -> `[]`) and rendered as a numbered Rollout Plan card
+    after the insight sections.
+  - Evidence: `test/diagnosticsAiPrompts.test.ts`,
+    `test/parseDiagnosticsRolloutPlanFromContent.test.ts`; full suite 334/334.
+    Live-provider call not exercised (follow-up in TODO).
+  - Files: `services/ai/prompts/diagnosticsAnalysisSystem.ts`,
+    `services/ai/use-cases/`, `components/ai/DiagnosticsRolloutPlanCard.tsx`,
+    `types/ai/DiagnosticsAnalysisResult.ts`.
 
-- [x] 2026-07-24 — **Diagnostics:** Remove the unrendered legacy diagnostics chain.
-  - Result: Deleted 46 unreachable files (DnsDiagnosticsPanel/DnsRecordsLoader chain, dns card set, assessment/, executive summary, useDnsDiagnostics hook stack, entire lib/diagnostics) and trimmed 4 barrels; live `METRIC_*` style constants and `DnsRecordsSection` preserved.
+- [x] 2026-07-24 — **Diagnostics:** Remove the unrendered legacy diagnostics
+      chain.
+  - Result: Deleted 46 unreachable files (DnsDiagnosticsPanel/DnsRecordsLoader
+    chain, dns card set, assessment/, executive summary, useDnsDiagnostics hook
+    stack, entire lib/diagnostics) and trimmed 4 barrels; live `METRIC_*` style
+    constants and `DnsRecordsSection` preserved.
   - Evidence: grep unreachability audit + `tsc` + knip; full suite green.
   - Files: `components/diagnostics/`, `hooks/diagnostics/`, `lib/`.
 
 - [x] 2026-07-24 — **Bugs:** Fix the DKIM key-length estimator.
-  - Result: Base64 padding-aware byte count, RSA SPKI DER overhead subtracted and rounded to the nearest 256 bits (real 2048-bit keys now report 2048, not 2352); standard 32-byte Ed25519 keys are no longer flagged weak.
+  - Result: Base64 padding-aware byte count, RSA SPKI DER overhead subtracted
+    and rounded to the nearest 256 bits (real 2048-bit keys now report 2048, not
+    2352); standard 32-byte Ed25519 keys are no longer flagged weak.
   - Evidence: `test/parseDkimRecord.test.ts` (13 tests, updated expectations).
-  - Files: `services/diagnostics/assessDkimKeyStrength.ts`, `decodeBase64ByteLength.ts`, `parseDkimRecord.ts`, `types/diagnostics/DkimKeyAssessment.ts`.
+  - Files: `services/diagnostics/assessDkimKeyStrength.ts`,
+    `decodeBase64ByteLength.ts`, `parseDkimRecord.ts`,
+    `types/diagnostics/DkimKeyAssessment.ts`.
 
-- [x] 2026-07-24 — **Bugs:** Fix SPF third-party include filter and lookup counting.
-  - Result: All `include:` mechanisms are listed as third-party dependencies (the old condition inverted its own intent); `analyzeLimits` now counts qualified (`-a`), CIDR (`a/24`), and record-final `a`/`mx` mechanisms.
-  - Evidence: `test/analyzeSpfRecord.test.ts` (18 tests incl. new counting regression).
+- [x] 2026-07-24 — **Bugs:** Fix SPF third-party include filter and lookup
+      counting.
+  - Result: All `include:` mechanisms are listed as third-party dependencies
+    (the old condition inverted its own intent); `analyzeLimits` now counts
+    qualified (`-a`), CIDR (`a/24`), and record-final `a`/`mx` mechanisms.
+  - Evidence: `test/analyzeSpfRecord.test.ts` (18 tests incl. new counting
+    regression).
   - Files: `services/diagnostics/analyzeDependencies.ts`, `analyzeLimits.ts`.
 
-- [x] 2026-07-24 — **Testing:** Add direct unit tests for the diagnostics scoring and parsers.
-  - Result: 57 tests covering `computeDomainScore` grade boundaries, `parseDmarcTags`, `parseDkimRecord`, `analyzeSpfRecord` edge cases; they surfaced the two bugs fixed above.
+- [x] 2026-07-24 — **Testing:** Add direct unit tests for the diagnostics
+      scoring and parsers.
+  - Result: 57 tests covering `computeDomainScore` grade boundaries,
+    `parseDmarcTags`, `parseDkimRecord`, `analyzeSpfRecord` edge cases; they
+    surfaced the two bugs fixed above.
   - Evidence: `pnpm run test` green.
-  - Files: `test/computeDomainScore.test.ts`, `test/parseDmarcTags.test.ts`, `test/parseDkimRecord.test.ts`, `test/analyzeSpfRecord.test.ts`.
+  - Files: `test/computeDomainScore.test.ts`, `test/parseDmarcTags.test.ts`,
+    `test/parseDkimRecord.test.ts`, `test/analyzeSpfRecord.test.ts`.
 
-- [x] 2026-07-24 — **Testing:** Add tests for admin guides, AI prompt builders, and protocol explainers.
-  - Result: 34 tests covering guide severity ordering/caps/thresholds, prompt section content and runbook-non-repetition instructions, and server-rendered explainer output.
+- [x] 2026-07-24 — **Testing:** Add tests for admin guides, AI prompt builders,
+      and protocol explainers.
+  - Result: 34 tests covering guide severity ordering/caps/thresholds, prompt
+    section content and runbook-non-repetition instructions, and server-rendered
+    explainer output.
   - Evidence: `pnpm run test` green.
-  - Files: `test/buildDiagnosticsAdminGuides.test.ts`, `test/diagnosticsAiPrompts.test.ts`, `test/ProtocolExplainer.test.ts`.
+  - Files: `test/buildDiagnosticsAdminGuides.test.ts`,
+    `test/diagnosticsAiPrompts.test.ts`, `test/ProtocolExplainer.test.ts`.
 
 - [x] 2026-07-24 — **Testing:** Enable `.test.tsx` in the unit Vitest config.
-  - Result: `vitest.config.ts` now includes `test/**/*.{test,spec}.{ts,tsx}` (a11y dir excluded to keep it under its own jsdom config); DOM-dependent tests can opt in via the `@vitest-environment jsdom` pragma.
+  - Result: `vitest.config.ts` now includes `test/**/*.{test,spec}.{ts,tsx}`
+    (a11y dir excluded to keep it under its own jsdom config); DOM-dependent
+    tests can opt in via the `@vitest-environment jsdom` pragma.
   - Evidence: full suite green; a11y suite unaffected.
   - Files: `vitest.config.ts`.
 
-- [x] 2026-07-24 — **Testing:** Make `pnpm run test:a11y` pass by adding the first a11y suites.
-  - Result: axe-based tests for `InstallForm` (full + partial), `UnifiedPagination`, and `EmptyState`; zero violations found; `vitest-axe`'s broken `extend-expect` bypassed by asserting `results.violations` directly.
+- [x] 2026-07-24 — **Testing:** Make `pnpm run test:a11y` pass by adding the
+      first a11y suites.
+  - Result: axe-based tests for `InstallForm` (full + partial),
+    `UnifiedPagination`, and `EmptyState`; zero violations found; `vitest-axe`'s
+    broken `extend-expect` bypassed by asserting `results.violations` directly.
   - Evidence: `pnpm run test:a11y` exit 0 (3 files, 5 tests).
   - Files: `test/a11y/`.
 
 - [-] 2026-07-24 — **Testing:** Consider upgrading or replacing `vitest-axe`.
-  - Resolution: No upgrade exists — `vitest-axe` latest stable is still 0.1.0 (1.0.0 is prerelease `1.0.0-pre.5` only), and its `extend-expect` is a 0-byte no-op under Vitest 4. The a11y suites assert `results.violations` directly, which is fully typed, needs no setup, and still prints complete violation objects on failure. Revisit only if 1.0.0 ships stable.
+  - Resolution: No upgrade exists — `vitest-axe` latest stable is still 0.1.0
+    (1.0.0 is prerelease `1.0.0-pre.5` only), and its `extend-expect` is a
+    0-byte no-op under Vitest 4. The a11y suites assert `results.violations`
+    directly, which is fully typed, needs no setup, and still prints complete
+    violation objects on failure. Revisit only if 1.0.0 ships stable.
 
-- [x] 2026-07-24 — **Testing:** Benchmark and improve full-repository lint performance.
-  - Result: Cold `eslint .` is 75.6 s (dominated by type-aware linting); enabled `--cache` in the lint scripts, warm runs now 5.4 s (14x). CI stays effectively cold (no cache file in fresh checkouts). Caveat: cache skips unchanged files even when a dependency's types changed; run a cold lint (`rm .eslintcache`) before releases.
+- [x] 2026-07-24 — **Testing:** Benchmark and improve full-repository lint
+      performance.
+  - Result: Cold `eslint .` is 75.6 s (dominated by type-aware linting); enabled
+    `--cache` in the lint scripts, warm runs now 5.4 s (14x). CI stays
+    effectively cold (no cache file in fresh checkouts). Caveat: cache skips
+    unchanged files even when a dependency's types changed; run a cold lint
+    (`rm .eslintcache`) before releases.
   - Evidence: timed runs 2026-07-24.
   - Files: `package.json`, `.gitignore`.
 
-- [x] 2026-07-24 — **Infrastructure:** Migrate `boundaries/dependencies` to eslint-plugin-boundaries v7 syntax.
-  - Result: `rules` -> `policies` and 4 legacy selectors converted to object-based selectors; policy matrix unchanged; deprecation warnings gone; rule still enforcing (verified via debug run).
+- [x] 2026-07-24 — **Infrastructure:** Migrate `boundaries/dependencies` to
+      eslint-plugin-boundaries v7 syntax.
+  - Result: `rules` -> `policies` and 4 legacy selectors converted to
+    object-based selectors; policy matrix unchanged; deprecation warnings gone;
+    rule still enforcing (verified via debug run).
   - Evidence: `pnpm run lint` exit 0 with zero boundaries warnings.
   - Files: `eslint.config.ts`.
 
-- [x] 2026-07-24 — **Infrastructure:** Decide per-process `withDiagnosticsCache` is sufficient — documented in ADR 0003.
-  - Resolution: Deployment is deliberately single-replica (SQLite, RWO PVC, replicas=1 in k8s/Helm); per-replica DNS resolution only matters multi-replica. Revisit together with any multi-replica move.
+- [x] 2026-07-24 — **Infrastructure:** Decide per-process `withDiagnosticsCache`
+      is sufficient — documented in ADR 0003.
+  - Resolution: Deployment is deliberately single-replica (SQLite, RWO PVC,
+    replicas=1 in k8s/Helm); per-replica DNS resolution only matters
+    multi-replica. Revisit together with any multi-replica move.
 
 - [x] 2026-07-24 — **Documentation:** Write the architecture decision records.
-  - Result: 7 ADRs + index under `docs/adr/` (default-deny API, encrypted IMAP credentials, SQLite single-replica, reversible migrations, TS7 dual-alias interop, nonce CSP, explicit AI model), linked from `docs/README.md`; claims verified against code (notably: the "API key" is the shared `SECRET_KEY` admin token, not per-user keys).
+  - Result: 7 ADRs + index under `docs/adr/` (default-deny API, encrypted IMAP
+    credentials, SQLite single-replica, reversible migrations, TS7 dual-alias
+    interop, nonce CSP, explicit AI model), linked from `docs/README.md`; claims
+    verified against code (notably: the "API key" is the shared `SECRET_KEY`
+    admin token, not per-user keys).
   - Evidence: `docs/adr/README.md`; prettier clean.
   - Files: `docs/adr/`.
 
 - [x] 2026-07-24 — **Pending Decisions:** Expand the DKIM selector probe list.
-  - Resolution: Expanded from 9 to 28 documented, stable provider selectors (Google, M365, SendGrid, Mailgun, Zoho, Postmark legacy, Fastmail, Proton, iCloud, Constant Contact, Zendesk, Mailchimp/Mandrill); providers with per-account selectors (SES, HubSpot) cannot be probed with a fixed list. Each entry costs one parallel TXT lookup per uncached run.
+  - Resolution: Expanded from 9 to 28 documented, stable provider selectors
+    (Google, M365, SendGrid, Mailgun, Zoho, Postmark legacy, Fastmail, Proton,
+    iCloud, Constant Contact, Zendesk, Mailchimp/Mandrill); providers with
+    per-account selectors (SES, HubSpot) cannot be probed with a fixed list.
+    Each entry costs one parallel TXT lookup per uncached run.
   - Files: `services/diagnostics/knownSelectors.ts`.
 
-- [x] 2026-07-23 — **Security:** Add the one-time install token field to the install UI.
-  - Result: The install form now collects the token and submits it as `installToken`, so first-run web installs can pass the API's token gate.
-  - Evidence: `pnpm exec tsc --noEmit`, ESLint, Prettier, and `pnpm test` (186/186) passed.
-  - Files: `components/install/InstallForm.tsx`, `hooks/install/useInstallForm.ts`, `utils/install/installReducer.ts`, `types/install/InstallState.ts`, `types/install/InstallAction.ts`.
+- [x] 2026-07-23 — **Security:** Add the one-time install token field to the
+      install UI.
+  - Result: The install form now collects the token and submits it as
+    `installToken`, so first-run web installs can pass the API's token gate.
+  - Evidence: `pnpm exec tsc --noEmit`, ESLint, Prettier, and `pnpm test`
+    (186/186) passed.
+  - Files: `components/install/InstallForm.tsx`,
+    `hooks/install/useInstallForm.ts`, `utils/install/installReducer.ts`,
+    `types/install/InstallState.ts`, `types/install/InstallAction.ts`.
 
-- [x] 2026-07-23 — **Documentation:** Publish the TODO-maintenance rule through a tracked instruction source.
-  - Result: Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed `CLAUDE.md` with the backlog and work-log conventions.
+- [x] 2026-07-23 — **Documentation:** Publish the TODO-maintenance rule through
+      a tracked instruction source.
+  - Result: Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed
+    `CLAUDE.md` with the backlog and work-log conventions.
   - Evidence: commit `7021f658`.
   - Files: `.gitignore`, `CLAUDE.md`.
 
-- [x] 2026-07-23 — **Testing:** Complete the full repository quality gate over the diagnostics work.
-  - Result: Ran the full Vitest suite with outbound DNS available; the previously failing live-DNS assertion passed.
+- [x] 2026-07-23 — **Testing:** Complete the full repository quality gate over
+      the diagnostics work.
+  - Result: Ran the full Vitest suite with outbound DNS available; the
+    previously failing live-DNS assertion passed.
   - Evidence: `pnpm test` — 27 files, 186/186 tests passed.
   - Files: `test/safeFetch.test.ts`.
 
 ### 2026-05
 
-- [x] 2026-05-19 — **Infrastructure:** Add Kubernetes manifests and a Helm chart.
-  - Result: Added single-replica, SQLite-safe deployment resources with probes, persistence, ingress, and hardened container settings.
-  - Evidence: `e8287ee4`; validated with `helm lint`, `helm template`, and `kubectl apply -k --dry-run=client`.
+- [x] 2026-05-19 — **Infrastructure:** Add Kubernetes manifests and a Helm
+      chart.
+  - Result: Added single-replica, SQLite-safe deployment resources with probes,
+    persistence, ingress, and hardened container settings.
+  - Evidence: `e8287ee4`; validated with `helm lint`, `helm template`, and
+    `kubectl apply -k --dry-run=client`.
   - Files: `deploy/k8s/`, `deploy/helm/vexa-insight-dashboard/`.
 
-- [x] 2026-05-19 — **Infrastructure:** Enforce reversible database migrations in CI.
+- [x] 2026-05-19 — **Infrastructure:** Enforce reversible database migrations in
+      CI.
   - Result: Added the migration policy, checker, and CI gate.
   - Evidence: `8dfe7f2a`.
   - Files: `scripts/check-migrations.sh`, `.github/workflows/ci.yml`.
 
-- [x] 2026-05-19 — **Testing:** Add DMARC parser and ingestion regression coverage.
-  - Result: Added major-provider fixtures, ZIP edge cases, duplicate-report idempotency, and per-report IP deduplication tests.
+- [x] 2026-05-19 — **Testing:** Add DMARC parser and ingestion regression
+      coverage.
+  - Result: Added major-provider fixtures, ZIP edge cases, duplicate-report
+    idempotency, and per-report IP deduplication tests.
   - Evidence: `c9227e17`, `7f862ffc`, `125ab20d`.
-  - Files: `test/parseDmarcXmlFixtures.test.ts`, `test/zipEdgeCases.test.ts`, `test/ingestIdempotency.test.ts`, `test/ingestIpDedup.test.ts`.
+  - Files: `test/parseDmarcXmlFixtures.test.ts`, `test/zipEdgeCases.test.ts`,
+    `test/ingestIdempotency.test.ts`, `test/ingestIpDedup.test.ts`.
 
-- [x] 2026-05-19 — **Bugs:** Resolve absolute SQLite `file:` URL paths correctly.
-  - Result: Normalized absolute database URLs without treating them as relative paths.
+- [x] 2026-05-19 — **Bugs:** Resolve absolute SQLite `file:` URL paths
+      correctly.
+  - Result: Normalized absolute database URLs without treating them as relative
+    paths.
   - Evidence: `3b7ee4aa`; covered by `test/resolveDbFilePath.test.ts`.
   - Files: `lib/db/resolveDbFilePath.ts`, `test/resolveDbFilePath.test.ts`.
 
 - [x] 2026-05-19 — **Bugs:** Settle DMARC archive promises on `yauzl` errors.
-  - Result: Added error-event handling so failed ZIP reads no longer leave ingestion promises pending.
+  - Result: Added error-event handling so failed ZIP reads no longer leave
+    ingestion promises pending.
   - Evidence: `ee5cddc7`.
   - Files: `services/dmarc/`.
 
 - [x] 2026-05-19 — **Refactors:** Consolidate state types under `types/stores`.
-  - Result: Removed the duplicate `store/` and `stores/` locations and centralized state contracts.
+  - Result: Removed the duplicate `store/` and `stores/` locations and
+    centralized state contracts.
   - Evidence: `c04dc957`.
   - Files: `types/stores/`, `hooks/`.
 
-- [x] 2026-05-19 — **Refactors:** Replace wildcard database barrels with explicit exports.
-  - Result: Replaced `export *` usage in the database public API with named re-exports.
+- [x] 2026-05-19 — **Refactors:** Replace wildcard database barrels with
+      explicit exports.
+  - Result: Replaced `export *` usage in the database public API with named
+    re-exports.
   - Evidence: `d4958269`.
   - Files: `lib/db/index.ts`, `lib/db/schema/index.ts`.
 
-- [x] 2026-05-19 — **Refactors:** Validate environment variables and migrate direct environment access.
-  - Result: Added fail-fast Zod validation and moved application call sites to the validated environment module.
+- [x] 2026-05-19 — **Refactors:** Validate environment variables and migrate
+      direct environment access.
+  - Result: Added fail-fast Zod validation and moved application call sites to
+    the validated environment module.
   - Evidence: `6e420be4`, `fd244390`.
   - Files: `lib/env.ts`, `instrumentation.ts`.
 
 - [x] 2026-05-19 — **Performance:** Eliminate the domain-summary N+1 query.
   - Result: Replaced per-domain lookups with SQL aggregation.
   - Evidence: `cc6954f9`; covered by `test/getDomainsSummaryAll.test.ts`.
-  - Files: `services/reports/getDomainsSummaryAll.ts`, `test/getDomainsSummaryAll.test.ts`.
+  - Files: `services/reports/getDomainsSummaryAll.ts`,
+    `test/getDomainsSummaryAll.test.ts`.
 
 - [x] 2026-05-19 — **Performance:** Index normalized report end dates.
   - Result: Added an index for date-range filtering on normalized events.
@@ -454,104 +1186,155 @@
   - Evidence: `55e45cea`.
   - Files: `components/ingest/`.
 
-- [x] 2026-05-19 — **Documentation:** Add operations, proxy, SSO, and migration guidance.
-  - Result: Documented troubleshooting, reverse-proxy deployment, experimental SSO, and migration policy.
+- [x] 2026-05-19 — **Documentation:** Add operations, proxy, SSO, and migration
+      guidance.
+  - Result: Documented troubleshooting, reverse-proxy deployment, experimental
+    SSO, and migration policy.
   - Evidence: `650522a5`, `8dfe7f2a`, `94b548ad`.
-  - Files: `docs/TROUBLESHOOTING.md`, `docs/DEPLOY-BEHIND-PROXY.md`, `docs/SSO.md`, `docs/MIGRATIONS.md`.
+  - Files: `docs/TROUBLESHOOTING.md`, `docs/DEPLOY-BEHIND-PROXY.md`,
+    `docs/SSO.md`, `docs/MIGRATIONS.md`.
 
 - [x] 2026-05-18 — **Security:** Default-deny `/api/v1/**`.
-  - Result: Wrapped API routes with `withApiAuth` and added a structural smoke test for route coverage.
-  - Evidence: `d11cb99d`, `dc0a0845`; covered by `test/apiAuthSmoke.test.ts` and `test/withApiAuth.test.ts`.
+  - Result: Wrapped API routes with `withApiAuth` and added a structural smoke
+    test for route coverage.
+  - Evidence: `d11cb99d`, `dc0a0845`; covered by `test/apiAuthSmoke.test.ts` and
+    `test/withApiAuth.test.ts`.
   - Files: `services/api/withApiAuth.ts`, `test/apiAuthSmoke.test.ts`.
 
-- [x] 2026-05-18 — **Security:** Protect outbound webhook and MTA-STS requests from SSRF.
-  - Result: Added private-address rejection and routed outbound requests through `safeFetch`.
-  - Evidence: `9c4351fe`, `e6a15ac7`, `21ef01a3`; covered by `test/isPrivateIp.test.ts` and `test/safeFetch.test.ts`.
-  - Files: `services/security/safeFetch.ts`, `services/notifications/`, `services/diagnostics/resolveMtaSts.ts`.
+- [x] 2026-05-18 — **Security:** Protect outbound webhook and MTA-STS requests
+      from SSRF.
+  - Result: Added private-address rejection and routed outbound requests through
+    `safeFetch`.
+  - Evidence: `9c4351fe`, `e6a15ac7`, `21ef01a3`; covered by
+    `test/isPrivateIp.test.ts` and `test/safeFetch.test.ts`.
+  - Files: `services/security/safeFetch.ts`, `services/notifications/`,
+    `services/diagnostics/resolveMtaSts.ts`.
 
 - [x] 2026-05-18 — **Security:** Encrypt IMAP credentials at rest.
-  - Result: Added AES-256-GCM encryption derived from `SECRET_KEY` and migration-compatible reads.
+  - Result: Added AES-256-GCM encryption derived from `SECRET_KEY` and
+    migration-compatible reads.
   - Evidence: `38f3e71c`; covered by `test/encryptSecret.test.ts`.
   - Files: `services/crypto/`, `services/settings/`.
 
-- [x] 2026-05-18 — **Security:** Enforce same-origin checks on session-authenticated mutations.
+- [x] 2026-05-18 — **Security:** Enforce same-origin checks on
+      session-authenticated mutations.
   - Result: Added CSRF validation while preserving API-key automation.
-  - Evidence: `87d3aef4`, `dc0a0845`; covered by `test/requireSameOrigin.test.ts`.
-  - Files: `services/security/requireSameOrigin.ts`, `services/api/withApiAuth.ts`.
+  - Evidence: `87d3aef4`, `dc0a0845`; covered by
+    `test/requireSameOrigin.test.ts`.
+  - Files: `services/security/requireSameOrigin.ts`,
+    `services/api/withApiAuth.ts`.
 
-- [x] 2026-05-18 — **Security:** Harden DMARC parsing against hostile archives and XML.
+- [x] 2026-05-18 — **Security:** Harden DMARC parsing against hostile archives
+      and XML.
   - Result: Added XXE, ZIP-bomb, ZIP-slip, and archive-boundary protections.
-  - Evidence: `9e15f07f`; later regression coverage in `c9227e17` and `125ab20d`.
+  - Evidence: `9e15f07f`; later regression coverage in `c9227e17` and
+    `125ab20d`.
   - Files: `services/dmarc/`, `test/dmarcParserHardening.test.ts`.
 
-- [x] 2026-05-18 — **Security:** Tighten AI rate limits, password hashing, and local MCP handling.
-  - Result: Limited AI endpoints to 10 requests per minute per IP, increased scrypt cost, and ignored token-bearing local MCP configuration.
-  - Evidence: `3e6c1308`, `47ca0a35`; covered by `test/scryptBackcompat.test.ts`.
+- [x] 2026-05-18 — **Security:** Tighten AI rate limits, password hashing, and
+      local MCP handling.
+  - Result: Limited AI endpoints to 10 requests per minute per IP, increased
+    scrypt cost, and ignored token-bearing local MCP configuration.
+  - Evidence: `3e6c1308`, `47ca0a35`; covered by
+    `test/scryptBackcompat.test.ts`.
   - Files: `utils/rateLimit/`, `services/auth/`, `.gitignore`.
 
 - [x] 2026-05-18 — **Infrastructure:** Harden CI and release provenance.
-  - Result: Added least-privilege tokens, frozen installs, SHA-pinned actions, CodeQL, SBOMs, SLSA provenance, and keyless image signing.
+  - Result: Added least-privilege tokens, frozen installs, SHA-pinned actions,
+    CodeQL, SBOMs, SLSA provenance, and keyless image signing.
   - Evidence: `d452230c`, `e0157a8f`, `dfe655f2`.
   - Files: `.github/workflows/`.
 
 ### 2026-04
 
 - [x] 2026-04-22 — **Diagnostics:** Add the domain security score.
-  - Result: Added letter grades and percentages with protocol-specific scoring functions coordinated by `computeDomainScore`.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
-  - Files: `services/diagnostics/computeDomainScore.ts`, `services/diagnostics/score*.ts`.
+  - Result: Added letter grades and percentages with protocol-specific scoring
+    functions coordinated by `computeDomainScore`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
+  - Files: `services/diagnostics/computeDomainScore.ts`,
+    `services/diagnostics/score*.ts`.
 
-- [x] 2026-04-22 — **Diagnostics:** Resolve the expanded protocol and DNS dataset with caching.
-  - Result: Added BIMI, MTA-STS, TLS-RPT, A, and NS resolution plus a five-minute in-memory TTL cache.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
-  - Files: `services/diagnostics/getDomainDnsRecords.ts`, `services/diagnostics/withDiagnosticsCache.ts`.
+- [x] 2026-04-22 — **Diagnostics:** Resolve the expanded protocol and DNS
+      dataset with caching.
+  - Result: Added BIMI, MTA-STS, TLS-RPT, A, and NS resolution plus a
+    five-minute in-memory TTL cache.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
+  - Files: `services/diagnostics/getDomainDnsRecords.ts`,
+    `services/diagnostics/withDiagnosticsCache.ts`.
 
-- [x] 2026-04-22 — **Diagnostics:** Feed all domain TXT records into SPF analysis.
-  - Result: Restored duplicate and conflict detection by passing the resolved TXT set to `analyzeSpfRecord`.
-  - Evidence: Type-check and focused ESLint passed; current integration coverage in `test/getDomainDnsRecords.test.ts`.
+- [x] 2026-04-22 — **Diagnostics:** Feed all domain TXT records into SPF
+      analysis.
+  - Result: Restored duplicate and conflict detection by passing the resolved
+    TXT set to `analyzeSpfRecord`.
+  - Evidence: Type-check and focused ESLint passed; current integration coverage
+    in `test/getDomainDnsRecords.test.ts`.
   - Files: `services/diagnostics/getDomainDnsRecords.ts`.
 
 - [x] 2026-04-22 — **Diagnostics:** Add a deterministic administrator runbook.
-  - Result: Added why-it-matters, remediation, and verification guidance derived from DNS, score, and report data.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
-  - Files: `services/diagnostics/buildDiagnosticsAdminGuides.ts`, `components/ai/DiagnosticsAdminRunbook.tsx`.
+  - Result: Added why-it-matters, remediation, and verification guidance derived
+    from DNS, score, and report data.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
+  - Files: `services/diagnostics/buildDiagnosticsAdminGuides.ts`,
+    `components/ai/DiagnosticsAdminRunbook.tsx`.
 
 - [x] 2026-04-22 — **Diagnostics:** Reclassify valid SPF `~all` guidance.
-  - Result: Changed soft-fail guidance from a high-severity correction to a low-priority hardening suggestion.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Result: Changed soft-fail guidance from a high-severity correction to a
+    low-priority hardening suggestion.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
   - Files: `services/diagnostics/`.
 
 - [x] 2026-04-22 — **Diagnostics:** Add contextual protocol help and examples.
-  - Result: Added tooltips and protocol explainers with example DNS hosts and values.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
-  - Files: `components/diagnostics/shared/InfoTooltip.tsx`, `components/diagnostics/shared/ProtocolExplainer.tsx`.
+  - Result: Added tooltips and protocol explainers with example DNS hosts and
+    values.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
+  - Files: `components/diagnostics/shared/InfoTooltip.tsx`,
+    `components/diagnostics/shared/ProtocolExplainer.tsx`.
 
-- [x] 2026-04-22 — **Diagnostics:** Remove duplicate legacy blocks from the active diagnostics view.
-  - Result: Removed the old DNS panel, executive summary, assessment, and authentication breakdown from `DiagnosticsView`.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
+- [x] 2026-04-22 — **Diagnostics:** Remove duplicate legacy blocks from the
+      active diagnostics view.
+  - Result: Removed the old DNS panel, executive summary, assessment, and
+    authentication breakdown from `DiagnosticsView`.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
   - Files: `components/diagnostics/DiagnosticsView.tsx`.
 
 - [x] 2026-04-22 — **Diagnostics:** Restore English-only report copy.
-  - Result: Reverted an accidental Spanish/English mix while retaining the functional guidance changes.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
+  - Result: Reverted an accidental Spanish/English mix while retaining the
+    functional guidance changes.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
   - Files: `components/diagnostics/`, `services/diagnostics/`.
 
-- [x] 2026-04-22 — **Artificial Intelligence:** Expand diagnostics analysis context.
-  - Result: Included score, deterministic guides, SPF checks, DMARC tags, DKIM details, A/NS, BIMI, MTA-STS, TLS-RPT, statistics, and aggregate report data while asking the model not to repeat the runbook.
-  - Evidence: Type-check and focused ESLint passed; repository baseline `a9848a44`.
+- [x] 2026-04-22 — **Artificial Intelligence:** Expand diagnostics analysis
+      context.
+  - Result: Included score, deterministic guides, SPF checks, DMARC tags, DKIM
+    details, A/NS, BIMI, MTA-STS, TLS-RPT, statistics, and aggregate report data
+    while asking the model not to repeat the runbook.
+  - Evidence: Type-check and focused ESLint passed; repository baseline
+    `a9848a44`.
   - Files: `services/ai/prompts/`, `services/ai/use-cases/`, `components/ai/`.
 
-- [x] 2026-04-22 — **Testing:** Add regression tests for report-detail rendering failures.
-  - Result: Added server-render checks for the IP link and deterministic country-flag markup.
-  - Evidence: Historical targeted Vitest and type-check passed; repository baseline `a9848a44`.
+- [x] 2026-04-22 — **Testing:** Add regression tests for report-detail rendering
+      failures.
+  - Result: Added server-render checks for the IP link and deterministic
+    country-flag markup.
+  - Evidence: Historical targeted Vitest and type-check passed; repository
+    baseline `a9848a44`.
   - Files: `test/IpAddressLink.test.ts`, `test/IpFlag.test.ts`.
 
 - [x] 2026-04-22 — **Bugs:** Fix the report-detail server/client boundary crash.
   - Result: Removed the server-side click handler passed into `next/link`.
-  - Evidence: Historical `pnpm test -- test/IpAddressLink.test.ts` and `pnpm type-check` passed.
+  - Evidence: Historical `pnpm test -- test/IpAddressLink.test.ts` and
+    `pnpm type-check` passed.
   - Files: `components/ips/IpAddressLink.tsx`, `test/IpAddressLink.test.ts`.
 
 - [x] 2026-04-22 — **Bugs:** Fix the report sources hydration mismatch.
-  - Result: Replaced the unstable Radix tooltip wrapper around the IP flag with deterministic markup.
+  - Result: Replaced the unstable Radix tooltip wrapper around the IP flag with
+    deterministic markup.
   - Evidence: Historical targeted Vitest and type-check passed.
   - Files: `components/ips/IpFlag.tsx`, `test/IpFlag.test.ts`.

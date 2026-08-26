@@ -1,6 +1,7 @@
 # Documentation
 
-Start with the main [README](../README.md) for overview, installation, and usage.
+Start with the main [README](../README.md) for overview, installation, and
+usage.
 
 | Doc                                                       | Purpose                                                                     |
 | --------------------------------------------------------- | --------------------------------------------------------------------------- |

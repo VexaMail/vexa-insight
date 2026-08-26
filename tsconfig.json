@@ -1,33 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@busirocket/tsconfig/nextjs.json",
   "compilerOptions": {
-    "target": "ES2024",
-    "lib": ["DOM", "DOM.Iterable", "ES2024"],
-    "strict": true,
-    "noEmit": true,
-    "incremental": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "useUnknownInCatchVariables": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@/*": ["./*"],
       "@supabase/*": ["./services/supabase/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "allowJs": false,
     "ignoreDeprecations": "6.0"
   },

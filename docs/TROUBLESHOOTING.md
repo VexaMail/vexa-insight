@@ -5,8 +5,8 @@ cause first and a concrete check or fix you can run.
 
 ## Container won't start
 
-**Most likely cause:** the data volume is not writable by the container user,
-or `DATABASE_URL` points at a path that does not exist.
+**Most likely cause:** the data volume is not writable by the container user, or
+`DATABASE_URL` points at a path that does not exist.
 
 Check the container logs:
 
@@ -16,16 +16,16 @@ docker logs vexa --tail=200
 
 Look for one of:
 
-- `SQLITE_CANTOPEN: unable to open database file` — the `data/` directory is
-  not writable. Fix the host-side mount:
+- `SQLITE_CANTOPEN: unable to open database file` — the `data/` directory is not
+  writable. Fix the host-side mount:
 
   ```bash
   sudo chown -R 1001:1001 ./data   # default container user/group
   chmod 755 ./data
   ```
 
-- `Error: ENOENT: no such file or directory, mkdir './data'` — the volume
-  mount is missing. Re-create with the correct `-v` flag:
+- `Error: ENOENT: no such file or directory, mkdir './data'` — the volume mount
+  is missing. Re-create with the correct `-v` flag:
 
   ```bash
   docker run -v "$(pwd)/data:/app/data" ...
@@ -66,8 +66,8 @@ pnpm rebuild better-sqlite3
 
 ## `SQLITE_BUSY` during heavy ingestion
 
-The default WAL mode plus a 5 s busy timeout handles most concurrent reads,
-but parallel IMAP pollers writing the same DB can still see `SQLITE_BUSY`.
+The default WAL mode plus a 5 s busy timeout handles most concurrent reads, but
+parallel IMAP pollers writing the same DB can still see `SQLITE_BUSY`.
 
 Check that WAL is enabled:
 
@@ -82,9 +82,9 @@ Increase the busy timeout (in `lib/db/client.ts`, future setting):
 PRAGMA busy_timeout = 15000;
 ```
 
-For sustained high-write workloads, reduce poller concurrency (one IMAP
-account per cron tick) rather than scaling out replicas — SQLite is a
-single-writer database.
+For sustained high-write workloads, reduce poller concurrency (one IMAP account
+per cron tick) rather than scaling out replicas — SQLite is a single-writer
+database.
 
 ## IMAP authentication fails
 
@@ -93,9 +93,9 @@ Symptoms: poller logs show `AUTH FAILED`, `Invalid credentials`, or
 
 Checks, in order:
 
-1. **App password vs login password.** Gmail, Yahoo, Outlook reject the
-   account login password for IMAP. Generate an app-specific password in the
-   provider's security settings and use that.
+1. **App password vs login password.** Gmail, Yahoo, Outlook reject the account
+   login password for IMAP. Generate an app-specific password in the provider's
+   security settings and use that.
 
 2. **2FA / OAuth.** If the account has 2FA enabled, only OAuth or an app
    password will work — Vexa currently supports app passwords.
@@ -119,18 +119,17 @@ The dashboard shows zero reports even though IMAP credentials are valid.
 
 Checklist, in order:
 
-1. **Cron timing.** The poller runs every 5 minutes by default. Wait one
-   tick after saving credentials, then check `Settings > Polling status` for
-   the last run timestamp.
+1. **Cron timing.** The poller runs every 5 minutes by default. Wait one tick
+   after saving credentials, then check `Settings > Polling status` for the last
+   run timestamp.
 
-2. **Mailbox path.** Most ESPs deliver DMARC reports to the `INBOX` folder;
-   some users have a filter routing them to a sub-folder. Confirm by logging
-   into the mailbox and verifying the folder name matches the configured
-   path.
+2. **Mailbox path.** Most ESPs deliver DMARC reports to the `INBOX` folder; some
+   users have a filter routing them to a sub-folder. Confirm by logging into the
+   mailbox and verifying the folder name matches the configured path.
 
 3. **No new reports.** Reporters (Gmail, Yahoo, Microsoft, etc.) only send
-   reports for domains that have a `_dmarc` TXT record with a valid `rua`
-   tag. Validate with:
+   reports for domains that have a `_dmarc` TXT record with a valid `rua` tag.
+   Validate with:
 
    ```bash
    dig +short TXT _dmarc.example.com
@@ -140,8 +139,8 @@ Checklist, in order:
    will arrive.
 
 4. **Parser failures.** Check `Settings > Ingestion log` for rows in error
-   state. Parser failures keep the raw email in the mailbox; the poll
-   advances past them.
+   state. Parser failures keep the raw email in the mailbox; the poll advances
+   past them.
 
 ## Install token rotated / lost
 
@@ -164,8 +163,8 @@ If `Settings > Updates` reports "update check disabled":
 
 - Confirm `VEXA_UPDATE_CHECK_ENABLED` is unset or `true` (not `0`/`false`).
 - Confirm outbound HTTPS to `api.github.com` is allowed by the host firewall.
-- The GitHub API rate-limits unauthenticated requests to 60/hour per IP;
-  behind a NAT this is shared. Vexa caches results for 24 h to avoid this.
+- The GitHub API rate-limits unauthenticated requests to 60/hour per IP; behind
+  a NAT this is shared. Vexa caches results for 24 h to avoid this.
 
 ## Where to look first
 

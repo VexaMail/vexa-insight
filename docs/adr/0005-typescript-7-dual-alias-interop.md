@@ -13,8 +13,8 @@ but the toolchain is split: eslint (via typescript-eslint), Next.js, and
 prettier plugins consume the TypeScript **JS API**, which the TS7 package does
 not provide in a form those tools support yet. typescript-eslint's TS >= 7.1
 support is tracked upstream in their issue #10940. Additionally,
-`eslint-config-next` pins `typescript-eslint` 8.59.x, which breaks under a
-TS7 install.
+`eslint-config-next` pins `typescript-eslint` 8.59.x, which breaks under a TS7
+install.
 
 ## Decision
 
@@ -23,14 +23,13 @@ TS7 install.
     `typescript` resolves to the TS6 JS API, so eslint, Next.js, and prettier
     plugins keep working unmodified (its binary is exposed as `tsc6`).
   - `"typescript-7": "npm:typescript@^7.0.2"` — provides the native `tsc`
-    binary, which `pnpm run type-check` (`tsc -p tsconfig.json --noEmit`)
-    uses.
+    binary, which `pnpm run type-check` (`tsc -p tsconfig.json --noEmit`) uses.
 - Force a TS7-compatible typescript-eslint line across the tree with
   `pnpm-workspace.yaml` overrides (`typescript-eslint`,
-  `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser` at
-  `^8.65.0`), because `eslint-config-next` pins 8.59.x.
-- Do not revert to a plain `typescript` spec until typescript-eslint ships
-  TS >= 7.1 support; the backlog tracks the re-upgrade.
+  `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser` at `^8.65.0`),
+  because `eslint-config-next` pins 8.59.x.
+- Do not revert to a plain `typescript` spec until typescript-eslint ships TS >=
+  7.1 support; the backlog tracks the re-upgrade.
 
 ## Consequences
 
@@ -38,8 +37,8 @@ TS7 install.
   toolchain stays on the stable TS6 JS API.
 - Two TypeScript versions can disagree; `type-check` (TS7) is the source of
   truth for type errors, and editor tooling may resolve the TS6 alias.
-- Dependency updates must preserve both aliases and the workspace overrides;
-  a naive `typescript` bump silently reintroduces the breakage.
+- Dependency updates must preserve both aliases and the workspace overrides; a
+  naive `typescript` bump silently reintroduces the breakage.
 
 ## Alternatives considered
 
@@ -47,5 +46,5 @@ TS7 install.
   speed for no compatibility gain.
 - Move entirely to TS7: rejected; typescript-eslint (and therefore
   `eslint-config-next`) does not support it yet.
-- Drop `eslint-config-next`: rejected; not worth losing the Next.js lint
-  rules to remove one override.
+- Drop `eslint-config-next`: rejected; not worth losing the Next.js lint rules
+  to remove one override.

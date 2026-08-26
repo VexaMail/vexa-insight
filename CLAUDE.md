@@ -36,13 +36,13 @@ digging through git history.
 - Record actionable bugs, risks, blockers, deferred work, missing tests, and
   documentation gaps as they are discovered. Update an existing entry rather
   than adding a duplicate.
-- States: `[ ]` pending, `[~]` partial or unverified, `[!]` blocked,
-  `[x]` verified complete, `[-]` obsolete or superseded.
+- States: `[ ]` pending, `[~]` partial or unverified, `[!]` blocked, `[x]`
+  verified complete, `[-]` obsolete or superseded.
 - Keep blockers in `TODO.md` and name the smallest action that would unblock
   them.
 - When an item reaches `[x]` or `[-]`, append a dated entry to `TODO_LOG.md`
-  with the result and the evidence for it, then remove it from `TODO.md`.
-  One log file, grouped by year and month.
+  with the result and the evidence for it, then remove it from `TODO.md`. One
+  log file, grouped by year and month.
 - Do not interrupt the current task to implement unrelated backlog items.
   Critical security, destructive, or data-loss findings are the exception:
   report those immediately.
@@ -52,5 +52,5 @@ digging through git history.
 This is a public repository that processes real DMARC reports. Never commit
 anything generated from a local database — `evals/results/` artifacts in
 particular embed report contents and domain names, and are gitignored for that
-reason. Keep real domains, IP addresses, and email addresses out of code,
-tests, docs, and commit messages; use `example.com` and documentation ranges.
+reason. Keep real domains, IP addresses, and email addresses out of code, tests,
+docs, and commit messages; use `example.com` and documentation ranges.

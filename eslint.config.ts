@@ -386,6 +386,13 @@ const config = defineConfig([
       'react-hooks/incompatible-library': 'off',
     },
   },
+  {
+    // dependency-cruiser loads CommonJS config only, so this one file is CJS
+    // in an ESM project: it reaches the shared TypeScript factory through a
+    // jiti require. eslint-config-next applies no-require-imports repo-wide.
+    files: ['.dependency-cruiser.cjs'],
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
 ])
 
 export default config

@@ -1,6 +1,7 @@
 # Contributing to Vexa Mail Insight
 
-Thanks for your interest in contributing! This document covers everything you need to get a development environment running and submit a high-quality PR.
+Thanks for your interest in contributing! This document covers everything you
+need to get a development environment running and submit a high-quality PR.
 
 ## Development setup
 
@@ -24,9 +25,11 @@ Thanks for your interest in contributing! This document covers everything you ne
    pnpm dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000). On first run you will be redirected to `/install` to create the superadmin user.
+   Open [http://localhost:3000](http://localhost:3000). On first run you will be
+   redirected to `/install` to create the superadmin user.
 
-No `.env` is required for a quick start. Optionally copy `.env.example` to `.env` to override `DATABASE_URL` or pre-seed IMAP credentials.
+No `.env` is required for a quick start. Optionally copy `.env.example` to
+`.env` to override `DATABASE_URL` or pre-seed IMAP credentials.
 
 ## Project layout
 
@@ -44,15 +47,20 @@ docs/            Architecture, data model, API docs
 
 ## Code style
 
-- **One export per file.** Components, hooks, types, and utility functions each live in their own file.
+- **One export per file.** Components, hooks, types, and utility functions each
+  live in their own file.
 - **No inline types** in components/hooks; place them under `types/<area>/`.
-- **Thin route handlers**: validate input → call a service → return a response. No business logic in `app/**/route.ts`.
-- **TypeScript strict** mode is enabled. Prefer `unknown` + narrowing over `any`.
-- **Tailwind v4** for styling; use semantic tokens (`bg-background`, `text-foreground`) over hardcoded colors.
+- **Thin route handlers**: validate input → call a service → return a response.
+  No business logic in `app/**/route.ts`.
+- **TypeScript strict** mode is enabled. Prefer `unknown` + narrowing over
+  `any`.
+- **Tailwind v4** for styling; use semantic tokens (`bg-background`,
+  `text-foreground`) over hardcoded colors.
 
 ## Database changes
 
-Schema lives in `drizzle/schema.ts` (or per-domain schema files). To add or modify a table:
+Schema lives in `drizzle/schema.ts` (or per-domain schema files). To add or
+modify a table:
 
 ```bash
 # After editing the schema:
@@ -60,7 +68,8 @@ pnpm run db:generate   # generate a new migration SQL file
 pnpm run db:migrate    # apply pending migrations to local data/vexa.db
 ```
 
-Always commit the generated `drizzle/<timestamp>_<name>.sql` file alongside the schema change.
+Always commit the generated `drizzle/<timestamp>_<name>.sql` file alongside the
+schema change.
 
 ## Working on the AI prompts
 
@@ -106,7 +115,8 @@ pnpm test:watch       # watch mode
 pnpm test:a11y        # accessibility tests (vitest-axe)
 ```
 
-Place tests next to the unit they cover (`*.test.ts` / `*.test.tsx`). Prefer behavior-focused tests over implementation details.
+Place tests next to the unit they cover (`*.test.ts` / `*.test.tsx`). Prefer
+behavior-focused tests over implementation details.
 
 ## Pull requests
 
@@ -118,10 +128,13 @@ Place tests next to the unit they cover (`*.test.ts` / `*.test.tsx`). Prefer beh
 
 ## Reporting issues
 
-Open a GitHub issue with: a clear description, steps to reproduce, expected vs actual behavior, and your environment (Node version, OS, `pnpm --version`).
+Open a GitHub issue with: a clear description, steps to reproduce, expected vs
+actual behavior, and your environment (Node version, OS, `pnpm --version`).
 
-For security issues, **do not open a public issue** — see [SECURITY.md](SECURITY.md).
+For security issues, **do not open a public issue** — see
+[SECURITY.md](SECURITY.md).
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [Apache License 2.0](LICENSE).
+By contributing, you agree that your contributions will be licensed under the
+[Apache License 2.0](LICENSE).

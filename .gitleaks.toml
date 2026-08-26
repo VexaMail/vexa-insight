@@ -1,0 +1,44 @@
+# Extends the upstream default ruleset; only additions and allowlists here.
+[extend]
+useDefault = true
+
+# Build output is deliberately NOT allowlisted: a bundler `define` or a
+# `process.env` value can embed a real secret into a generated artifact at
+# compile time. If build output is ever committed it must be scanned like any
+# other file.
+#
+# Each entry below was inspected at HEAD and at the historic commits gitleaks
+# flagged. All eight findings were placeholders, never live credentials:
+#
+#   README.md              a curl example whose header value is `YOUR_API_KEY`
+#   seedSettingsFromEnv.ts the `'CHANGE_ME'` sentinel the seeder compares
+#                          against before it will write a real value
+#   test/encryptSecret     a documented 32-character test key, and the plan
+#                          document that quotes the same line
+#
+# `env.API_V1_STR` is the eighth: the rule matches the identifier in
+# `apiV1Str: env.API_V1_STR ?? row.apiV1Str`, where no literal value appears at
+# all - the value is read from the environment at runtime.
+#
+# Regexes, not paths: allowlisting a whole file would stop the scan finding a
+# real credential added to it later.
+[[rules]]
+id = "generic-api-key"
+[rules.allowlist]
+description = "Documented placeholders, verified not to be live credentials"
+regexes = [
+  '''YOUR_API_KEY''',
+  '''CHANGE_ME''',
+  '''this-is-a-32-character-test-key-AA''',
+  '''env\.API_V1_STR''',
+]
+
+[[rules]]
+id = "curl-auth-header"
+[rules.allowlist]
+description = "The README's example curl invocation"
+regexes = ['''YOUR_API_KEY''']
+
+[allowlist]
+description = "Lockfiles: integrity hashes read as high-entropy secrets but cannot hold a credential"
+paths = ['''pnpm-lock\.yaml''']

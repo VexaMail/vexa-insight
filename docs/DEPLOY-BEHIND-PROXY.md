@@ -1,9 +1,9 @@
 # Deploying Vexa behind a reverse proxy
 
-Vexa is a Next.js app that listens on `localhost:3000` inside the container
-and expects a single upstream. This guide covers the minimum config to
-terminate TLS in front of it, preserve client IPs, and unblock Next.js
-Server Actions on a non-loopback hostname.
+Vexa is a Next.js app that listens on `localhost:3000` inside the container and
+expects a single upstream. This guide covers the minimum config to terminate TLS
+in front of it, preserve client IPs, and unblock Next.js Server Actions on a
+non-loopback hostname.
 
 ## Required app config
 
@@ -19,9 +19,9 @@ VEXA_ALLOWED_ORIGINS=https://dmarc.example.com
   requests by default. Set this to `1` when the install wizard is reached
   through the proxy.
 - `VEXA_ALLOWED_ORIGINS` — comma-separated list of origins allowed to invoke
-  Server Actions. Must exactly match the scheme + host the browser uses
-  (e.g. `https://dmarc.example.com`). Wildcards are not supported. Without
-  this, all mutating UI actions return `403`.
+  Server Actions. Must exactly match the scheme + host the browser uses (e.g.
+  `https://dmarc.example.com`). Wildcards are not supported. Without this, all
+  mutating UI actions return `403`.
 
 ## nginx (TLS terminator)
 
@@ -99,40 +99,39 @@ Reload:
 sudo systemctl reload caddy
 ```
 
-Caddy provisions and renews certificates from Let's Encrypt automatically;
-no manual `certbot` step.
+Caddy provisions and renews certificates from Let's Encrypt automatically; no
+manual `certbot` step.
 
 ## X-Forwarded-\* header preservation
 
 Next.js relies on `X-Forwarded-Host` and `X-Forwarded-Proto` to construct
-absolute URLs (used in OAuth callbacks, email links, etc.) and on the
-`Host` header for Server Action origin validation. Both nginx and Caddy
-configs above forward these correctly.
+absolute URLs (used in OAuth callbacks, email links, etc.) and on the `Host`
+header for Server Action origin validation. Both nginx and Caddy configs above
+forward these correctly.
 
-If you put another L7 proxy in front (e.g. CloudFront, Cloudflare),
-double-check that it preserves these headers. CloudFront strips them by
-default — add an Origin Request Policy that forwards `Host`,
-`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`.
+If you put another L7 proxy in front (e.g. CloudFront, Cloudflare), double-check
+that it preserves these headers. CloudFront strips them by default — add an
+Origin Request Policy that forwards `Host`, `X-Forwarded-For`,
+`X-Forwarded-Proto`, `X-Forwarded-Host`.
 
 ## Sticky sessions / multi-replica
 
 **Vexa is a single-instance app.** It writes to a local SQLite file, runs
-in-process cron jobs (IMAP polling, geoip updates, update checks), and
-holds the install-token state in memory. Running more than one replica
-will:
+in-process cron jobs (IMAP polling, geoip updates, update checks), and holds the
+install-token state in memory. Running more than one replica will:
 
 - Race on SQLite writes (`SQLITE_BUSY` storms).
 - Trigger duplicate IMAP polls and double-ingest reports.
 - Show inconsistent install state in the wizard.
 
 If you must run Vexa behind a load balancer for L7/TLS reasons, point all
-traffic at a single backend instance. Sticky sessions are **not** a
-workaround for the cron race.
+traffic at a single backend instance. Sticky sessions are **not** a workaround
+for the cron race.
 
 ## Healthcheck
 
-`/api/health` returns `200 OK` with `{ "ok": true }` when the app is
-listening and the DB is reachable. Use it for:
+`/api/health` returns `200 OK` with `{ "ok": true }` when the app is listening
+and the DB is reachable. Use it for:
 
 - Docker `HEALTHCHECK` (already configured in the published image).
 - Kubernetes `livenessProbe` and `readinessProbe`.
@@ -157,10 +156,10 @@ readinessProbe:
 
 ## TLS termination at the proxy only
 
-Vexa expects to receive plain HTTP from the proxy on `127.0.0.1:3000`.
-Do not enable TLS on the Next.js process itself — terminate at the proxy
-and forward over loopback. This keeps the certificate lifecycle in one
-place (the proxy) and avoids double encryption costs.
+Vexa expects to receive plain HTTP from the proxy on `127.0.0.1:3000`. Do not
+enable TLS on the Next.js process itself — terminate at the proxy and forward
+over loopback. This keeps the certificate lifecycle in one place (the proxy) and
+avoids double encryption costs.
 
 ## Verification
 

@@ -2,9 +2,10 @@ import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  esbuild: {
-    jsx: 'automatic',
-  },
+  // Vite 8 transforms through Oxc, which ignores the old `esbuild` block: with
+  // the shared Next tsconfig's `jsx: preserve` the parser gets raw JSX and
+  // every file here fails to load.
+  oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, '.'),
