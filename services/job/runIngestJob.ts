@@ -126,7 +126,6 @@ export async function runIngestJob(options: RunIngestJobOptions = {}): Promise<{
         await db
           .update(jobRuns)
           .set({
-            runAt: new Date(),
             success: errorCount === 0,
             processed,
             ingested,
