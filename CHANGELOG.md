@@ -114,6 +114,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **"Move to trash after process" now moves the message to the trash.**
+  The handler called ImapFlow's `messageDelete()`, which issues `EXPUNGE`, so
+  the message was destroyed rather than moved and the trash folder stayed
+  empty. It now issues `messageMove()` to the mailbox flagged `\Trash`,
+  resolved from the server's mailbox list. A server with no such mailbox
+  leaves the message in place and logs the failure instead of falling back to
+  the destructive path. **Operators who enabled this setting were losing the
+  processed mail; after this release it accumulates in the trash instead, so
+  the trash may need emptying.**
 - **`job_runs` now records a real duration.** The completion update
   rewrote `run_at` with the finish time alongside `completed_at`, so
   every row read back as a zero-length run and the ingest history showed

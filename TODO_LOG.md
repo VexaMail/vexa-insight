@@ -6,6 +6,64 @@
 
 ### 2026-08
 
+- [x] 2026-08-26 — **Ingestion:** Make "move to trash after process" actually
+      move the message to the trash.
+  - Symptom found while checking the nova mailbox: `handleMoveToTrash` called
+    ImapFlow's `client.messageDelete()`, which is `EXPUNGE` — the message was
+    destroyed on the server, not moved. The trash folder held 0 messages after
+    3,141 ingested reports, while the setting name, the UI label, the
+    `moving_to_trash` progress step and the `move_to_trash_after_process`
+    column all promised something recoverable.
+  - Result: the handler now issues `client.messageMove()` to the mailbox
+    flagged `\Trash`, resolved by `fetchAttachments` from the server's mailbox
+    list and threaded to both post-process call sites. A server with no
+    `\Trash` mailbox raises instead of falling back to the destructive path,
+    so the message is left in place and the failure is logged; a message
+    already in the trash is skipped. Decision recorded 2026-08-26: honour the
+    label rather than rename the setting to `delete`, because the safe
+    direction for an ambiguous promise is the non-destructive one.
+  - Evidence: `pnpm run check:ci` green in a clean worktree (540 tests). New
+    `test/moveToTrashIsAMove.test.ts` asserts the move, asserts
+    `messageDelete` is never called, and asserts the message survives a failed
+    move. Confirmed on nova after deploy that the server advertises
+    `INBOX.Trash` with `specialUse="\Trash"`, so `getTrashPath` resolves and
+    the non-destructive path is the one that runs.
+  - Files: `utils/imap/handleMoveToTrash.ts`,
+    `utils/imap/HandlePostProcessParams.ts`,
+    `types/imap/FetchAttachmentsOptions.ts`,
+    `services/imap/fetchAttachments.ts`,
+    `services/imap/processOneMessageUid.ts`,
+    `services/imap/handleAlreadyProcessed.ts`.
+
+- [x] 2026-08-26 — **Bugs:** Track the Select component under its PascalCase
+      filename.
+  - Symptom: git tracked `components/ui/select.tsx` while
+    `components/ui/index.ts` re-exports `'./Select'`. Invisible on macOS
+    (case-insensitive APFS) and invisible on nova too, because `vexa-deploy`
+    rsyncs the working tree, whose directory entry reads `Select.tsx`. Any
+    fresh clone on a case-sensitive filesystem fails type-check with
+    `TS1261 ... differs from file name ... only in casing`.
+  - Result: renamed the tracked file to `Select.tsx`, matching every sibling
+    (`SelectContent`, `SelectItem`, `SelectTrigger`) and the convention that a
+    component file is named after its exported symbol.
+  - Evidence: surfaced by running `pnpm run check:ci` in a clean worktree,
+    which is also what proved the fix — 540 tests green there afterwards.
+  - Files: `components/ui/Select.tsx`.
+
+- [-] 2026-08-26 — **Performance:** Stop re-fetching envelopes for folders that
+      never carry DMARC mail.
+  - Superseded by an owner decision, not by code. Measured on the nova mailbox:
+    a `.Logs` folder holds 5,038 messages of which 5,037 fall inside the 30-day
+    window, so every hourly run bulk-fetches ~5,000 envelopes and discards them
+    against 1-22 real reports. The envelope fetch is unavoidable — both the
+    DMARC subject test and the `processed_messages` de-duplication need it —
+    so the only levers were a folder allow-list or a narrower server-side
+    SEARCH.
+  - Result: the owner is moving that log mail to a separate processor, which
+    removes the cost at source. No folder allow-list, no migration, no UI.
+    Reopen only if a mailbox shows the same cost with no way to drain the noisy
+    folder.
+
 - [x] 2026-08-25 — **Ingestion:** Bound the scheduled ingest window and keep the full-mailbox pass as an explicit action.
   - Symptom found while auditing the nova deployment: `ingestion_days_back` was `0`, and `getSinceDate` maps `0` to the year 2000, so every hourly run searched the whole mailbox (`poll_status.total_emails` = 4962) instead of a window. Nothing was broken, but each run re-enumerated the entire INBOX.
   - Result: `ingestion_days_back` is now floored at 1 (default 30) in `parseIngestionDaysBack`, in `settingsUpdateSchema`, and in both numeric inputs; migration `0030_ingestion_days_back_floor` moves stored `0` values to 30. The invariant is enforced on the read path too (`rowToConfig`), so a restored database, a hand-edited row or `INGESTION_DAYS_BACK=0` in the environment cannot bring the unbounded scan back; the Drizzle column default moved from 0 to 30. The unbounded pass survives as a one-off: **Full rescan** on the ingest page opens a confirmation dialog explaining the cost, and posts `{"fullRescan": true}` to `/api/v1/admin/trigger-poll`, which forwards it to `runIngestJob({ fullRescan })`. Dedup by Message-ID is untouched, so a rescan cannot duplicate reports.
