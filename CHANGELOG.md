@@ -114,6 +114,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`job_runs` now records a real duration.** The completion update
+  rewrote `run_at` with the finish time alongside `completed_at`, so
+  every row read back as a zero-length run and the ingest history showed
+  the wrong start time. The update no longer touches `run_at`.
+- **A repository with no releases is no longer reported as a failed
+  update check.** GitHub answers 404 for `releases/latest` until the
+  first release is tagged; that 404 was persisted as `last_error` and
+  surfaced in the UI, and logged as `[update-check] failed` on every
+  scheduled run. It is now a normal outcome that records the check and
+  clears any stale error.
 - **Published Docker image now boots.** The Dockerfile CMD referenced
   `scripts/run-migrations.cjs` which never existed. Migrations are
   already executed by `instrumentation.ts:register()` before traffic

@@ -132,9 +132,43 @@
 
 ## Performance
 
+- [ ] Stop re-fetching envelopes for folders that never carry DMARC mail. With
+      `ingestion_include_all_folders` on, `processFolder` runs one IMAP
+      `SEARCH SINCE` per folder and then bulk-fetches the envelope of every UID
+      it returns, because the DMARC subject test (`isDmarcCandidate`) and the
+      `processed_messages` de-duplication both need the envelope. Measured on
+      the nova mailbox 2026-08-26: a `.Logs` folder holds 5,038 messages of
+      which 5,037 fall inside the 30-day window, so every hourly run pulls
+      ~5,000 envelopes to discard all of them, while the run's real work is 1-22
+      reports. The 30-day window added on 2026-08-25 does not help here — the
+      noise folder is entirely recent, so bounding by date bounds nothing. Two
+      candidate fixes, both needing a decision: a per-account folder exclude
+      list, or narrowing the server-side SEARCH (the current code deliberately
+      avoids `OR SUBJECT` as too slow without a full-text index, so this would
+      need measuring against a real server before trusting it). Smallest next
+      step: time one run with `ingestion_include_all_folders` off against the
+      same mailbox to size the win before designing the exclude list.
+
 - [ ] Revisit rollup-style pre-aggregation for `getTopIpSenders` once the dataset justifies it. Measured 2026-07-26 against the local dev DB (6,901 `normalized_events`, 2,178 `raw_reports`, 899 IPs, 51 domains): the query returns in ~20ms, most of it `sqlite3` CLI overhead, so a rollup table would be speculative complexity today. The 2026-07-26 domain-scoping change also improved the restricted-user path from `SCAN normalized_events` to `SEARCH ... USING INDEX event_domain_end_count_idx`. Reconsider when `normalized_events` reaches the "millions of rows" the `event_rollup_daily` doc comment describes; the rollup would need `domain_id` in its key to stay compatible with the allow-list filter, plus a migration, ingest-transaction maintenance, a backfill path, and an ADR 0008-style consistency test.
 
 ## Pending Decisions
+
+- [!] Decide whether "move to trash after process" should actually use the
+  trash. `handleMoveToTrash` calls ImapFlow's `client.messageDelete()`,
+  which issues `EXPUNGE` — the message is destroyed on the server, not
+  moved. Nothing lands in the trash folder (confirmed on the nova mailbox
+  2026-08-26: trash empty while 3,141 reports have been ingested and their
+  mail removed), so the setting's name, its UI label in
+  `ImapAccountsSection`, the `moving_to_trash` progress step, and the
+  `move_to_trash_after_process` column all promise a recoverable delete
+  that does not happen. Not a crash and arguably the behaviour an operator
+  wants for report mail, which is why this is a decision and not a bug fix:
+  either make it honour the label via `client.messageMove()` to the
+  trash-flagged mailbox, or rename the whole path to `deleteAfterProcess`
+  and say so in the UI. Choosing "move" needs a fallback for servers with no
+  `\\Trash` special-use mailbox; choosing "delete" needs a migration to
+  rename the column and a note in the changelog, since operators who enabled
+  it believed their mail was recoverable. Blocked on that choice only.
 
 - [!] Match the domain score to PowerDMARC's output exactly. Decided 2026-07-26: parity is the goal, so any divergence in the SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights is a bug, not a design choice. Blocked on reference data this run cannot obtain: PowerDMARC's scores are behind their account, and scraping or signing up for a third-party service is not something to do unattended. Smallest unblock: the user supplies a handful of domains with PowerDMARC's reported score for each (a spread of good/partial/broken configurations is worth more than many similar ones); then `computeDomainScore` can be diffed against them and the weights tuned, with the reference set pinned as a test. Note 2026-07-24: the DKIM key-length estimator fix changed reported bit values, so any reference capture must post-date it.
 
