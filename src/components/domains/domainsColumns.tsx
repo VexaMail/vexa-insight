@@ -18,8 +18,9 @@ export function getDomainsColumns({
     {
       accessorKey: 'domainName',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -34,7 +35,7 @@ export function getDomainsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => (
         <span className="text-foreground text-sm font-medium">
@@ -45,8 +46,9 @@ export function getDomainsColumns({
     {
       accessorKey: 'totalMessages',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() !== 'desc')
           }}
@@ -61,7 +63,7 @@ export function getDomainsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
@@ -72,8 +74,9 @@ export function getDomainsColumns({
     {
       accessorKey: 'passRatePercent',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() !== 'desc')
           }}
@@ -88,7 +91,7 @@ export function getDomainsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const passRate = row.original.passRatePercent
@@ -115,8 +118,9 @@ export function getDomainsColumns({
       id: 'status',
       accessorFn: (row) => getDomainStatus(row.passRatePercent),
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -131,7 +135,7 @@ export function getDomainsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const passRate = row.original.passRatePercent

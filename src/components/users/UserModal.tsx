@@ -30,7 +30,7 @@ export default function UserModal({
         <h2 className="mb-4 text-xl font-bold">
           {user ? 'Edit User' : 'Create User'}
         </h2>
-        {error && (
+        {error !== '' && (
           <div className="text-destructive bg-destructive/10 mb-4 rounded p-2 text-sm">
             {error}
           </div>
@@ -43,8 +43,11 @@ export default function UserModal({
           className="space-y-4"
         >
           <div className="space-y-2">
-            <label className="text-sm font-medium">Username</label>
+            <label htmlFor="user-username" className="text-sm font-medium">
+              Username
+            </label>
             <Input
+              id="user-username"
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value)
@@ -55,15 +58,16 @@ export default function UserModal({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">
+            <label htmlFor="user-password" className="text-sm font-medium">
               Password{' '}
-              {user && (
+              {user !== undefined && (
                 <span className="text-muted-foreground text-xs">
                   (leave blank to keep current)
                 </span>
               )}
             </label>
             <Input
+              id="user-password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value)
@@ -74,8 +78,11 @@ export default function UserModal({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Role</label>
+            <label htmlFor="user-role" className="text-sm font-medium">
+              Role
+            </label>
             <select
+              id="user-role"
               value={role}
               onChange={(e) => {
                 setRole(e.target.value)
@@ -91,8 +98,11 @@ export default function UserModal({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Domain Access</label>
+            <label htmlFor="user-domain-mode" className="text-sm font-medium">
+              Domain Access
+            </label>
             <select
+              id="user-domain-mode"
               value={domainMode}
               onChange={(e) => {
                 setDomainMode(e.target.value as 'all' | 'selected')
@@ -106,8 +116,11 @@ export default function UserModal({
 
           {domainMode === 'selected' && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Specify Domains</label>
+              <label htmlFor="user-domains" className="text-sm font-medium">
+                Specify Domains
+              </label>
               <Input
+                id="user-domains"
                 value={domainsInput}
                 onChange={(e) => {
                   setDomainsInput(e.target.value)

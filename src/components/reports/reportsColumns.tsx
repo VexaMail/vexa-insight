@@ -95,15 +95,16 @@ export function getReportsColumns({
     {
       accessorKey: 'reportId',
       header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'reportId' } })
           }}
         >
           Report ID
           <SortIcon active={sortKey === 'reportId'} dir={sortDir} />
-        </div>
+        </button>
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
@@ -117,15 +118,16 @@ export function getReportsColumns({
     {
       accessorKey: 'orgName',
       header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'orgName' } })
           }}
         >
           Organization
           <SortIcon active={sortKey === 'orgName'} dir={sortDir} />
-        </div>
+        </button>
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
@@ -136,15 +138,16 @@ export function getReportsColumns({
     {
       accessorKey: 'beginDate',
       header: () => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'beginDate' } })
           }}
         >
           Date Range
           <SortIcon active={sortKey === 'beginDate'} dir={sortDir} />
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const report = row.original

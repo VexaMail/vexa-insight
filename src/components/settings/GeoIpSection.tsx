@@ -73,9 +73,12 @@ export function GeoIpSection({ apiKey }: Readonly<{ apiKey: string }>) {
 
       <div className="flex max-w-xl flex-col gap-4 pt-2">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">MaxMind License Key</label>
+          <label htmlFor="maxmind-license-key" className="text-sm font-medium">
+            MaxMind License Key
+          </label>
           <div className="flex gap-2">
             <input
+              id="maxmind-license-key"
               type="password"
               placeholder={
                 hasLicenseKey ? '••••••••••••••••' : 'Enter license key...'
@@ -118,7 +121,7 @@ export function GeoIpSection({ apiKey }: Readonly<{ apiKey: string }>) {
             </Button>
           </div>
 
-          {isUpdatingDb && progressData && (
+          {isUpdatingDb && progressData !== null ? (
             <div className="border-border/50 bg-background/50 flex flex-col gap-2 rounded-md border p-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-foreground font-medium">
@@ -136,16 +139,16 @@ export function GeoIpSection({ apiKey }: Readonly<{ apiKey: string }>) {
                   }}
                 />
               </div>
-              {etaText && (
+              {etaText !== null && etaText !== '' && (
                 <div className="text-muted-foreground text-right text-xs">
                   {etaText}
                 </div>
               )}
             </div>
-          )}
+          ) : null}
         </div>
 
-        {message && !isUpdatingDb && (
+        {message !== '' && !isUpdatingDb && (
           <p className="text-foreground text-sm font-medium">{message}</p>
         )}
       </div>

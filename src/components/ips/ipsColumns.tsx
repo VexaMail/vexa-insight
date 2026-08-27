@@ -53,8 +53,9 @@ export function getIpsColumns({
     {
       accessorKey: 'ip',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -69,7 +70,7 @@ export function getIpsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const ip = row.getValue<string>('ip')
@@ -87,8 +88,9 @@ export function getIpsColumns({
     {
       accessorKey: 'hostname',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -103,7 +105,7 @@ export function getIpsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const ip = row.getValue<string>('ip')
@@ -130,8 +132,9 @@ export function getIpsColumns({
     {
       accessorKey: 'fullyAlignedRate',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -146,7 +149,7 @@ export function getIpsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const rate = row.original.fullyAlignedRate
@@ -201,8 +204,9 @@ export function getIpsColumns({
     {
       accessorKey: 'lastSeen',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -217,7 +221,7 @@ export function getIpsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const lastSeen = row.original.lastSeen
@@ -239,8 +243,9 @@ export function getIpsColumns({
     {
       accessorKey: 'totalMessages',
       header: ({ column }) => (
-        <div
-          className="flex cursor-pointer items-center gap-1 select-none"
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === 'asc')
           }}
@@ -255,7 +260,7 @@ export function getIpsColumns({
           {!column.getIsSorted() && (
             <ArrowDown className="text-muted-foreground/30 ml-1 h-3 w-3" />
           )}
-        </div>
+        </button>
       ),
       cell: ({ row }) => {
         const val = row.original.totalMessages

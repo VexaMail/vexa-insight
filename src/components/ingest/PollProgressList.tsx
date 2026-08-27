@@ -55,7 +55,7 @@ export default function PollProgressList({
       </div>
 
       {/* Pipeline cards */}
-      <ul role="list" className="list-none space-y-3 p-0">
+      <ul className="list-none space-y-3 p-0">
         {items.map((item) => (
           <EmailPipelineCard key={item.id} item={item} />
         ))}

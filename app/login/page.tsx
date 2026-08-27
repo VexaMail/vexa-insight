@@ -37,7 +37,7 @@ export default function LoginPage() {
         </div>
 
         <form action={formAction} className="space-y-4">
-          {state?.error && (
+          {state !== undefined && state.error !== '' && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
               {state.error}
             </div>
@@ -66,18 +66,17 @@ export default function LoginPage() {
               >
                 Password
               </label>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
+              <button
+                type="button"
+                onClick={() => {
                   alert(
                     'For security reasons, password recovery in open-source deployments must be performed via the server console.\\n\\nPlease run the CLI recovery script on your server: npx tsx scripts/recovery.ts',
                   )
                 }}
-                className="text-xs text-blue-600 hover:underline dark:text-blue-400"
+                className="bg-transparent p-0 text-xs text-blue-600 hover:underline dark:text-blue-400"
               >
                 Forgot password?
-              </a>
+              </button>
             </div>
             <input
               id="password"

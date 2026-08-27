@@ -24,12 +24,10 @@ export default function EmailPipelineCard({
     progressLabel,
     handleToggleExpanded,
   } = useEmailPipelineCard({ item })
+  const metadataDate = item.emailDate ?? item.processedAt
 
   return (
-    <li
-      role="listitem"
-      className="glass-card overflow-hidden p-4 transition-shadow hover:shadow-lg"
-    >
+    <li className="glass-card overflow-hidden p-4 transition-shadow hover:shadow-lg">
       {/* ── Header ──────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -154,15 +152,15 @@ export default function EmailPipelineCard({
       </div>
 
       {/* ── Metadata ────────────────────────────────────────── */}
-      {(item.emailDate ?? item.processedAt) && (
+      {metadataDate !== undefined && metadataDate !== '' && (
         <dl className="border-border/50 text-muted-foreground mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t pt-3 text-xs">
-          {item.emailDate && (
+          {item.emailDate !== undefined && item.emailDate !== '' && (
             <div>
               <dt className="sr-only">Email date</dt>
               <dd>Email: {formatPollStatusTime(item.emailDate)}</dd>
             </div>
           )}
-          {item.processedAt && (
+          {item.processedAt !== undefined && item.processedAt !== '' && (
             <div>
               <dt className="sr-only">Processed at</dt>
               <dd>Processed: {formatPollStatusTime(item.processedAt)}</dd>
@@ -172,7 +170,7 @@ export default function EmailPipelineCard({
       )}
 
       {/* ── Details panel ───────────────────────────────────── */}
-      {expanded && (
+      {expanded ? (
         <div className="border-border/50 bg-surface-1 mt-3 rounded-lg border p-3">
           <div className="text-foreground text-xs font-semibold">
             Execution details
@@ -198,7 +196,7 @@ export default function EmailPipelineCard({
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </li>
   )
 }

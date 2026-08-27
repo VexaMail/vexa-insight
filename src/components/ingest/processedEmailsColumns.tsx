@@ -15,8 +15,9 @@ export function getProcessedEmailsColumns({
       header: ({ column }) => {
         const isSorted = column.getIsSorted()
         return (
-          <div
-            className="flex cursor-pointer items-center gap-1 select-none"
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
             onClick={() => {
               column.toggleSorting(isSorted === 'asc')
             }}
@@ -26,7 +27,7 @@ export function getProcessedEmailsColumns({
               active={isSorted !== false}
               dir={isSorted === 'asc' ? 'asc' : 'desc'}
             />
-          </div>
+          </button>
         )
       },
       cell: ({ row }) => (
@@ -41,8 +42,9 @@ export function getProcessedEmailsColumns({
       header: ({ column }) => {
         const isSorted = column.getIsSorted()
         return (
-          <div
-            className="flex cursor-pointer items-center gap-1 select-none"
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
             onClick={() => {
               column.toggleSorting(isSorted === 'asc')
             }}
@@ -52,7 +54,7 @@ export function getProcessedEmailsColumns({
               active={isSorted !== false}
               dir={isSorted === 'asc' ? 'asc' : 'desc'}
             />
-          </div>
+          </button>
         )
       },
       cell: ({ row }) => (
@@ -66,8 +68,9 @@ export function getProcessedEmailsColumns({
       header: ({ column }) => {
         const isSorted = column.getIsSorted()
         return (
-          <div
-            className="flex cursor-pointer items-center gap-1 select-none"
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
             onClick={() => {
               column.toggleSorting(isSorted === 'asc')
             }}
@@ -77,7 +80,7 @@ export function getProcessedEmailsColumns({
               active={isSorted !== false}
               dir={isSorted === 'asc' ? 'asc' : 'desc'}
             />
-          </div>
+          </button>
         )
       },
       cell: ({ row }) => {
