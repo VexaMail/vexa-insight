@@ -1,7 +1,6 @@
+import { getImapAccountsRow, getSettingsRow } from '@/services/settings-store'
 import type { SettingsPublic } from '@/types/settings'
 import { getAiSettingsPublic } from './getAiSettingsPublic'
-import { getImapAccountsRow } from './getImapAccountsRow'
-import { getSettingsRow } from './getSettingsRow'
 
 function getSettingsPublic(): SettingsPublic | null {
   const row = getSettingsRow()

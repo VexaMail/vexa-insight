@@ -1,13 +1,13 @@
 import { appSettings, getDb, imapAccounts } from '@/lib/db'
-import { getConfig } from '@/services/config/getConfig'
+import { getConfig } from '@/services/config'
 import { encryptSecret } from '@/services/crypto'
+import { SETTINGS_ID } from '@/services/settings-store'
 import type { SettingsUpdatePayload } from '@/types/settings'
 import { eq } from 'drizzle-orm'
 import { derivePasswordForWrite } from './derivePasswordForWrite'
 import { getExistingImapPasswords } from './getExistingImapPasswords'
 
 function updateSettings(payload: SettingsUpdatePayload): void {
-  const SETTINGS_ID = 1
   const db = getDb()
   const updates: Record<string, unknown> = { updatedAt: new Date() }
   const fields: (keyof SettingsUpdatePayload)[] = [

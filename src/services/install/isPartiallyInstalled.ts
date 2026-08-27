@@ -1,5 +1,5 @@
 import { getDb, users } from '@/lib/db'
-import { getSettingsRow } from '@/services/settings'
+import { getSettingsRow } from '@/services/settings-store'
 import { PLACEHOLDER_SECRET } from './placeholderSecret'
 
 export function isPartiallyInstalled(): boolean {

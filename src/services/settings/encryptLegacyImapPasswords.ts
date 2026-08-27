@@ -1,7 +1,7 @@
 import { getDb, imapAccounts } from '@/lib/db'
 import { encryptSecret, isEncrypted } from '@/services/crypto'
+import { getSettingsRow } from '@/services/settings-store'
 import { eq } from 'drizzle-orm'
-import { getSettingsRow } from './getSettingsRow'
 
 /**
  * One-shot migration that walks `imap_accounts` and replaces any plaintext

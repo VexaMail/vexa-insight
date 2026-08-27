@@ -1,6 +1,6 @@
 import { requireAdminAuth } from '@/services/api'
 import { listFolders } from '@/services/imap'
-import { getImapAccountsRow } from '@/services/settings'
+import { getImapAccountsRow } from '@/services/settings-store'
 import type { ImapAccountConfig } from '@/types/config'
 import { imapFoldersRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'

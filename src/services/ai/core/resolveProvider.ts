@@ -1,4 +1,4 @@
-import { getSettingsRow } from '@/services/settings'
+import { getSettingsRow } from '@/services/settings-store'
 import type { AIProviderAdapter } from '../contracts'
 import { createAnthropicAdapter } from '../providers/anthropic/createAnthropicAdapter'
 import { createGeminiAdapter } from '../providers/gemini/createGeminiAdapter'

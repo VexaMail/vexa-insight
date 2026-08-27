@@ -1,6 +1,6 @@
+import { getSettingsRow } from '@/services/settings-store'
 import type { SettingsForAdmin } from '@/types/settings'
 import { getSettingsPublic } from './getSettingsPublic'
-import { getSettingsRow } from './getSettingsRow'
 
 /**
  * Returns public settings plus the API key for server-rendered admin pages only.

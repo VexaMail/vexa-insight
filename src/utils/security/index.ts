@@ -2,5 +2,4 @@ export { buildProdContentSecurityPolicy } from './buildProdContentSecurityPolicy
 export { buildProdCspDirectives } from './buildProdCspDirectives'
 export { buildSecurityHeaders } from './buildSecurityHeaders'
 export { createCspNonce } from './createCspNonce'
-export { getAllowedOriginHostsFromEnv } from './getAllowedOriginHostsFromEnv'
 export { getAllowedOriginsFromEnv } from './getAllowedOriginsFromEnv'
