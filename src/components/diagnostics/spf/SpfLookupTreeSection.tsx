@@ -19,7 +19,7 @@ export function SpfLookupTreeSection({
 
       {tree ? (
         <>
-          {tree.exceedsLookupLimit && (
+          {tree.exceedsLookupLimit === true && (
             <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
               <h4 className="mb-1 text-sm font-semibold text-red-500">
                 Lookup limit exceeded

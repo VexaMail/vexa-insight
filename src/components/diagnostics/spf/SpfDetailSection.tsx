@@ -21,7 +21,7 @@ export function SpfDetailSection({ dns }: Readonly<SpfDetailSectionProps>) {
         exampleValue={`v=spf1 include:mail.example.net ip4:203.0.113.10 -all`}
       />
 
-      {dns.spfWarning && (
+      {dns.spfWarning !== null && dns.spfWarning !== '' && (
         <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
           <h4 className="mb-1 text-sm font-semibold text-red-500">
             Important Notice

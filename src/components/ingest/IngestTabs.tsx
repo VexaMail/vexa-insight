@@ -31,7 +31,7 @@ export default function IngestTabs({
           }}
         >
           Poll Results
-          {isRunning && (
+          {isRunning === true && (
             <span className="bg-info/10 text-info ml-2 rounded-full px-2 py-0.5 text-xs">
               Running
             </span>

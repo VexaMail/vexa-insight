@@ -26,7 +26,7 @@ export default function AiInsightCard({
       <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
         {renderInlineCode(insight.explanation)}
       </p>
-      {insight.recommendation && (
+      {insight.recommendation !== null && insight.recommendation !== '' && (
         <p className="mt-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
           <span className="font-semibold">Recommendation:</span>{' '}
           {renderInlineCode(insight.recommendation)}

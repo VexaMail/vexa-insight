@@ -41,8 +41,9 @@ export function FilterCombobox({
             <Filter className="text-muted-foreground h-4 w-4 shrink-0" />
             {selectedItem ? (
               <>
-                {selectedItem.code &&
-                  renderIcon &&
+                {selectedItem.code !== undefined &&
+                  selectedItem.code !== '' &&
+                  renderIcon !== undefined &&
                   renderIcon(selectedItem.code)}
                 <span className="truncate">{selectedItem.label}</span>
               </>
@@ -91,7 +92,10 @@ export function FilterCombobox({
                       value === item.value ? 'opacity-100' : 'opacity-0',
                     )}
                   />
-                  {item.code && renderIcon && renderIcon(item.code)}
+                  {item.code !== undefined &&
+                    item.code !== '' &&
+                    renderIcon !== undefined &&
+                    renderIcon(item.code)}
                   <span className="truncate pl-1">{item.label}</span>
                 </CommandItem>
               ))}

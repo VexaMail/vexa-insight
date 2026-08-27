@@ -13,9 +13,10 @@ export function ProtocolExplainer({
         <p className="text-muted-foreground text-sm leading-relaxed">
           {summary}
         </p>
-        {(exampleHost || exampleValue) && (
+        {((exampleHost !== undefined && exampleHost !== '') ||
+          (exampleValue !== undefined && exampleValue !== '')) && (
           <div className="grid gap-2 md:grid-cols-2">
-            {exampleHost && (
+            {exampleHost !== undefined && exampleHost !== '' && (
               <div className="bg-background rounded-lg border p-3">
                 <p className="text-muted-foreground text-[11px] font-semibold tracking-wide uppercase">
                   Example Host
@@ -25,7 +26,7 @@ export function ProtocolExplainer({
                 </code>
               </div>
             )}
-            {exampleValue && (
+            {exampleValue !== undefined && exampleValue !== '' && (
               <div className="bg-background rounded-lg border p-3">
                 <p className="text-muted-foreground text-[11px] font-semibold tracking-wide uppercase">
                   Example Value

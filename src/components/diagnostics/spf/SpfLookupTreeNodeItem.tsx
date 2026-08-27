@@ -12,17 +12,17 @@ export function SpfLookupTreeNodeItem({
         <span className="text-muted-foreground text-xs">
           {node.lookupCount} lookup{node.lookupCount === 1 ? '' : 's'}
         </span>
-        {node.missingRecord && (
+        {node.missingRecord === true && (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             No SPF record
           </span>
         )}
-        {node.cycleDetected && (
+        {node.cycleDetected === true && (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             Cycle detected
           </span>
         )}
-        {node.exceedsLookupLimit && (
+        {node.exceedsLookupLimit === true && (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             Exceeds 10-lookup limit
           </span>
@@ -40,7 +40,7 @@ export function SpfLookupTreeNodeItem({
           <span className="font-mono">{node.macroMechanisms.join(' ')}</span>
         </p>
       )}
-      {node.ignoredRedirect && (
+      {node.ignoredRedirect !== null && node.ignoredRedirect !== '' && (
         <p className="pl-3 text-xs text-amber-500">
           <span className="font-mono">redirect={node.ignoredRedirect}</span> is
           ignored because this record has an{' '}

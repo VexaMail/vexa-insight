@@ -33,7 +33,7 @@ export function ProtocolStatusRow({
     <div className="hover:bg-muted/50 flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors">
       <span className="text-foreground text-sm font-medium">{protocol}</span>
       <div className="flex items-center gap-2">
-        {detail && (
+        {detail !== undefined && detail !== '' && (
           <span className="text-muted-foreground hidden text-xs sm:inline">
             {detail}
           </span>

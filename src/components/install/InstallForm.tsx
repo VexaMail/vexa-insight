@@ -136,7 +136,7 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
         </>
       )}
 
-      {state.message && (
+      {state.message !== '' && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {state.message}
         </p>

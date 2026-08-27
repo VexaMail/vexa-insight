@@ -58,7 +58,7 @@ export function DateRangeFilterContent({
         </SelectContent>
       </Select>
 
-      {isCustom && (
+      {isCustom === true && (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <Button

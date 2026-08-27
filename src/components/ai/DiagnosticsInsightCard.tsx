@@ -67,9 +67,9 @@ export function DiagnosticsInsightCard({
             {renderInlineCode(actionText)}
           </p>
 
-          {showCodeBlock && (
+          {showCodeBlock === true && (
             <div className="mt-2 space-y-1.5">
-              {insight.recordHost && (
+              {insight.recordHost !== null && insight.recordHost !== '' && (
                 <div>
                   <p className="text-muted-foreground text-xs">Record:</p>
                   <pre className="overflow-x-auto rounded bg-zinc-100 px-2 py-1 text-xs break-all whitespace-pre-wrap dark:bg-zinc-800">
@@ -86,14 +86,16 @@ export function DiagnosticsInsightCard({
             </div>
           )}
 
-          {insight.verifyCommand && showCodeBlock && (
-            <div className="mt-2">
-              <p className="text-muted-foreground text-xs">Verify:</p>
-              <pre className="overflow-x-auto rounded bg-zinc-100 px-2 py-1 text-xs break-all whitespace-pre-wrap dark:bg-zinc-800">
-                <code>{insight.verifyCommand}</code>
-              </pre>
-            </div>
-          )}
+          {insight.verifyCommand !== null &&
+            insight.verifyCommand !== '' &&
+            showCodeBlock === true && (
+              <div className="mt-2">
+                <p className="text-muted-foreground text-xs">Verify:</p>
+                <pre className="overflow-x-auto rounded bg-zinc-100 px-2 py-1 text-xs break-all whitespace-pre-wrap dark:bg-zinc-800">
+                  <code>{insight.verifyCommand}</code>
+                </pre>
+              </div>
+            )}
         </div>
       </div>
     </div>

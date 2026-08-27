@@ -40,7 +40,7 @@ export default function ProcessedEmailsTable({
       </div>
 
       {/* Detail Modal */}
-      {viewingEmail && (
+      {viewingEmail != null && (
         <div className="bg-background fixed inset-0 z-50 flex flex-col">
           <div className="border-border flex h-14 shrink-0 items-center justify-between border-b px-6">
             <h3 className="font-display text-foreground text-sm font-semibold">
@@ -101,17 +101,19 @@ export default function ProcessedEmailsTable({
                   File Content
                 </div>
                 <div>
-                  {contentLoading && (
+                  {contentLoading === true && (
                     <div className="flex items-center justify-center p-12">
                       <Loader2 className="text-primary h-8 w-8 animate-spin" />
                     </div>
                   )}
-                  {contentError && (
+                  {contentError !== null && contentError !== '' && (
                     <div className="text-danger bg-danger/5 flex items-center justify-center rounded-md p-6 text-center text-sm">
                       {contentError}
                     </div>
                   )}
-                  {fileContent && <LazyXmlViewer rawXml={fileContent} />}
+                  {fileContent !== null && fileContent !== '' && (
+                    <LazyXmlViewer rawXml={fileContent} />
+                  )}
                 </div>
               </div>
             </div>

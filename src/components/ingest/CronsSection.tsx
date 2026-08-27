@@ -117,7 +117,7 @@ export default function CronsSection({
               {lastRunFormatted}
             </span>
           </div>
-          {(isRunning || runRequested) && (
+          {(isRunning === true || runRequested === true) && (
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Processed</span>
               <span className="text-foreground font-medium">
@@ -128,7 +128,7 @@ export default function CronsSection({
           )}
         </div>
 
-        {(isRunning || runRequested) && (
+        {(isRunning === true || runRequested === true) && (
           <EngineProgress
             currentProcessed={currentProcessed}
             totalEmails={totalEmails}

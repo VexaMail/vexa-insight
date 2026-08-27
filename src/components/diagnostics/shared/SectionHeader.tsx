@@ -13,7 +13,9 @@ export function SectionHeader({
       {icon}
       <div className="flex items-center gap-2">
         <h3 className="text-foreground text-lg font-bold">{title}</h3>
-        {helpText && <InfoTooltip content={helpText} />}
+        {helpText !== undefined && helpText !== '' && (
+          <InfoTooltip content={helpText} />
+        )}
       </div>
       {found ? (
         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-500">

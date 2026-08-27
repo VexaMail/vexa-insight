@@ -84,7 +84,7 @@ export default function LatestReportsTable() {
                     {r.orgName} ·{' '}
                     {formatReportDateRange(r.beginDate, r.endDate)}
                   </span>
-                  {domain && (
+                  {domain != null && (
                     <>
                       <span className="shrink-0">·</span>
                       <Link
