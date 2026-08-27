@@ -1,6 +1,3 @@
-export type { ImapCreateFolderRequestInput } from './ImapCreateFolderRequestInput'
 export { imapCreateFolderRequestSchema } from './imapCreateFolderRequestSchema'
-export type { ImapFoldersRequestInput } from './ImapFoldersRequestInput'
 export { imapFoldersRequestSchema } from './imapFoldersRequestSchema'
-export type { ImapTestRequestInput } from './ImapTestRequestInput'
 export { imapTestRequestSchema } from './imapTestRequestSchema'

@@ -260,24 +260,21 @@ passes today; each entry below is a pre-existing finding held in place by a
 named exemption rather than a wildcard, so new violations of the same rule still
 fail.
 
-- [ ] Delete or wire up the 23 dead files listed by name in `knip.config.ts`.
-      Knip could not see them before adoption because the old `knip.json` set
-      `project` to `["tsconfig.json"]`, so it scanned almost nothing. Verify
-      with `pnpm run knip` after removing each name from the `ignore` list.
-- [ ] Resolve the 124 unused exports (83 exports, 41 types). Nearly all are
-      re-exports from slice `index.ts` barrels that no consumer goes through,
-      plus one dead export each in 33 concrete files. `knip.config.ts` holds
-      `exports` and `types` at `warn` for this reason and nothing else; every
-      other knip rule is `error`. Raise them back once the count reaches zero:
-      `pnpm exec knip --include exports,types`.
+The knip exemptions are gone as of 2026-08-27: the 23 dead files, the 124 unused
+exports and the nine unused dependencies were deleted rather than ignored, so
+`knip.config.ts` no longer carries an `ignore` list, an `ignoreDependencies`
+list, or the `warn` override on `exports` and `types`. What remains below is
+what that pass did not reach.
+
 - [ ] Route imports through the slice barrels or delete them, then drop the
       `viaNot` narrowing from `no-circular` in `.dependency-cruiser.cjs`. Every
       cycle in the repo today runs through a slice's own `index.ts`; genuine
-      module-to-module cycles already fail the gate.
-- [ ] Remove the nine dependencies frozen in `ignoreDependencies` in
-      `knip.config.ts` once confirmed dead: seven unused `@radix-ui/*` packages,
-      `mailparser` (reached only by the `types/mailparser.d.ts` shim) and
-      `ts-morph` (no reference anywhere).
+      module-to-module cycles already fail the gate. Measured 2026-08-27 by
+      removing the narrowing: 77 cycles, all barrel-mediated, e.g.
+      `BimiDetailSection -> diagnostics/shared -> InfoTooltip -> ui -> KpiCard     -> diagnostics -> BimiDetailSection`.
+      Deleting the unused re-exports did not touch them, because these barrels
+      are the ones consumers really do import through; closing this means
+      rewriting those imports to concrete paths, which is its own diff.
 - [ ] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
       `@busirocket/eslint-config` factories. It assembles `eslint-config-next`
       plus boundaries, code-policy, promise, security, sonarjs, unicorn and

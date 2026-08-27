@@ -6,6 +6,38 @@
 
 ### 2026-08
 
+- [x] 2026-08-27 — **Baseline gate debt:** Delete the dead code the knip
+      exemptions were holding in place, and raise the rules back to `error`.
+  - Context: adopting the shared toolchain surfaced 124 unused exports, 23
+    unused files and nine unused dependencies. They were parked — `exports` and
+    `types` set to `warn`, the files and dependencies named in `ignore` and
+    `ignoreDependencies` — so the gate went green without the findings being
+    addressed. A quality gate that reports 124 findings and passes is not gating
+    anything.
+  - Result: 60 files deleted, 1,351 lines net. The 33 concrete dead files were
+    each reachable only from their own slice barrel, and the barrel entry was
+    itself unreferenced — a dead chain, not a public API. Four were duplicate
+    definitions of a live type elsewhere, and `components/domains/DomainRow.ts`
+    was worse than dead: a `DomainRow` aliasing `DomainsTableRow`, colliding by
+    name with the unrelated `{ id, name }` in `types/reports/DomainRow.ts`.
+    `knip.config.ts` now carries no `ignore` list, no `ignoreDependencies` and
+    no rule override; the nine dependencies came out of `package.json` along
+    with the orphaned `types/mailparser.d.ts` shim.
+  - Also fixed: `deps:graph` cruised every source directory except `scripts`, so
+    the three modules `scripts/run-ai-eval.ts` alone imports read as orphans the
+    moment their barrel was deleted. Adding `scripts` to the cruise list closed
+    that blind spot rather than the files being wrongly deleted.
+  - Evidence: `pnpm run check:ci` green (540 tests, 75 files), `pnpm run build`
+    green, `pnpm run check:quality` and `pnpm run check:security` both exit 0
+    with knip at `error` on every rule. Knip reports zero unused files, exports
+    and dependencies; dependency-cruiser zero violations across 1,649 modules;
+    type-coverage 99.61%.
+  - Not closed: the seven remaining knip configuration hints come from
+    `@busirocket/quality-config`, whose own source documents them and states "Do
+    not filter the list consumer-side to silence it". They are the shared
+    package's trade-off, not this repo's.
+  - Files: `knip.config.ts`, `package.json`, plus the 60 deleted modules.
+
 - [x] 2026-08-27 — **Infrastructure:** Stop the systemd unit reporting every
       restart as a crash.
   - Symptom seen on nova: each restart logged

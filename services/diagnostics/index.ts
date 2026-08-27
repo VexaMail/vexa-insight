@@ -1,5 +1,4 @@
 export * from './buildDiagnosticsAdminGuides'
 export * from './computeDomainScore'
-export * from './getDiagnosticRecommendations'
 export * from './getDiagnosticStats'
 export * from './getDomainDnsRecords'

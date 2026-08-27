@@ -1,7 +1,6 @@
 export { IpAddressLink } from './IpAddressLink'
 export { default as IpDetailSummary } from './IpDetailSummary'
 export { IpDisplay } from './IpDisplay'
-export type { IpDisplayProps } from './IpDisplayProps'
 export * from './IpEventLogs'
 export { IpFlag } from './IpFlag'
 export * from './IpRelatedDomains'

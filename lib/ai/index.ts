@@ -1,1 +1,0 @@
-export { deriveToneFromSeverity } from './deriveToneFromSeverity'

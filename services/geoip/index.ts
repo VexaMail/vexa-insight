@@ -1,6 +1,5 @@
 export { updateGeoIpDb } from './admin'
 export * from './createUpdateDbStream'
-export { geoip } from './geoip'
 export { getGeoIpAdminSettings } from './getGeoIpAdminSettings'
 export { refreshIpAddresses } from './refresh'
 export { setGeoIpMaxmindLicenseKey } from './setGeoIpMaxmindLicenseKey'

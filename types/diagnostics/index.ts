@@ -1,5 +1,4 @@
 export type { BimiResult } from './BimiResult'
-export type { DiagnosticRecommendation } from './DiagnosticRecommendation'
 export type { DiagnosticsAdminGuide } from './DiagnosticsAdminGuide'
 export type { DiagnosticStats } from './DiagnosticStats'
 export type { DkimKeyAssessment } from './DkimKeyAssessment'

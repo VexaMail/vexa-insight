@@ -108,6 +108,18 @@ and this project adheres to
   and documents the new install-token flow, the `VEXA_ALLOW_REMOTE_INSTALL` env
   var, and `VEXA_ALLOWED_ORIGINS`.
 
+### Removed
+
+- **60 unreachable modules**, together with nine dependencies nothing imported
+  (`@radix-ui/react-collapsible`, `-label`, `-progress`, `-separator`,
+  `-switch`, `-toggle`, `-toggle-group`, `mailparser` and `ts-morph`). Each
+  deleted module was reachable only from a slice `index.ts` whose own re-export
+  no consumer went through. Four were duplicate definitions of a type that also
+  lives elsewhere; one of those, `components/domains/DomainRow.ts`, declared a
+  `DomainRow` that collided by name with an unrelated `DomainRow` in
+  `types/reports/`. No public API changed: nothing outside the barrels
+  referenced any of them.
+
 ### Fixed
 
 - **The systemd unit no longer reports every restart as a crash.** Next.js runs
