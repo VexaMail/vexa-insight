@@ -57,7 +57,7 @@ server {
   }
 
   # Healthcheck used by k8s/docker — bypasses access logs.
-  location = /api/health {
+  location = /api/v1/health {
     access_log off;
     proxy_pass http://vexa;
   }
@@ -130,8 +130,8 @@ for the cron race.
 
 ## Healthcheck
 
-`/api/health` returns `200 OK` with `{ "ok": true }` when the app is listening
-and the DB is reachable. Use it for:
+`/api/v1/health` returns `200 OK` with `{ "data": { "status": "ok" } }` when the
+app is listening and the DB is reachable. Use it for:
 
 - Docker `HEALTHCHECK` (already configured in the published image).
 - Kubernetes `livenessProbe` and `readinessProbe`.
@@ -142,13 +142,13 @@ Example k8s probe:
 ```yaml
 livenessProbe:
   httpGet:
-    path: /api/health
+    path: /api/v1/health
     port: 3000
   initialDelaySeconds: 30
   periodSeconds: 30
 readinessProbe:
   httpGet:
-    path: /api/health
+    path: /api/v1/health
     port: 3000
   initialDelaySeconds: 5
   periodSeconds: 10
@@ -170,7 +170,7 @@ After config changes:
 curl -I https://dmarc.example.com
 
 # 2. The health endpoint must return 200 through the proxy.
-curl -sf https://dmarc.example.com/api/health
+curl -sf https://dmarc.example.com/api/v1/health
 
 # 3. Server Actions must not return 403 (origin mismatch).
 #    Easiest check: open the dashboard, click "Save" on any setting.
