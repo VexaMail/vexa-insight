@@ -6,6 +6,27 @@
 
 ### 2026-08
 
+- [x] 2026-08-28 — **Baseline gate debt:** Finish the ESLint hardening source
+      fixes (the last 193 of 886).
+  - Result: 52 `jsx-a11y` (sortable header divs became real buttons with
+    identical rendering, labels got htmlFor/id, redundant roles and an invalid
+    anchor fixed), 85 `react/jsx-no-leaked-render` (type-matched comparisons),
+    31 `no-unsafe-*` (typed `JSON.parse`/`res.json()` boundaries, shared
+    `parseAllowedDomains`), and the 21 `detect-non-literal-fs-filename` audited
+    as false positives (constant/env/journal paths only) to be resolved as rule
+    configuration at factory adoption. No rule disabled, no `eslint-disable`
+    added.
+  - Delegation: three Codex batches with explicit 11/17/17-file lists, run
+    detached via nohup (the harness background wrapper hangs codex exec); every
+    batch verified here against `eslint.audit.config.ts` before commit.
+  - Evidence: repo-wide audit run reports only the 21 documented fs findings;
+    `check:ci` green (76 files, 542 tests, migrations OK); `check` green.
+  - Commits:
+    `fix(a11y): make sortable headers real buttons and wire labels to controls`,
+    `fix(lint): give leaked-render guards explicit comparisons, first half` and
+    `second half`,
+    `fix: type the untyped boundaries behind 31 no-unsafe-* lint findings`,
+    `chore(lint): add the scratch audit config for the remaining hardening`.
 - [x] 2026-08-28 — **Artificial Intelligence:** Confirm whether OpenAI's
       reasoning models accept `response_format: { type: 'json_object' }`.
   - Result: they do not, on chat completions. OpenAI support (quoted in the

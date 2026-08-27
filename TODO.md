@@ -160,25 +160,28 @@ is what those passes did not reach.
       is a symbol or two. Do not widen the list to a glob — named entries are
       what keeps a new deep import failing.
 
-- [~] Finish the ESLint hardening: the a11y and leaked-render groups are left.
-  This is the same work as adopting `@busirocket/eslint-config`, approached from
-  the other end — fix the source first, adopt the factories last, so the swap
-  becomes a no-op. 693 were done through 2026-08-27; on 2026-08-28 the 31
-  `no-unsafe-*` findings outside the a11y file set were fixed and committed
-  (untyped `JSON.parse`/`res.json()` boundaries), and the 21
-  `security/detect-non-literal-fs-filename` findings were audited one by one:
-  every flagged path is built from constants, `process.cwd()`, env, or drizzle's
-  own migration journal — none is reachable from request input
-  (`applySqlFile`/`runMigrations` read repo-owned migration files,
-  `writeEvalArtifact` a constant dir, `updateDb` the env data dir, the
-  self-update log/audit fixed paths, tests their fixtures). The finding set is
-  documented false positives; resolve it at factory-adoption time as rule
-  configuration, not per-line disables. Still open: 52 `jsx-a11y` in 11 files
-  and 85 `react/jsx-no-leaked-render` in 38 files (Codex batches with explicit
-  file lists were in flight 2026-08-28; a run given a whole rule group reads
-  forever and never writes). The scratch `eslint.audit.config.ts` at the repo
-  root enumerates all four groups against the base config; delete it (and its
-  `tsconfig.json` exclude entry) when the rules land in `eslint.config.ts`.
+- [ ] Adopt the `@busirocket/eslint-config` factories now that the source is
+      fixed. The 886-violation hardening finished 2026-08-28: all of `jsx-a11y`,
+      `react/jsx-no-leaked-render` and `no-unsafe-*` are at zero against the
+      scratch `eslint.audit.config.ts`, with no rule disabled and no
+      `eslint-disable` added anywhere. The only remaining findings are the 21
+      `security/detect-non-literal-fs-filename`, audited one by one on
+      2026-08-28: every flagged path is built from constants, `process.cwd()`,
+      env, or drizzle's own migration journal — none is reachable from request
+      input — so resolve them at adoption time as rule configuration (off for
+      `test/**`, and either off or documented for the seven server files), not
+      per-line disables. Adoption itself: add
+      `@busirocket/eslint-config@^0.7.3`, point `eslint.config.ts` at its
+      factories, confirm the swap reports zero new errors, then delete
+      `eslint.audit.config.ts` plus its `tsconfig.json` exclude and
+      `allowDefaultProject` entries.
+
+- [ ] Fix the a11y Vitest config alias: it maps `@` to the repository root
+      instead of `src/`, so `vitest.a11y.config.ts` resolves imports differently
+      from the app and the main test config. Noticed 2026-08-28 by a Codex
+      verification run that had to correct the alias in a disposable mirror
+      before component checks would run. Smallest next step: point the alias at
+      `./src` and run the a11y suite.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
