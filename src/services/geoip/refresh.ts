@@ -1,10 +1,11 @@
 import { getDb, ipAddresses } from '@/lib/db'
 import { eq, isNull, lt, or } from 'drizzle-orm'
-import { geoip } from './geoip'
+import { getGeoip } from './getGeoip'
 import { THIRTY_DAYS_MS } from './thirtyDaysMs'
 
 export async function refreshIpAddresses(batchSize: number = 500) {
   const db = getDb()
+  const geoip = await getGeoip()
   const thirtyDaysAgo = new Date(Date.now() - THIRTY_DAYS_MS)
 
   // Select IPs that are missing country code, locationLastUpdate, or are older than 30 days

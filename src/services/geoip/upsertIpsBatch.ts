@@ -1,7 +1,7 @@
 import { getDb, ipAddresses, ipHostnameEnrichments } from '@/lib/db'
 import { normalizeIp } from '@/utils/geoip'
 import { eq, inArray } from 'drizzle-orm'
-import { geoip } from './geoip'
+import { getGeoip } from './getGeoip'
 import { THIRTY_DAYS_MS } from './thirtyDaysMs'
 
 /**
@@ -22,6 +22,7 @@ export async function upsertIpsBatch(
   ips: readonly string[],
 ): Promise<Map<string, number>> {
   const db = getDb()
+  const geoip = await getGeoip()
   const normalized = [...new Set(ips.map(normalizeIp).filter(Boolean))]
   const result = new Map<string, number>()
   if (normalized.length === 0) return result

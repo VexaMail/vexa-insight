@@ -1,11 +1,12 @@
 import { getDb, ipAddresses } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 import { scheduleLookup } from '../ip-hostname/scheduleLookup'
-import { geoip } from './geoip'
+import { getGeoip } from './getGeoip'
 import { THIRTY_DAYS_MS } from './thirtyDaysMs'
 
 export async function upsertIp(ipStr: string): Promise<number> {
   const db = getDb()
+  const geoip = await getGeoip()
   // Basic validation/normalization of IP (e.g. trim whitespace, handle basic IPv6 wrappers)
   const normalizedIp = ipStr.trim().replace(/^\[|\]$/g, '')
   if (!normalizedIp) throw new Error('Invalid IP address')
