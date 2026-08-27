@@ -1,3 +1,12 @@
+# Packages published by this organisation are exempt from the minimum release
+# age. That policy exists to let a compromised third-party release be caught
+# and unpublished before it reaches a build; it buys nothing against a registry
+# account we control and publish from ourselves, and without this exemption
+# every internal release blocks every deploy for a full day. Third-party
+# packages stay subject to the policy.
+minimumReleaseAgeExclude:
+  - '@busirocket/*'
+
 allowBuilds:
   better-sqlite3: true
   esbuild: true

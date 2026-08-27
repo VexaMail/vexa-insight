@@ -134,6 +134,19 @@ and this project adheres to
 
 ### Fixed
 
+- **`pnpm install` no longer fails outside a git checkout.** The `prepare`
+  script ran `lefthook install` unconditionally, which exits 128 with
+  `fatal: not a git repository` anywhere the repository was copied rather than
+  cloned — the rsync-based deploy, a Docker build, any CI step without `.git`.
+  It now installs the hooks when there is a repository and says why it skipped
+  when there is not.
+- **First-party packages are exempt from the minimum release age.** Every
+  release of `@busirocket/quality-config` blocked every deploy for a full day:
+  `pnpm install --frozen-lockfile` rejects lockfile entries younger than the
+  policy window. That window exists so a compromised third-party release can be
+  caught and unpublished before it reaches a build, which buys nothing against a
+  registry account we publish from ourselves. `minimumReleaseAgeExclude` now
+  names the scope; third-party packages stay subject to the policy.
 - **The systemd unit no longer reports every restart as a crash.** Next.js runs
   its graceful shutdown on `SIGTERM` and then exits `143` deliberately, so Node
   reports a signal termination rather than a normal exit. `deploy/vexa.service`

@@ -52,7 +52,7 @@
     "check:migrations": "bash scripts/check-migrations.sh",
     "perf:check": "pnpm build && lhci autorun --config=.lighthouserc.json",
     "smoke": "bash scripts/smoke.sh",
-    "prepare": "lefthook install",
+    "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && lefthook install || echo 'prepare: not a git repository, skipping hook install'",
     "lint:suppress": "eslint . --suppress-all",
     "lint:prune": "eslint . --prune-suppressions",
     "dupes": "baseline-dupes . --threshold 2.9",
