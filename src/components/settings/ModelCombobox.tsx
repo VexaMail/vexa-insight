@@ -70,7 +70,7 @@ export function ModelCombobox({
               {savedModelMissing ? `${value} (unavailable)` : displayLabel}
             </span>
             <span className="flex items-center gap-1">
-              {isLoading && (
+              {isLoading === true && (
                 <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
               )}
               <ChevronsUpDown className="text-muted-foreground h-4 w-4 shrink-0 opacity-50" />
@@ -100,7 +100,7 @@ export function ModelCombobox({
               }}
               onKeyDown={handleKeyDown}
             />
-            {query && (
+            {query !== '' && (
               <button
                 type="button"
                 onClick={() => {
@@ -142,7 +142,7 @@ export function ModelCombobox({
               <span className="text-muted-foreground">Default (auto)</span>
             </button>
 
-            {filtered.length === 0 && query && (
+            {filtered.length === 0 && query !== '' && (
               <div className="text-muted-foreground px-2 py-6 text-center text-sm">
                 No models match &quot;{query}&quot;
               </div>
@@ -188,7 +188,9 @@ export function ModelCombobox({
         </PopoverContent>
       </Popover>
 
-      {error && <p className="text-warning text-xs">{error}</p>}
+      {error != null && error !== '' && (
+        <p className="text-warning text-xs">{error}</p>
+      )}
     </div>
   )
 }

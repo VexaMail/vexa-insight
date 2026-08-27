@@ -95,7 +95,7 @@ export default function ImapAccountsSection({
               </button>
 
               {/* Expanded form */}
-              {isExpanded && (
+              {isExpanded === true && (
                 <div className="border-border/30 space-y-3 border-t p-4">
                   <div className="flex items-center justify-end gap-2">
                     <Button
@@ -307,7 +307,10 @@ export default function ImapAccountsSection({
                       <label className="flex items-center gap-2 text-xs">
                         <input
                           type="checkbox"
-                          checked={acc.moveToTrashAfterProcess && !moveToFolder}
+                          checked={
+                            acc.moveToTrashAfterProcess === true &&
+                            moveToFolder === false
+                          }
                           disabled={moveToFolder}
                           onChange={(e) => {
                             onUpdate(index, {
@@ -346,7 +349,7 @@ export default function ImapAccountsSection({
                           Move to a folder
                         </span>
                       </label>
-                      {moveToFolder && acc.id > 0 && (
+                      {moveToFolder === true && acc.id > 0 && (
                         <FolderPicker
                           accountId={acc.id}
                           apiKey={apiKey}
@@ -356,7 +359,7 @@ export default function ImapAccountsSection({
                           }}
                         />
                       )}
-                      {moveToFolder && acc.id === 0 && (
+                      {moveToFolder === true && acc.id === 0 && (
                         <p className="text-muted-foreground text-xs italic">
                           Save the account first to pick a folder.
                         </p>

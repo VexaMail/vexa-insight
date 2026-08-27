@@ -73,8 +73,10 @@ export function FolderPicker({
           <FolderPlus className="h-3.5 w-3.5" />
         </Button>
       </div>
-      {state.error && <p className="text-danger text-xs">{state.error}</p>}
-      {showCreate && (
+      {state.error != null && state.error !== '' && (
+        <p className="text-danger text-xs">{state.error}</p>
+      )}
+      {showCreate === true && (
         <div className="space-y-1.5">
           <Input
             aria-label="New folder path"
@@ -86,7 +88,9 @@ export function FolderPicker({
             placeholder="e.g. Processed or INBOX/Processed"
             className="bg-card border-border/50 text-xs"
           />
-          {createError && <p className="text-danger text-xs">{createError}</p>}
+          {createError != null && createError !== '' && (
+            <p className="text-danger text-xs">{createError}</p>
+          )}
           <div className="flex gap-2">
             <Button
               type="button"

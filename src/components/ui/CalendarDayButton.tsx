@@ -24,7 +24,7 @@ export function CalendarDayButton({
       size="icon"
       data-day={day.date.toLocaleDateString()}
       data-selected-single={
-        modifiers.selected &&
+        modifiers.selected === true &&
         !modifiers.range_start &&
         !modifiers.range_end &&
         !modifiers.range_middle

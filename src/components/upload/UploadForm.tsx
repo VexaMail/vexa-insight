@@ -64,7 +64,7 @@ export default function UploadForm() {
           >
             {status === 'loading' ? 'Uploading…' : 'Upload Report'}
           </Button>
-          {message && (
+          {message !== '' && (
             <div
               role="status"
               className={`flex items-start gap-2 rounded-lg p-3 text-sm ${

@@ -93,7 +93,7 @@ export function IpEventLogs({
               </div>
 
               {/* Source Report */}
-              {row.reportId && (
+              {row.reportId !== '' && (
                 <div className="flex max-w-[200px] items-center space-x-1.5 rounded border border-gray-200 bg-white px-2 py-1 text-gray-400 shadow-sm sm:max-w-xs dark:border-gray-800 dark:bg-[#0A0A0A]">
                   <span className="font-semibold">Context:</span>
                   <span className="truncate font-medium">{row.reportId}</span>
@@ -104,7 +104,7 @@ export function IpEventLogs({
         ))}
       </div>
 
-      {hasMore && (
+      {hasMore === true && (
         <div className="flex justify-center pt-6">
           <button
             onClick={() => {

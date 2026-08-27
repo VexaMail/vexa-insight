@@ -34,7 +34,7 @@ export function XmlViewerCollapsible({
           />
           Raw XML
         </div>
-        {isOpen && (
+        {isOpen === true && (
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -56,7 +56,7 @@ export function XmlViewerCollapsible({
         )}
       </summary>
       <div className="border-t border-zinc-200 p-4 dark:border-zinc-700">
-        {isOpen && <LazyXmlViewer rawXml={rawXml} />}
+        {isOpen === true && <LazyXmlViewer rawXml={rawXml} />}
       </div>
     </details>
   )

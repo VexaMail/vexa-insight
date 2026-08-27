@@ -56,13 +56,13 @@ export function DataTable<TData, TValue>({
               className="bg-card border-border/50 pl-9"
             />
           </div>
-          {toolbarActions && (
+          {toolbarActions ? (
             <div className="flex items-center gap-2">
               {typeof toolbarActions === 'function'
                 ? toolbarActions(table)
                 : toolbarActions}
             </div>
-          )}
+          ) : null}
         </div>
       )}
 

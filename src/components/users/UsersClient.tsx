@@ -51,10 +51,10 @@ export default function UsersClient({
 
       <DataTable columns={columns} data={users} />
 
-      {isCreateOpen && (
+      {isCreateOpen === true && (
         <UserModal onClose={closeCreate} onSuccess={onSuccessCreate} />
       )}
-      {isEditOpen && selectedUser && (
+      {isEditOpen === true && selectedUser != null && (
         <UserModal
           user={selectedUser}
           onClose={closeEdit}

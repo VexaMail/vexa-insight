@@ -117,7 +117,7 @@ export default function SettingsConfigForm({
         >
           {saveStatus === 'loading' ? 'Saving…' : 'Save configuration'}
         </Button>
-        {message && (
+        {message !== '' && (
           <p
             role="status"
             className={`text-sm ${saveStatus === 'error' ? 'text-danger' : 'text-success'}`}
