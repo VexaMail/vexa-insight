@@ -49,7 +49,7 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
   const recordList = feedback.record
   const records: Record<string, unknown>[] = []
   if (Array.isArray(recordList)) {
-    records.push(...recordList)
+    records.push(...(recordList as Record<string, unknown>[]))
   } else if (recordList) {
     records.push(recordList as Record<string, unknown>)
   }

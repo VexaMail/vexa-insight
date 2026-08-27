@@ -13,7 +13,7 @@ export function attachGeoIpStreamHandlers(
   source.addEventListener('progress', (event: Event) => {
     try {
       handlers.onProgress(
-        JSON.parse((event as MessageEvent).data) as GeoIpProgressEvent,
+        JSON.parse((event as MessageEvent<string>).data) as GeoIpProgressEvent,
       )
     } catch (err) {
       console.error('Failed to parse progress event', err)
@@ -23,7 +23,7 @@ export function attachGeoIpStreamHandlers(
   source.addEventListener('done', (event: Event) => {
     try {
       handlers.onProgress(
-        JSON.parse((event as MessageEvent).data) as GeoIpProgressEvent,
+        JSON.parse((event as MessageEvent<string>).data) as GeoIpProgressEvent,
       )
     } catch {
       // ignore parse error on done event
@@ -35,7 +35,7 @@ export function attachGeoIpStreamHandlers(
   source.addEventListener('error', (event: Event) => {
     let message = 'Update request failed.'
     try {
-      const raw = (event as MessageEvent).data
+      const raw = (event as MessageEvent<string | undefined>).data
       if (raw) {
         const parsed = JSON.parse(raw) as { message?: string }
         if (parsed.message) message = parsed.message

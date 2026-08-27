@@ -6,10 +6,16 @@ export function normalizePolicyOverrides(
   rawReasonList: unknown,
 ): PolicyOverridePayload[] {
   if (!rawReasonList) return []
-  const list = Array.isArray(rawReasonList) ? rawReasonList : [rawReasonList]
+  const list: unknown[] = Array.isArray(rawReasonList)
+    ? rawReasonList
+    : [rawReasonList]
   return list.map((item) => {
-    const type = normalizePolicyOverrideType(item?.type)
-    const comment = typeof item?.comment === 'string' ? item.comment : null
+    const record =
+      typeof item === 'object' && item !== null
+        ? (item as Record<string, unknown>)
+        : undefined
+    const type = normalizePolicyOverrideType(record?.type)
+    const comment = typeof record?.comment === 'string' ? record.comment : null
     return { type, comment }
   })
 }

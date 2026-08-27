@@ -11,7 +11,7 @@ export function useUsersManagement(initialUsers: User[]) {
   const fetchUsers = async () => {
     const res = await fetch('/api/v1/users')
     if (res.ok) {
-      const json = await res.json()
+      const json = (await res.json()) as { data: User[] }
       setUsers(json.data)
     }
   }

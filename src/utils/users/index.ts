@@ -1,0 +1,1 @@
+export { parseAllowedDomains } from './parseAllowedDomains'

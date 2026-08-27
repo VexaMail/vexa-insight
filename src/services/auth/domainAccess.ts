@@ -28,8 +28,12 @@ export async function getAllowedDomainIds(): Promise<number[] | null> {
   if (!user.allowedDomains) return null
 
   try {
-    const domainNames = JSON.parse(user.allowedDomains)
-    if (!Array.isArray(domainNames) || domainNames.length === 0) return []
+    const parsed: unknown = JSON.parse(user.allowedDomains)
+    if (!Array.isArray(parsed) || parsed.length === 0) return []
+    const domainNames = parsed.filter(
+      (name): name is string => typeof name === 'string',
+    )
+    if (domainNames.length === 0) return []
 
     const db = getDb()
     const rows = await db

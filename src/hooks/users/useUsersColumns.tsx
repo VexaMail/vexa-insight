@@ -51,7 +51,7 @@ export function useUsersColumns({
           )
         }
         try {
-          const domains = JSON.parse(row.original.allowedDomains)
+          const domains: unknown = JSON.parse(row.original.allowedDomains)
           if (!Array.isArray(domains) || domains.length === 0) {
             return (
               <span className="text-muted-foreground text-xs italic">

@@ -1,4 +1,5 @@
 import type { User } from '@/types/users'
+import { parseAllowedDomains } from '@/utils/users'
 import type React from 'react'
 import { useState } from 'react'
 
@@ -10,7 +11,9 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
     user?.allowedDomains ? 'selected' : 'all',
   )
   const [domainsInput, setDomainsInput] = useState(
-    user?.allowedDomains ? JSON.parse(user.allowedDomains).join(', ') : '',
+    user?.allowedDomains
+      ? parseAllowedDomains(user.allowedDomains).join(', ')
+      : '',
   )
   const [error, setError] = useState('')
 
@@ -29,7 +32,7 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
     if (domainMode === 'selected') {
       const arr = domainsInput
         .split(',')
-        .map((d: string) => d.trim())
+        .map((d) => d.trim())
         .filter(Boolean)
       if (arr.length === 0) {
         setError('Please specify at least one domain or choose "All domains"')
@@ -47,7 +50,7 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
     })
 
     if (!res.ok) {
-      const err = await res.json()
+      const err = (await res.json()) as { error?: { message?: string } }
       setError(err.error?.message || 'Error occurred')
     } else {
       if (onSuccess) onSuccess()
