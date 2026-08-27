@@ -14,6 +14,16 @@
 ; Adjust User, Group, WorkingDirectory, and EnvironmentFile to match
 ; your install layout. The user must own the working directory so
 ; `git pull` and `pnpm install` can write to it.
+;
+; This project builds with `output: standalone`, which `next start` refuses
+; to serve. The unit runs the standalone server directly, and that server
+; only serves what sits next to it — after every `pnpm run build`, assemble:
+;   cp -r public .next/standalone/public
+;   cp -r .next/static .next/standalone/.next/static
+;   cp -r drizzle .next/standalone/drizzle
+; HOSTNAME defaults to 0.0.0.0 in the standalone server; 127.0.0.1 below
+; keeps the port loopback-only so it is reachable through the reverse proxy
+; alone. Remove it only if the host firewall filters the port.
 
 [Unit]
 Description=Vexa Mail Insight (DMARC observability dashboard)
@@ -28,7 +38,8 @@ WorkingDirectory=/opt/vexa-insight-dashboard
 EnvironmentFile=-/opt/vexa-insight-dashboard/.env
 Environment=NODE_ENV=production
 Environment=PORT=3000
-ExecStart=/usr/bin/env pnpm run start
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/env node .next/standalone/server.js
 Restart=always
 RestartSec=2
 KillSignal=SIGTERM
