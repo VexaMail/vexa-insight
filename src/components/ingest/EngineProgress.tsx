@@ -47,14 +47,11 @@ export function EngineProgress({
     <div className="mt-4" role="status" aria-live="polite">
       <div className="mb-2 flex items-center justify-between text-sm">
         <span className="text-foreground font-medium">
-          <>
-            Processing (
-            <span className="text-muted-foreground">
-              {currentProcessed.toLocaleString()} /{' '}
-              {totalEmails.toLocaleString()}
-            </span>
-            )
-          </>
+          Processing (
+          <span className="text-muted-foreground">
+            {currentProcessed.toLocaleString()} / {totalEmails.toLocaleString()}
+          </span>
+          )
         </span>
         <span className="text-foreground font-medium">
           {Math.round(progressPercent)}%

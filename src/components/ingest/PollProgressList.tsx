@@ -1,12 +1,15 @@
 'use client'
 
 import { Button } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import type { PollProgressListProps } from '@/types/ingest'
 import { usePollProgressPagination } from '../../hooks/ingest/usePollProgressPagination'
 import EmailPipelineCard from './EmailPipelineCard'
 import { PAGE_SIZE_OPTIONS } from './pageSizeOptions'
 
-export default function PollProgressList({}: Readonly<PollProgressListProps>) {
+export default function PollProgressList({
+  className,
+}: Readonly<PollProgressListProps>) {
   const {
     items,
     page,
@@ -20,7 +23,11 @@ export default function PollProgressList({}: Readonly<PollProgressListProps>) {
   } = usePollProgressPagination()
 
   return (
-    <div aria-live="polite" aria-atomic="false" className="mt-4 space-y-4">
+    <div
+      aria-live="polite"
+      aria-atomic="false"
+      className={cn('mt-4 space-y-4', className)}
+    >
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-4">
         <label

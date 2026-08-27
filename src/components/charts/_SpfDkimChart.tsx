@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { GradientBarShape } from './GradientBarShape'
 import { toChartData } from './toChartData'
 
 export default function SpfDkimChart({ data }: Readonly<SpfDkimChartProps>) {
@@ -103,40 +104,7 @@ export default function SpfDkimChart({ data }: Readonly<SpfDkimChartProps>) {
             itemStyle={{ fontSize: 12 }}
           />
           <Legend wrapperStyle={{ fontSize: 12, paddingTop: '10px' }} />
-          <Bar
-            dataKey="count"
-            name="Count"
-            shape={(props: unknown) => {
-              const p = props as Record<string, unknown>
-              const x = Number(p.x)
-              const y = Number(p.y)
-              const width = Number(p.width)
-              const height = Number(p.height)
-              const fill = p.fill as string | undefined
-              const payload = p.payload as { gradient?: string } | undefined
-
-              if (
-                Number.isNaN(x) ||
-                Number.isNaN(y) ||
-                Number.isNaN(width) ||
-                Number.isNaN(height)
-              )
-                return null
-              if (width < 0 || height < 0) return null
-
-              return (
-                <rect
-                  x={x}
-                  y={y}
-                  width={width}
-                  height={height}
-                  fill={payload?.gradient || fill || '#ccc'}
-                  rx={6}
-                  ry={6}
-                />
-              )
-            }}
-          />
+          <Bar dataKey="count" name="Count" shape={GradientBarShape} />
         </BarChart>
       </ResponsiveContainer>
     </div>

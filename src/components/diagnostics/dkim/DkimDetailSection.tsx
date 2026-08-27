@@ -53,8 +53,8 @@ export function DkimDetailSection({ dns }: Readonly<DkimDetailSectionProps>) {
                   Issues Found
                 </h5>
                 <ul className="list-inside list-disc text-xs text-red-500/90">
-                  {parsed.errors.map((err: string, i: number) => (
-                    <li key={i}>{err}</li>
+                  {[...new Set(parsed.errors)].map((error) => (
+                    <li key={error}>{error}</li>
                   ))}
                 </ul>
               </div>

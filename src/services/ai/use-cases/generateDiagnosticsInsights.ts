@@ -1,8 +1,6 @@
 import type { DiagnosticsAnalysisResult } from '@/types/ai'
-import type {
-  AIServiceError,
-  GenerateDiagnosticsInsightsOptions,
-} from '../contracts'
+import type { GenerateDiagnosticsInsightsOptions } from '../contracts'
+import { AIServiceErrorException } from '../core/AiServiceErrorException'
 import { AI_REQUEST_TIMEOUT_MS } from '../core/aiRequestTimeoutMs'
 import { resolveProvider } from '../core/resolveProvider'
 import { buildDiagnosticsAnalysisPrompt } from '../prompts/buildDiagnosticsAnalysisPrompt'
@@ -49,11 +47,10 @@ export async function generateDiagnosticsInsights(
       '[ai/diagnostics] MALFORMED_RESPONSE — raw content:',
       rawResponse.content.slice(0, 500),
     )
-    const error: AIServiceError = {
-      code: 'MALFORMED_RESPONSE',
-      message: 'AI produced an unexpected response. Please try again.',
-    }
-    throw error
+    throw new AIServiceErrorException(
+      'MALFORMED_RESPONSE',
+      'AI produced an unexpected response. Please try again.',
+    )
   }
 
   const rolloutPlan = parseDiagnosticsRolloutPlanFromContent(

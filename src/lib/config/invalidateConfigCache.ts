@@ -1,5 +1,5 @@
-import { ConfigCache } from './ConfigCache'
+import { configCacheState } from './configCacheState'
 
 export function invalidateConfigCache(): void {
-  ConfigCache.clear()
+  configCacheState.cached = null
 }

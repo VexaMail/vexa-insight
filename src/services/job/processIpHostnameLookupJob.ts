@@ -1,7 +1,7 @@
 import { getDb, ipHostnameEnrichments } from '@/lib/db'
 import { getConfig } from '@/services/config'
 import { eq, lte, or } from 'drizzle-orm'
-import { IpHostnameEnrichmentService } from '../ip-hostname/IpHostnameEnrichmentService'
+import { resolveAndPersist } from '../ip-hostname/resolveAndPersist'
 
 export async function processIpHostnameLookupJob() {
   const config = getConfig()
@@ -34,11 +34,7 @@ export async function processIpHostnameLookupJob() {
     // Process sequentially to be gentle, could use Promise.allSettled but sequential is safer for DNS initially
     for (const record of batch) {
       try {
-        const result = await IpHostnameEnrichmentService.resolveAndPersist(
-          record.ip,
-          false,
-          'system',
-        )
+        const result = await resolveAndPersist(record.ip, false, 'system')
         if (result.status === 'failed') {
           errors++
         } else {

@@ -1,5 +1,5 @@
 import type { AIProviderId } from '../../contracts/AiProviderId'
-import type { AIServiceError } from '../../contracts/AiServiceError'
+import { AIServiceErrorException } from '../../core/AiServiceErrorException'
 
 /**
  * Resolves the effective model ID for runtime execution.
@@ -17,9 +17,8 @@ export function resolveEffectiveModel(
     return selectedModel.trim()
   }
 
-  const error: AIServiceError = {
-    code: 'NOT_CONFIGURED',
-    message: `AI model is not configured for provider "${providerId}". Select a model in Settings > AI Provider.`,
-  }
-  throw error
+  throw new AIServiceErrorException(
+    'NOT_CONFIGURED',
+    `AI model is not configured for provider "${providerId}". Select a model in Settings > AI Provider.`,
+  )
 }

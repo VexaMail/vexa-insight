@@ -1,7 +1,7 @@
 import type { AppConfig } from '@/types/config'
 
-import { ConfigCache } from './ConfigCache'
+import { configCacheState } from './configCacheState'
 
 export function getCached(): AppConfig | null {
-  return ConfigCache.get()
+  return configCacheState.cached
 }

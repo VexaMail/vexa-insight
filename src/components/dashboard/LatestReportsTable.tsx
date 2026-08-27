@@ -17,12 +17,26 @@ export default function LatestReportsTable() {
           Latest Reports
         </h3>
         <div className="space-y-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-2 p-3">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-3 w-1/2" />
-            </div>
-          ))}
+          <div className="flex flex-col gap-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <div className="flex flex-col gap-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <div className="flex flex-col gap-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <div className="flex flex-col gap-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <div className="flex flex-col gap-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
         </div>
       </div>
     )

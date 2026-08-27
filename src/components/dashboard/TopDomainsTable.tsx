@@ -15,15 +15,41 @@ export default function TopDomainsTable() {
           Top Domains
         </h3>
         <div className="space-y-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="space-y-2 p-3">
-              <div className="flex justify-between">
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-4 w-1/4" />
-              </div>
-              <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
             </div>
-          ))}
+            <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            <Skeleton className="bg-secondary h-1.5 w-full rounded-full" />
+          </div>
         </div>
       </div>
     )

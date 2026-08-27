@@ -7,7 +7,9 @@ import path from 'node:path'
  */
 export function isUnsafeZipEntryName(name: string): boolean {
   const normalized = path.posix.normalize(name)
-  const hasControlChar = /[\x00-\x1f]/.test(name)
+  const hasControlChar = Array.from(name).some(
+    (character) => character.charCodeAt(0) <= 0x1f,
+  )
   return (
     normalized !== name ||
     normalized.includes('..') ||

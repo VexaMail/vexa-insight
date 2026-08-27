@@ -11,6 +11,17 @@ import { SectionHeader } from '../shared'
 import type { DnsRecordsSectionProps } from './DnsRecordsSectionProps'
 
 export function DnsRecordsSection({ dns }: Readonly<DnsRecordsSectionProps>) {
+  const aRecords = [...new Set(dns.aRecords)]
+  const nsRecords = [...new Set(dns.nsRecords)]
+  const mxRecords = [
+    ...new Map(
+      dns.mx.map((record) => [
+        `${String(record.priority)}:${record.exchange}`,
+        record,
+      ]),
+    ).values(),
+  ]
+
   return (
     <section className="bg-card flex flex-col gap-5 rounded-xl border p-5 shadow-sm">
       <SectionHeader
@@ -39,10 +50,12 @@ export function DnsRecordsSection({ dns }: Readonly<DnsRecordsSectionProps>) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dns.aRecords.length > 0 ? (
-                  dns.aRecords.map((a, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="font-mono text-xs">{a}</TableCell>
+                {aRecords.length > 0 ? (
+                  aRecords.map((address) => (
+                    <TableRow key={address}>
+                      <TableCell className="font-mono text-xs">
+                        {address}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
@@ -72,10 +85,12 @@ export function DnsRecordsSection({ dns }: Readonly<DnsRecordsSectionProps>) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dns.nsRecords.length > 0 ? (
-                  dns.nsRecords.map((ns, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="font-mono text-xs">{ns}</TableCell>
+                {nsRecords.length > 0 ? (
+                  nsRecords.map((nameserver) => (
+                    <TableRow key={nameserver}>
+                      <TableCell className="font-mono text-xs">
+                        {nameserver}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
@@ -108,9 +123,9 @@ export function DnsRecordsSection({ dns }: Readonly<DnsRecordsSectionProps>) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dns.mx.length > 0 ? (
-                  dns.mx.map((mx, i) => (
-                    <TableRow key={i}>
+                {mxRecords.length > 0 ? (
+                  mxRecords.map((mx) => (
+                    <TableRow key={`${String(mx.priority)}:${mx.exchange}`}>
                       <TableCell className="text-xs font-medium">
                         {mx.priority}
                       </TableCell>

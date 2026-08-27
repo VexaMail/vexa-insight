@@ -1,10 +1,10 @@
 import { getReportById } from '@/services/reports'
 import type {
-  AIServiceError,
   GenerateReportInsightsOptions,
   ReportAnalysisResult,
 } from '../contracts'
 import { AI_REQUEST_TIMEOUT_MS } from '../core/aiRequestTimeoutMs'
+import { AIServiceErrorException } from '../core/AiServiceErrorException'
 import { resolveProvider } from '../core/resolveProvider'
 import { buildReportAnalysisPrompt } from '../prompts/buildReportAnalysisPrompt'
 import { getReportEventSummaries } from './getReportEventSummaries'
@@ -20,11 +20,7 @@ export async function generateReportInsights(
 ): Promise<ReportAnalysisResult> {
   const report = await getReportById(options.reportId)
   if (!report) {
-    const error: AIServiceError = {
-      code: 'INSUFFICIENT_DATA',
-      message: 'Report not found.',
-    }
-    throw error
+    throw new AIServiceErrorException('INSUFFICIENT_DATA', 'Report not found.')
   }
 
   if (!report.rawXml) {
@@ -70,11 +66,10 @@ export async function generateReportInsights(
 
   const insights = parseInsightsFromContent(rawResponse.content)
   if (!insights) {
-    const error: AIServiceError = {
-      code: 'MALFORMED_RESPONSE',
-      message: 'AI produced an unexpected response. Please try again.',
-    }
-    throw error
+    throw new AIServiceErrorException(
+      'MALFORMED_RESPONSE',
+      'AI produced an unexpected response. Please try again.',
+    )
   }
 
   console.info(

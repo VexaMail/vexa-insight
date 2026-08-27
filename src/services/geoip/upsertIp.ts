@@ -1,6 +1,6 @@
 import { getDb, ipAddresses } from '@/lib/db'
 import { eq } from 'drizzle-orm'
-import { IpHostnameEnrichmentService } from '../ip-hostname/IpHostnameEnrichmentService'
+import { scheduleLookup } from '../ip-hostname/scheduleLookup'
 import { geoip } from './geoip'
 import { THIRTY_DAYS_MS } from './thirtyDaysMs'
 
@@ -12,7 +12,7 @@ export async function upsertIp(ipStr: string): Promise<number> {
 
   // Enqueue for background hostname lookup
   try {
-    await IpHostnameEnrichmentService.scheduleLookup(normalizedIp)
+    await scheduleLookup(normalizedIp)
   } catch (error) {
     console.error(
       `[upsertIp] Error scheduling hostname lookup for ${normalizedIp}:`,

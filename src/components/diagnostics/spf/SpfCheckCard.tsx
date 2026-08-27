@@ -26,9 +26,9 @@ export function SpfCheckCard({
         </div>
       </div>
       <div className="flex flex-col divide-y">
-        {checks.map((check, i) => (
+        {checks.map((check) => (
           <div
-            key={i}
+            key={check.name}
             className="hover:bg-muted/10 flex items-start gap-3 p-4 transition-colors"
           >
             <div className="mt-0.5 flex-shrink-0">

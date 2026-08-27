@@ -27,8 +27,8 @@ export function DmarcDetailSection({ dns }: Readonly<DmarcDetailSectionProps>) {
             Issues Found
           </h4>
           <ul className="list-inside list-disc text-sm text-red-500/90">
-            {dns.dmarcWarnings.map((w, i) => (
-              <li key={i}>{w}</li>
+            {[...new Set(dns.dmarcWarnings)].map((warning) => (
+              <li key={warning}>{warning}</li>
             ))}
           </ul>
         </div>

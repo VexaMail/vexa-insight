@@ -5,10 +5,10 @@ import {
   getDomainDnsRecords,
 } from '@/services/diagnostics'
 import type {
-  AIServiceError,
   DiagnosticsAnalysisInput,
   GenerateDiagnosticsInsightsOptions,
 } from '../contracts'
+import { AIServiceErrorException } from '../core/AiServiceErrorException'
 import { buildDiagnosticsDnsSummary } from './buildDiagnosticsDnsSummary'
 import { buildDiagnosticsStatsSummary } from './buildDiagnosticsStatsSummary'
 import { getDomainDiagnosticsReportAggregate } from './getDomainDiagnosticsReportAggregate'
@@ -74,12 +74,10 @@ export async function buildDiagnosticsAnalysisInput(
       : []
 
   if (!dns && !stats) {
-    const error: AIServiceError = {
-      code: 'INSUFFICIENT_DATA',
-      message:
-        'Could not retrieve DNS records or diagnostic statistics for this domain.',
-    }
-    throw error
+    throw new AIServiceErrorException(
+      'INSUFFICIENT_DATA',
+      'Could not retrieve DNS records or diagnostic statistics for this domain.',
+    )
   }
 
   return {

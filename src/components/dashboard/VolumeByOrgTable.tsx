@@ -14,15 +14,41 @@ export default function VolumeByOrgTable() {
           Volume by Reporting Organization
         </h3>
         <div className="space-y-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="space-y-2 p-3">
-              <div className="flex justify-between">
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-4 w-12" />
-              </div>
-              <Skeleton className="h-1.5 w-full rounded-full" />
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-12" />
             </div>
-          ))}
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
+          <div className="space-y-2 p-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
         </div>
       </div>
     )
