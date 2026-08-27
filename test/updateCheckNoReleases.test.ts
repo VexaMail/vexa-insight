@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../services/updates/upsertUpdateState', () => ({
+vi.mock('../src/services/updates/upsertUpdateState', () => ({
   upsertUpdateState: vi.fn(),
 }))
-vi.mock('../services/updates/getUpdateStateRow', () => ({
+vi.mock('../src/services/updates/getUpdateStateRow', () => ({
   getUpdateStateRow: vi.fn(() => undefined),
 }))
-vi.mock('../services/updates/fetchLatestRelease', () => ({
+vi.mock('../src/services/updates/fetchLatestRelease', () => ({
   fetchLatestRelease: vi.fn(),
 }))
 
@@ -19,11 +19,11 @@ describe('checkForUpdates with no published release', () => {
 
   it('reports a successful check that was skipped, not a failure', async () => {
     const { checkForUpdates } =
-      await import('../services/updates/checkForUpdates')
+      await import('../src/services/updates/checkForUpdates')
     const { NoPublishedReleaseError } =
-      await import('../services/updates/NoPublishedReleaseError')
+      await import('../src/services/updates/NoPublishedReleaseError')
     const { fetchLatestRelease } =
-      await import('../services/updates/fetchLatestRelease')
+      await import('../src/services/updates/fetchLatestRelease')
     vi.mocked(fetchLatestRelease).mockRejectedValueOnce(
       new NoPublishedReleaseError(),
     )
@@ -36,13 +36,13 @@ describe('checkForUpdates with no published release', () => {
 
   it('clears any stored error instead of persisting one', async () => {
     const { checkForUpdates } =
-      await import('../services/updates/checkForUpdates')
+      await import('../src/services/updates/checkForUpdates')
     const { NoPublishedReleaseError } =
-      await import('../services/updates/NoPublishedReleaseError')
+      await import('../src/services/updates/NoPublishedReleaseError')
     const { fetchLatestRelease } =
-      await import('../services/updates/fetchLatestRelease')
+      await import('../src/services/updates/fetchLatestRelease')
     const { upsertUpdateState } =
-      await import('../services/updates/upsertUpdateState')
+      await import('../src/services/updates/upsertUpdateState')
     vi.mocked(fetchLatestRelease).mockRejectedValueOnce(
       new NoPublishedReleaseError(),
     )
@@ -57,11 +57,11 @@ describe('checkForUpdates with no published release', () => {
 
   it('still records a real failure as an error', async () => {
     const { checkForUpdates } =
-      await import('../services/updates/checkForUpdates')
+      await import('../src/services/updates/checkForUpdates')
     const { fetchLatestRelease } =
-      await import('../services/updates/fetchLatestRelease')
+      await import('../src/services/updates/fetchLatestRelease')
     const { upsertUpdateState } =
-      await import('../services/updates/upsertUpdateState')
+      await import('../src/services/updates/upsertUpdateState')
     vi.mocked(fetchLatestRelease).mockRejectedValueOnce(
       new Error('network down'),
     )

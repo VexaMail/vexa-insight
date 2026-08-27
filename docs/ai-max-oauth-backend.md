@@ -71,8 +71,8 @@ row, no API key.
 The loop it exists for:
 
 1. Run the harness, read the artifact.
-2. Edit the prompt — `services/ai/prompts/reportAnalysisSystem.ts` or
-   `services/ai/prompts/diagnosticsAnalysisSystem.ts`.
+2. Edit the prompt — `src/services/ai/prompts/reportAnalysisSystem.ts` or
+   `src/services/ai/prompts/diagnosticsAnalysisSystem.ts`.
 3. Run it again and diff the two artifacts.
 
 Each artifact stores both prompts verbatim alongside every sample, so an old
@@ -117,16 +117,16 @@ disk and no token is logged.
 
 ## Where the code lives
 
-| Path                     | Role                                                               |
-| ------------------------ | ------------------------------------------------------------------ |
-| `services/ai/maxOAuth/`  | Keychain read, token refresh, headers, request shape, the dev gate |
-| `services/ai/evals/`     | The offline harness: lane call, runners, artifacts                 |
-| `scripts/run-ai-eval.ts` | CLI entrypoint (`pnpm run eval:ai`)                                |
-| `evals/results/`         | Artifacts, one JSON per invocation (gitignored)                    |
+| Path                        | Role                                                               |
+| --------------------------- | ------------------------------------------------------------------ |
+| `src/services/ai/maxOAuth/` | Keychain read, token refresh, headers, request shape, the dev gate |
+| `src/services/ai/evals/`    | The offline harness: lane call, runners, artifacts                 |
+| `scripts/run-ai-eval.ts`    | CLI entrypoint (`pnpm run eval:ai`)                                |
+| `evals/results/`            | Artifacts, one JSON per invocation (gitignored)                    |
 
-`services/ai/evals` is deliberately not re-exported from `services/ai/index.ts`:
-it writes files and is only ever driven by `scripts/run-ai-eval.ts`, which
-imports it by path.
+`src/services/ai/evals` is deliberately not re-exported from
+`src/services/ai/index.ts`: it writes files and is only ever driven by
+`scripts/run-ai-eval.ts`, which imports it by path.
 
 ## Known limitation
 

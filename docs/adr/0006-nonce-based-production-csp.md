@@ -18,10 +18,10 @@ cached.
 ## Decision
 
 - Generate a fresh nonce per request in the proxy middleware
-  (`utils/proxy/applyProdCspHeaders.ts`, production only): set `x-nonce` and
+  (`src/utils/proxy/applyProdCspHeaders.ts`, production only): set `x-nonce` and
   `content-security-policy` on the forwarded request headers so Next.js picks
   the nonce up, and mirror the policy on the response.
-- Build the policy in `utils/security/buildProdCspDirectives.ts`:
+- Build the policy in `src/utils/security/buildProdCspDirectives.ts`:
   - `script-src 'self' 'nonce-<nonce>' 'strict-dynamic'` — no `'unsafe-inline'`
     for scripts.
   - `style-src 'self' 'unsafe-inline'` — kept deliberately: Recharts and

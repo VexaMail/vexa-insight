@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { parseFullRescanFlag } from '../app/api/v1/admin/trigger-poll/parseFullRescanFlag'
-import { getSinceDate } from '../utils/imap/getSinceDate'
-import { DEFAULT_DAYS_BACK } from '../utils/install/defaultDaysBack'
-import { parseIngestionDaysBack } from '../utils/install/parseIngestionDaysBack'
+import { getSinceDate } from '../src/utils/imap/getSinceDate'
+import { DEFAULT_DAYS_BACK } from '../src/utils/install/defaultDaysBack'
+import { parseIngestionDaysBack } from '../src/utils/install/parseIngestionDaysBack'
 
 describe('parseIngestionDaysBack', () => {
   const cases: Array<[unknown, number]> = [

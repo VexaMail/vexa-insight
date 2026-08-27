@@ -29,7 +29,7 @@ describe('checkInstall', () => {
 
   const importCheckInstall = async () => {
     vi.resetModules()
-    const mod = await import('../services/install/checkInstall')
+    const mod = await import('../src/services/install/checkInstall')
     return mod.checkInstall
   }
 

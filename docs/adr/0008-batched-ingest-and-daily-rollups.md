@@ -29,8 +29,8 @@ non-destructive migration policy (ADR 0004) both constrain the solution.
 ## Decision
 
 - Enable WAL with `synchronous = NORMAL` and a `busy_timeout` on the app
-  connection (`lib/db/applyConnectionPragmas.ts`). Foreign-key enforcement is
-  intentionally left off; the app never enabled it and turning it on would
+  connection (`src/lib/db/applyConnectionPragmas.ts`). Foreign-key enforcement
+  is intentionally left off; the app never enabled it and turning it on would
   change delete/insert ordering across the codebase.
 - Coalesce ingest progress: a `poll_status` coalescer flushes at most every ~500
   ms or ~500 events, and `job_poll_events` are buffered and written as multi-row
@@ -41,7 +41,8 @@ non-destructive migration policy (ADR 0004) both constrain the solution.
   `passed_count`) incrementally inside the ingest transaction. The dashboard
   aggregates read the rollup instead of scanning `normalized_events`. Pass is
   defined as SPF pass OR DKIM pass everywhere; the day bucket is
-  `floor(reportEndDate / 86400)`, shared through `utils/dates/daySeconds.ts`.
+  `floor(reportEndDate / 86400)`, shared through
+  `src/utils/dates/daySeconds.ts`.
 - Add indexes on `normalized_events(raw_report_id)`, `(ip_address_id)`, and a
   covering `(domain_id, report_end_date, count)` for scoped sums.
 - Backfill is a full, idempotent recompute (`pnpm run backfill:rollup`), run out

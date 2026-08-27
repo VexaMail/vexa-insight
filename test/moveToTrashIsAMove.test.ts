@@ -1,8 +1,8 @@
 import type { ImapFlow } from 'imapflow'
 import { describe, expect, it, vi } from 'vitest'
-import { handleMoveToTrash } from '../utils/imap/handleMoveToTrash'
-import { handlePostProcessAndReport } from '../utils/imap/handlePostProcessAndReport'
-import type { HandlePostProcessParams } from '../utils/imap/HandlePostProcessParams'
+import { handleMoveToTrash } from '../src/utils/imap/handleMoveToTrash'
+import { handlePostProcessAndReport } from '../src/utils/imap/handlePostProcessAndReport'
+import type { HandlePostProcessParams } from '../src/utils/imap/HandlePostProcessParams'
 
 describe('move to trash after process', () => {
   const makeClient = () =>

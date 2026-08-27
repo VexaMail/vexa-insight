@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { geoipEnrichSchema } from '../validators/geoip'
+import { geoipEnrichSchema } from '../src/validators/geoip'
 
 describe('geoipEnrichSchema', () => {
   it('accepts a non-empty ip and forwards it untrimmed', () => {

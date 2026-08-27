@@ -18,7 +18,7 @@ clear configuration problem.
 ## Decision
 
 Resolve the runtime model exclusively through
-`services/ai/providers/shared/resolveEffectiveModel.ts`:
+`src/services/ai/providers/shared/resolveEffectiveModel.ts`:
 
 - If a non-empty model is selected in settings, use it (trimmed).
 - Otherwise throw an `AIServiceError` with code `NOT_CONFIGURED` and a message

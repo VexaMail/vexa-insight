@@ -5,7 +5,7 @@ import type {
   DnsDiagnostics,
   DomainScore,
 } from '@/types/diagnostics'
-import { buildDiagnosticsAdminGuides } from '../services/diagnostics/buildDiagnosticsAdminGuides'
+import { buildDiagnosticsAdminGuides } from '../src/services/diagnostics/buildDiagnosticsAdminGuides'
 
 describe('buildDiagnosticsAdminGuides', () => {
   function makeHealthyDns(

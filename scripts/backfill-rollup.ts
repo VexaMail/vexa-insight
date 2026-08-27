@@ -11,7 +11,7 @@
  */
 import { runMigrations } from '@/lib/db'
 // Import the specific module, not the '@/services/reports' barrel: the barrel
-// re-exports ingestParsedReport -> services/geoip/geoip.ts, which uses a
+// re-exports ingestParsedReport -> src/services/geoip/geoip.ts, which uses a
 // top-level await that tsx (CJS output) cannot transform in a standalone script.
 import { rebuildEventRollup } from '@/services/reports/rebuildEventRollup'
 

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { clearInstallToken } from '../services/install/clearInstallToken'
-import { generateInstallToken } from '../services/install/generateInstallToken'
-import { getInstallToken } from '../services/install/getInstallToken'
-import { setInstallTokenForBoot } from '../services/install/setInstallTokenForBoot'
+import { clearInstallToken } from '../src/services/install/clearInstallToken'
+import { generateInstallToken } from '../src/services/install/generateInstallToken'
+import { getInstallToken } from '../src/services/install/getInstallToken'
+import { setInstallTokenForBoot } from '../src/services/install/setInstallTokenForBoot'
 
 describe('installToken store', () => {
   afterEach(() => clearInstallToken())

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { reportInsightsRequestSchema } from '../validators/ai'
+import { reportInsightsRequestSchema } from '../src/validators/ai'
 
 describe('reportInsightsRequestSchema', () => {
   it('accepts a positive reportId', () => {

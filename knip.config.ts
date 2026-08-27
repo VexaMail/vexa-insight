@@ -1,13 +1,8 @@
 import { createKnipConfig } from '@busirocket/quality-config/knip'
 
-// This app predates the src/ convention: actions, components, hooks and the
-// rest sit at the repo root. Knip's Next preset only globs src/ and app/, so
-// without these every dependency reached from those directories reads as
-// unused - it reported 34 of them.
 export default createKnipConfig({
   framework: 'nextjs',
   project: [
-    '{actions,components,constants,contexts,data,formatters,hooks,lib,mappers,services,types,utils,validators}/**/*.{ts,tsx}',
     'scripts/**/*.{ts,mjs}',
     'test/**/*.ts',
     // Tailwind is reached only from `@import 'tailwindcss'` in globals.css and

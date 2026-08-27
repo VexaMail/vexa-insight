@@ -1,4 +1,5 @@
 export * from './createClient'
+export * from './createFolder'
 export * from './fetchAttachments'
 export * from './listFolders'
 export * from './processOneMessageUid'

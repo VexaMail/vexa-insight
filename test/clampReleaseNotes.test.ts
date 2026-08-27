@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { RELEASE_NOTES_MAX_CHARS } from '../constants/updates/releaseNotesMaxChars'
-import { clampReleaseNotes } from '../utils/updates/clampReleaseNotes'
+import { RELEASE_NOTES_MAX_CHARS } from '../src/constants/updates/releaseNotesMaxChars'
+import { clampReleaseNotes } from '../src/utils/updates/clampReleaseNotes'
 
 describe('clampReleaseNotes', () => {
   it('returns null for null/undefined/empty', () => {

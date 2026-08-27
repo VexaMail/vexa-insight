@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { selfUpdateApplySchema } from '../validators/updates'
+import { selfUpdateApplySchema } from '../src/validators/updates'
 
 describe('selfUpdateApplySchema', () => {
   it('accepts a semver tag ref', () => {

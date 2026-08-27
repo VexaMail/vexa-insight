@@ -8,7 +8,7 @@ import {
   oidcCallbackQuerySchema,
   trendDaysQuerySchema,
   trendPeriodQuerySchema,
-} from '../validators/query'
+} from '../src/validators/query'
 
 describe('filter query schemas', () => {
   function raw(query: string, key: string): string | null {

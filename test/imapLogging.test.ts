@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createImapLogger } from '../utils/imap/createImapLogger'
-import { isImapDebugEnabled } from '../utils/imap/isImapDebugEnabled'
+import { createImapLogger } from '../src/utils/imap/createImapLogger'
+import { isImapDebugEnabled } from '../src/utils/imap/isImapDebugEnabled'
 
 describe('isImapDebugEnabled', () => {
   let original: string | undefined

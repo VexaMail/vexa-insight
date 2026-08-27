@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dateRangeQuerySchema } from '../validators/query'
+import { dateRangeQuerySchema } from '../src/validators/query'
 
 describe('dateRangeQuerySchema', () => {
   function parseQuery(query: string) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseRepoSlug } from '../utils/updates/parseRepoSlug'
+import { parseRepoSlug } from '../src/utils/updates/parseRepoSlug'
 
 describe('parseRepoSlug', () => {
   it('parses owner/repo strings', () => {

@@ -1,5 +1,5 @@
+import { MAX_FILE_SIZE } from '@/utils/dmarc'
 import { z } from 'zod'
-import { MAX_FILE_SIZE } from '../../../../../utils/dmarc/maxFileSize'
 import { ALLOWED_EXT } from './allowedExt'
 
 /**

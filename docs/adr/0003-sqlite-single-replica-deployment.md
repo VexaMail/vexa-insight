@@ -17,7 +17,7 @@ scaling.
 
 Diagnostics DNS lookups (SPF, DKIM, DMARC, BIMI, MTA-STS, TLS-RPT, A, NS) are
 cached in a per-process in-memory TTL map
-(`services/diagnostics/withDiagnosticsCache.ts`, 5-minute TTL keyed on
+(`src/services/diagnostics/withDiagnosticsCache.ts`, 5-minute TTL keyed on
 `globalThis`). Whether that cache is "sufficient" only becomes a question if
 multiple replicas each resolve DNS independently.
 

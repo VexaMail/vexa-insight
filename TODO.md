@@ -299,12 +299,6 @@ is what those passes did not reach.
       noise. Then adopt the factories rule-group by rule-group, each with its
       own diff, rather than as one 886-violation switch.
 
-- [ ] Move the root-level source directories under `src/`. `actions/`,
-      `components/`, `constants/`, `contexts/`, `data/`, `formatters/`,
-      `hooks/`, `lib/`, `mappers/`, `services/`, `types/`, `utils/` and
-      `validators/` sit at the repo root, so `knip.config.ts`,
-      `.dependency-cruiser.cjs` and `package.json`'s `deps:graph` each restate
-      the same list. One move deletes all three.
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
       dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`

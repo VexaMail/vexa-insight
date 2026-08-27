@@ -8,10 +8,11 @@ Accepted
 
 ## Context
 
-Migrations run automatically at boot (`lib/db/runMigrations.ts`) on self-hosted
-instances the project never sees again. A destructive migration that ships in a
-release can break thousands of installations with no way to assist recovery, and
-rolling back the app to a release that predates the migration must remain safe.
+Migrations run automatically at boot (`src/lib/db/runMigrations.ts`) on
+self-hosted instances the project never sees again. A destructive migration that
+ships in a release can break thousands of installations with no way to assist
+recovery, and rolling back the app to a release that predates the migration must
+remain safe.
 
 ## Decision
 

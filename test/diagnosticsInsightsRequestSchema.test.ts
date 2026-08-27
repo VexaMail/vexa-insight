@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { diagnosticsInsightsRequestSchema } from '../validators/ai'
+import { diagnosticsInsightsRequestSchema } from '../src/validators/ai'
 
 describe('diagnosticsInsightsRequestSchema', () => {
   const base = () => ({ domainName: 'example.com', domainId: 3 })

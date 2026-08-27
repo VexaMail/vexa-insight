@@ -21,9 +21,9 @@ export OIDC_REDIRECT_URI=https://vexa.example.com/api/auth/oidc/callback
 export OIDC_SCOPES="openid profile email"
 ```
 
-`lib/env.ts` validates these at boot via Zod; a missing variable does not crash
-the app but disables SSO. `utils/auth/isOidcEnabled.ts` is the single source of
-truth.
+`src/lib/env.ts` validates these at boot via Zod; a missing variable does not
+crash the app but disables SSO. `src/utils/auth/isOidcEnabled.ts` is the single
+source of truth.
 
 ## Flow
 
@@ -44,8 +44,8 @@ truth.
 ## Audit and rotation
 
 - Every callback writes one of `auth.login.success` / `auth.login.failure` (see
-  [services/auth/oidc/](../services/auth/oidc)) with the IdP recorded under
-  `metadata.provider`.
+  [src/services/auth/oidc/](../src/services/auth/oidc)) with the IdP recorded
+  under `metadata.provider`.
 - Discovery is cached in-process for 10 minutes. Restart the app or wait for TTL
   after rotating IdP endpoints.
 - Provisioned users hold an unguessable placeholder password hash so password
@@ -65,5 +65,5 @@ truth.
   session.
 - **No multi-tenancy.** One issuer per deployment.
 
-See [services/auth/oidc/](../services/auth/oidc/) for the implementation and
-`app/api/auth/oidc/{start,callback}/route.ts` for the routes.
+See [src/services/auth/oidc/](../src/services/auth/oidc/) for the implementation
+and `app/api/auth/oidc/{start,callback}/route.ts` for the routes.

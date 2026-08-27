@@ -20,8 +20,8 @@ skipped, say so.
 
 - Route handlers stay thin: validate, call one service, return.
 - Business logic and anything touching the network, the database, or auth lives
-  in `services/<area>/`.
-- Pure helpers live in `utils/<area>/`, types in `types/<area>/`.
+  in `src/services/<area>/`.
+- Pure helpers live in `src/utils/<area>/`, types in `src/types/<area>/`.
 - One exported symbol per file, named after the file.
 - Schema changes go through Drizzle migrations; commit the generated SQL.
 

@@ -1,10 +1,10 @@
 'use client'
 
+import type { ActionState } from '@/actions/ActionState'
 import { loginAction } from '@/actions/login'
 import { ThemeToggle } from '@/components/shell'
 import Image from 'next/image'
 import { useActionState } from 'react'
-import type { ActionState } from '../../actions/ActionState'
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(

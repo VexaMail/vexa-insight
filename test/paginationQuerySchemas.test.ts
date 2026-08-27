@@ -3,7 +3,7 @@ import {
   pageQuerySchema,
   pollStatusPageSizeQuerySchema,
   reportsPageSizeQuerySchema,
-} from '../validators/query'
+} from '../src/validators/query'
 
 describe('pagination query schemas', () => {
   function param(query: string, key: string): string | undefined {

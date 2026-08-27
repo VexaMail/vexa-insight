@@ -1,6 +1,6 @@
 import type { DmarcTagInfo } from '@/types/diagnostics'
 import { describe, expect, it } from 'vitest'
-import { parseDmarcTags } from '../services/diagnostics/parseDmarcTags'
+import { parseDmarcTags } from '../src/services/diagnostics/parseDmarcTags'
 
 describe('parseDmarcTags', () => {
   function findTag(

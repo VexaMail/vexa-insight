@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseDmarcXml } from '../utils/dmarc/parseDmarcXml'
+import { parseDmarcXml } from '../src/utils/dmarc/parseDmarcXml'
 
 describe('parseDmarcXml fixtures', () => {
   const FIXTURE_DIR = path.join(__dirname, 'fixtures', 'dmarc')

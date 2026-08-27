@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { isUpdateCheckEnabledFromEnv } from '../utils/updates/isUpdateCheckEnabledFromEnv'
+import { isUpdateCheckEnabledFromEnv } from '../src/utils/updates/isUpdateCheckEnabledFromEnv'
 
 describe('isUpdateCheckEnabledFromEnv', () => {
   let original: string | undefined

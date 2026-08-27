@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { deliverWebhook } from '../services/notifications/deliverWebhook'
-import { safeFetch } from '../services/security/safeFetch'
+import { deliverWebhook } from '../src/services/notifications/deliverWebhook'
+import { safeFetch } from '../src/services/security/safeFetch'
 
 describe('safeFetch', () => {
   it('rejects ftp://', async () => {

@@ -35,7 +35,7 @@ kubectl -n vexa logs deploy/vexa
 - **Persistent data.** The PVC at `vexa-data` holds the SQLite file AND
   the GeoLite2 city database. Back it up regularly (e.g. via a
   scheduled `kubectl exec` running `sqlite3 .backup`).
-- **Boot-time env validation.** `lib/env.ts` parses the merged env at
+- **Boot-time env validation.** `src/lib/env.ts` parses the merged env at
   startup; an invalid `SECRET_KEY` or malformed URL makes the pod fail
   its readiness probe with a clear log line instead of crash-looping
   silently.

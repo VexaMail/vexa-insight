@@ -8,29 +8,29 @@ vi.mock('@/services/config', () => ({
   }),
 }))
 vi.mock('@/services/notifications', () => ({ fireAndForgetDispatch: vi.fn() }))
-vi.mock('../services/job/processAccount', () => ({
+vi.mock('../src/services/job/processAccount', () => ({
   // Stands in for the real IMAP work so the run has a measurable duration.
   processAccount: vi.fn(async () => {
     vi.advanceTimersByTime(4_000)
     return { processed: 7, ingested: 5, skipped: 2, errors: [] }
   }),
 }))
-vi.mock('../services/job/repairStuckEvents', () => ({
+vi.mock('../src/services/job/repairStuckEvents', () => ({
   repairStuckEvents: vi.fn(async () => undefined),
 }))
-vi.mock('../services/job/setPollStatusInDb', () => ({
+vi.mock('../src/services/job/setPollStatusInDb', () => ({
   setPollStatusInDb: vi.fn(async () => undefined),
 }))
-vi.mock('../services/job/getPollStatusFromDb', () => ({
+vi.mock('../src/services/job/getPollStatusFromDb', () => ({
   getPollStatusFromDb: vi.fn(async () => ({ abortRequested: false })),
 }))
-vi.mock('../services/job/createJobEventBuffer', () => ({
+vi.mock('../src/services/job/createJobEventBuffer', () => ({
   createJobEventBuffer: () => ({
     add: vi.fn(async () => undefined),
     flush: vi.fn(async () => undefined),
   }),
 }))
-vi.mock('../services/job/createPollStatusCoalescer', () => ({
+vi.mock('../src/services/job/createPollStatusCoalescer', () => ({
   createPollStatusCoalescer: () => ({ flush: vi.fn(async () => undefined) }),
 }))
 
@@ -51,7 +51,7 @@ describe('job_runs timing', () => {
 
   it('keeps runAt at the start and records completedAt at the end', async () => {
     const { getDb, jobRuns } = await import('@/lib/db')
-    const { runIngestJob } = await import('../services/job/runIngestJob')
+    const { runIngestJob } = await import('../src/services/job/runIngestJob')
 
     const startedAt = new Date()
     await runIngestJob()

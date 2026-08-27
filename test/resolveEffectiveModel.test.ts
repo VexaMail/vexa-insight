@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { AIServiceError } from '../services/ai/contracts'
-import { resolveEffectiveModel } from '../services/ai/providers/shared/resolveEffectiveModel'
+import type { AIServiceError } from '../src/services/ai/contracts'
+import { resolveEffectiveModel } from '../src/services/ai/providers/shared/resolveEffectiveModel'
 
 describe('resolveEffectiveModel', () => {
   it('returns the selected model when set', () => {

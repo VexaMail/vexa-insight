@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { decryptSecret } from '../services/crypto/decryptSecret'
-import { encryptSecret } from '../services/crypto/encryptSecret'
-import { isEncrypted } from '../services/crypto/isEncrypted'
+import { decryptSecret } from '../src/services/crypto/decryptSecret'
+import { encryptSecret } from '../src/services/crypto/encryptSecret'
+import { isEncrypted } from '../src/services/crypto/isEncrypted'
 
 export const SECRET = 'this-is-a-32-character-test-key-AA'
 

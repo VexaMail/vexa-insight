@@ -334,7 +334,7 @@ Outbound webhooks (Slack, Teams, generic) for "unauthorized source detected" and
 Contributions welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, code
 style, and PR workflow. In short: fork, run `pnpm run check` before submitting,
 keep route handlers thin and logic in services, place types under
-`types/<area>/`, follow existing patterns (one export per file, Drizzle
+`src/types/<area>/`, follow existing patterns (one export per file, Drizzle
 migrations for schema changes).
 
 ---

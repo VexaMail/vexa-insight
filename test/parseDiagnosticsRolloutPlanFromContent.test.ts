@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseDiagnosticsRolloutPlanFromContent } from '../services/ai/use-cases/parseDiagnosticsRolloutPlanFromContent'
+import { parseDiagnosticsRolloutPlanFromContent } from '../src/services/ai/use-cases/parseDiagnosticsRolloutPlanFromContent'
 
 describe('parseDiagnosticsRolloutPlanFromContent', () => {
   it('parses ordered rollout plan steps from a valid response', () => {

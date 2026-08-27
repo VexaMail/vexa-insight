@@ -1,10 +1,10 @@
 import { requireAdminAuth } from '@/services/api'
+import { createFolder } from '@/services/imap'
 import { getImapAccountsRow } from '@/services/settings'
 import type { ImapAccountConfig } from '@/types/config'
 import { imapCreateFolderRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { createFolder } from '../../../../../../services/imap/createFolder'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const auth = requireAdminAuth(request)

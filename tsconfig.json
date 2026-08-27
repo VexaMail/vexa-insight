@@ -5,8 +5,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./*"],
-      "@supabase/*": ["./services/supabase/*"]
+      "@/*": ["./src/*"],
+      "@supabase/*": ["./src/services/supabase/*"]
     },
     "allowJs": false,
     "ignoreDeprecations": "6.0"

@@ -1,6 +1,6 @@
 import type { SpfCheckResult, SpfValidationCategory } from '@/types/diagnostics'
 import { describe, expect, it } from 'vitest'
-import { analyzeSpfRecord } from '../services/diagnostics/analyzeSpfRecord'
+import { analyzeSpfRecord } from '../src/services/diagnostics/analyzeSpfRecord'
 
 describe('analyzeSpfRecord', () => {
   function findCheck(

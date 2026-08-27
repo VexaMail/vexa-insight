@@ -2,9 +2,8 @@ import type { Metadata } from 'next'
 
 import { InstallForm } from '@/components/install'
 import { ThemeToggle } from '@/components/shell'
-import { isInstalled } from '@/services/install'
+import { isInstalled, isPartiallyInstalled } from '@/services/install'
 import { redirect } from 'next/navigation'
-import { isPartiallyInstalled } from '../../services/install/isPartiallyInstalled'
 
 export const metadata: Metadata = {
   title: 'Install | Vexa Insight',

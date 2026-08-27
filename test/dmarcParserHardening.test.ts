@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
-import { MAX_UNCOMPRESSED_SIZE } from '../utils/dmarc/constants'
-import { extractXmlFromBuffer } from '../utils/dmarc/extractXmlFromBuffer'
-import { parseDmarcXml } from '../utils/dmarc/parseDmarcXml'
+import { MAX_UNCOMPRESSED_SIZE } from '../src/utils/dmarc/constants'
+import { extractXmlFromBuffer } from '../src/utils/dmarc/extractXmlFromBuffer'
+import { parseDmarcXml } from '../src/utils/dmarc/parseDmarcXml'
 
 describe('DMARC parser hardening', () => {
   it('refuses XML with DOCTYPE', () => {

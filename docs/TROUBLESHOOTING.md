@@ -76,7 +76,7 @@ sqlite3 data/vexa.db 'PRAGMA journal_mode;'
 # expected: wal
 ```
 
-Increase the busy timeout (in `lib/db/client.ts`, future setting):
+Increase the busy timeout (in `src/lib/db/client.ts`, future setting):
 
 ```sql
 PRAGMA busy_timeout = 15000;
@@ -174,5 +174,5 @@ If `Settings > Updates` reports "update check disabled":
 | Migration failure                  | Same — look for `Migration` lines                                                           |
 | IMAP errors                        | UI: `Settings > Polling status`; logs: lines beginning `[imap]`                             |
 | Parser errors                      | UI: `Settings > Ingestion log`                                                              |
-| Slow dashboard                     | Check `EXPLAIN QUERY PLAN` on suspect queries; verify indexes in `lib/db/schema/`           |
+| Slow dashboard                     | Check `EXPLAIN QUERY PLAN` on suspect queries; verify indexes in `src/lib/db/schema/`       |
 | 4xx on Server Actions behind proxy | Verify `VEXA_ALLOWED_ORIGINS` matches the public origin (see `docs/DEPLOY-BEHIND-PROXY.md`) |

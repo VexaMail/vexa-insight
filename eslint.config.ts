@@ -205,7 +205,7 @@ const config = defineConfig([
 
       /**
        * Architecture boundaries (folder-level dependency governance)
-       * Matched to actual project layout (root-level directories).
+       * Matched to the source layout under src/.
        *
        * Types:
        *   app       → Next.js App Router pages & API routes
@@ -257,7 +257,7 @@ const config = defineConfig([
   },
 
   // Boundaries: map filesystem patterns to element types
-  // Matched to actual project layout (root-level, no src/ prefix)
+  // Matched to the source layout under src/.
   {
     files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
     settings: {
@@ -267,24 +267,24 @@ const config = defineConfig([
         { type: 'app', pattern: 'app/**/*' },
 
         // Client-safe UI components
-        { type: 'components', pattern: 'components/*' },
-        { type: 'components', pattern: 'components/**/*' },
+        { type: 'components', pattern: 'src/components/*' },
+        { type: 'components', pattern: 'src/components/**/*' },
 
         // Runtime-neutral shared code
-        { type: 'shared', pattern: 'lib/*' },
-        { type: 'shared', pattern: 'lib/**/*' },
-        { type: 'shared', pattern: 'utils/*' },
-        { type: 'shared', pattern: 'utils/**/*' },
-        { type: 'shared', pattern: 'hooks/*' },
-        { type: 'shared', pattern: 'hooks/**/*' },
-        { type: 'shared', pattern: 'types/*' },
-        { type: 'shared', pattern: 'types/**/*' },
+        { type: 'shared', pattern: 'src/lib/*' },
+        { type: 'shared', pattern: 'src/lib/**/*' },
+        { type: 'shared', pattern: 'src/utils/*' },
+        { type: 'shared', pattern: 'src/utils/**/*' },
+        { type: 'shared', pattern: 'src/hooks/*' },
+        { type: 'shared', pattern: 'src/hooks/**/*' },
+        { type: 'shared', pattern: 'src/types/*' },
+        { type: 'shared', pattern: 'src/types/**/*' },
 
         // Server-only code
-        { type: 'server', pattern: 'services/*' },
-        { type: 'server', pattern: 'services/**/*' },
-        { type: 'server', pattern: 'actions/*' },
-        { type: 'server', pattern: 'actions/**/*' },
+        { type: 'server', pattern: 'src/services/*' },
+        { type: 'server', pattern: 'src/services/**/*' },
+        { type: 'server', pattern: 'src/actions/*' },
+        { type: 'server', pattern: 'src/actions/**/*' },
       ],
     },
   },
@@ -299,21 +299,21 @@ const config = defineConfig([
    * Uses import/no-restricted-paths for path-based zone enforcement.
    */
   {
-    files: ['components/**/*.{ts,tsx}', 'hooks/**/*.{ts,tsx}'],
+    files: ['src/components/**/*.{ts,tsx}', 'src/hooks/**/*.{ts,tsx}'],
     rules: {
       'import/no-restricted-paths': [
         'error',
         {
           zones: [
             {
-              target: './components',
-              from: './services',
+              target: './src/components',
+              from: './src/services',
               message:
                 'Components must not import server-only modules (services/). Use server actions or API routes instead.',
             },
             {
-              target: './hooks',
-              from: './services',
+              target: './src/hooks',
+              from: './src/services',
               message:
                 'Hooks must not import server-only modules (services/). Keep hooks runtime-neutral or client-safe.',
             },
@@ -323,21 +323,21 @@ const config = defineConfig([
     },
   },
   {
-    files: ['services/**/*.{ts,tsx}', 'actions/**/*.{ts,tsx}'],
+    files: ['src/services/**/*.{ts,tsx}', 'src/actions/**/*.{ts,tsx}'],
     rules: {
       'import/no-restricted-paths': [
         'error',
         {
           zones: [
             {
-              target: './services',
-              from: './components',
+              target: './src/services',
+              from: './src/components',
               message:
                 'Server code must not import client UI components. Keep server runtime pure.',
             },
             {
-              target: './actions',
-              from: './components',
+              target: './src/actions',
+              from: './src/components',
               message: 'Server actions must not import client UI components.',
             },
           ],
@@ -352,7 +352,7 @@ const config = defineConfig([
   // Allow overrides: db schema files and script files can use kebab-case
   {
     files: [
-      'lib/db/schema/**/*.{ts,tsx}',
+      'src/lib/db/schema/**/*.{ts,tsx}',
       'scripts/**/*.{js,mjs,cjs,ts}',
       'drizzle/**/*.{js,ts}',
     ],
@@ -389,19 +389,19 @@ const config = defineConfig([
   // rather than as a glob so a new deep import somewhere else still fails.
   {
     files: [
-      'hooks/useDateFilterParams.ts',
-      'services/ai/core/isAiConfigured.ts',
-      'services/ai/settings/resolveStoredApiKey.ts',
-      'services/api/isUsableSecret.ts',
-      'services/api/requireAdminAccess.ts',
-      'services/auth/domainAccess.ts',
-      'services/auth/requirePermission.ts',
-      'services/config/getConfig.ts',
-      'services/install/completeInstall.ts',
-      'services/settings/updateSettings.ts',
-      'types/dashboard/PollStatus.ts',
-      'types/ingest/UseEmailPipelineCardReturn.ts',
-      'utils/ingest/computeNextStoreState.ts',
+      'src/hooks/useDateFilterParams.ts',
+      'src/services/ai/core/isAiConfigured.ts',
+      'src/services/ai/settings/resolveStoredApiKey.ts',
+      'src/services/api/isUsableSecret.ts',
+      'src/services/api/requireAdminAccess.ts',
+      'src/services/auth/domainAccess.ts',
+      'src/services/auth/requirePermission.ts',
+      'src/services/config/getConfig.ts',
+      'src/services/install/completeInstall.ts',
+      'src/services/settings/updateSettings.ts',
+      'src/types/dashboard/PollStatus.ts',
+      'src/types/ingest/UseEmailPipelineCardReturn.ts',
+      'src/utils/ingest/computeNextStoreState.ts',
     ],
     rules: {
       'import/no-internal-modules': 'off',
@@ -415,7 +415,7 @@ const config = defineConfig([
   // or eslint-plugin-react-hooks adds an allow-list, this rule stays off for
   // the one wrapper that consumes useReactTable.
   {
-    files: ['hooks/ui/useDataTable.ts'],
+    files: ['src/hooks/ui/useDataTable.ts'],
     rules: {
       'react-hooks/incompatible-library': 'off',
     },

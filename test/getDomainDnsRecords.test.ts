@@ -16,7 +16,7 @@ afterEach(() => {
 describe('getDomainDnsRecords — SPF', () => {
   it('returns valid SPF when a single v=spf1 record exists', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com')
         return [['v=spf1 include:_spf.google.com -all']]
@@ -33,7 +33,7 @@ describe('getDomainDnsRecords — SPF', () => {
 
   it('returns null SPF when no v=spf1 record exists', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 
@@ -45,7 +45,7 @@ describe('getDomainDnsRecords — SPF', () => {
 
   it('sets spfWarning when multiple SPF records are found', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com')
         return [['v=spf1 include:a.com ~all'], ['v=spf1 include:b.com ~all']]
@@ -61,7 +61,7 @@ describe('getDomainDnsRecords — SPF', () => {
 
   it('sets spfWarning for ~all softfail policy', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com')
         return [['v=spf1 include:_spf.google.com ~all']]
@@ -80,7 +80,7 @@ describe('getDomainDnsRecords — SPF', () => {
 describe('getDomainDnsRecords — DMARC', () => {
   it('extracts policy from DMARC record', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === '_dmarc.example.com')
         return [['v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com']]
@@ -97,7 +97,7 @@ describe('getDomainDnsRecords — DMARC', () => {
 
   it('marks dmarcValid true but warns when policy is none', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === '_dmarc.example.com')
         return [['v=DMARC1; p=none; rua=mailto:dmarc@example.com']]
@@ -113,7 +113,7 @@ describe('getDomainDnsRecords — DMARC', () => {
 
   it('returns null dmarc when lookup fails', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 
@@ -128,7 +128,7 @@ describe('getDomainDnsRecords — DMARC', () => {
 describe('getDomainDnsRecords — MX', () => {
   it('returns MX records sorted by priority', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([
       { priority: 20, exchange: 'alt1.aspmx.l.google.com' },
@@ -145,7 +145,7 @@ describe('getDomainDnsRecords — MX', () => {
 
   it('returns empty MX array when lookup fails', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockRejectedValue(new Error('NXDOMAIN'))
 
@@ -158,7 +158,7 @@ describe('getDomainDnsRecords — MX', () => {
 describe('getDomainDnsRecords — DKIM', () => {
   it('marks a selector valid when DKIM1 record is found', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'google._domainkey.example.com')
         return [['v=DKIM1; k=rsa; p=MIIBIjANBg...']]
@@ -178,7 +178,7 @@ describe('getDomainDnsRecords — DKIM', () => {
 
   it('marks selector invalid when no record is found', async () => {
     const { getDomainDnsRecords } =
-      await import('../services/diagnostics/getDomainDnsRecords')
+      await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 

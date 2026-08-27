@@ -1,11 +1,11 @@
 # Database migrations policy
 
 Vexa runs SQL migrations from `drizzle/*.sql` at boot via `runMigrations()` (see
-[lib/db/runMigrations.ts](../lib/db/runMigrations.ts)). Once a release ships, a
-migration may run against thousands of self-hosted instances that the project
-never sees again, so every migration must be **reversible without operator
-intervention** and **safe to roll back to the previous app release** that did
-not yet know about it.
+[src/lib/db/runMigrations.ts](../src/lib/db/runMigrations.ts)). Once a release
+ships, a migration may run against thousands of self-hosted instances that the
+project never sees again, so every migration must be **reversible without
+operator intervention** and **safe to roll back to the previous app release**
+that did not yet know about it.
 
 This document is the contract. Pull requests that change `drizzle/**.sql` must
 pass the rules below; `scripts/check-migrations.sh` enforces a subset of them

@@ -9,7 +9,7 @@ export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {
-      '@': path.resolve(import.meta.dirname, '.'),
+      '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
   test: {
@@ -21,18 +21,18 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       include: [
-        'actions/**',
-        'formatters/**',
-        'lib/**',
-        'mappers/**',
-        'services/**',
-        'utils/**',
-        'validators/**',
+        'src/actions/**',
+        'src/formatters/**',
+        'src/lib/**',
+        'src/mappers/**',
+        'src/services/**',
+        'src/utils/**',
+        'src/validators/**',
       ],
       exclude: [
         '**/index.ts',
         '**/*.d.ts',
-        '**/types/**',
+        'src/**/types/**',
         'node_modules/**',
         '.next/**',
       ],

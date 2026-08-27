@@ -35,11 +35,12 @@ No `.env` is required for a quick start. Optionally copy `.env.example` to
 
 ```
 app/             Next.js App Router pages, layouts, and route handlers
-components/      Reusable React UI (organized by domain area)
-hooks/           One hook per file (useXxx.ts)
-services/       External boundaries (IMAP, DB, parsing)
-utils/           Pure helpers (no IO)
-types/           One type per file, organized by area
+src/
+  components/    Reusable React UI (organized by domain area)
+  hooks/         One hook per file (useXxx.ts)
+  services/      External boundaries (IMAP, DB, parsing)
+  utils/         Pure helpers (no IO)
+  types/         One type per file, organized by area
 drizzle/         Drizzle migrations (SQL + journal)
 scripts/         CLI tools (recovery.ts, etc.)
 docs/            Architecture, data model, API docs
@@ -49,7 +50,7 @@ docs/            Architecture, data model, API docs
 
 - **One export per file.** Components, hooks, types, and utility functions each
   live in their own file.
-- **No inline types** in components/hooks; place them under `types/<area>/`.
+- **No inline types** in components/hooks; place them under `src/types/<area>/`.
 - **Thin route handlers**: validate input → call a service → return a response.
   No business logic in `app/**/route.ts`.
 - **TypeScript strict** mode is enabled. Prefer `unknown` + narrowing over
@@ -73,9 +74,10 @@ schema change.
 
 ## Working on the AI prompts
 
-The prompts under `services/ai/prompts/` are iterated by running them, not by
-reading them. `pnpm run eval:ai` runs a production prompt N times against real
-rows in your local database and writes one comparable artifact per invocation:
+The prompts under `src/services/ai/prompts/` are iterated by running them, not
+by reading them. `pnpm run eval:ai` runs a production prompt N times against
+real rows in your local database and writes one comparable artifact per
+invocation:
 
 ```bash
 pnpm run eval:ai report <reportId>

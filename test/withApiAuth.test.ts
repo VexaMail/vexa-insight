@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { describe, expect, it } from 'vitest'
-import { withApiAuth } from '../services/api/withApiAuth'
+import { withApiAuth } from '../src/services/api/withApiAuth'
 
 describe('withApiAuth', () => {
   const fakeRequest = (headers: Record<string, string> = {}): NextRequest =>

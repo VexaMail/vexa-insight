@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeDkimAuthResult } from '../utils/dmarc/normalizeDkimAuthResult'
-import { normalizeDkimResults } from '../utils/dmarc/normalizeDkimResults'
-import { normalizePolicyOverrides } from '../utils/dmarc/normalizePolicyOverrides'
-import { normalizePolicyOverrideType } from '../utils/dmarc/normalizePolicyOverrideType'
-import { normalizeSpfAuthResult } from '../utils/dmarc/normalizeSpfAuthResult'
+import { normalizeDkimAuthResult } from '../src/utils/dmarc/normalizeDkimAuthResult'
+import { normalizeDkimResults } from '../src/utils/dmarc/normalizeDkimResults'
+import { normalizePolicyOverrides } from '../src/utils/dmarc/normalizePolicyOverrides'
+import { normalizePolicyOverrideType } from '../src/utils/dmarc/normalizePolicyOverrideType'
+import { normalizeSpfAuthResult } from '../src/utils/dmarc/normalizeSpfAuthResult'
 
 describe('normalizeSpfAuthResult', () => {
   it('maps standard values', () => {

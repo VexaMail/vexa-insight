@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { rowToConfig } from '../lib/config/rowToConfig'
-import type { SettingsRow } from '../lib/config/SettingsRow'
-import { DEFAULT_DAYS_BACK } from '../utils/install/defaultDaysBack'
+import { rowToConfig } from '../src/lib/config/rowToConfig'
+import type { SettingsRow } from '../src/lib/config/SettingsRow'
+import { DEFAULT_DAYS_BACK } from '../src/utils/install/defaultDaysBack'
 
 describe('rowToConfig ingestion window', () => {
   const baseRow: SettingsRow = {

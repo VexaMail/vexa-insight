@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 import {
   buildSecurityHeaders,
   getAllowedOriginsFromEnv,
-} from './utils/security'
+} from './src/utils/security'
 
 const isProd = process.env.NODE_ENV === 'production'
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeVersion } from '../utils/updates/normalizeVersion'
+import { normalizeVersion } from '../src/utils/updates/normalizeVersion'
 
 describe('normalizeVersion', () => {
   it('strips a leading v', () => {

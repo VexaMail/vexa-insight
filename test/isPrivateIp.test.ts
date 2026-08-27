@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-hardcoded-ip -- this file is the IP classifier's test suite; hardcoded IPs are the inputs under test */
 import { describe, expect, it } from 'vitest'
-import { isPrivateIp } from '../services/security/isPrivateIp'
+import { isPrivateIp } from '../src/services/security/isPrivateIp'
 
 describe('isPrivateIp', () => {
   const cases: Array<[string, boolean]> = [

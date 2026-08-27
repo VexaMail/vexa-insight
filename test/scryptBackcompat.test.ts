@@ -1,8 +1,8 @@
 import crypto from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { hashPassword } from '../services/auth/hashPassword'
-import { KEY_LENGTH } from '../services/auth/keyLength'
-import { verifyPassword } from '../services/auth/verifyPassword'
+import { hashPassword } from '../src/services/auth/hashPassword'
+import { KEY_LENGTH } from '../src/services/auth/keyLength'
+import { verifyPassword } from '../src/services/auth/verifyPassword'
 
 describe('verifyPassword', () => {
   it('verifies a freshly hashed password (scrypt$ format)', () => {

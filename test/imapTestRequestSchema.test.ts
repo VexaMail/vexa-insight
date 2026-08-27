@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { imapTestRequestSchema } from '../validators/imap'
+import { imapTestRequestSchema } from '../src/validators/imap'
 
 describe('imapTestRequestSchema', () => {
   const credentials = () => ({

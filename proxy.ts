@@ -1,7 +1,7 @@
 import type { NextRequest, NextResponse } from 'next/server'
-import { checkInstall } from './services/install/checkInstall'
-import { applyProdCspHeaders } from './utils/proxy/applyProdCspHeaders'
-import { checkAuth } from './utils/proxy/checkAuth'
+import { checkInstall } from './src/services/install/checkInstall'
+import { applyProdCspHeaders } from './src/utils/proxy/applyProdCspHeaders'
+import { checkAuth } from './src/utils/proxy/checkAuth'
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   const installResponse = await checkInstall(request)

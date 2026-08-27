@@ -62,18 +62,18 @@ When evaluating reports, these are the components most likely to be impactful:
   random 12-byte IV and is authenticated with the GCM tag. Blobs are stored with
   a `v1:` version prefix. Legacy plaintext rows from upgrades are migrated
   automatically on first boot after the upgrade. Review credential handling in
-  `services/crypto/`, `services/settings/`, `services/imap/`, and the Settings
-  UI.
+  `src/services/crypto/`, `src/services/settings/`, `src/services/imap/`, and
+  the Settings UI.
 - **DMARC report ingestion** — XML parsing of untrusted email attachments
-  (`.zip` and `.gz`); review parser surface in `services/dmarc/` and
-  `utils/dmarc/`. Uncompressed-size cap protects against zip bombs.
+  (`.zip` and `.gz`); review parser surface in `src/services/dmarc/` and
+  `src/utils/dmarc/`. Uncompressed-size cap protects against zip bombs.
 - **Self-update flow** — `scripts/self-update.sh` accepts only tag refs matching
   `^v\d+\.\d+\.\d+(-[A-Za-z0-9.-]+)?$`. Every invocation is recorded in
   `data/self-update.audit.log`. Build failures trigger automatic git/`.next`
   rollback before any supervisor signal.
 - **Outbound webhooks** — payloads are signed with HMAC-SHA256 when an endpoint
   has a `secret`; verify on the receiver via the `X-Vexa-Signature` header.
-- **Authentication and session handling** — review `services/auth/` (scrypt,
+- **Authentication and session handling** — review `src/services/auth/` (scrypt,
   30-day cookies, `HttpOnly`, `Secure` in production, `SameSite=lax`) and the
   `sessions` table.
 

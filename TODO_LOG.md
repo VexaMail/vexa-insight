@@ -6,6 +6,41 @@
 
 ### 2026-08
 
+- [x] 2026-08-27 — **Baseline gate debt:** Move the root-level source
+      directories under `src/`.
+  - Context: `actions/`, `components/`, `constants/`, `contexts/`,
+    `formatters/`, `hooks/`, `lib/`, `mappers/`, `services/`, `types/`, `utils/`
+    and `validators/` sat at the repo root, so `knip.config.ts`,
+    `.dependency-cruiser.cjs` and `package.json`'s `deps:graph` each restated
+    the same list, and knip's Next preset — which globs `src/` and `app/` —
+    could not see the code at all without the restatement.
+  - Result: 1,518 files moved as renames. `deps:graph` is now
+    `depcruise app src scripts` instead of fourteen positional directories;
+    `knip.config.ts` keeps only the globs the preset does not cover (`scripts`,
+    `test`, the Tailwind CSS entry); `tsconfig.json` maps `@/*` to `./src/*`.
+    One knip configuration hint disappeared on its own — the preset's `src/**`
+    pattern now matches something, so the count went 7 to 6.
+  - Two things needed a human decision the mechanical move got wrong.
+    `constants/app/appVersion.ts` imported `@/package.json`, which after the
+    alias change would resolve inside `src/`; it now uses an explicit relative
+    path to the repository root. And `data/` was in the move list because the
+    backlog entry listed it, but its only tracked file was a `.gitkeep` marking
+    the runtime SQLite directory — `DATABASE_URL=file:./data/vexa.db` resolves
+    against the working directory, not the source root. Moving it would have
+    left a misleading empty `src/data/`; the placeholder is back at the root
+    where the database actually lives.
+  - Delegated to Codex CLI, which reported honestly that it could not run the
+    production build inside its sandbox (no DNS for Google Fonts, and its
+    Turbopack worker port was blocked). That gap was closed here: the build runs
+    clean outside the sandbox.
+  - Evidence: `check:ci` 0 (540 tests), `check:quality` 0 (knip 0 findings,
+    dependency-cruiser 0 violations across 1,648 modules with `no-circular`
+    unnarrowed, type-coverage 99.60%), `check:security` 0, `pnpm run build` 0.
+    Git reports 1,518 renames, one content change, no file added or deleted.
+  - Files: every source directory, plus `tsconfig.json`, `knip.config.ts`,
+    `package.json`, `vitest.config.mts`, `next.config.ts`, `eslint.config.ts`,
+    `.github/CODEOWNERS` and the docs that name code locations.
+
 - [x] 2026-08-27 — **Baseline gate debt:** Remove the barrel-mediated cycles and
       run `no-circular` unnarrowed.
   - Context: `.dependency-cruiser.cjs` narrowed `no-circular` with

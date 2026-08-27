@@ -17,17 +17,17 @@ single-binary deployment.
 
 ## Decision
 
-- Encrypt IMAP passwords with AES-256-GCM (`services/crypto/encryptSecret.ts`)
-  before persisting. Each blob is versioned:
-  `v1:<iv-b64>|<tag-b64>|<ciphertext-b64>`, with a fresh random 12-byte IV per
-  call and the GCM tag authenticating the ciphertext.
+- Encrypt IMAP passwords with AES-256-GCM
+  (`src/services/crypto/encryptSecret.ts`) before persisting. Each blob is
+  versioned: `v1:<iv-b64>|<tag-b64>|<ciphertext-b64>`, with a fresh random
+  12-byte IV per call and the GCM tag authenticating the ciphertext.
 - Derive the 32-byte key from the configured `SECRET_KEY` via HKDF-SHA256 with
-  fixed salt/info constants (`services/crypto/deriveEncryptionKey.ts`), so the
-  same `SECRET_KEY` deterministically yields the same key across boots.
+  fixed salt/info constants (`src/services/crypto/deriveEncryptionKey.ts`), so
+  the same `SECRET_KEY` deterministically yields the same key across boots.
   `SECRET_KEY` must be at least 16 characters.
 - Stay migration-compatible: `isEncrypted` detects the `v1:` prefix, reads fall
   back to legacy plaintext, and
-  `services/settings/encryptLegacyImapPasswords.ts` upgrades pre-existing
+  `src/services/settings/encryptLegacyImapPasswords.ts` upgrades pre-existing
   plaintext rows in place.
 
 ## Consequences

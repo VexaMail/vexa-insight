@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeDomainScore } from '../services/diagnostics/computeDomainScore'
+import { computeDomainScore } from '../src/services/diagnostics/computeDomainScore'
 import { makeEmptyDnsDiagnostics as makeDns } from './setup/makeEmptyDnsDiagnostics'
 
 describe('computeDomainScore', () => {

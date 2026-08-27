@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@/components/shell'
 import { Toaster } from 'sonner'
 
-import { siteMetadata } from '../lib/config/siteMetadata'
+import { siteMetadata } from '../src/lib/config/siteMetadata'
 import './globals.css'
 
 import { inter } from './inter'

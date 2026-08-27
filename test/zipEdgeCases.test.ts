@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { extractXmlFromZip } from '../utils/dmarc/extractXmlFromZip'
-import { MAX_FILES_IN_ARCHIVE } from '../utils/dmarc/maxFilesInArchive'
+import { extractXmlFromZip } from '../src/utils/dmarc/extractXmlFromZip'
+import { MAX_FILES_IN_ARCHIVE } from '../src/utils/dmarc/maxFilesInArchive'
 import { buildZip } from './setup/buildZip'
 
 describe('extractXmlFromZip edge cases', () => {

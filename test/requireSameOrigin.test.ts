@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { requireSameOrigin } from '../services/security/requireSameOrigin'
+import { requireSameOrigin } from '../src/services/security/requireSameOrigin'
 
 describe('requireSameOrigin', () => {
   const req = (method: string, headers: Record<string, string> = {}): Request =>

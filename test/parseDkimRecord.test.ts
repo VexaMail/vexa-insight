@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseDkimRecord } from '../services/diagnostics/parseDkimRecord'
+import { parseDkimRecord } from '../src/services/diagnostics/parseDkimRecord'
 
 describe('parseDkimRecord', () => {
   // Base64 lengths match real RSA SubjectPublicKeyInfo encodings: the

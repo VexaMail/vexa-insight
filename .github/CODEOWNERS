@@ -2,10 +2,10 @@
 *       @cristiandeluxe
 
 # Security-sensitive paths get explicit ownership
-/services/security/      @cristiandeluxe
-/services/crypto/        @cristiandeluxe
-/services/auth/          @cristiandeluxe
-/services/install/       @cristiandeluxe
-/services/api/withApiAuth.ts  @cristiandeluxe
+/src/services/security/      @cristiandeluxe
+/src/services/crypto/        @cristiandeluxe
+/src/services/auth/          @cristiandeluxe
+/src/services/install/       @cristiandeluxe
+/src/services/api/withApiAuth.ts  @cristiandeluxe
 /.github/                @cristiandeluxe
 /SECURITY.md             @cristiandeluxe

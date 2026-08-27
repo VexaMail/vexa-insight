@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isUpdateAvailable } from '../utils/updates/isUpdateAvailable'
+import { isUpdateAvailable } from '../src/utils/updates/isUpdateAvailable'
 
 describe('isUpdateAvailable', () => {
   it('returns true when latest is strictly higher', () => {

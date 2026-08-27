@@ -20,7 +20,7 @@ export function freshState() {
 describe('buildSpfTreeNode', () => {
   it('builds a single node with no children for a flat record', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') return [['v=spf1 ip4:203.0.113.10 -all']]
       return []
@@ -41,7 +41,7 @@ describe('buildSpfTreeNode', () => {
 
   it('resolves nested includes and rolls up lookup counts', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') return [['v=spf1 include:a.example -all']]
       if (host === 'a.example') return [['v=spf1 include:b.example ~all']]
@@ -64,7 +64,7 @@ describe('buildSpfTreeNode', () => {
 
   it('follows redirect= as a child node', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') return [['v=spf1 redirect=_spf.example.net']]
       if (host === '_spf.example.net') return [['v=spf1 a -all']]
@@ -83,7 +83,7 @@ describe('buildSpfTreeNode', () => {
 
   it('ignores redirect= when the record also has an all mechanism', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') {
         return [['v=spf1 include:a.example redirect=_spf.example.net -all']]
@@ -105,7 +105,7 @@ describe('buildSpfTreeNode', () => {
 
   it('honors redirect= and reports no ignored redirect without an all', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') return [['v=spf1 redirect=_spf.example.net']]
       if (host === '_spf.example.net') return [['v=spf1 a -all']]
@@ -121,7 +121,7 @@ describe('buildSpfTreeNode', () => {
 
   it('ignores redirect= placed before the all mechanism too', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') {
         return [['v=spf1 redirect=_spf.example.net ~all']]
@@ -140,7 +140,7 @@ describe('buildSpfTreeNode', () => {
 
   it('counts macro mechanisms without trying to resolve them', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') {
         return [
@@ -167,7 +167,7 @@ describe('buildSpfTreeNode', () => {
 
   it('does not expand a macro include as a missing-record child', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') {
         return [['v=spf1 include:%{d}.spf.example.net -all']]
@@ -186,7 +186,7 @@ describe('buildSpfTreeNode', () => {
 
   it('detects include cycles and marks the repeated node', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'a.example') return [['v=spf1 include:b.example -all']]
       if (host === 'b.example') return [['v=spf1 include:a.example -all']]
@@ -205,7 +205,7 @@ describe('buildSpfTreeNode', () => {
 
   it('flags include targets without an SPF record as missing', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'example.com') return [['v=spf1 include:gone.example -all']]
       return []
@@ -222,7 +222,7 @@ describe('buildSpfTreeNode', () => {
 
   it('flags the root when the tree exceeds the 10-lookup limit', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     const mechanisms = Array.from(
       { length: 11 },
       (_, i) => `exists:e${i}.example`,
@@ -240,7 +240,7 @@ describe('buildSpfTreeNode', () => {
 
   it('stops descending past the maximum depth', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     mockResolveTxt.mockImplementation(async (host: string) => {
       const match = /^d(\d+)\.example$/.exec(host)
       if (!match) return []
@@ -263,7 +263,7 @@ describe('buildSpfTreeNode', () => {
 
   it('stops creating nodes past the 30-node budget', async () => {
     const { buildSpfTreeNode } =
-      await import('../services/diagnostics/buildSpfTreeNode')
+      await import('../src/services/diagnostics/buildSpfTreeNode')
     // Wide tree: root includes 40 sibling domains, all flat records.
     const includes = Array.from(
       { length: 40 },
@@ -286,7 +286,7 @@ describe('buildSpfTreeNode', () => {
 describe('resolveSpfTree', () => {
   it('caches the resolved tree per domain', async () => {
     const { resolveSpfTree } =
-      await import('../services/diagnostics/resolveSpfTree')
+      await import('../src/services/diagnostics/resolveSpfTree')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'cached.example') return [['v=spf1 -all']]
       return []
