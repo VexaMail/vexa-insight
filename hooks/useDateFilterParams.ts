@@ -1,6 +1,6 @@
 'use client'
 
-import { useDashboardFilters } from '@/hooks/dashboard'
+import { useDashboardFilters } from '@/hooks/dashboard/useDashboardFilters'
 import { format } from 'date-fns'
 
 /**

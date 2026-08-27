@@ -1,4 +1,4 @@
-import { getSession } from '@/services/auth'
+import { getSession } from '@/services/auth/getSession'
 import { getConfig } from '@/services/config'
 import type { NextRequest } from 'next/server'
 import { isUsableSecret } from './isUsableSecret'

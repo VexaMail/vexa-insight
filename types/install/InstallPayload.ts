@@ -1,5 +1,4 @@
-import type { ImapAccountInstall } from '@/types/install'
-
+import type { ImapAccountInstall } from './ImapAccountInstall'
 /**
  * Body for POST /api/install. imapAccounts must have at least one account.
  */

@@ -1,4 +1,4 @@
-import type { ImapAccountInstall } from '@/types/install'
+import type { ImapAccountInstall } from './ImapAccountInstall'
 
 export type InstallAction =
   | { type: 'SET_ADMIN_EMAIL'; payload: string }

@@ -1,3 +1,3 @@
-import type { DomainsTableProps } from '@/types/domains'
+import type { DomainsTableProps } from './DomainsTableProps'
 
 export type DomainsTableRow = DomainsTableProps['domains'][0]

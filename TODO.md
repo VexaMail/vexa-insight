@@ -260,21 +260,14 @@ passes today; each entry below is a pre-existing finding held in place by a
 named exemption rather than a wildcard, so new violations of the same rule still
 fail.
 
-The knip exemptions are gone as of 2026-08-27: the 23 dead files, the 124 unused
-exports and the nine unused dependencies were deleted rather than ignored, so
-`knip.config.ts` no longer carries an `ignore` list, an `ignoreDependencies`
-list, or the `warn` override on `exports` and `types`. What remains below is
-what that pass did not reach.
+Most of this is gone as of 2026-08-27. The knip exemptions went first: the 23
+dead files, the 124 unused exports and the nine unused dependencies were deleted
+rather than ignored, so `knip.config.ts` carries no `ignore` list, no
+`ignoreDependencies` and no rule override. The dependency-cruiser exemptions
+followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
+unnarrowed and the two stale orphan exemptions are deleted. What remains below
+is what those passes did not reach.
 
-- [ ] Route imports through the slice barrels or delete them, then drop the
-      `viaNot` narrowing from `no-circular` in `.dependency-cruiser.cjs`. Every
-      cycle in the repo today runs through a slice's own `index.ts`; genuine
-      module-to-module cycles already fail the gate. Measured 2026-08-27 by
-      removing the narrowing: 77 cycles, all barrel-mediated, e.g.
-      `BimiDetailSection -> diagnostics/shared -> InfoTooltip -> ui -> KpiCard     -> diagnostics -> BimiDetailSection`.
-      Deleting the unused re-exports did not touch them, because these barrels
-      are the ones consumers really do import through; closing this means
-      rewriting those imports to concrete paths, which is its own diff.
 - [ ] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
       `@busirocket/eslint-config` factories. It assembles `eslint-config-next`
       plus boundaries, code-policy, promise, security, sonarjs, unicorn and

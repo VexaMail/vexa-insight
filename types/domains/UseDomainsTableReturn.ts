@@ -1,8 +1,8 @@
 import type { DomainSummary } from '@/types/reports'
 import type { Row } from '@tanstack/react-table'
 
-import type { DomainsTableRow } from '@/types/domains'
 import type { ChangeEvent } from 'react'
+import type { DomainsTableRow } from './DomainsTableRow'
 
 export type UseDomainsTableReturn = {
   readonly filtered: DomainSummary[]

@@ -1,4 +1,4 @@
-import type { TopIpSender } from '@/types/dashboard'
+import type { TopIpSender } from './TopIpSender'
 
 export type UseTopIpSendersTableReturn = {
   readonly ips: TopIpSender[]

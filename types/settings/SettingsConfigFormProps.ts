@@ -1,4 +1,4 @@
-import type { SettingsForAdmin } from '@/types/settings'
+import type { SettingsForAdmin } from './SettingsForAdmin'
 
 export type SettingsConfigFormProps = {
   className?: string

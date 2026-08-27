@@ -1,7 +1,4 @@
-import {
-  METRIC_STATUS_STYLES,
-  METRIC_VALUE_STYLES,
-} from '@/components/diagnostics'
+import { METRIC_STATUS_STYLES, METRIC_VALUE_STYLES } from '@/constants/metrics'
 import { cn } from '@/lib/utils'
 import type { KpiCardProps } from './KpiCardProps'
 

@@ -1,5 +1,4 @@
-import type { ProgressItem } from '@/types/dashboard'
-
+import type { ProgressItem } from './ProgressItem'
 /**
  * Paginated slice of progress items for GET /api/v1/poll-status.
  */

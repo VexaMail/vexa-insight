@@ -1,4 +1,4 @@
-import type { JobRunRow } from '@/types/jobs'
+import type { JobRunRow } from './JobRunRow'
 
 export type JobRunHistoryTableProps = {
   runs: JobRunRow[]

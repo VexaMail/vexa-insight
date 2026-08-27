@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/services/api', () => ({
+vi.mock('@/services/api/hasValidApiKey', () => ({
   hasValidApiKey: vi.fn(async () => false),
 }))
 

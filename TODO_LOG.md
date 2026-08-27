@@ -6,6 +6,43 @@
 
 ### 2026-08
 
+- [x] 2026-08-27 — **Baseline gate debt:** Remove the barrel-mediated cycles and
+      run `no-circular` unnarrowed.
+  - Context: `.dependency-cruiser.cjs` narrowed `no-circular` with
+    `viaNot: '(^|/)index\\.ts$'`, so a cycle passing through a slice barrel did
+    not fail the gate. Measured with the narrowing removed: 77 cycles.
+  - Cause, in two kinds. 31 were a module importing its own slice barrel —
+    `types/install/AccountWithId.ts` reaching `@/types/install` for a sibling,
+    which re-exports the file itself. The rest were mutual slice dependencies
+    routed through barrels: `auth`/`api`/`install`, `config`/`settings`,
+    `ai/core`/`ai/settings`, `types/ingest`/`utils/ingest`, and a
+    `ui`/`diagnostics` pair. No symbol was circular; only the route to it. A
+    barrel aggregates unrelated modules, so importing one for a single symbol
+    drags in everything it re-exports.
+  - Result: cycles are 0 with the rule unnarrowed. Sibling imports point at the
+    sibling; cycle-closing barrel imports point at the concrete module. One was
+    an architecture fix rather than an import rewrite:
+    `components/ui/KpiCard.tsx`, a UI primitive, imported style maps from the
+    `diagnostics` feature barrel. Those maps moved to `constants/metrics/`, and
+    the status union they key on — duplicated verbatim as `KpiStatus` in
+    `components/ui` and inline in `ExecutiveMetricCardProps` — is now one
+    `types/metrics/MetricStatus`.
+  - Cost, stated plainly: 13 modules now deep-import past a barrel, which
+    `import/no-internal-modules` forbids. They are listed by name in
+    `eslint.config.ts` with the reason, not waved through by a glob, so a new
+    deep import elsewhere still fails. This mirrors the `scripts/` override that
+    was already there for the same reason.
+  - Three tests mocked a barrel (`@/services/api`, `@/services/ai/settings`)
+    that the code under test no longer imports, so the mocks stopped
+    intercepting. They now mock the concrete module, which is what the code
+    actually imports.
+  - Evidence: `pnpm run check:ci` green (540 tests), `pnpm run build` green,
+    `check:quality` and `check:security` exit 0, dependency-cruiser reports no
+    violations across 1,648 modules with no `viaNot` and no stale orphan
+    exemptions, knip reports zero unused files, exports and dependencies.
+  - Files: `.dependency-cruiser.cjs`, `eslint.config.ts`, `constants/metrics/*`,
+    `types/metrics/MetricStatus.ts`, 45 import rewrites, 3 test files.
+
 - [x] 2026-08-27 — **Baseline gate debt:** Delete the dead code the knip
       exemptions were holding in place, and raise the rules back to `error`.
   - Context: adopting the shared toolchain surfaced 124 unused exports, 23

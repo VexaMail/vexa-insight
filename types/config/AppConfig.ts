@@ -1,5 +1,4 @@
-import type { ImapAccountConfig } from '@/types/config'
-
+import type { ImapAccountConfig } from './ImapAccountConfig'
 /**
  * Application config shape loaded from validated env and DB.
  * One source of truth for runtime config consumed by the app.

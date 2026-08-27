@@ -1,4 +1,5 @@
-import { decryptApiKey, getAiSettings } from '@/services/ai'
+import { decryptApiKey } from '@/services/ai/settings/decryptApiKey'
+import { getAiSettings } from '@/services/ai/settings/getAiSettings'
 import { getConfig } from '@/services/config'
 
 /**

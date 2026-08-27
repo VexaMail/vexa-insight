@@ -1,5 +1,5 @@
 import { domains, getDb } from '@/lib/db'
-import { hasValidApiKey } from '@/services/api'
+import { hasValidApiKey } from '@/services/api/hasValidApiKey'
 import { inArray } from 'drizzle-orm'
 import { getSession } from './getSession'
 

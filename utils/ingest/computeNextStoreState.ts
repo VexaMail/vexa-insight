@@ -1,4 +1,4 @@
-import type { PollStatusResponseData } from '@/types/ingest'
+import type { PollStatusResponseData } from '@/types/ingest/PollStatusResponseData'
 import type { IngestState } from '@/types/IngestState'
 
 export function computeNextStoreState(

@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { insertSeedDomains } from './setup/insertSeedDomains'
 import { setupTestDb } from './setup/setupTestDb'
 
-vi.mock('@/services/api', () => ({
+vi.mock('@/services/api/hasValidApiKey', () => ({
   hasValidApiKey: vi.fn(async () => false),
 }))
 

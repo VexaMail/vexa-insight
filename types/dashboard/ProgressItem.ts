@@ -1,5 +1,4 @@
-import type { ProgressStep } from '@/types/dashboard'
-
+import type { ProgressStep } from './ProgressStep'
 /**
  * One progress item (e.g. per account or folder) with steps and overall status.
  */

@@ -1,4 +1,4 @@
-import type { FolderEntry } from '@/types/settings'
+import type { FolderEntry } from './FolderEntry'
 
 export type FolderState = {
   folders: FolderEntry[]

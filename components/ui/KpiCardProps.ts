@@ -1,10 +1,10 @@
+import type { MetricStatus } from '@/types/metrics'
 import type { ReactNode } from 'react'
-import type { KpiStatus } from './KpiStatus'
 
 export type KpiCardProps = {
   readonly label: ReactNode
   readonly value: ReactNode
-  readonly status?: KpiStatus
+  readonly status?: MetricStatus
   readonly icon?: ReactNode
   readonly className?: string
 }

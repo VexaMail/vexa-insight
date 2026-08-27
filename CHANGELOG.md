@@ -108,6 +108,18 @@ and this project adheres to
   and documents the new install-token flow, the `VEXA_ALLOW_REMOTE_INSTALL` env
   var, and `VEXA_ALLOWED_ORIGINS`.
 
+### Changed
+
+- **The import graph is acyclic.** All 77 cycles ran through a slice `index.ts`:
+  either a module importing its own barrel to reach a sibling, or two slices
+  each reaching the other through one. Sibling imports now name the sibling and
+  cycle-closing imports name the concrete module, so dependency-cruiser's
+  `no-circular` runs without the `viaNot` narrowing that used to exempt them.
+  `components/ui/KpiCard` no longer imports from the `diagnostics` feature
+  slice: the metric style maps moved to `constants/metrics/`, and the status
+  union they key on is a single `MetricStatus` in `types/metrics/` rather than
+  three copies.
+
 ### Removed
 
 - **60 unreachable modules**, together with nine dependencies nothing imported

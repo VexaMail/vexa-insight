@@ -1,4 +1,4 @@
-import type { FolderState } from '@/types/settings'
+import type { FolderState } from './FolderState'
 
 export type UseFolderPickerReturn = {
   readonly createError: string | null

@@ -1,5 +1,4 @@
-import type { ImapAccountUpdate } from '@/types/settings'
-
+import type { ImapAccountUpdate } from './ImapAccountUpdate'
 /**
  * Payload for PUT /api/v1/admin/settings. Omit or leave blank to keep current.
  */

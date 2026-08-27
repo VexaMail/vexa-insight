@@ -1,5 +1,4 @@
-import type { ReportRow } from '@/types/reports'
-
+import type { ReportRow } from './ReportRow'
 /**
  * Paginated result for the reports list endpoint.
  */

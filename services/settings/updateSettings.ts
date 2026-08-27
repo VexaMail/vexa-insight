@@ -1,5 +1,5 @@
 import { appSettings, getDb, imapAccounts } from '@/lib/db'
-import { getConfig } from '@/services/config'
+import { getConfig } from '@/services/config/getConfig'
 import { encryptSecret } from '@/services/crypto'
 import type { SettingsUpdatePayload } from '@/types/settings'
 import { eq } from 'drizzle-orm'

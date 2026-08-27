@@ -1,9 +1,6 @@
-import type { ExecutiveMetricCardProps } from './ExecutiveMetricCardProps'
+import type { MetricStatus } from '@/types/metrics'
 
-export const METRIC_STATUS_STYLES: Record<
-  ExecutiveMetricCardProps['status'],
-  string
-> = {
+export const METRIC_STATUS_STYLES: Record<MetricStatus, string> = {
   healthy:
     'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950',
   enforcing:

@@ -1,7 +1,7 @@
 import type { AIProviderSettings } from '@/services/ai'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/services/ai/settings', () => ({
+vi.mock('@/services/ai/settings/getAiSettings', () => ({
   getAiSettings: vi.fn(),
 }))
 

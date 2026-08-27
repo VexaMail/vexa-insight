@@ -374,6 +374,40 @@ const config = defineConfig([
     },
   },
 
+  // Thirteen modules that must reach a concrete file rather than a slice
+  // barrel, because importing the barrel closes a cycle that
+  // `.dependency-cruiser.cjs`'s `no-circular` rejects. A barrel aggregates
+  // unrelated modules, so importing one for a single symbol drags in
+  // everything it re-exports - and where two slices each need one symbol from
+  // the other (`auth`/`api`/`install`, `config`/`settings`, `ai/core`/
+  // `ai/settings`, `types/ingest`/`utils/ingest`), that is enough to make the
+  // module graph circular even though no symbol is. Deep-importing removes the
+  // artificial edge; the symbols themselves were never circular.
+  //
+  // Same reasoning the `scripts/` override below already applies: reach past
+  // the barrel when pulling it in costs more than it buys. Named individually
+  // rather than as a glob so a new deep import somewhere else still fails.
+  {
+    files: [
+      'hooks/useDateFilterParams.ts',
+      'services/ai/core/isAiConfigured.ts',
+      'services/ai/settings/resolveStoredApiKey.ts',
+      'services/api/isUsableSecret.ts',
+      'services/api/requireAdminAccess.ts',
+      'services/auth/domainAccess.ts',
+      'services/auth/requirePermission.ts',
+      'services/config/getConfig.ts',
+      'services/install/completeInstall.ts',
+      'services/settings/updateSettings.ts',
+      'types/dashboard/PollStatus.ts',
+      'types/ingest/UseEmailPipelineCardReturn.ts',
+      'utils/ingest/computeNextStoreState.ts',
+    ],
+    rules: {
+      'import/no-internal-modules': 'off',
+    },
+  },
+
   // TanStack Table's `useReactTable()` returns functions that React Compiler
   // cannot safely memoize. The hook already carries `'use no memo'` to opt
   // out of compilation; the lint rule still detects the call site statically

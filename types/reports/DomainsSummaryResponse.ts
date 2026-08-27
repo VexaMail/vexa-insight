@@ -1,5 +1,5 @@
-import type { AggregateStats, DomainSummary } from '@/types/reports'
-
+import type { AggregateStats } from './AggregateStats'
+import type { DomainSummary } from './DomainSummary'
 /**
  * Domains summary: all domain summaries plus overall stats.
  */

@@ -1,4 +1,5 @@
-import type { AIServiceError, ReportAnalysisResult } from '@/types/ai'
+import type { AIServiceError } from './AiServiceError'
+import type { ReportAnalysisResult } from './ReportAnalysisResult'
 
 export type AiInsightsState =
   | { status: 'idle' }

@@ -1,10 +1,8 @@
 import type { Dispatch, SyntheticEvent } from 'react'
 
-import type {
-  InstallAction,
-  InstallFormProps,
-  InstallState,
-} from '@/types/install'
+import type { InstallAction } from './InstallAction'
+import type { InstallFormProps } from './InstallFormProps'
+import type { InstallState } from './InstallState'
 
 export type UseInstallFormReturn = {
   readonly dispatch: Dispatch<InstallAction>

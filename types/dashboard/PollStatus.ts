@@ -1,4 +1,4 @@
-import type { PaginatedProgressItems } from './'
+import type { PaginatedProgressItems } from '@/types/dashboard/PaginatedProgressItems'
 
 export type PollStatus = {
   isRunning: boolean

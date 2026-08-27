@@ -1,4 +1,4 @@
-import type { AccountWithId } from '@/types/install'
+import type { AccountWithId } from './AccountWithId'
 
 export type InstallState = {
   adminEmail: string

@@ -1,4 +1,4 @@
-import { PLACEHOLDER_SECRET } from '@/services/install'
+import { PLACEHOLDER_SECRET } from '@/services/install/placeholderSecret'
 import { MIN_SECRET_LENGTH } from './minSecretLength'
 
 export function isUsableSecret(secret: string | null | undefined): boolean {

@@ -1,9 +1,7 @@
 import { getCached, getDatabaseUrl, rowToConfig, setCached } from '@/lib/config'
-import {
-  getImapAccountsRow,
-  getSettingsRow,
-  seedSettingsFromEnv,
-} from '@/services/settings'
+import { getImapAccountsRow } from '@/services/settings/getImapAccountsRow'
+import { getSettingsRow } from '@/services/settings/getSettingsRow'
+import { seedSettingsFromEnv } from '@/services/settings/seedSettingsFromEnv'
 import type { AppConfig } from '@/types/config'
 
 export function getConfig(): AppConfig {

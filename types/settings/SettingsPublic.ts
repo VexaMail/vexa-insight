@@ -1,6 +1,5 @@
 import type { AIProviderSettingsPublic } from '@/types/ai'
-import type { ImapAccountPublic } from '@/types/settings'
-
+import type { ImapAccountPublic } from './ImapAccountPublic'
 /**
  * Settings shape returned by GET /api/v1/admin/settings (secrets masked).
  */

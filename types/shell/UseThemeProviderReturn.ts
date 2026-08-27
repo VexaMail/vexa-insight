@@ -1,4 +1,4 @@
-import type { ThemeContextValue } from '@/types/shell'
+import type { ThemeContextValue } from './ThemeContextValue'
 
 export type UseThemeProviderReturn = {
   readonly contextValue: ThemeContextValue

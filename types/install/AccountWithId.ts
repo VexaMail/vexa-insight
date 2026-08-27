@@ -1,4 +1,4 @@
-import type { ImapAccountInstall } from '@/types/install'
+import type { ImapAccountInstall } from './ImapAccountInstall'
 
 export type AccountWithId = {
   _id: string

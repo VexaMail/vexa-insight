@@ -1,8 +1,6 @@
-import type {
-  PaginatedReports,
-  ReportsTableAction,
-  ReportsTableState,
-} from '@/types/reports'
+import type { PaginatedReports } from './PaginatedReports'
+import type { ReportsTableAction } from './ReportsTableAction'
+import type { ReportsTableState } from './ReportsTableState'
 
 export type UseReportsTableReturn = {
   state: ReportsTableState

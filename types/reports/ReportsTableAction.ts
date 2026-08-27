@@ -1,4 +1,4 @@
-import type { PaginatedReports } from '@/types/reports'
+import type { PaginatedReports } from './PaginatedReports'
 import type { SortKey } from './SortKey'
 
 export type ReportsTableAction =

@@ -1,4 +1,4 @@
-import type { Theme } from '@/types/shell'
+import type { Theme } from './Theme'
 
 export type ThemeContextValue = {
   readonly theme: Theme
