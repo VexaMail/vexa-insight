@@ -63,6 +63,7 @@ const config = defineConfig([
         projectService: {
           allowDefaultProject: [
             'eslint.config.ts',
+            'eslint.audit.config.ts',
             'scripts/recovery.ts',
             'scripts/migrate-emails-to-jobs.ts',
             'scripts/migrate-ips.ts',

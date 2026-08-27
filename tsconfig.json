@@ -18,5 +18,10 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "scripts", "eslint.config.ts"]
+  "exclude": [
+    "node_modules",
+    "scripts",
+    "eslint.config.ts",
+    "eslint.audit.config.ts"
+  ]
 }
