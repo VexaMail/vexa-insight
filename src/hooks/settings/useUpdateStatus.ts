@@ -19,7 +19,7 @@ export function useUpdateStatus(apiKey: string): UseUpdateStatusReturn {
           cache: 'no-store',
         })
         if (!response.ok) {
-          throw new Error(`Request failed (${response.status})`)
+          throw new Error(`Request failed (${String(response.status)})`)
         }
         const json = (await response.json()) as { data: UpdateStatusPublic }
         if (!cancelled) setStatus(json.data)
@@ -50,7 +50,7 @@ export function useUpdateStatus(apiKey: string): UseUpdateStatusReturn {
           error?: { message?: string }
         } | null
         throw new Error(
-          body?.error?.message ?? `Request failed (${response.status})`,
+          body?.error?.message ?? `Request failed (${String(response.status)})`,
         )
       }
       const json = (await response.json()) as { data: UpdateStatusPublic }

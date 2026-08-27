@@ -1,10 +1,7 @@
 import { domains, getDb } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 
-export async function ensureDemoDomain(
-  name: string,
-  now: Date,
-): Promise<number> {
+export function ensureDemoDomain(name: string, now: Date): number {
   const db = getDb()
   const existing = db
     .select({ id: domains.id })

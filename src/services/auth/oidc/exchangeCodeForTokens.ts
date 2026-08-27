@@ -31,7 +31,7 @@ export async function exchangeCodeForTokens(
   })
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(`token exchange failed: ${res.status} ${text}`)
+    throw new Error(`token exchange failed: ${String(res.status)} ${text}`)
   }
   return (await res.json()) as OidcTokenResponse
 }

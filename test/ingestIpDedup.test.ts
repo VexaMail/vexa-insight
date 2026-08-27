@@ -30,7 +30,7 @@ describe('ingestParsedReport IP dedup', () => {
       ...baseEvent,
       count: i + 1,
     }))
-    parsed.rawReport.reportId = `dedup-${Date.now()}`
+    parsed.rawReport.reportId = `dedup-${String(Date.now())}`
 
     const before = getDb().select().from(ipAddresses).all().length
     const result = await ingestParsedReport(parsed)

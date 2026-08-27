@@ -43,7 +43,7 @@ export function ProtocolOverviewPanel({
             status={dkimStatus}
             {...(dns.dkim.filter((d) => d.valid).length > 0
               ? {
-                  detail: `${dns.dkim.filter((d) => d.valid).length} selector(s)`,
+                  detail: `${String(dns.dkim.filter((d) => d.valid).length)} selector(s)`,
                 }
               : {})}
           />
@@ -80,7 +80,9 @@ export function ProtocolOverviewPanel({
             protocol="TLS-RPT"
             status={tlsRptStatus}
             {...(dns.tlsRpt.ruaAddresses.length > 0
-              ? { detail: `${dns.tlsRpt.ruaAddresses.length} RUA address(es)` }
+              ? {
+                  detail: `${String(dns.tlsRpt.ruaAddresses.length)} RUA address(es)`,
+                }
               : {})}
           />
         </div>

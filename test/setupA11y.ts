@@ -5,22 +5,24 @@ import '@testing-library/jest-dom/vitest'
 // opening, and without stubs the component throws before axe can audit the
 // portalled content. Stubbing is safe here: axe checks roles, names, and
 // relationships, none of which depend on real geometry.
-if (!Element.prototype.scrollIntoView) {
+if (typeof Reflect.get(Element.prototype, 'scrollIntoView') !== 'function') {
   Element.prototype.scrollIntoView = function scrollIntoView(): void {}
 }
-if (!Element.prototype.hasPointerCapture) {
+if (typeof Reflect.get(Element.prototype, 'hasPointerCapture') !== 'function') {
   Element.prototype.hasPointerCapture = function hasPointerCapture(): boolean {
     return false
   }
 }
-if (!Element.prototype.setPointerCapture) {
+if (typeof Reflect.get(Element.prototype, 'setPointerCapture') !== 'function') {
   Element.prototype.setPointerCapture = function setPointerCapture(): void {}
 }
-if (!Element.prototype.releasePointerCapture) {
+if (
+  typeof Reflect.get(Element.prototype, 'releasePointerCapture') !== 'function'
+) {
   Element.prototype.releasePointerCapture =
     function releasePointerCapture(): void {}
 }
-if (!globalThis.ResizeObserver) {
+if (typeof Reflect.get(globalThis, 'ResizeObserver') !== 'function') {
   globalThis.ResizeObserver = class ResizeObserver {
     observe(): void {}
     unobserve(): void {}

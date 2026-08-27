@@ -49,7 +49,9 @@ export function getReportsColumns({
                     <TooltipTrigger asChild>
                       <Link
                         href={`/domains/${encodeURIComponent(d.domainName)}`}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                        }}
                         className="hover:text-foreground max-w-[120px] truncate transition-colors hover:underline"
                       >
                         {d.domainName}
@@ -95,9 +97,9 @@ export function getReportsColumns({
       header: () => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
+          onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'reportId' } })
-          }
+          }}
         >
           Report ID
           <SortIcon active={sortKey === 'reportId'} dir={sortDir} />
@@ -117,9 +119,9 @@ export function getReportsColumns({
       header: () => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
+          onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'orgName' } })
-          }
+          }}
         >
           Organization
           <SortIcon active={sortKey === 'orgName'} dir={sortDir} />
@@ -136,9 +138,9 @@ export function getReportsColumns({
       header: () => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() =>
+          onClick={() => {
             dispatch({ type: 'SET_SORT', payload: { key: 'beginDate' } })
-          }
+          }}
         >
           Date Range
           <SortIcon active={sortKey === 'beginDate'} dir={sortDir} />
@@ -157,13 +159,15 @@ export function getReportsColumns({
       id: 'actions',
       cell: ({ row }) => {
         const href = domainName
-          ? `/reports/${row.original.id}?fromDomain=${encodeURIComponent(domainName)}`
-          : `/reports/${row.original.id}`
+          ? `/reports/${String(row.original.id)}?fromDomain=${encodeURIComponent(domainName)}`
+          : `/reports/${String(row.original.id)}`
 
         return (
           <Link
             href={href}
-            onClick={() => setScope(filtered.map((r) => r.id.toString()))}
+            onClick={() => {
+              setScope(filtered.map((r) => r.id.toString()))
+            }}
           >
             <Button
               variant="ghost"

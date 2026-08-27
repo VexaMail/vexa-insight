@@ -47,34 +47,34 @@ export function buildReportAnalysisPrompt(input: ReportAnalysisInput): {
     )
   }
   const dispositionSummary = [...dispositionCounts.entries()]
-    .map(([d, c]) => `${d}: ${c}`)
+    .map(([d, c]) => `${d}: ${String(c)}`)
     .join(', ')
 
   const userPrompt = `Analyze the following DMARC report and provide actionable insights.
 
 REPORT METADATA:
 - Organization: ${input.orgName}
-- Report ID: ${input.reportId}
+- Report ID: ${String(input.reportId)}
 - Period: ${beginStr} to ${endStr}
 - Related domains: ${domainList}
 
 AUTHENTICATION SUMMARY:
-- Total messages: ${totalMessages}
-- SPF pass: ${spfPassCount}/${totalMessages} (${totalMessages > 0 ? Math.round((spfPassCount / totalMessages) * 100) : 0}%)
-- DKIM pass: ${dkimPassCount}/${totalMessages} (${totalMessages > 0 ? Math.round((dkimPassCount / totalMessages) * 100) : 0}%)
-- SPF aligned: ${spfAlignedCount}/${totalMessages}
-- DKIM aligned: ${dkimAlignedCount}/${totalMessages}
+- Total messages: ${String(totalMessages)}
+- SPF pass: ${String(spfPassCount)}/${String(totalMessages)} (${String(totalMessages > 0 ? Math.round((spfPassCount / totalMessages) * 100) : 0)}%)
+- DKIM pass: ${String(dkimPassCount)}/${String(totalMessages)} (${String(totalMessages > 0 ? Math.round((dkimPassCount / totalMessages) * 100) : 0)}%)
+- SPF aligned: ${String(spfAlignedCount)}/${String(totalMessages)}
+- DKIM aligned: ${String(dkimAlignedCount)}/${String(totalMessages)}
 - Dispositions: ${dispositionSummary || 'none'}
 
-EVENT DETAILS (${input.events.length} records):
+EVENT DETAILS (${String(input.events.length)} records):
 ${input.events
   .slice(0, 50)
   .map(
     (ev) =>
-      `  - IP: ${ev.sourceIp} | count: ${ev.count} | SPF: ${ev.spfResult} (aligned: ${ev.spfAligned}) | DKIM: ${ev.dkimResult} (aligned: ${ev.dkimAligned}) | disposition: ${ev.disposition}`,
+      `  - IP: ${ev.sourceIp} | count: ${String(ev.count)} | SPF: ${ev.spfResult} (aligned: ${String(ev.spfAligned)}) | DKIM: ${ev.dkimResult} (aligned: ${String(ev.dkimAligned)}) | disposition: ${ev.disposition}`,
   )
   .join('\n')}
-${input.events.length > 50 ? `  ... and ${input.events.length - 50} more records` : ''}
+${input.events.length > 50 ? `  ... and ${String(input.events.length - 50)} more records` : ''}
 
 REDACTED XML (for reference):
 ${redactedXml}`

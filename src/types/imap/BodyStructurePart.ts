@@ -5,7 +5,7 @@
 export type BodyStructurePart = {
   partId: string | null
   type: string
-  parameters?: Record<string, string>
-  dispositionParameters?: Record<string, string>
+  parameters?: Partial<Record<string, string>>
+  dispositionParameters?: Partial<Record<string, string>>
   childNodes?: BodyStructurePart[]
 }

@@ -66,7 +66,7 @@ export const DELETE = withApiAuth(
     const { id } = await context.params
 
     try {
-      await deleteUser(id)
+      deleteUser(id)
       return NextResponse.json({ data: { success: true } })
     } catch (err: unknown) {
       return NextResponse.json(

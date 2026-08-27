@@ -6,9 +6,15 @@ export const useListState = create<ListState>((set, get) => ({
   currentId: null,
   scopeMode: 'filtered',
 
-  setScope: (itemsScope) => set({ itemsScope }),
-  setCurrentId: (currentId) => set({ currentId }),
-  setScopeMode: (scopeMode) => set({ scopeMode }),
+  setScope: (itemsScope) => {
+    set({ itemsScope })
+  },
+  setCurrentId: (currentId) => {
+    set({ currentId })
+  },
+  setScopeMode: (scopeMode) => {
+    set({ scopeMode })
+  },
 
   navigateContext: (direction) => {
     const { itemsScope, currentId } = get()

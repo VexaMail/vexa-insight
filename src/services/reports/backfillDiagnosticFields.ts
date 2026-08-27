@@ -119,7 +119,7 @@ export async function backfillDiagnosticFields(): Promise<BackfillResult> {
       })
     } catch (err) {
       console.error(
-        `[backfill] Error processing rawReportId=${rawReportId}:`,
+        `[backfill] Error processing rawReportId=${String(rawReportId)}:`,
         err,
       )
       errors += eventIds.length

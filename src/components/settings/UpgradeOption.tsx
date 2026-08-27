@@ -27,7 +27,9 @@ export default function UpgradeOption({
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => onCopy(command)}
+          onClick={() => {
+            onCopy(command)
+          }}
         >
           Copy
         </Button>

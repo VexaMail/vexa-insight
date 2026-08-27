@@ -12,9 +12,9 @@
  */
 import { runSeedDemo } from '@/services/seed'
 
-export async function main(): Promise<void> {
+export function main(): void {
   const force = process.argv.includes('--force')
-  const summary = await runSeedDemo({ force })
+  const summary = runSeedDemo({ force })
   if (!summary) return
   console.log('[seed:demo] Done.')
   console.log(JSON.stringify(summary, null, 2))
@@ -23,7 +23,9 @@ export async function main(): Promise<void> {
   )
 }
 
-main().catch((err: unknown) => {
-  console.error('[seed:demo] Failed:', err)
+try {
+  main()
+} catch (error: unknown) {
+  console.error('[seed:demo] Failed:', error)
   process.exit(1)
-})
+}

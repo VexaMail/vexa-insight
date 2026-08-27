@@ -69,7 +69,7 @@ export function EngineProgress({
       >
         <div
           className="bg-primary h-full rounded-full transition-all duration-300 ease-out"
-          style={{ width: `${progressPercent}%` }}
+          style={{ width: `${String(progressPercent)}%` }}
         />
       </div>
       <div className="text-muted-foreground mt-2 flex flex-col gap-1 text-xs">

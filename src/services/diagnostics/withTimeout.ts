@@ -1,8 +1,10 @@
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('DNS timeout')), ms),
+    new Promise<T>((_resolve, reject) =>
+      setTimeout(() => {
+        reject(new Error('DNS timeout'))
+      }, ms),
     ),
   ])
 }

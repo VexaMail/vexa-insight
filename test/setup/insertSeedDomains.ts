@@ -11,7 +11,7 @@ export function insertSeedDomains(count: number, now: Date): number[] {
     const row = db
       .insert(domains)
       .values({
-        name: `example${d}.com`,
+        name: `example${String(d)}.com`,
         createdAt: now,
         updatedAt: now,
         active: true,

@@ -12,7 +12,7 @@ export function useIpRelatedReports({
   ip: string
   dateRange: IpDateRange
 }) {
-  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const filterKey = `${ip}|${String(dateRange.fromTs ?? '')}|${String(dateRange.toTs ?? '')}`
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [reports, setReports] = useState<IpRelatedReportRow[]>(initialReports)
   const [isLoading, setIsLoading] = useState(false)

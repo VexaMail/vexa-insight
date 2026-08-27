@@ -104,7 +104,9 @@ export function useReportsTable({
       }
     }
     void run()
-    return () => ctrl.abort()
+    return () => {
+      ctrl.abort()
+    }
   }, [domainId, dateFilterParams])
 
   const [fetchedDomainOptions, setFetchedDomainOptions] = useState<string[]>([])
@@ -127,7 +129,9 @@ export function useReportsTable({
       }
     }
     void run()
-    return () => ctrl.abort()
+    return () => {
+      ctrl.abort()
+    }
   }, [domainId, dateFilterParams])
 
   const filtered = useMemo(() => {

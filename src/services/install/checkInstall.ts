@@ -49,7 +49,7 @@ export const checkInstall = (() => {
             const json = (await res.json()) as {
               data?: { installed?: boolean }
             }
-            const isInstalled = json?.data?.installed === true
+            const isInstalled = json.data?.installed === true
             cachedInstalled = isInstalled
             return isInstalled
           } catch (error) {

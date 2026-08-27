@@ -62,12 +62,12 @@ export async function getAggregateStats(
     .from(eventRollupDaily)
     .where(and(...sumConditions))
 
-  const totalEmails = Number(eventSums?.total ?? 0)
-  const passed = Number(eventSums?.passed ?? 0)
+  const totalEmails = eventSums?.total ?? 0
+  const passed = eventSums?.passed ?? 0
   const overallPassRate = totalEmails > 0 ? (passed / totalEmails) * 100 : 0
   return {
-    totalDomains: Number(domainCount?.count ?? 0),
-    totalReports: Number(reportCount?.count ?? 0),
+    totalDomains: domainCount?.count ?? 0,
+    totalReports: reportCount?.count ?? 0,
     totalEmails,
     overallPassRate,
   }

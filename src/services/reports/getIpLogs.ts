@@ -63,8 +63,8 @@ export async function getIpLogs(
     disposition: r.disposition,
     spfResult: r.spfResult,
     dkimResult: r.dkimResult,
-    count: Number(r.count),
+    count: r.count,
     reportId: r.reportId,
-    observedAt: Number(r.observedAt),
+    observedAt: r.observedAt,
   }))
 }

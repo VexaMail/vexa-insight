@@ -3,8 +3,8 @@ import { seedDomainsSummaryFixture } from './setup/seedDomainsSummaryFixture'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth', () => ({
-  getAllowedDomainIds: vi.fn(async () => null),
-  getSession: vi.fn(async () => null),
+  getAllowedDomainIds: vi.fn(() => Promise.resolve(null)),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }))
 
 describe('getReportIds (moved from reports/ids route)', () => {

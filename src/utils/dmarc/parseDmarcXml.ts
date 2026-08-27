@@ -19,7 +19,7 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
     throw new Error('DMARC XML must not contain DOCTYPE or ENTITY declarations')
   }
   const obj = parser.parse(rawXml) as Record<string, unknown>
-  const feedback = obj?.feedback as Record<string, unknown> | undefined
+  const feedback = obj.feedback as Record<string, unknown> | undefined
   if (!feedback) {
     throw new Error('Invalid DMARC XML: missing feedback root')
   }

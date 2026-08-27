@@ -19,7 +19,7 @@ export async function fetchUserInfo(
     },
   })
   if (!res.ok) {
-    throw new Error(`userinfo failed: ${res.status} ${res.statusText}`)
+    throw new Error(`userinfo failed: ${String(res.status)} ${res.statusText}`)
   }
   return (await res.json()) as OidcUserInfo
 }

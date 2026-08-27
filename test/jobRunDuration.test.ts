@@ -10,28 +10,35 @@ vi.mock('@/services/config', () => ({
 vi.mock('@/services/notifications', () => ({ fireAndForgetDispatch: vi.fn() }))
 vi.mock('../src/services/job/processAccount', () => ({
   // Stands in for the real IMAP work so the run has a measurable duration.
-  processAccount: vi.fn(async () => {
+  processAccount: vi.fn(() => {
     vi.advanceTimersByTime(4_000)
-    return { processed: 7, ingested: 5, skipped: 2, errors: [] }
+    return Promise.resolve({
+      processed: 7,
+      ingested: 5,
+      skipped: 2,
+      errors: [],
+    })
   }),
 }))
 vi.mock('../src/services/job/repairStuckEvents', () => ({
-  repairStuckEvents: vi.fn(async () => undefined),
+  repairStuckEvents: vi.fn(() => Promise.resolve(undefined)),
 }))
 vi.mock('../src/services/job/setPollStatusInDb', () => ({
-  setPollStatusInDb: vi.fn(async () => undefined),
+  setPollStatusInDb: vi.fn(() => Promise.resolve(undefined)),
 }))
 vi.mock('../src/services/job/getPollStatusFromDb', () => ({
-  getPollStatusFromDb: vi.fn(async () => ({ abortRequested: false })),
+  getPollStatusFromDb: vi.fn(() => Promise.resolve({ abortRequested: false })),
 }))
 vi.mock('../src/services/job/createJobEventBuffer', () => ({
   createJobEventBuffer: () => ({
-    add: vi.fn(async () => undefined),
-    flush: vi.fn(async () => undefined),
+    add: vi.fn(() => Promise.resolve(undefined)),
+    flush: vi.fn(() => Promise.resolve(undefined)),
   }),
 }))
 vi.mock('../src/services/job/createPollStatusCoalescer', () => ({
-  createPollStatusCoalescer: () => ({ flush: vi.fn(async () => undefined) }),
+  createPollStatusCoalescer: () => ({
+    flush: vi.fn(() => Promise.resolve(undefined)),
+  }),
 }))
 
 describe('job_runs timing', () => {
@@ -57,7 +64,7 @@ describe('job_runs timing', () => {
     await runIngestJob()
 
     const row = getDb().select().from(jobRuns).all().at(-1)
-    expect(row?.runAt?.getTime()).toBe(startedAt.getTime())
+    expect(row?.runAt.getTime()).toBe(startedAt.getTime())
     expect(row?.completedAt?.getTime()).toBe(startedAt.getTime() + ELAPSED_MS)
   })
 
@@ -66,7 +73,7 @@ describe('job_runs timing', () => {
 
     const row = getDb().select().from(jobRuns).all().at(-1)
     const durationMs =
-      (row?.completedAt?.getTime() ?? 0) - (row?.runAt?.getTime() ?? 0)
+      (row?.completedAt?.getTime() ?? 0) - (row?.runAt.getTime() ?? 0)
     expect(durationMs).toBe(ELAPSED_MS)
     expect(row?.processed).toBe(7)
     expect(row?.ingested).toBe(5)

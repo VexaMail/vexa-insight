@@ -14,5 +14,5 @@ export function parseIpv4MappedHex(lower: string): string | null {
   const b = high & 0xff
   const c = (low >> 8) & 0xff
   const d = low & 0xff
-  return `${a}.${b}.${c}.${d}`
+  return `${String(a)}.${String(b)}.${String(c)}.${String(d)}`
 }

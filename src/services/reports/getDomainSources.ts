@@ -56,7 +56,7 @@ export async function getDomainSources(
     }
     return {
       sourceIp: r.ip,
-      count: Number(r.count),
+      count: r.count,
       countryCode: r.countryCode ?? undefined,
       countryName,
       hostname: r.hostname ?? undefined,

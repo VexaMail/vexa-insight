@@ -54,8 +54,8 @@ export async function getIpDomains(
   return rows.map((r) => ({
     domainId: r.domainId,
     domain: r.domain,
-    messageCount: Number(r.messageCount),
-    firstSeenAt: r.firstSeenAt ? Number(r.firstSeenAt) : null,
-    lastSeenAt: r.lastSeenAt ? Number(r.lastSeenAt) : null,
+    messageCount: r.messageCount,
+    firstSeenAt: r.firstSeenAt ? r.firstSeenAt : null,
+    lastSeenAt: r.lastSeenAt ? r.lastSeenAt : null,
   }))
 }

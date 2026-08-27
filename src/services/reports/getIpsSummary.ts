@@ -88,10 +88,10 @@ export async function getIpsSummary(
     .orderBy(desc(sql`total_messages`))
 
   const ips = rows.map((r) => {
-    const totalMessages = Number(r.totalMessages)
-    const spfPassCount = Number(r.spfPassCount)
-    const dkimPassCount = Number(r.dkimPassCount)
-    const fullyAlignedCount = Number(r.fullyAlignedCount)
+    const totalMessages = r.totalMessages
+    const spfPassCount = r.spfPassCount
+    const dkimPassCount = r.dkimPassCount
+    const fullyAlignedCount = r.fullyAlignedCount
 
     return {
       ip: r.ip,
@@ -102,17 +102,17 @@ export async function getIpsSummary(
         : null,
       totalMessages,
       emailsSentCount: r.emailsSentCount,
-      firstSeen: r.firstSeen ? Number(r.firstSeen) : null,
-      lastSeen: r.lastSeen ? Number(r.lastSeen) : null,
+      firstSeen: r.firstSeen ? r.firstSeen : null,
+      lastSeen: r.lastSeen ? r.lastSeen : null,
       spfPassCount,
       dkimPassCount,
       fullyAlignedCount,
       spfPassRate: computeRate(spfPassCount, totalMessages),
       dkimPassRate: computeRate(dkimPassCount, totalMessages),
       fullyAlignedRate: computeRate(fullyAlignedCount, totalMessages),
-      dispositionNone: Number(r.dispositionNone),
-      dispositionQuarantine: Number(r.dispositionQuarantine),
-      dispositionReject: Number(r.dispositionReject),
+      dispositionNone: r.dispositionNone,
+      dispositionQuarantine: r.dispositionQuarantine,
+      dispositionReject: r.dispositionReject,
     }
   })
 

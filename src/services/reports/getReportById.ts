@@ -49,5 +49,5 @@ export async function getReportById(
   if (!row) return null
 
   const [enriched] = await attachRelatedDomains([row])
-  return (enriched as ReportDetailRow) ?? null
+  return enriched as ReportDetailRow
 }

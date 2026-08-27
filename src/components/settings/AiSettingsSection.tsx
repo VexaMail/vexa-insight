@@ -69,9 +69,12 @@ export function AiSettingsSection({
             id="ai-provider"
             className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             value={form.providerId ?? ''}
-            onChange={(e) =>
-              handleProviderChange((e.target.value as AIProviderId) || null)
-            }
+            onChange={(e) => {
+              const providerId = e.target.value
+              handleProviderChange(
+                providerId === '' ? null : (providerId as AIProviderId),
+              )
+            }}
           >
             <option value="">Select a provider…</option>
             {AI_PROVIDERS.map((p) => (
@@ -98,7 +101,9 @@ export function AiSettingsSection({
               }
               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               value={form.apiKey}
-              onChange={(e) => handleApiKeyChange(e.target.value)}
+              onChange={(e) => {
+                handleApiKeyChange(e.target.value)
+              }}
             />
             {apiKeyMasked && !form.apiKey && (
               <p className="text-muted-foreground text-xs">

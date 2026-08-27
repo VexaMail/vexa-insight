@@ -24,7 +24,7 @@ export async function processAccount(
 ): Promise<AccountResult> {
   await coalescer.report(
     {
-      statusText: `Starting account ${accountIndex + 1}/${totalAccounts}: ${account.server}…`,
+      statusText: `Starting account ${String(accountIndex + 1)}/${String(totalAccounts)}: ${account.server}…`,
     },
     true,
   )

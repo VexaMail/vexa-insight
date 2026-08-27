@@ -155,7 +155,7 @@ describe('analyzeSpfRecord', () => {
   it('fails the lookup limit when more than 10 lookups are estimated', () => {
     const includes = Array.from(
       { length: 11 },
-      (_, i) => `include:spf${i}.example.com`,
+      (_, i) => `include:spf${String(i)}.example.com`,
     ).join(' ')
     const spf = `v=spf1 ${includes} -all`
     const result = analyzeSpfRecord(spf, [spf])

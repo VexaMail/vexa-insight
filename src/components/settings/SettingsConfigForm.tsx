@@ -46,9 +46,9 @@ export default function SettingsConfigForm({
         newKey={form.secretKeyNew}
         onCopy={handleCopyApiKey}
         onGenerate={handleGenerateNewApiKey}
-        onNewKeyChange={(v) =>
+        onNewKeyChange={(v) => {
           setForm((prev) => ({ ...prev, secretKeyNew: v }))
-        }
+        }}
       />
 
       <ImapAccountsSection
@@ -65,12 +65,12 @@ export default function SettingsConfigForm({
       <IngestionSection
         intervalMinutes={form.ingestionIntervalMinutes}
         daysBack={form.ingestionDaysBack}
-        onIntervalChange={(v) =>
+        onIntervalChange={(v) => {
           setForm((prev) => ({ ...prev, ingestionIntervalMinutes: v }))
-        }
-        onDaysBackChange={(v) =>
+        }}
+        onDaysBackChange={(v) => {
           setForm((prev) => ({ ...prev, ingestionDaysBack: v }))
-        }
+        }}
       />
 
       <AdvancedSection
@@ -78,12 +78,12 @@ export default function SettingsConfigForm({
         environment={
           form.environment as 'development' | 'staging' | 'production'
         }
-        onCorsChange={(v) =>
+        onCorsChange={(v) => {
           setForm((prev) => ({ ...prev, backendCorsOrigins: v }))
-        }
-        onEnvironmentChange={(v) =>
+        }}
+        onEnvironmentChange={(v) => {
           setForm((prev) => ({ ...prev, environment: v }))
-        }
+        }}
       />
 
       <GeoIpSection apiKey={apiKey} />

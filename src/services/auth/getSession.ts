@@ -8,7 +8,7 @@ export async function getSession() {
   const sessionId = cookieStore.get('session')?.value
   if (!sessionId) return null
 
-  const result = await db
+  const result = db
     .select({ user: users, session: sessions })
     .from(sessions)
     .innerJoin(users, eq(sessions.userId, users.id))
@@ -22,7 +22,7 @@ export async function getSession() {
   const { user, session } = result
 
   if (Date.now() >= session.expiresAt.getTime()) {
-    await db.delete(sessions).where(eq(sessions.id, session.id))
+    db.delete(sessions).where(eq(sessions.id, session.id)).run()
     return null
   }
 

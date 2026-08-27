@@ -11,14 +11,14 @@ import { randomIntInRange } from './randomIntInRange'
 import type { SeedDemoDayArgs } from './SeedDemoDayArgs'
 import type { SeedDemoDayResult } from './SeedDemoDayResult'
 
-export async function seedDemoDay({
+export function seedDemoDay({
   dayStart,
   dayEnd,
   domainName,
   domainId,
   ipIds,
   now,
-}: SeedDemoDayArgs): Promise<SeedDemoDayResult> {
+}: SeedDemoDayArgs): SeedDemoDayResult {
   const db = getDb()
   const reportId = `${DEMO_REPORT_PREFIX}${domainName}-${dayStart
     .toISOString()

@@ -25,7 +25,6 @@ export async function attachRelatedDomains(
     { domainId: number; domainName: string }[]
   >()
   for (const row of related) {
-    if (row.rawReportId == null) continue
     const list = domainMap.get(row.rawReportId) ?? []
     list.push({ domainId: row.domainId, domainName: row.domainName })
     domainMap.set(row.rawReportId, list)

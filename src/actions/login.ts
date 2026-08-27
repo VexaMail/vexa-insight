@@ -30,7 +30,7 @@ export async function loginAction(
 
   const db = getDb()
 
-  const existingUser = await db
+  const existingUser = db
     .select()
     .from(users)
     .where(eq(users.username, username))

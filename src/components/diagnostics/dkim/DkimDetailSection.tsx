@@ -104,7 +104,7 @@ export function DkimDetailSection({ dns }: Readonly<DkimDetailSectionProps>) {
                       </TableCell>
                       <TableCell className="text-xs">
                         {parsed.keyLengthBits
-                          ? `~${parsed.keyLengthBits} bits`
+                          ? `~${String(parsed.keyLengthBits)} bits`
                           : 'Unknown'}
                       </TableCell>
                     </TableRow>

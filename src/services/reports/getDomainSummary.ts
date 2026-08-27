@@ -39,8 +39,8 @@ export async function getDomainSummary(
     .from(eventRollupDaily)
     .where(and(...conditions))
 
-  const total = Number(sums?.total ?? 0)
-  const passed = Number(sums?.passed ?? 0)
+  const total = sums?.total ?? 0
+  const passed = sums?.passed ?? 0
   return {
     domainId,
     domainName: domainRow[0].name,

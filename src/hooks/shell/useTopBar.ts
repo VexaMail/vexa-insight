@@ -9,7 +9,9 @@ export function useTopBar(): UseTopBarReturn {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  const closeProfile = useCallback(() => setIsProfileOpen(false), [])
+  const closeProfile = useCallback(() => {
+    setIsProfileOpen(false)
+  }, [])
   useClickOutside(menuRef, closeProfile)
 
   function handleToggleProfileClick() {

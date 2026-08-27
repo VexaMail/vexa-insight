@@ -38,7 +38,7 @@ export function useTriggerPoll(initialApiKey: string) {
       if (!res.ok) {
         setRunRequested(false)
         const err = json as { error?: { message?: string } }
-        setMessage(err.error?.message ?? `Error ${res.status}`)
+        setMessage(err.error?.message ?? `Error ${String(res.status)}`)
         setStatus('error')
         return
       }
@@ -52,8 +52,8 @@ export function useTriggerPoll(initialApiKey: string) {
       }
       setMessage(
         data.data?.success
-          ? `Processed ${data.data.processed ?? 0}, ingested ${data.data.ingested ?? 0}.`
-          : `Done with ${data.data?.errors ?? 0} errors.`,
+          ? `Processed ${String(data.data.processed ?? 0)}, ingested ${String(data.data.ingested ?? 0)}.`
+          : `Done with ${String(data.data?.errors ?? 0)} errors.`,
       )
       setStatus('success')
     } catch {

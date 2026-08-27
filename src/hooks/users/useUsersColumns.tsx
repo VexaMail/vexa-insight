@@ -73,7 +73,9 @@ export function useUsersColumns({
           <button
             className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors"
             type="button"
-            onClick={() => onEdit(row.original)}
+            onClick={() => {
+              onEdit(row.original)
+            }}
           >
             Edit
           </button>

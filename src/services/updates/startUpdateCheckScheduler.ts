@@ -18,7 +18,7 @@ export function startUpdateCheckScheduler(): void {
   setTimeout(() => {
     void runStartupCheck()
   }, UPDATE_CHECK_STARTUP_DELAY_MS)
-  const expr = `0 */${UPDATE_CHECK_INTERVAL_HOURS} * * *`
+  const expr = `0 */${String(UPDATE_CHECK_INTERVAL_HOURS)} * * *`
   cron.schedule(expr, async () => {
     try {
       const result = await checkForUpdates()

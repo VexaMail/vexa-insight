@@ -1,4 +1,3 @@
-import type { BodyStructurePart } from '@/types/imap'
 import { filenameLooksLikeDmarc } from './filenameLooksLikeDmarc'
 import { getPartFilename } from './getPartFilename'
 import { isAcceptedDmarcContentType } from './isAcceptedDmarcContentType'
@@ -16,19 +15,21 @@ export function getDmarcCandidatePartIds(
   if (!isWalkableBodyPart(bodyStructure)) return []
 
   const parts: string[] = []
-  const node = bodyStructure as BodyStructurePart
+  const node = bodyStructure
   const children = node.childNodes
 
   if (children && children.length > 0) {
     children.forEach((child, i) => {
       const partIndex = i + 1
-      const nextPrefix = prefix ? `${prefix}${partIndex}.` : `${partIndex}.`
+      const nextPrefix = prefix
+        ? `${prefix}${String(partIndex)}.`
+        : `${String(partIndex)}.`
       parts.push(...getDmarcCandidatePartIds(child, nextPrefix))
     })
     return parts
   }
 
-  const contentType = node.type ?? ''
+  const contentType = node.type
   const filename = getPartFilename(node)
 
   if (isExcludedDmarcType(contentType) && filename !== null) {
@@ -42,7 +43,7 @@ export function getDmarcCandidatePartIds(
 
   let partIdStr = '1'
   if (node.partId != null && node.partId !== '') {
-    partIdStr = node.partId as string
+    partIdStr = node.partId
   } else if (prefix) {
     partIdStr = prefix.replace(/\.$/, '')
   }

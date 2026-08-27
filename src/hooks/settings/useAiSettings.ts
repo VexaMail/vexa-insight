@@ -41,7 +41,9 @@ export function useAiSettings(apiKey: string) {
       }
     }
     void load()
-    return () => controller.abort()
+    return () => {
+      controller.abort()
+    }
   }, [apiKey])
 
   const handleProviderChange = useCallback(

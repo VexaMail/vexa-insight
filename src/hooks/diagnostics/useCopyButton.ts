@@ -8,7 +8,9 @@ export function useCopyButton(text: string) {
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(text)
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => {
+      setCopied(false)
+    }, 2000)
   }, [text])
 
   return { copied, handleCopy }

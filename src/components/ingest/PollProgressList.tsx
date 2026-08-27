@@ -60,7 +60,9 @@ export default function PollProgressList({}: Readonly<PollProgressListProps>) {
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => canPrevious && setPage(page - 1)}
+          onClick={() => {
+            if (canPrevious) setPage(page - 1)
+          }}
           disabled={!canPrevious}
           className="h-7 text-xs"
           aria-label="Previous page"
@@ -71,7 +73,9 @@ export default function PollProgressList({}: Readonly<PollProgressListProps>) {
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => canNext && setPage(page + 1)}
+          onClick={() => {
+            if (canNext) setPage(page + 1)
+          }}
           disabled={!canNext}
           className="h-7 text-xs"
           aria-label="Next page"

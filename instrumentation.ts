@@ -35,7 +35,7 @@ export async function register(): Promise<void> {
       const { migrated } = encryptLegacyImapPasswords()
       if (migrated > 0) {
         console.info(
-          `[crypto] migrated ${migrated} legacy IMAP passwords to v1 encryption`,
+          `[crypto] migrated ${String(migrated)} legacy IMAP passwords to v1 encryption`,
         )
       }
     } catch (err) {

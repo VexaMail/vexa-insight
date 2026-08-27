@@ -10,7 +10,7 @@ export function finalizeZipExtraction(
   if (entries.length > MAX_FILES_IN_ARCHIVE) {
     reject(
       new Error(
-        `ZIP contains too many files (${entries.length}). Max ${MAX_FILES_IN_ARCHIVE}.`,
+        `ZIP contains too many files (${String(entries.length)}). Max ${String(MAX_FILES_IN_ARCHIVE)}.`,
       ),
     )
     return
@@ -19,7 +19,7 @@ export function finalizeZipExtraction(
   if (total > MAX_UNCOMPRESSED_SIZE) {
     reject(
       new Error(
-        `ZIP uncompressed size too large. Possible zip bomb. Max ${MAX_UNCOMPRESSED_SIZE / 1024 / 1024} MB.`,
+        `ZIP uncompressed size too large. Possible zip bomb. Max ${String(MAX_UNCOMPRESSED_SIZE / 1024 / 1024)} MB.`,
       ),
     )
     return

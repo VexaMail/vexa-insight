@@ -200,7 +200,7 @@ export default function AiDiagnosticsInsightsPanel({
       />
 
       {/* Ordered rollout plan — always rendered last */}
-      <DiagnosticsRolloutPlanCard steps={state.data.rolloutPlan ?? []} />
+      <DiagnosticsRolloutPlanCard steps={state.data.rolloutPlan} />
     </div>
   )
 }

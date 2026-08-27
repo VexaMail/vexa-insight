@@ -5,12 +5,17 @@ import { handlePostProcessAndReport } from '../src/utils/imap/handlePostProcessA
 import type { HandlePostProcessParams } from '../src/utils/imap/HandlePostProcessParams'
 
 describe('move to trash after process', () => {
-  const makeClient = () =>
-    ({
-      messageMove: vi.fn(async () => undefined),
-      messageDelete: vi.fn(async () => undefined),
-      messageFlagsAdd: vi.fn(async () => undefined),
-    }) as unknown as ImapFlow
+  const makeClient = () => {
+    const messageMove = vi.fn(() => Promise.resolve(undefined))
+    const messageDelete = vi.fn(() => Promise.resolve(undefined))
+    const messageFlagsAdd = vi.fn(() => Promise.resolve(undefined))
+    const client = {
+      messageMove,
+      messageDelete,
+      messageFlagsAdd,
+    } as unknown as ImapFlow
+    return { client, messageMove, messageDelete }
+  }
 
   const makeParams = (
     client: ImapFlow,
@@ -31,54 +36,52 @@ describe('move to trash after process', () => {
   })
 
   it('moves the message instead of expunging it', async () => {
-    const client = makeClient()
+    const { client, messageMove, messageDelete } = makeClient()
     await handleMoveToTrash(client, makeParams(client))
 
-    expect(client.messageMove).toHaveBeenCalledWith('42', 'INBOX.Trash', {
+    expect(messageMove).toHaveBeenCalledWith('42', 'INBOX.Trash', {
       uid: true,
     })
-    expect(client.messageDelete).not.toHaveBeenCalled()
+    expect(messageDelete).not.toHaveBeenCalled()
   })
 
   it('leaves the message alone when the server has no trash mailbox', async () => {
-    const client = makeClient()
+    const { client, messageMove, messageDelete } = makeClient()
 
     await expect(
       handleMoveToTrash(client, makeParams(client, { trashPath: null })),
     ).rejects.toThrow(/\\Trash/)
-    expect(client.messageMove).not.toHaveBeenCalled()
-    expect(client.messageDelete).not.toHaveBeenCalled()
+    expect(messageMove).not.toHaveBeenCalled()
+    expect(messageDelete).not.toHaveBeenCalled()
   })
 
   it('does not move a message that already sits in the trash', async () => {
-    const client = makeClient()
+    const { client, messageMove } = makeClient()
     await handleMoveToTrash(
       client,
       makeParams(client, { sourceFolder: 'INBOX.Trash' }),
     )
 
-    expect(client.messageMove).not.toHaveBeenCalled()
+    expect(messageMove).not.toHaveBeenCalled()
   })
 
   it('does not destroy the message when the move fails', async () => {
-    const client = makeClient()
-    vi.mocked(client.messageMove).mockRejectedValueOnce(
-      new Error('NO [OVERQUOTA]'),
-    )
+    const { client, messageMove, messageDelete } = makeClient()
+    messageMove.mockRejectedValueOnce(new Error('NO [OVERQUOTA]'))
     const logged = vi
       .spyOn(console, 'error')
       .mockImplementation(() => undefined)
 
     await handlePostProcessAndReport(makeParams(client))
 
-    expect(client.messageDelete).not.toHaveBeenCalled()
+    expect(messageDelete).not.toHaveBeenCalled()
     expect(logged).toHaveBeenCalled()
     logged.mockRestore()
   })
 
   it('reports progress with the moving_to_trash step', async () => {
-    const client = makeClient()
-    const onProgress = vi.fn(async () => undefined)
+    const { client } = makeClient()
+    const onProgress = vi.fn(() => Promise.resolve(undefined))
     await handleMoveToTrash(client, makeParams(client, { onProgress }))
 
     expect(onProgress).toHaveBeenCalledWith(

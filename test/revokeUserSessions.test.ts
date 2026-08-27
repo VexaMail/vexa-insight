@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth/getSession', () => ({
-  getSession: vi.fn(async () => null),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }))
 
 /**

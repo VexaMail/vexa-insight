@@ -32,9 +32,9 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
           id="install-token"
           type="password"
           value={state.installToken}
-          onChange={(e) =>
+          onChange={(e) => {
             dispatch({ type: 'SET_INSTALL_TOKEN', payload: e.target.value })
-          }
+          }}
           required
           placeholder="One-time token from the server logs"
           autoComplete="off"
@@ -60,9 +60,9 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
             id="install-admin-email"
             type="text"
             value={state.adminEmail}
-            onChange={(e) =>
+            onChange={(e) => {
               dispatch({ type: 'SET_ADMIN_EMAIL', payload: e.target.value })
-            }
+            }}
             required
             placeholder="admin@example.com"
             className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
@@ -80,9 +80,9 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
             id="install-admin-password"
             type="password"
             value={state.adminPassword}
-            onChange={(e) =>
+            onChange={(e) => {
               dispatch({ type: 'SET_ADMIN_PASSWORD', payload: e.target.value })
-            }
+            }}
             required
             placeholder="Secure password"
             className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
@@ -104,9 +104,9 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
                 id="install-secret-key"
                 type="password"
                 value={state.secretKey}
-                onChange={(e) =>
+                onChange={(e) => {
                   dispatch({ type: 'SET_SECRET_KEY', payload: e.target.value })
-                }
+                }}
                 minLength={MIN_SECRET_LENGTH}
                 required
                 placeholder="Generate or enter your API key"

@@ -6,7 +6,13 @@ import { MIN_LENGTH } from './minLength'
 function generateSecretKey(): string {
   const bytes = Math.ceil(MIN_LENGTH / 2)
   const array = new Uint8Array(bytes)
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+  const runtimeCrypto: unknown = Reflect.get(globalThis, 'crypto')
+  if (
+    typeof runtimeCrypto === 'object' &&
+    runtimeCrypto !== null &&
+    'getRandomValues' in runtimeCrypto &&
+    typeof runtimeCrypto.getRandomValues === 'function'
+  ) {
     crypto.getRandomValues(array)
   }
   return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('')

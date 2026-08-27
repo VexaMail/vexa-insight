@@ -23,7 +23,7 @@ export function createTrafficAdminGuides(
       id: 'spf-permerror-traffic',
       severity: 'high',
       title: 'Historical data shows SPF PermError',
-      summary: `${stats.spf_permerror} SPF PermError events were observed across ${stats.failedEvents} failed events.`,
+      summary: `${String(stats.spf_permerror)} SPF PermError events were observed across ${String(stats.failedEvents)} failed events.`,
       whyItMatters:
         'This indicates the issue is not only theoretical in DNS: real mail is already failing because of SPF syntax or excessive lookups.',
       howToFix:
@@ -40,7 +40,7 @@ export function createTrafficAdminGuides(
       id: 'spf-unaligned',
       severity: 'medium',
       title: 'Some traffic passes SPF but is not DMARC-aligned',
-      summary: `SPF passes without alignment in ${stats.spf_pass_unaligned} of ${stats.totalEvents} observed events.`,
+      summary: `SPF passes without alignment in ${String(stats.spf_pass_unaligned)} of ${String(stats.totalEvents)} observed events.`,
       whyItMatters:
         'This usually indicates delegated Return-Path usage, third-party bounce domains, or partial ESP configurations that pass SPF but do not satisfy DMARC.',
       howToFix:
@@ -57,7 +57,7 @@ export function createTrafficAdminGuides(
       id: 'dkim-failure-rate',
       severity: 'high',
       title: 'The DKIM failure rate needs investigation',
-      summary: `DKIM fails in ${stats.dkim_all_fail} of ${stats.totalEvents} observed events.`,
+      summary: `DKIM fails in ${String(stats.dkim_all_fail)} of ${String(stats.totalEvents)} observed events.`,
       whyItMatters:
         'A sustained DKIM failure rate often breaks DMARC alignment for legitimate mail and can point to key rotation issues, stale signatures, or message modifications in transit.',
       howToFix:
@@ -74,7 +74,7 @@ export function createTrafficAdminGuides(
       id: 'forwarding-overrides',
       severity: 'medium',
       title: 'There is a meaningful volume of forwarded mail',
-      summary: `Forwarding overrides account for ${stats.dmarc_override_forwarded} of ${stats.failedEvents} failed events.`,
+      summary: `Forwarding overrides account for ${String(stats.dmarc_override_forwarded)} of ${String(stats.failedEvents)} failed events.`,
       whyItMatters:
         'Forwarding often breaks SPF and sometimes DKIM when the message is modified. If you do not understand this pattern, it is easy to misread it as a configuration failure.',
       howToFix:

@@ -47,7 +47,7 @@ export function useUploadForm() {
         | { error?: { message?: string } }
       if (!res.ok) {
         const err = json as { error?: { message?: string } }
-        const msg = err.error?.message ?? `Error ${res.status}`
+        const msg = err.error?.message ?? `Error ${String(res.status)}`
         setMessage(msg)
         setStatus('error')
         addRecentUpload(file.name, 'error', msg)
@@ -56,7 +56,7 @@ export function useUploadForm() {
       const data = json as {
         data?: { reportId?: number; domain?: string; processedRecords?: number }
       }
-      const successMsg = `Report #${data.data?.reportId ?? '—'} — ${data.data?.domain ?? '—'} — ${data.data?.processedRecords ?? 0} records`
+      const successMsg = `Report #${String(data.data?.reportId ?? '—')} — ${data.data?.domain ?? '—'} — ${String(data.data?.processedRecords ?? 0)} records`
       setMessage(successMsg)
       setStatus('success')
       addRecentUpload(file.name, 'success', successMsg)
@@ -95,7 +95,7 @@ export function useUploadForm() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    const file = e.dataTransfer.files?.[0]
+    const file = e.dataTransfer.files[0]
     if (file) {
       void handleFile(file)
     }

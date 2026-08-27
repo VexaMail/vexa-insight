@@ -49,10 +49,10 @@ export default async function IngestPage({
           totalEmails: displayPollStatus.totalEmails,
           processingEmails: displayPollStatus.processingEmails,
           etaMs: displayPollStatus.etaMs,
-          progressItems: displayPollStatus.progressItems?.items,
-          progressTotal: displayPollStatus.progressItems?.total,
-          pageSize: displayPollStatus.progressItems?.pageSize,
-          page: displayPollStatus.progressItems?.page ?? 1,
+          progressItems: displayPollStatus.progressItems.items,
+          progressTotal: displayPollStatus.progressItems.total,
+          pageSize: displayPollStatus.progressItems.pageSize,
+          page: displayPollStatus.progressItems.page,
         }}
       >
         <CronsSection

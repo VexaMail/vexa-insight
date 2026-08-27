@@ -7,8 +7,8 @@ import { resetDmarcDb } from './setup/resetDmarcDb'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth', () => ({
-  getAllowedDomainIds: vi.fn(async () => null),
-  getSession: vi.fn(async () => null),
+  getAllowedDomainIds: vi.fn(() => Promise.resolve(null)),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }))
 
 describe('event_rollup_daily consistency', () => {
@@ -28,7 +28,7 @@ describe('event_rollup_daily consistency', () => {
       await import('@/services/reports')
 
     const parsed = parseDmarcXml(readFileSync(FIXTURE))
-    parsed.rawReport.reportId = `rollup-${Date.now()}`
+    parsed.rawReport.reportId = `rollup-${String(Date.now())}`
 
     const expectedTotal = parsed.events.reduce((sum, ev) => sum + ev.count, 0)
     const expectedPassed = parsed.events.reduce(

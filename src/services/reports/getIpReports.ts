@@ -50,8 +50,8 @@ export async function getIpReports(
     id: r.id,
     reportId: r.reportId,
     orgName: r.orgName,
-    reportStartDate: Number(r.reportStartDate),
-    reportEndDate: Number(r.reportEndDate),
-    messageCount: Number(r.messageCount),
+    reportStartDate: r.reportStartDate,
+    reportEndDate: r.reportEndDate,
+    messageCount: r.messageCount,
   }))
 }

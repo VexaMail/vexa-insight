@@ -14,5 +14,7 @@ export function handleReadStream(
     setXmlBuffer(Buffer.concat(chunks))
     readNext()
   })
-  readStream.on('error', () => readNext())
+  readStream.on('error', () => {
+    readNext()
+  })
 }

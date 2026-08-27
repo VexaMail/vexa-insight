@@ -10,7 +10,7 @@ export function mapProviderError(
       code: 'UNAUTHORIZED',
       message:
         'AI service configuration error. Please check your API key in Settings.',
-      providerMessage: `${providerId} returned ${status}: ${body.slice(0, 200)}`,
+      providerMessage: `${providerId} returned ${String(status)}: ${body.slice(0, 200)}`,
     }
   }
   if (status === 429) {
@@ -24,12 +24,12 @@ export function mapProviderError(
     return {
       code: 'PROVIDER_UNAVAILABLE',
       message: 'AI service temporarily unavailable. Please try again later.',
-      providerMessage: `${providerId} returned ${status}: ${body.slice(0, 200)}`,
+      providerMessage: `${providerId} returned ${String(status)}: ${body.slice(0, 200)}`,
     }
   }
   return {
     code: 'UNKNOWN',
     message: 'An unexpected error occurred with the AI service.',
-    providerMessage: `${providerId} returned ${status}: ${body.slice(0, 200)}`,
+    providerMessage: `${providerId} returned ${String(status)}: ${body.slice(0, 200)}`,
   }
 }

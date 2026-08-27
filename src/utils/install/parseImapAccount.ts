@@ -17,7 +17,7 @@ export function parseImapAccount(
   const port = parsePort(o.port) ?? 993
   if (!server || !username || !password) return null
   return {
-    label: label || `Account ${index + 1}`,
+    label: label || `Account ${String(index + 1)}`,
     server,
     port,
     username,

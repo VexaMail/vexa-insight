@@ -16,7 +16,7 @@ import { sql } from 'drizzle-orm'
  */
 export async function rebuildEventRollup(): Promise<number> {
   const db = getDb()
-  const dayExpr = sql.raw(`report_end_date / ${DAY_SECONDS}`)
+  const dayExpr = sql.raw(`report_end_date / ${String(DAY_SECONDS)}`)
 
   db.transaction((tx) => {
     tx.run(sql`DELETE FROM event_rollup_daily`)
@@ -32,5 +32,5 @@ export async function rebuildEventRollup(): Promise<number> {
   const [row] = await db
     .select({ count: sql<number>`count(*)` })
     .from(eventRollupDaily)
-  return Number(row?.count ?? 0)
+  return row?.count ?? 0
 }

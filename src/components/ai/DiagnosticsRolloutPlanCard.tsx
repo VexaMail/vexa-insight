@@ -19,7 +19,7 @@ export function DiagnosticsRolloutPlanCard({
       <ol className="bg-card list-decimal space-y-2 rounded-lg border p-4 pl-9 text-sm">
         {steps.map((step, i) => (
           <li
-            key={`${step.slice(0, 40)}-${i}`}
+            key={`${step.slice(0, 40)}-${String(i)}`}
             className="marker:text-muted-foreground pl-1"
           >
             {renderInlineCode(step)}

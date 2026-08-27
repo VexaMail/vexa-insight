@@ -105,7 +105,10 @@ export default function AiReportInsightsPanel({
         </button>
       </div>
       {state.data.insights.map((insight: ReportInsight, i: number) => (
-        <AiInsightCard key={`${insight.category}-${i}`} insight={insight} />
+        <AiInsightCard
+          key={`${insight.category}-${String(i)}`}
+          insight={insight}
+        />
       ))}
     </div>
   )

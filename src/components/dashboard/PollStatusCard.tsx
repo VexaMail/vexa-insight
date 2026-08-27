@@ -59,7 +59,7 @@ export default function PollStatusCard({
             <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
               <div
                 className="bg-primary h-full rounded-full transition-all duration-500 ease-in-out"
-                style={{ width: `${percent}%` }}
+                style={{ width: `${String(percent)}%` }}
               />
             </div>
             <div className="text-muted-foreground flex items-center justify-between text-xs">

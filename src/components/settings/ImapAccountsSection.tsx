@@ -49,7 +49,7 @@ export default function ImapAccountsSection({
         {accounts.map((acc, index) => {
           const isExpanded = expandedIndices.has(index)
           const displayLabel =
-            acc.label || acc.username || `Account ${index + 1}`
+            acc.label || acc.username || `Account ${String(index + 1)}`
           const moveToFolder = acc.postProcessAction === 'move_to_folder'
 
           return (
@@ -65,7 +65,9 @@ export default function ImapAccountsSection({
                   announced. `asChild` keeps the visual identical. */}
               <button
                 type="button"
-                onClick={() => toggleExpand(index)}
+                onClick={() => {
+                  toggleExpand(index)
+                }}
                 aria-expanded={isExpanded}
                 className="hover:bg-accent/50 focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-2 px-4 py-3 text-left transition-colors focus-visible:ring-1 focus-visible:outline-none"
               >
@@ -101,7 +103,9 @@ export default function ImapAccountsSection({
                       variant="ghost"
                       size="sm"
                       className="text-primary h-7 text-xs"
-                      onClick={() => onTestConnection(acc.id)}
+                      onClick={() => {
+                        onTestConnection(acc.id)
+                      }}
                     >
                       Test Connection
                     </Button>
@@ -111,7 +115,9 @@ export default function ImapAccountsSection({
                         variant="ghost"
                         size="icon"
                         className="text-danger hover:text-danger h-7 w-7"
-                        onClick={() => onRemove(index)}
+                        onClick={() => {
+                          onRemove(index)
+                        }}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -119,18 +125,18 @@ export default function ImapAccountsSection({
                   </div>
                   <div className="space-y-1.5">
                     <label
-                      htmlFor={`imap-account-${index}-label`}
+                      htmlFor={`imap-account-${String(index)}-label`}
                       className="text-foreground text-xs font-medium"
                     >
                       Account Label
                     </label>
                     <Input
-                      id={`imap-account-${index}-label`}
+                      id={`imap-account-${String(index)}-label`}
                       type="text"
                       value={acc.label}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         onUpdate(index, { label: e.target.value })
-                      }
+                      }}
                       placeholder="e.g. Primary Inbox"
                       className="bg-card border-border/50 text-xs"
                     />
@@ -138,40 +144,40 @@ export default function ImapAccountsSection({
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div className="space-y-1.5 sm:col-span-2">
                       <label
-                        htmlFor={`imap-account-${index}-server`}
+                        htmlFor={`imap-account-${String(index)}-server`}
                         className="text-foreground text-xs font-medium"
                       >
                         IMAP Server
                       </label>
                       <Input
-                        id={`imap-account-${index}-server`}
+                        id={`imap-account-${String(index)}-server`}
                         type="text"
                         value={acc.server}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           onUpdate(index, { server: e.target.value })
-                        }
+                        }}
                         placeholder="imap.example.com"
                         className="bg-card border-border/50 text-xs"
                       />
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor={`imap-account-${index}-port`}
+                        htmlFor={`imap-account-${String(index)}-port`}
                         className="text-foreground text-xs font-medium"
                       >
                         Port
                       </label>
                       <Input
-                        id={`imap-account-${index}-port`}
+                        id={`imap-account-${String(index)}-port`}
                         type="number"
                         min={1}
                         max={65535}
                         value={acc.port}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           onUpdate(index, {
                             port: parseInt(e.target.value, 10) || 993,
                           })
-                        }
+                        }}
                         placeholder="993"
                         className="bg-card border-border/50 text-xs"
                       />
@@ -180,36 +186,36 @@ export default function ImapAccountsSection({
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <label
-                        htmlFor={`imap-account-${index}-username`}
+                        htmlFor={`imap-account-${String(index)}-username`}
                         className="text-foreground text-xs font-medium"
                       >
                         Username
                       </label>
                       <Input
-                        id={`imap-account-${index}-username`}
+                        id={`imap-account-${String(index)}-username`}
                         type="text"
                         value={acc.username}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           onUpdate(index, { username: e.target.value })
-                        }
+                        }}
                         placeholder="user@example.com"
                         className="bg-card border-border/50 text-xs"
                       />
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor={`imap-account-${index}-password`}
+                        htmlFor={`imap-account-${String(index)}-password`}
                         className="text-foreground text-xs font-medium"
                       >
                         Password / App Password
                       </label>
                       <Input
-                        id={`imap-account-${index}-password`}
+                        id={`imap-account-${String(index)}-password`}
                         type="password"
                         value={acc.passwordNew ?? ''}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           onUpdate(index, { passwordNew: e.target.value })
-                        }
+                        }}
                         placeholder={
                           acc.passwordMasked ? '••••••••' : 'Password'
                         }
@@ -231,10 +237,10 @@ export default function ImapAccountsSection({
                     <div
                       className="space-y-3 pt-1"
                       role="group"
-                      aria-labelledby={`imap-account-${index}-fetch-options`}
+                      aria-labelledby={`imap-account-${String(index)}-fetch-options`}
                     >
                       <span
-                        id={`imap-account-${index}-fetch-options`}
+                        id={`imap-account-${String(index)}-fetch-options`}
                         className="text-foreground text-xs font-semibold"
                       >
                         Fetch Options
@@ -243,11 +249,11 @@ export default function ImapAccountsSection({
                         <input
                           type="checkbox"
                           checked={acc.fetchIncludeTrash}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             onUpdate(index, {
                               fetchIncludeTrash: e.target.checked,
                             })
-                          }
+                          }}
                           className="accent-primary h-3.5 w-3.5 rounded"
                         />
                         <span className="text-muted-foreground">
@@ -258,11 +264,11 @@ export default function ImapAccountsSection({
                         <input
                           type="checkbox"
                           checked={acc.fetchIncludeAllFolders}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             onUpdate(index, {
                               fetchIncludeAllFolders: e.target.checked,
                             })
-                          }
+                          }}
                           className="accent-primary h-3.5 w-3.5 rounded"
                         />
                         <span className="text-muted-foreground">
@@ -275,10 +281,10 @@ export default function ImapAccountsSection({
                     <div
                       className="space-y-3 pt-1"
                       role="group"
-                      aria-labelledby={`imap-account-${index}-post-processing`}
+                      aria-labelledby={`imap-account-${String(index)}-post-processing`}
                     >
                       <span
-                        id={`imap-account-${index}-post-processing`}
+                        id={`imap-account-${String(index)}-post-processing`}
                         className="text-foreground text-xs font-semibold"
                       >
                         Post-Processing
@@ -287,11 +293,11 @@ export default function ImapAccountsSection({
                         <input
                           type="checkbox"
                           checked={acc.markAsReadAfterProcess}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             onUpdate(index, {
                               markAsReadAfterProcess: e.target.checked,
                             })
-                          }
+                          }}
                           className="accent-primary h-3.5 w-3.5 rounded"
                         />
                         <span className="text-muted-foreground">
@@ -303,11 +309,11 @@ export default function ImapAccountsSection({
                           type="checkbox"
                           checked={acc.moveToTrashAfterProcess && !moveToFolder}
                           disabled={moveToFolder}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             onUpdate(index, {
                               moveToTrashAfterProcess: e.target.checked,
                             })
-                          }
+                          }}
                           className="accent-primary h-3.5 w-3.5 rounded disabled:opacity-40"
                         />
                         <span
@@ -324,7 +330,7 @@ export default function ImapAccountsSection({
                         <input
                           type="checkbox"
                           checked={moveToFolder}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             onUpdate(index, {
                               postProcessAction: e.target.checked
                                 ? 'move_to_folder'
@@ -333,7 +339,7 @@ export default function ImapAccountsSection({
                                 ? false
                                 : acc.moveToTrashAfterProcess,
                             })
-                          }
+                          }}
                           className="accent-primary h-3.5 w-3.5 rounded"
                         />
                         <span className="text-muted-foreground">
@@ -345,9 +351,9 @@ export default function ImapAccountsSection({
                           accountId={acc.id}
                           apiKey={apiKey}
                           value={acc.postProcessFolder}
-                          onChange={(path) =>
+                          onChange={(path) => {
                             onUpdate(index, { postProcessFolder: path })
-                          }
+                          }}
                         />
                       )}
                       {moveToFolder && acc.id === 0 && (

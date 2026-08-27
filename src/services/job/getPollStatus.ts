@@ -39,7 +39,7 @@ export async function getPollStatus(
     const itemMap = new Map<string, ProgressItem>()
     for (const e of dbEvents) {
       if (!e.accountId || !e.messageUid) continue
-      const id = `${e.accountId}:${e.messageUid}`
+      const id = `${String(e.accountId)}:${e.messageUid}`
       const current = itemMap.get(id)
       const payload = {
         accountId: e.accountId,

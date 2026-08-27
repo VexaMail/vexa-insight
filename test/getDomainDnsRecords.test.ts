@@ -17,10 +17,10 @@ describe('getDomainDnsRecords — SPF', () => {
   it('returns valid SPF when a single v=spf1 record exists', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === 'example.com')
-        return [['v=spf1 include:_spf.google.com -all']]
-      return []
+        return Promise.resolve([['v=spf1 include:_spf.google.com -all']])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
@@ -46,10 +46,13 @@ describe('getDomainDnsRecords — SPF', () => {
   it('sets spfWarning when multiple SPF records are found', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === 'example.com')
-        return [['v=spf1 include:a.com ~all'], ['v=spf1 include:b.com ~all']]
-      return []
+        return Promise.resolve([
+          ['v=spf1 include:a.com ~all'],
+          ['v=spf1 include:b.com ~all'],
+        ])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
@@ -62,10 +65,10 @@ describe('getDomainDnsRecords — SPF', () => {
   it('sets spfWarning for ~all softfail policy', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === 'example.com')
-        return [['v=spf1 include:_spf.google.com ~all']]
-      return []
+        return Promise.resolve([['v=spf1 include:_spf.google.com ~all']])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
@@ -81,10 +84,12 @@ describe('getDomainDnsRecords — DMARC', () => {
   it('extracts policy from DMARC record', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === '_dmarc.example.com')
-        return [['v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com']]
-      return []
+        return Promise.resolve([
+          ['v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com'],
+        ])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
@@ -98,10 +103,12 @@ describe('getDomainDnsRecords — DMARC', () => {
   it('marks dmarcValid true but warns when policy is none', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === '_dmarc.example.com')
-        return [['v=DMARC1; p=none; rua=mailto:dmarc@example.com']]
-      return []
+        return Promise.resolve([
+          ['v=DMARC1; p=none; rua=mailto:dmarc@example.com'],
+        ])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
@@ -159,10 +166,10 @@ describe('getDomainDnsRecords — DKIM', () => {
   it('marks a selector valid when DKIM1 record is found', async () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
-    mockResolveTxt.mockImplementation(async (host: string) => {
+    mockResolveTxt.mockImplementation((host: string) => {
       if (host === 'google._domainkey.example.com')
-        return [['v=DKIM1; k=rsa; p=MIIBIjANBg...']]
-      return []
+        return Promise.resolve([['v=DKIM1; k=rsa; p=MIIBIjANBg...']])
+      return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 

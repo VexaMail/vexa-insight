@@ -13,15 +13,13 @@ import crypto from 'node:crypto'
  * doesn't exactly match an existing record. Operators who want strict
  * allow-listing should disable SSO until a policy layer is added.
  */
-export async function provisionUserFromUserInfo(
-  info: OidcUserInfo,
-): Promise<string> {
+export function provisionUserFromUserInfo(info: OidcUserInfo): string {
   const username = info.email ?? info.preferred_username ?? info.sub
   if (!username) {
     throw new Error('OIDC userinfo lacks email/preferred_username/sub')
   }
   const db = getDb()
-  const existing = await db
+  const existing = db
     .select()
     .from(users)
     .where(eq(users.username, username))
@@ -32,11 +30,13 @@ export async function provisionUserFromUserInfo(
   // No local password; we set a random unguessable hash placeholder so
   // password-based login cannot succeed for SSO-provisioned accounts.
   const placeholderHash = `oidc:${crypto.randomBytes(32).toString('hex')}`
-  await db.insert(users).values({
-    id,
-    username,
-    passwordHash: placeholderHash,
-    role: 'viewer',
-  })
+  db.insert(users)
+    .values({
+      id,
+      username,
+      passwordHash: placeholderHash,
+      role: 'viewer',
+    })
+    .run()
   return id
 }

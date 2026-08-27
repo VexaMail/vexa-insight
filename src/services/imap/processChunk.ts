@@ -69,7 +69,7 @@ export async function* processChunk(
   if (uidsToProcessFull.length > 0) {
     await emitStatus(
       options,
-      `Processing ${uidsToProcessFull.length} DMARC email${uidsToProcessFull.length === 1 ? '' : 's'} (batch ${chunkIndex + 1})\u2026`,
+      `Processing ${String(uidsToProcessFull.length)} DMARC email${uidsToProcessFull.length === 1 ? '' : 's'} (batch ${String(chunkIndex + 1)})\u2026`,
     )
     yield* processUnprocessedUids(
       client,

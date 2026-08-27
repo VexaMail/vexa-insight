@@ -47,9 +47,9 @@ export default function IpHostnameSection({
           type="checkbox"
           id="ip-lookup-enabled"
           checked={enabled}
-          onChange={(e) =>
+          onChange={(e) => {
             onChange('ipHostnameLookupEnabled', e.target.checked)
-          }
+          }}
           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
         />
         <label
@@ -76,12 +76,12 @@ export default function IpHostnameSection({
               min={1}
               max={8760}
               value={refreshIntervalHours}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange(
                   'ipHostnameRefreshIntervalHours',
                   parseInt(e.target.value) || 48,
                 )
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -99,12 +99,12 @@ export default function IpHostnameSection({
               min={1}
               max={8760}
               value={negativeCacheHours}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange(
                   'ipHostnameNegativeCacheHours',
                   parseInt(e.target.value) || 24,
                 )
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -124,12 +124,12 @@ export default function IpHostnameSection({
               max={60000}
               step={100}
               value={timeoutMs}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange(
                   'ipHostnameTimeoutMs',
                   parseInt(e.target.value) || 2000,
                 )
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -147,9 +147,9 @@ export default function IpHostnameSection({
               min={0}
               max={10}
               value={maxRetries}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange('ipHostnameMaxRetries', parseInt(e.target.value) || 3)
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -167,12 +167,12 @@ export default function IpHostnameSection({
               min={1}
               max={1440}
               value={retryBackoffMinutes}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange(
                   'ipHostnameRetryBackoffMinutes',
                   parseInt(e.target.value) || 60,
                 )
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -191,9 +191,9 @@ export default function IpHostnameSection({
               min={1}
               max={1000}
               value={batchSize}
-              onChange={(e) =>
+              onChange={(e) => {
                 onChange('ipHostnameBatchSize', parseInt(e.target.value) || 100)
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>
@@ -205,9 +205,9 @@ export default function IpHostnameSection({
                 type="checkbox"
                 id="ip-manual-refresh"
                 checked={manualRefreshEnabled}
-                onChange={(e) =>
+                onChange={(e) => {
                   onChange('ipHostnameManualRefreshEnabled', e.target.checked)
-                }
+                }}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <label
@@ -223,9 +223,9 @@ export default function IpHostnameSection({
                 type="checkbox"
                 id="ip-allow-private"
                 checked={allowPrivateIps}
-                onChange={(e) =>
+                onChange={(e) => {
                   onChange('ipHostnameAllowPrivateIps', e.target.checked)
-                }
+                }}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <label

@@ -13,6 +13,6 @@ export function safeFetchErrorResult(
     status: null,
     dispatched: false,
     response: null,
-    error: { code, message } as SafeFetchError,
+    error: { code, message },
   }
 }

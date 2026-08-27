@@ -52,11 +52,16 @@ export default function IpsTable({ ips }: IpsTableProps) {
           router.push(`/ips/${encodeURIComponent(row.original.ip)}`)
         }}
         toolbarActions={(table) => {
+          const countryFilterValue = table
+            .getColumn('countryCode')
+            ?.getFilterValue()
           const countryFilter =
-            (table.getColumn('countryCode')?.getFilterValue() as string) ??
-            'All'
+            typeof countryFilterValue === 'string' ? countryFilterValue : 'All'
+          const domainFilterValue = table
+            .getColumn('hostname')
+            ?.getFilterValue()
           const domainFilter =
-            (table.getColumn('hostname')?.getFilterValue() as string) ?? 'All'
+            typeof domainFilterValue === 'string' ? domainFilterValue : 'All'
 
           return (
             <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">

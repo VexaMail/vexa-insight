@@ -19,7 +19,7 @@ export function buildDiagnosticsAnalysisPrompt(
   ]
   if (input.score) {
     sections.push(
-      `CURRENT DOMAIN SCORE: ${input.score.percentage}% (${input.score.grade})`,
+      `CURRENT DOMAIN SCORE: ${String(input.score.percentage)}% (${input.score.grade})`,
     )
   }
 

@@ -17,8 +17,8 @@ export function analyzeLimits(spf: string): SpfCheckResult[] {
     name: 'DNS lookup limit (max 10)',
     passed: withinLimit,
     detail: withinLimit
-      ? `Estimated ${estimatedLookups} DNS lookups (within the 10-lookup limit).`
-      : `Estimated ${estimatedLookups} DNS lookups. Exceeds the 10-lookup limit, which causes PermError.`,
+      ? `Estimated ${String(estimatedLookups)} DNS lookups (within the 10-lookup limit).`
+      : `Estimated ${String(estimatedLookups)} DNS lookups. Exceeds the 10-lookup limit, which causes PermError.`,
   })
 
   const recordLength = spf.length
@@ -27,8 +27,8 @@ export function analyzeLimits(spf: string): SpfCheckResult[] {
     name: 'Record length',
     passed: withinCharLimit,
     detail: withinCharLimit
-      ? `Record is ${recordLength} characters (under 450-character recommendation).`
-      : `Record is ${recordLength} characters. Consider flattening to reduce length.`,
+      ? `Record is ${String(recordLength)} characters (under 450-character recommendation).`
+      : `Record is ${String(recordLength)} characters. Consider flattening to reduce length.`,
   })
 
   return checks

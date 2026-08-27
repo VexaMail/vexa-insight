@@ -15,8 +15,8 @@ export async function listFolders(
     return list.map((mb) => ({
       path: mb.path,
       name: mb.name,
-      delimiter: mb.delimiter ?? '/',
-      flags: mb.flags ?? new Set(),
+      delimiter: mb.delimiter,
+      flags: mb.flags,
       ...(mb.specialUse !== undefined ? { specialUse: mb.specialUse } : {}),
     }))
   } finally {

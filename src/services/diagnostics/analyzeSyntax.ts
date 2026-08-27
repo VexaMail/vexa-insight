@@ -20,7 +20,7 @@ export function analyzeSyntax(
     detail:
       allSpfRecords.length === 1
         ? 'Only one SPF record found.'
-        : `${allSpfRecords.length} SPF records found. Only one is allowed per domain.`,
+        : `${String(allSpfRecords.length)} SPF records found. Only one is allowed per domain.`,
   })
 
   const hasAllMechanism =

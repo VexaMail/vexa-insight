@@ -84,7 +84,7 @@ export default function TopDomainsTable() {
               <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
                 <div
                   className={`h-full rounded-full transition-all ${barColor}`}
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${String(pct)}%` }}
                 />
               </div>
             </Link>

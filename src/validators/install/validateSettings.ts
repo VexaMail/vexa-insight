@@ -16,7 +16,7 @@ export function validateSettings(o: Record<string, unknown>):
   const rawSecret = o.secretKey
   if (!isString(rawSecret) || rawSecret.trim().length < MIN_SECRET_LENGTH) {
     return {
-      error: `secretKey must be at least ${MIN_SECRET_LENGTH} characters`,
+      error: `secretKey must be at least ${String(MIN_SECRET_LENGTH)} characters`,
     }
   }
 

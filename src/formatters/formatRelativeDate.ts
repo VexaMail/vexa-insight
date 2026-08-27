@@ -19,18 +19,18 @@ export function formatRelativeDate(epochSeconds: number): {
     return { relative: 'just now', absolute }
   if (diffSeconds < SECONDS_PER_HOUR) {
     const minutes = Math.floor(diffSeconds / SECONDS_PER_MINUTE)
-    return { relative: `${minutes}m ago`, absolute }
+    return { relative: `${String(minutes)}m ago`, absolute }
   }
   if (diffSeconds < SECONDS_PER_DAY) {
     const hours = Math.floor(diffSeconds / SECONDS_PER_HOUR)
-    return { relative: `${hours}h ago`, absolute }
+    return { relative: `${String(hours)}h ago`, absolute }
   }
   const days = Math.floor(diffSeconds / SECONDS_PER_DAY)
-  if (days < 30) return { relative: `${days}d ago`, absolute }
+  if (days < 30) return { relative: `${String(days)}d ago`, absolute }
   if (days < 365) {
     const months = Math.floor(days / 30)
-    return { relative: `${months}mo ago`, absolute }
+    return { relative: `${String(months)}mo ago`, absolute }
   }
   const years = Math.floor(days / 365)
-  return { relative: `${years}y ago`, absolute }
+  return { relative: `${String(years)}y ago`, absolute }
 }

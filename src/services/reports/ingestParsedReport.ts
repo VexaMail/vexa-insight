@@ -80,7 +80,7 @@ export async function ingestParsedReport(
       const ipAddressId =
         ipAddressIds[i] ??
         (() => {
-          throw new Error(`Missing ipAddressId for index ${i}`)
+          throw new Error(`Missing ipAddressId for index ${String(i)}`)
         })()
 
       const insertedEvent = tx
@@ -103,7 +103,7 @@ export async function ingestParsedReport(
         .returning({ id: normalizedEvents.id })
         .get()
 
-      const eventId = insertedEvent?.id
+      const eventId = insertedEvent.id
       if (!eventId) continue
 
       if (ev.dkimAuthResults.length > 0) {

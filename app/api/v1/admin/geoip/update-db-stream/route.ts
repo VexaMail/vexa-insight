@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic'
  * long-lived `SECRET_KEY`: the value that ends up in proxy logs and browser
  * history is already spent by the time it is written there.
  */
-export async function GET(request: NextRequest) {
+export function GET(request: NextRequest) {
   const ticket = nonEmptyTextQuerySchema.parse(
     request.nextUrl.searchParams.get('ticket'),
   )

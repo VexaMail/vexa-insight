@@ -64,7 +64,9 @@ export default function JobRunHistoryTable({
             id="hide-empty"
             type="checkbox"
             checked={hideEmpty}
-            onChange={(e) => handleToggleHideEmpty(e.target.checked)}
+            onChange={(e) => {
+              handleToggleHideEmpty(e.target.checked)
+            }}
             className="h-4 w-4 accent-zinc-900 dark:accent-zinc-50"
           />
         </div>
@@ -75,7 +77,9 @@ export default function JobRunHistoryTable({
         {...(selectedJobId !== null
           ? { selectedRowId: selectedJobId.toString() }
           : {})}
-        onRowClick={(row) => handleRowClick(row.original.id)}
+        onRowClick={(row) => {
+          handleRowClick(row.original.id)
+        }}
       />
     </div>
   )

@@ -37,7 +37,7 @@ describe('privileged and mutating /api/v1 routes enforce RBAC', () => {
   }
 
   const mutatingExport =
-    /export\s+(?:const|async\s+function)\s+(?:POST|PUT|PATCH|DELETE)\b/
+    /export\s+(?:const|(?:async\s+)?function)\s+(?:POST|PUT|PATCH|DELETE)\b/
 
   // Routes that must call requirePermission directly (privileged reads and
   // session-facing mutations). Key-only requireAdminAuth routes are covered

@@ -17,7 +17,9 @@ export function getProcessedEmailsColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Processed At
             <SortIcon
@@ -41,7 +43,9 @@ export function getProcessedEmailsColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Message ID
             <SortIcon
@@ -64,7 +68,9 @@ export function getProcessedEmailsColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Account
             <SortIcon
@@ -75,7 +81,7 @@ export function getProcessedEmailsColumns({
         )
       },
       cell: ({ row }) => {
-        const val = row.getValue('accountLabel') as string | null
+        const val = row.original.accountLabel
         return (
           <span className="text-muted-foreground text-sm">{val ?? '—'}</span>
         )
@@ -88,7 +94,9 @@ export function getProcessedEmailsColumns({
           variant="ghost"
           size="icon"
           className="text-muted-foreground hover:text-foreground h-7 w-7"
-          onClick={() => onViewEmail(row.original)}
+          onClick={() => {
+            onViewEmail(row.original)
+          }}
         >
           <Eye className="h-3.5 w-3.5" />
         </Button>

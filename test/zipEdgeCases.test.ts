@@ -20,8 +20,8 @@ describe('extractXmlFromZip edge cases', () => {
   it('rejects when the archive contains more than MAX_FILES_IN_ARCHIVE entries', async () => {
     const zip = buildZip(
       Array.from({ length: MAX_FILES_IN_ARCHIVE + 1 }, (_, i) => ({
-        name: `r${i}.xml`,
-        content: Buffer.from(`<feedback>${i}</feedback>`),
+        name: `r${String(i)}.xml`,
+        content: Buffer.from(`<feedback>${String(i)}</feedback>`),
       })),
     )
     await expect(extractXmlFromZip(zip)).rejects.toThrow(/too many files/i)

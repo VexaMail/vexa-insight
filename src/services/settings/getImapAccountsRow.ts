@@ -33,7 +33,7 @@ function getImapAccountsRow(): ImapAccountRow[] {
     password:
       r.password && secretKey
         ? decryptSecret(r.password, secretKey)
-        : (r.password ?? ''),
+        : r.password,
     sortOrder: r.sortOrder,
     fetchIncludeTrash: r.fetchIncludeTrash,
     fetchIncludeAllFolders: r.fetchIncludeAllFolders,

@@ -11,11 +11,11 @@ export default function StatusPill({
 }: Readonly<StatusPillProps>) {
   return (
     <span
-      className={`${BASE_CLASS} ${VARIANT_CLASSES[status] ?? VARIANT_CLASSES.pending}`}
+      className={`${BASE_CLASS} ${String(VARIANT_CLASSES[status] ?? VARIANT_CLASSES.pending)}`}
       aria-label={`${text}: ${status}`}
     >
       <span
-        className={`h-1.5 w-1.5 rounded-full ${DOT_VARIANT_CLASSES[status] ?? DOT_VARIANT_CLASSES.pending}`}
+        className={`h-1.5 w-1.5 rounded-full ${String(DOT_VARIANT_CLASSES[status] ?? DOT_VARIANT_CLASSES.pending)}`}
       />
       {text}
     </span>

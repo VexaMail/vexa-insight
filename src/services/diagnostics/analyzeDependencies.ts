@@ -12,7 +12,7 @@ export function analyzeDependencies(spf: string): SpfCheckResult[] {
     passed: true,
     detail:
       thirdParty.length > 0
-        ? `${thirdParty.length} third-party include(s) found: ${thirdParty.map((i) => i.replace('include:', '')).join(', ')}.`
+        ? `${String(thirdParty.length)} third-party include(s) found: ${thirdParty.map((i) => i.replace('include:', '')).join(', ')}.`
         : 'No third-party includes detected.',
   })
 

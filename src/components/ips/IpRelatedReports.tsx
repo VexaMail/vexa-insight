@@ -43,7 +43,7 @@ export function IpRelatedReports({
           return (
             <Link
               key={row.id}
-              href={`/reports/${row.id}`}
+              href={`/reports/${String(row.id)}`}
               className="group hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 flex flex-col justify-between rounded-lg border border-gray-100 bg-white/50 p-4 transition-all sm:flex-row sm:items-center dark:border-gray-800 dark:bg-gray-900/50"
             >
               <div className="flex min-w-0 flex-1 flex-col pr-2 sm:pr-4">

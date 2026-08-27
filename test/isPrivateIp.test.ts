@@ -32,7 +32,7 @@ describe('isPrivateIp', () => {
     ['2001:4860:4860::8888', false],
   ]
   for (const [ip, expected] of cases) {
-    it(`${ip} -> ${expected}`, () => {
+    it(`${ip} -> ${String(expected)}`, () => {
       expect(isPrivateIp(ip)).toBe(expected)
     })
   }

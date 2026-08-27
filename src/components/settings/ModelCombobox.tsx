@@ -52,7 +52,9 @@ export function ModelCombobox({
             aria-controls={listboxId}
             aria-haspopup="listbox"
             disabled={isLoading}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen)
+            }}
             className={cn(
               'border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
               savedModelMissing && 'border-warning',
@@ -93,13 +95,17 @@ export function ModelCombobox({
               className="placeholder:text-muted-foreground h-8 w-full bg-transparent text-sm outline-none"
               placeholder="Search models…"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value)
+              }}
               onKeyDown={handleKeyDown}
             />
             {query && (
               <button
                 type="button"
-                onClick={() => setQuery('')}
+                onClick={() => {
+                  setQuery('')
+                }}
                 className="text-muted-foreground hover:text-foreground shrink-0"
               >
                 <X className="h-3 w-3" />
@@ -123,7 +129,9 @@ export function ModelCombobox({
                 'hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm',
                 !value && 'bg-accent',
               )}
-              onClick={() => handleClear()}
+              onClick={() => {
+                handleClear()
+              }}
             >
               <Check
                 className={cn(
@@ -151,7 +159,9 @@ export function ModelCombobox({
                   m.id === value && 'bg-accent',
                   i === highlightIndex && 'bg-accent/70',
                 )}
-                onClick={() => handleSelect(m.id)}
+                onClick={() => {
+                  handleSelect(m.id)
+                }}
               >
                 <Check
                   className={cn(

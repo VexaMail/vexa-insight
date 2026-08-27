@@ -8,9 +8,9 @@ import { NextResponse } from 'next/server'
  * printed to stdout even if no remote installer has hit POST yet. The
  * actual token value is never returned in the response.
  */
-export async function GET(): Promise<
-  NextResponse<{ data: { installed: boolean; requiresToken: boolean } }>
-> {
+export function GET(): NextResponse<{
+  data: { installed: boolean; requiresToken: boolean }
+}> {
   const installed = isInstalled()
   if (!installed) {
     getOrCreateInstallToken()

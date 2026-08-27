@@ -12,7 +12,7 @@ export function parseAccountsList(
     const acc = parseImapAccount(rawAccounts[i], i)
     if (!acc) {
       return {
-        error: `imapAccounts[${i}] must have server, username, and password`,
+        error: `imapAccounts[${String(i)}] must have server, username, and password`,
       }
     }
     imapAccounts.push(acc)

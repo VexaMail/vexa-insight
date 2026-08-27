@@ -16,7 +16,9 @@ export async function discoverIssuer(issuer: string): Promise<OidcDiscovery> {
   const url = `${normalized}/.well-known/openid-configuration`
   const res = await fetch(url, { headers: { accept: 'application/json' } })
   if (!res.ok) {
-    throw new Error(`OIDC discovery failed: ${res.status} ${res.statusText}`)
+    throw new Error(
+      `OIDC discovery failed: ${String(res.status)} ${res.statusText}`,
+    )
   }
   const doc = (await res.json()) as OidcDiscovery
   oidcDiscoveryCache.set(normalized, { fetchedAt: Date.now(), doc })

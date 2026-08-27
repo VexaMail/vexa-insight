@@ -31,8 +31,8 @@ export function usePollStatusFetcher({
       try {
         const url =
           isHistoricalJobContext && jobId
-            ? `/api/v1/job-runs/${jobId}/poll-status?page=${page}&pageSize=${pageSize}&_=${Date.now()}`
-            : `/api/v1/poll-status?page=${page}&pageSize=${pageSize}&_=${Date.now()}`
+            ? `/api/v1/job-runs/${String(jobId)}/poll-status?page=${String(page)}&pageSize=${String(pageSize)}&_=${String(Date.now())}`
+            : `/api/v1/poll-status?page=${String(page)}&pageSize=${String(pageSize)}&_=${String(Date.now())}`
         const res = await doFetch(url)
         const json = (await res.json()) as { data?: PollStatusResponseData }
         if (active && json.data) applyPollStatusData(json.data)

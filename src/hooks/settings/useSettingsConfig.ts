@@ -24,7 +24,9 @@ export function useSettingsConfig(
     void navigator.clipboard.writeText(apiKey)
     setMessage('API key copied to clipboard.')
     setSaveStatus('success')
-    setTimeout(() => setMessage(''), 2000)
+    setTimeout(() => {
+      setMessage('')
+    }, 2000)
   }
 
   function handleGenerateNewApiKey() {
@@ -113,12 +115,12 @@ export function useSettingsConfig(
           server: acc.server,
           port: acc.port,
           username: acc.username,
-          fetchIncludeTrash: acc.fetchIncludeTrash ?? false,
-          fetchIncludeAllFolders: acc.fetchIncludeAllFolders ?? false,
-          postProcessAction: acc.postProcessAction ?? 'none',
+          fetchIncludeTrash: acc.fetchIncludeTrash,
+          fetchIncludeAllFolders: acc.fetchIncludeAllFolders,
+          postProcessAction: acc.postProcessAction,
           postProcessFolder: acc.postProcessFolder ?? null,
-          moveToTrashAfterProcess: acc.moveToTrashAfterProcess ?? false,
-          markAsReadAfterProcess: acc.markAsReadAfterProcess ?? false,
+          moveToTrashAfterProcess: acc.moveToTrashAfterProcess,
+          markAsReadAfterProcess: acc.markAsReadAfterProcess,
           ...(acc.passwordNew?.trim() ? { password: acc.passwordNew } : {}),
         })),
         ingestionIntervalMinutes: form.ingestionIntervalMinutes,
@@ -150,7 +152,7 @@ export function useSettingsConfig(
         { data?: SettingsPublic } | { error?: { message?: string } }
       if (!res.ok) {
         const err = json as { error?: { message?: string } }
-        setMessage(err.error?.message ?? `Error ${res.status}`)
+        setMessage(err.error?.message ?? `Error ${String(res.status)}`)
         setSaveStatus('error')
         return
       }

@@ -48,7 +48,9 @@ export default function AdvancedSection({
             id="settings-cors"
             type="text"
             value={corsOrigins}
-            onChange={(e) => onCorsChange(e.target.value)}
+            onChange={(e) => {
+              onCorsChange(e.target.value)
+            }}
             className="bg-secondary border-border/50 text-xs"
           />
         </div>
@@ -62,9 +64,9 @@ export default function AdvancedSection({
           <select
             id="settings-environment"
             value={environment}
-            onChange={(e) =>
+            onChange={(e) => {
               onEnvironmentChange(e.target.value as EnvironmentType)
-            }
+            }}
             className="bg-secondary border-border/50 text-foreground h-9 w-full rounded-md border px-3 text-xs"
           >
             <option value="development">development</option>

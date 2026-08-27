@@ -22,7 +22,9 @@ export function useXmlViewer(): UseXmlViewerReturn {
     }
 
     mediaQuery.addEventListener('change', handleThemeChange)
-    return () => mediaQuery.removeEventListener('change', handleThemeChange)
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange)
+    }
   }, [])
 
   return { editorTheme }

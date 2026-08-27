@@ -55,7 +55,9 @@ export function getIpsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           IP Address
           {column.getIsSorted() === 'asc' && (
@@ -87,7 +89,9 @@ export function getIpsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Hostname
           {column.getIsSorted() === 'asc' && (
@@ -128,7 +132,9 @@ export function getIpsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Auth Status
           {column.getIsSorted() === 'asc' && (
@@ -197,7 +203,9 @@ export function getIpsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Last Seen
           {column.getIsSorted() === 'asc' && (
@@ -233,7 +241,9 @@ export function getIpsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Volume
           {column.getIsSorted() === 'asc' && (
@@ -248,7 +258,7 @@ export function getIpsColumns({
         </div>
       ),
       cell: ({ row }) => {
-        const val = row.getValue('totalMessages') as number
+        const val = row.original.totalMessages
         return (
           <span className="text-sm text-zinc-600 dark:text-zinc-400">
             {val.toLocaleString()}

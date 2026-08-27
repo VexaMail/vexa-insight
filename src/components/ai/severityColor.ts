@@ -9,5 +9,5 @@ export function severityColor(severity: InsightSeverity): string {
     low: 'border-l-blue-500',
     info: 'border-l-emerald-500',
   }
-  return map[severity] ?? 'border-l-zinc-400'
+  return map[severity]
 }

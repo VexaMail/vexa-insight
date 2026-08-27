@@ -5,7 +5,9 @@ import { getInstallToken } from '../src/services/install/getInstallToken'
 import { setInstallTokenForBoot } from '../src/services/install/setInstallTokenForBoot'
 
 describe('installToken store', () => {
-  afterEach(() => clearInstallToken())
+  afterEach(() => {
+    clearInstallToken()
+  })
 
   it('generateInstallToken returns 48 hex chars', () => {
     expect(generateInstallToken()).toMatch(/^[0-9a-f]{48}$/)

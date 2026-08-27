@@ -6,9 +6,7 @@ export function resolvePartId(
   node: Record<string, unknown>,
   prefix: string,
 ): string {
-  return (
-    (node.partId as string) ??
-    (node.part as string) ??
-    (prefix ? prefix.replace(/\.$/, '') : '1')
-  )
+  const partId = typeof node.partId === 'string' ? node.partId : undefined
+  const part = typeof node.part === 'string' ? node.part : undefined
+  return partId ?? part ?? (prefix ? prefix.replace(/\.$/, '') : '1')
 }

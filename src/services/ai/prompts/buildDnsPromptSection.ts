@@ -32,13 +32,13 @@ export function buildDnsPromptSection(dns: DiagnosticsDnsSummary): string {
           .join(' | ')
       : 'none'
   const bimiSummary = dns.bimiRecord
-    ? `${dns.bimiRecord} (valid: ${dns.bimiValid}, logo: ${dns.bimiLogoUrl ?? 'none'}, certificate: ${dns.bimiCertificateUrl ?? 'none'})`
+    ? `${dns.bimiRecord} (valid: ${String(dns.bimiValid)}, logo: ${dns.bimiLogoUrl ?? 'none'}, certificate: ${dns.bimiCertificateUrl ?? 'none'})`
     : 'NOT CONFIGURED'
   const mtaStsSummary = dns.mtaStsRecord
-    ? `${dns.mtaStsRecord} (valid: ${dns.mtaStsValid}, policy file accessible: ${dns.mtaStsPolicyAccessible}, mode: ${dns.mtaStsMode ?? 'unknown'}, policy mx: ${dns.mtaStsMxRecords.join(', ') || 'none'})`
+    ? `${dns.mtaStsRecord} (valid: ${String(dns.mtaStsValid)}, policy file accessible: ${String(dns.mtaStsPolicyAccessible)}, mode: ${dns.mtaStsMode ?? 'unknown'}, policy mx: ${dns.mtaStsMxRecords.join(', ') || 'none'})`
     : 'NOT CONFIGURED'
   const tlsRptSummary = dns.tlsRptRecord
-    ? `${dns.tlsRptRecord} (valid: ${dns.tlsRptValid}, rua: ${dns.tlsRptRuaAddresses.join(', ') || 'none'})`
+    ? `${dns.tlsRptRecord} (valid: ${String(dns.tlsRptValid)}, rua: ${dns.tlsRptRuaAddresses.join(', ') || 'none'})`
     : 'NOT CONFIGURED'
   const spfCheckSummary = dns.spfCategories
     .map((category) => {
@@ -54,10 +54,10 @@ export function buildDnsPromptSection(dns: DiagnosticsDnsSummary): string {
     .map((selector) => {
       const parts = [
         `selector=${selector.selector}`,
-        `valid=${selector.valid}`,
+        `valid=${String(selector.valid)}`,
         `keyType=${selector.keyType ?? 'unknown'}`,
-        `keyLengthBits=${selector.keyLengthBits ?? 'unknown'}`,
-        `publicKeyPresent=${selector.publicKeyPresent}`,
+        `keyLengthBits=${String(selector.keyLengthBits ?? 'unknown')}`,
+        `publicKeyPresent=${String(selector.publicKeyPresent)}`,
       ]
       if (selector.errors.length > 0) {
         parts.push(`errors=${selector.errors.join(' / ')}`)
@@ -68,12 +68,12 @@ export function buildDnsPromptSection(dns: DiagnosticsDnsSummary): string {
 
   return `DNS CONFIGURATION:
 - SPF record: ${dns.spfRecord ?? 'NOT CONFIGURED'}
-  - valid: ${dns.spfValid}${dns.spfWarning ? `\n  - warning: ${dns.spfWarning}` : ''}
+  - valid: ${String(dns.spfValid)}${dns.spfWarning ? `\n  - warning: ${dns.spfWarning}` : ''}
   - SPF checks:
   - ${spfCheckSummary}
 - DMARC record: ${dns.dmarcRecord ?? 'NOT CONFIGURED'}
   - policy: ${dns.dmarcPolicy ?? 'none'}
-  - valid: ${dns.dmarcValid}${dmarcWarningStr}
+  - valid: ${String(dns.dmarcValid)}${dmarcWarningStr}
   - parsed DMARC tags: ${dmarcTags}
 - BIMI record: ${bimiSummary}
 - MTA-STS record: ${mtaStsSummary}

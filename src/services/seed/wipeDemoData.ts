@@ -2,7 +2,7 @@ import { eventRollupDaily, getDb, normalizedEvents, rawReports } from '@/lib/db'
 import { inArray, like } from 'drizzle-orm'
 import { DEMO_REPORT_PREFIX } from './demoReportPrefix'
 
-export async function wipeDemoData(): Promise<void> {
+export function wipeDemoData(): void {
   const db = getDb()
   const demoReportIds = db
     .select({ id: rawReports.id })

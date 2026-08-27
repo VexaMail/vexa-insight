@@ -8,12 +8,13 @@ describe('withApiAuth', () => {
 
   it('returns 401 when no session and no api key', async () => {
     const handler = withApiAuth(
-      async () => NextResponse.json({ data: 'secret' }),
+      () => Promise.resolve(NextResponse.json({ data: 'secret' })),
       {
-        authFn: async () => ({
-          status: 401,
-          error: { code: 'UNAUTHORIZED', message: 'no' },
-        }),
+        authFn: () =>
+          Promise.resolve({
+            status: 401,
+            error: { code: 'UNAUTHORIZED', message: 'no' },
+          }),
       },
     )
     const res = await handler(fakeRequest())
@@ -21,17 +22,20 @@ describe('withApiAuth', () => {
   })
 
   it('invokes handler when authFn returns null', async () => {
-    const handler = withApiAuth(async () => NextResponse.json({ data: 'ok' }), {
-      authFn: async () => null,
-    })
+    const handler = withApiAuth(
+      () => Promise.resolve(NextResponse.json({ data: 'ok' })),
+      {
+        authFn: () => Promise.resolve(null),
+      },
+    )
     const res = await handler(fakeRequest())
     expect(res.status).toBe(200)
   })
 
   it('rejects cross-origin POST before auth runs', async () => {
     const handler = withApiAuth(
-      async () => NextResponse.json({ data: 'should never reach' }),
-      { authFn: async () => null },
+      () => Promise.resolve(NextResponse.json({ data: 'should never reach' })),
+      { authFn: () => Promise.resolve(null) },
     )
     const req = new NextRequest('https://vexa.example.com/api/v1/users', {
       method: 'POST',

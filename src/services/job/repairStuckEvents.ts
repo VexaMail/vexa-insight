@@ -41,11 +41,11 @@ export async function repairStuckEvents(): Promise<number> {
     .delete(processedMessages)
     .where(inArray(processedMessages.jobRunId, stuckRunIds))
 
-  const deleted = (result as unknown as { changes: number }).changes ?? 0
+  const deleted = (result as unknown as { changes: number }).changes
 
   if (deleted > 0) {
     console.info(
-      `[ingest] repairStuckEvents: unlocked ${deleted} emails for re-processing (runs: ${stuckRunIds.join(', ')})`,
+      `[ingest] repairStuckEvents: unlocked ${String(deleted)} emails for re-processing (runs: ${stuckRunIds.join(', ')})`,
     )
   }
 

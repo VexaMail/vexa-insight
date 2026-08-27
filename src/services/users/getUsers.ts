@@ -1,8 +1,8 @@
 import { getDb, users } from '@/lib/db'
 
-export async function getUsers() {
+export function getUsers() {
   const db = getDb()
-  const allUsers = await db
+  const allUsers = db
     .select({
       id: users.id,
       username: users.username,

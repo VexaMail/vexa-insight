@@ -4,8 +4,8 @@ import { getSettingsForAdmin } from '@/services/settings'
 
 export const dynamic = 'force-dynamic'
 
-export default async function SettingsPage() {
-  const settings = await getSettingsForAdmin()
+export default function SettingsPage() {
+  const settings = getSettingsForAdmin()
 
   return (
     <PageContainer>

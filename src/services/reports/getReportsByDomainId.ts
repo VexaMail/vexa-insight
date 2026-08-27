@@ -19,8 +19,8 @@ export async function getReportsByDomainId(
   if (ids.length === 0) return []
 
   const whereClause = org
-    ? and(inArray(rawReports.id, ids as number[]), eq(rawReports.orgName, org))
-    : inArray(rawReports.id, ids as number[])
+    ? and(inArray(rawReports.id, ids), eq(rawReports.orgName, org))
+    : inArray(rawReports.id, ids)
 
   let rows = await db
     .select({

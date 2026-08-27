@@ -11,7 +11,7 @@ export default function UpdateStatusContent({
   apiKey,
   handleCopyText,
 }: Readonly<UpdateStatusContentProps>) {
-  const updateAvailable = status.updateAvailable === true
+  const updateAvailable = status.updateAvailable
   const showUpToDate = !updateAvailable && status.latestVersion != null
 
   return (

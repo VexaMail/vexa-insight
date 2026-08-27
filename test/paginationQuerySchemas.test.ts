@@ -54,7 +54,7 @@ describe('pagination query schemas', () => {
       for (const allowed of [50, 100, 300, 500, 1000]) {
         expect(
           pollStatusPageSizeQuerySchema.parse(
-            param(`pageSize=${allowed}`, 'pageSize'),
+            param(`pageSize=${String(allowed)}`, 'pageSize'),
           ),
         ).toBe(allowed)
       }

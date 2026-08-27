@@ -52,9 +52,9 @@ export default function IngestionSection({
               min={1}
               max={1440}
               value={intervalMinutes}
-              onChange={(e) =>
+              onChange={(e) => {
                 onIntervalChange(parseInt(e.target.value, 10) || 60)
-              }
+              }}
               className="bg-secondary border-border/50 text-xs"
             />
           </div>

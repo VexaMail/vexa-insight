@@ -12,7 +12,7 @@ export function useIpRelatedDomains({
   ip: string
   dateRange: IpDateRange
 }) {
-  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const filterKey = `${ip}|${String(dateRange.fromTs ?? '')}|${String(dateRange.toTs ?? '')}`
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [domains, setDomains] = useState<IpRelatedDomainRow[]>(initialDomains)
   const [isLoading, setIsLoading] = useState(false)

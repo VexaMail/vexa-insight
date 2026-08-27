@@ -18,10 +18,16 @@ import { rebuildEventRollup } from '@/services/reports/rebuildEventRollup'
 export async function main(): Promise<void> {
   runMigrations()
   const rows = await rebuildEventRollup()
-  console.log(`[backfill:rollup] Rebuilt event_rollup_daily: ${rows} rows.`)
+  console.log(
+    `[backfill:rollup] Rebuilt event_rollup_daily: ${String(rows)} rows.`,
+  )
 }
 
-main().catch((err: unknown) => {
-  console.error('[backfill:rollup] Failed:', err)
-  process.exit(1)
-})
+void (async () => {
+  try {
+    await main()
+  } catch (error: unknown) {
+    console.error('[backfill:rollup] Failed:', error)
+    process.exit(1)
+  }
+})()

@@ -16,17 +16,17 @@ export function ReportKpiCards({ stats }: Readonly<ReportKpiCardsProps>) {
   const cards = [
     {
       label: 'Compliance Rate',
-      value: noData ? 'No data' : `${stats.complianceRate}%`,
+      value: noData ? 'No data' : `${String(stats.complianceRate)}%`,
       status: complianceStatus,
     },
     {
       label: 'SPF Aligned',
-      value: noData ? 'No data' : `${stats.spfAlignedRate}%`,
+      value: noData ? 'No data' : `${String(stats.spfAlignedRate)}%`,
       status: spfStatus,
     },
     {
       label: 'DKIM Aligned',
-      value: noData ? 'No data' : `${stats.dkimAlignedRate}%`,
+      value: noData ? 'No data' : `${String(stats.dkimAlignedRate)}%`,
       status: dkimStatus,
     },
     {

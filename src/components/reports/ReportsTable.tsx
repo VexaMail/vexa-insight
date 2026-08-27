@@ -78,9 +78,9 @@ export default function ReportsTable({
           <Input
             placeholder="Search by report ID or organization..."
             value={search}
-            onChange={(e) =>
+            onChange={(e) => {
               dispatch({ type: 'SET_SEARCH', payload: e.target.value })
-            }
+            }}
             className="bg-card border-border/50 pl-9"
           />
         </div>
@@ -126,7 +126,7 @@ export default function ReportsTable({
           hidePagination={true}
           onRowClick={(row) => {
             setScope(filtered.map((r: ReportRow) => r.id.toString()))
-            router.push(`/reports/${row.original.id}`)
+            router.push(`/reports/${String(row.original.id)}`)
           }}
         />
       </div>
@@ -135,10 +135,12 @@ export default function ReportsTable({
         page={data.page}
         pageSize={data.pageSize}
         total={data.total}
-        onPageChange={(p) => dispatch({ type: 'SET_PAGE', payload: p })}
-        onPageSizeChange={(s) =>
+        onPageChange={(p) => {
+          dispatch({ type: 'SET_PAGE', payload: p })
+        }}
+        onPageSizeChange={(s) => {
           dispatch({ type: 'SET_PAGE_SIZE', payload: s })
-        }
+        }}
       />
     </div>
   )

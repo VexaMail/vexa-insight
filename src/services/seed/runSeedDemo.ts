@@ -11,9 +11,7 @@ import { seedDemoDay } from './seedDemoDay'
 import type { SeedSummary } from './SeedSummary'
 import { wipeDemoData } from './wipeDemoData'
 
-export async function runSeedDemo({
-  force,
-}: RunSeedDemoArgs): Promise<SeedSummary | null> {
+export function runSeedDemo({ force }: RunSeedDemoArgs): SeedSummary | null {
   refuseInProduction()
 
   if (isDemoAlreadySeeded() && !force) {
@@ -24,7 +22,7 @@ export async function runSeedDemo({
   }
   if (force) {
     console.log('[seed:demo] --force flag set; wiping existing demo data...')
-    await wipeDemoData()
+    wipeDemoData()
   }
 
   const summary: SeedSummary = {
@@ -35,12 +33,10 @@ export async function runSeedDemo({
   }
   const now = new Date()
 
-  const domainIds = await Promise.all(
-    DEMO_DOMAINS.map((domain) => ensureDemoDomain(domain, now)),
-  )
+  const domainIds = DEMO_DOMAINS.map((domain) => ensureDemoDomain(domain, now))
   summary.domains = domainIds.length
 
-  const ipIds = await Promise.all(SOURCE_IPS.map((ip) => ensureDemoIp(ip, now)))
+  const ipIds = SOURCE_IPS.map((ip) => ensureDemoIp(ip, now))
   summary.ips = ipIds.length
 
   for (let day = DAYS_BACK - 1; day >= 0; day--) {
@@ -51,7 +47,7 @@ export async function runSeedDemo({
       const domainName = DEMO_DOMAINS[i]
       const domainId = domainIds[i]
       if (domainName === undefined || domainId === undefined) continue
-      const result = await seedDemoDay({
+      const result = seedDemoDay({
         dayStart,
         dayEnd,
         domainName,

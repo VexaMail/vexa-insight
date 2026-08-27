@@ -73,7 +73,7 @@ export default function EmailPipelineCard({
         >
           <div
             className={`h-full rounded-full transition-all duration-500 ${barColor} ${overall.overall === 'active' ? 'animate-pulse' : ''}`}
-            style={{ width: `${overall.percent}%` }}
+            style={{ width: `${String(overall.percent)}%` }}
           />
         </div>
       </div>

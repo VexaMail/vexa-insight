@@ -20,7 +20,8 @@ export function useSelfUpdate(apiKey: string): UseSelfUpdateReturn {
       const response = await fetch(APPLY_UPDATE_ENDPOINT_PATH, {
         cache: 'no-store',
       })
-      if (!response.ok) throw new Error(`Request failed (${response.status})`)
+      if (!response.ok)
+        throw new Error(`Request failed (${String(response.status)})`)
       const json = (await response.json()) as { data: SelfUpdateStatus }
       setStatus(json.data)
     } catch (err) {
@@ -37,7 +38,8 @@ export function useSelfUpdate(apiKey: string): UseSelfUpdateReturn {
         const response = await fetch(APPLY_UPDATE_ENDPOINT_PATH, {
           cache: 'no-store',
         })
-        if (!response.ok) throw new Error(`Request failed (${response.status})`)
+        if (!response.ok)
+          throw new Error(`Request failed (${String(response.status)})`)
         const json = (await response.json()) as { data: SelfUpdateStatus }
         if (!cancelled) setStatus(json.data)
       } catch (err) {
@@ -78,7 +80,7 @@ export function useSelfUpdate(apiKey: string): UseSelfUpdateReturn {
           error?: { message?: string }
         } | null
         throw new Error(
-          body?.error?.message ?? `Request failed (${response.status})`,
+          body?.error?.message ?? `Request failed (${String(response.status)})`,
         )
       }
       const json = (await response.json()) as { data: SelfUpdateStatus }

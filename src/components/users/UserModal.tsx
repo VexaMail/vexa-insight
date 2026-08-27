@@ -46,7 +46,9 @@ export default function UserModal({
             <label className="text-sm font-medium">Username</label>
             <Input
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value)
+              }}
               required
               type="email"
               placeholder="user@example.com"
@@ -63,7 +65,9 @@ export default function UserModal({
             </label>
             <Input
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+              }}
               type="password"
               required={!user}
               minLength={6}
@@ -73,7 +77,9 @@ export default function UserModal({
             <label className="text-sm font-medium">Role</label>
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => {
+                setRole(e.target.value)
+              }}
               className="bg-background border-input text-foreground focus-visible:ring-primary h-9 w-full rounded-md border px-3 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
             >
               <option value="user">User</option>
@@ -88,9 +94,9 @@ export default function UserModal({
             <label className="text-sm font-medium">Domain Access</label>
             <select
               value={domainMode}
-              onChange={(e) =>
+              onChange={(e) => {
                 setDomainMode(e.target.value as 'all' | 'selected')
-              }
+              }}
               className="bg-background border-input text-foreground focus-visible:ring-primary h-9 w-full rounded-md border px-3 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
             >
               <option value="all">All Domains</option>
@@ -103,7 +109,9 @@ export default function UserModal({
               <label className="text-sm font-medium">Specify Domains</label>
               <Input
                 value={domainsInput}
-                onChange={(e) => setDomainsInput(e.target.value)}
+                onChange={(e) => {
+                  setDomainsInput(e.target.value)
+                }}
                 placeholder="example.com, another.com"
               />
               <p className="text-muted-foreground text-xs">

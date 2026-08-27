@@ -9,11 +9,12 @@ describe('createOpenAiAdapter', () => {
   it('sends max_tokens and temperature to a pre-reasoning model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        choices: [{ message: { content: '{}' } }],
-        model: 'gpt-4o',
-        usage: { total_tokens: 2 },
-      }),
+      json: () =>
+        Promise.resolve({
+          choices: [{ message: { content: '{}' } }],
+          model: 'gpt-4o',
+          usage: { total_tokens: 2 },
+        }),
     })
     vi.stubGlobal('fetch', fetchMock)
 
@@ -35,11 +36,12 @@ describe('createOpenAiAdapter', () => {
   it('sends max_completion_tokens and no temperature to a reasoning model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        choices: [{ message: { content: '{}' } }],
-        model: 'gpt-5',
-        usage: { total_tokens: 2 },
-      }),
+      json: () =>
+        Promise.resolve({
+          choices: [{ message: { content: '{}' } }],
+          model: 'gpt-5',
+          usage: { total_tokens: 2 },
+        }),
     })
     vi.stubGlobal('fetch', fetchMock)
 

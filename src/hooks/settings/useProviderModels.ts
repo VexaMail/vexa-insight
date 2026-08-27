@@ -25,11 +25,10 @@ export function useProviderModels(
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
-    let cancelled = false
     const run = async () => {
       try {
         await Promise.resolve()
-        if (cancelled) return
+        if (controller.signal.aborted) return
         setIsLoading(true)
         setFetchedError(null)
         const result = await fetchProviderModels({
@@ -38,22 +37,21 @@ export function useProviderModels(
           temporaryApiKey,
           signal: controller.signal,
         })
-        if (cancelled) return
+        controller.signal.throwIfAborted()
         setFetchedModels(result.models)
         setFetchedError(result.error)
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setFetchedError('Failed to load models')
           setFetchedModels([])
         }
       } finally {
-        if (!cancelled) setIsLoading(false)
+        if (!controller.signal.aborted) setIsLoading(false)
       }
     }
     void run()
     return () => {
-      cancelled = true
       controller.abort()
     }
   }, [apiKey, providerId, temporaryApiKey])

@@ -50,6 +50,6 @@ export async function getVolumeByOrg(
     .orderBy(desc(sql<number>`count(distinct ${rawReports.id})`))
   return rows.map((r) => ({
     orgName: r.orgName,
-    reportCount: Number(r.reportCount ?? 0),
+    reportCount: r.reportCount,
   }))
 }

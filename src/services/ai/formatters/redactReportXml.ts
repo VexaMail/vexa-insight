@@ -19,7 +19,7 @@ export function redactReportXml(xml: string): string {
       .update(match)
       .digest('hex')
       .slice(0, 6)
-    const label = `ip_${hash}_${ipCounter++}`
+    const label = `ip_${hash}_${String(ipCounter++)}`
     ipMap.set(match, label)
     return label
   })

@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
  * normal way (`X-API-Key` / `Authorization` header) so the admin key never has
  * to travel in a URL that proxies and browser history record.
  */
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export function POST(request: NextRequest): NextResponse {
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })

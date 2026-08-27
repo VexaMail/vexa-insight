@@ -55,7 +55,7 @@ describe('parseDmarcXml fixtures', () => {
       const result = parseDmarcXml(buf)
       expect(result.domain).toBe(c.domain)
       // fast-xml-parser may coerce all-digit ids to number; compare as string.
-      expect(String(result.rawReport.reportId)).toBe(c.reportId)
+      expect(result.rawReport.reportId).toBe(c.reportId)
       expect(result.events).toHaveLength(c.expectedEvents)
     })
   }

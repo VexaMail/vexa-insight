@@ -14,7 +14,7 @@ export default async function UsersPage() {
     redirect('/')
   }
 
-  const initialUsers = await getUsers()
+  const initialUsers = getUsers()
   const serializedUsers = initialUsers.map((u) => ({
     ...u,
     createdAt: u.createdAt.toISOString(),

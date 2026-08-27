@@ -3,11 +3,11 @@ import { insertSeedDomains } from './setup/insertSeedDomains'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/api/hasValidApiKey', () => ({
-  hasValidApiKey: vi.fn(async () => false),
+  hasValidApiKey: vi.fn(() => Promise.resolve(false)),
 }))
 
 vi.mock('@/services/auth/getSession', () => ({
-  getSession: vi.fn(async () => null),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }))
 
 /**

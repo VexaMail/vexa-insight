@@ -29,7 +29,7 @@ export function parseDmarcTags(dmarcRecord: string): DmarcTagInfo[] {
     ri: (v) => {
       const seconds = parseInt(v, 10)
       const hours = Math.round(seconds / 3600)
-      return `The interval requested between aggregate reports (send to the rua address, if set) in seconds. ${v} seconds equals ${hours} hour(s).`
+      return `The interval requested between aggregate reports (send to the rua address, if set) in seconds. ${v} seconds equals ${String(hours)} hour(s).`
     },
   }
   const defaultTags: Record<string, string> = {

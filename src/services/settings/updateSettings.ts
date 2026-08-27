@@ -40,7 +40,7 @@ function updateSettings(payload: SettingsUpdatePayload): void {
     updates.secretKey = payload.secretKey
   }
   db.update(appSettings)
-    .set(updates as Record<string, string | number | boolean | Date>)
+    .set(updates)
     .where(eq(appSettings.id, SETTINGS_ID))
     .run()
 

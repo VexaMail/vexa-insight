@@ -1,13 +1,10 @@
 import type { ParseResult } from '@/types/dmarc'
 
 /**
- * Validates that a ParseResult has the required DMARC structure.
- * Throws if rawReport, domain, or events are missing or invalid.
+ * Validates the parsed fields whose runtime shapes come from XML input.
+ * Throws if domain or events are invalid.
  */
 export function validateDmarcSignature(parseResult: ParseResult): void {
-  if (!parseResult.rawReport) {
-    throw new Error('Invalid DMARC XML: missing required structure')
-  }
   if (typeof parseResult.domain !== 'string') {
     throw new Error('Invalid DMARC XML: missing required structure')
   }

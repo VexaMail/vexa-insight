@@ -11,7 +11,7 @@ export function parseProgressLine(
     // Increment up to at most 90, in steps of ~1–3
     const nextProgress = Math.min(90, lastProgress + 2)
     return {
-      step: `Processing data (${stillWorking[1]} records)...`,
+      step: `Processing data (${String(stillWorking[1])} records)...`,
       progress: nextProgress,
     }
   }

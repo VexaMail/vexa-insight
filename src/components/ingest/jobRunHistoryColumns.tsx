@@ -20,7 +20,9 @@ export function getJobRunHistoryColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Run at
             <SortIcon
@@ -44,7 +46,9 @@ export function getJobRunHistoryColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Status
             <SortIcon
@@ -55,7 +59,7 @@ export function getJobRunHistoryColumns({
         )
       },
       cell: ({ row }) => {
-        const success = row.getValue('success') as boolean
+        const success = row.original.success
         const jobId = row.original.id
         const isCurrentlyRunning =
           isGlobalRunning &&
@@ -96,7 +100,9 @@ export function getJobRunHistoryColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Processed
             <SortIcon
@@ -112,8 +118,8 @@ export function getJobRunHistoryColumns({
           isGlobalRunning &&
           (activeJobRunId ? activeJobRunId === jobId : jobId === runs[0]?.id)
         const count = isCurrentlyRunning
-          ? Math.max(row.getValue('processed') as number, currentProcessed)
-          : (row.getValue('processed') as number)
+          ? Math.max(row.original.processed, currentProcessed)
+          : row.original.processed
 
         return (
           <span className="text-muted-foreground text-sm">
@@ -129,7 +135,9 @@ export function getJobRunHistoryColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Ingested
             <SortIcon
@@ -141,7 +149,7 @@ export function getJobRunHistoryColumns({
       },
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
-          {(row.getValue('ingested') as number).toLocaleString()}
+          {row.original.ingested.toLocaleString()}
         </span>
       ),
     },
@@ -152,7 +160,9 @@ export function getJobRunHistoryColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Errors
             <SortIcon

@@ -11,7 +11,7 @@ export function insertSeedReport(params: InsertSeedReportParams): number {
   const row = db
     .insert(rawReports)
     .values({
-      reportId: `d${domainIndex}-r${reportIndex}`,
+      reportId: `d${String(domainIndex)}-r${String(reportIndex)}`,
       orgName: 'test-org',
       beginDate: beginUnix,
       endDate: endUnix,

@@ -50,8 +50,8 @@ export async function getDomainsSummaryAll(
   ])
 
   const summaries: DomainSummary[] = rows.map((row) => {
-    const total = Number(row.totalMessages ?? 0)
-    const passed = Number(row.passedCount ?? 0)
+    const total = row.totalMessages
+    const passed = row.passedCount
     return {
       domainId: row.domainId,
       domainName: row.domainName,

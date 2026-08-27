@@ -18,7 +18,7 @@ export function usePollStatusLive(initialStatus: PollStatus): PollStatus {
 
     async function tick() {
       try {
-        const res = await doFetch(`/api/v1/poll-status?_=${Date.now()}`)
+        const res = await doFetch(`/api/v1/poll-status?_=${String(Date.now())}`)
         const json = (await res.json()) as { data?: PollStatus }
         if (!active) return
         if (json.data) {

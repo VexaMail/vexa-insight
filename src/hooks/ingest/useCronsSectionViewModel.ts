@@ -31,7 +31,7 @@ export function useCronsSectionViewModel(ingestionIntervalMinutes: number) {
 
   let scheduleText = 'Disabled'
   if (ingestionIntervalMinutes >= 1) {
-    scheduleText = `Every ${ingestionIntervalMinutes} minute${ingestionIntervalMinutes === 1 ? '' : 's'}`
+    scheduleText = `Every ${String(ingestionIntervalMinutes)} minute${ingestionIntervalMinutes === 1 ? '' : 's'}`
   }
 
   const { ratePerSecond, etaFormatted: clientEtaFormatted } =

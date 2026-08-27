@@ -38,7 +38,9 @@ export async function safeFetch(
   }
 
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  const timer = setTimeout(() => {
+    controller.abort()
+  }, timeoutMs)
   try {
     const res = await fetch(rawUrl, { ...init, signal: controller.signal })
     return {
@@ -52,7 +54,7 @@ export async function safeFetch(
     if (controller.signal.aborted) {
       return safeFetchErrorResult(
         'TIMEOUT',
-        `Request timed out after ${timeoutMs}ms`,
+        `Request timed out after ${String(timeoutMs)}ms`,
       )
     }
     return safeFetchErrorResult(

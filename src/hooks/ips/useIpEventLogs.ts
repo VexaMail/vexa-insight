@@ -12,7 +12,7 @@ export function useIpEventLogs({
   ip: string
   dateRange: IpDateRange
 }) {
-  const filterKey = `${ip}|${dateRange.fromTs ?? ''}|${dateRange.toTs ?? ''}`
+  const filterKey = `${ip}|${String(dateRange.fromTs ?? '')}|${String(dateRange.toTs ?? '')}`
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
   const [logs, setLogs] = useState<IpLogRow[]>(initialLogs)
   const [isLoading, setIsLoading] = useState(false)

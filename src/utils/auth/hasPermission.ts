@@ -7,7 +7,7 @@ import type { Permission, Role } from '@/types/auth'
  * update) deny by default.
  */
 export function hasPermission(role: string, permission: Permission): boolean {
+  if (!(role in ROLE_PERMISSIONS)) return false
   const grants = ROLE_PERMISSIONS[role as Role]
-  if (!grants) return false
   return grants.includes(permission)
 }

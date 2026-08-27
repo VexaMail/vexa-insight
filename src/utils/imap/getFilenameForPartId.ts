@@ -16,7 +16,9 @@ export function getFilenameForPartId(
   if (childNodes && Array.isArray(childNodes) && childNodes.length > 0) {
     for (let i = 0; i < childNodes.length; i++) {
       const partIndex = i + 1
-      const nextPrefix = prefix ? `${prefix}${partIndex}.` : `${partIndex}.`
+      const nextPrefix = prefix
+        ? `${prefix}${String(partIndex)}.`
+        : `${String(partIndex)}.`
       const found = getFilenameForPartId(childNodes[i], partId, nextPrefix)
       if (found !== null) return found
     }

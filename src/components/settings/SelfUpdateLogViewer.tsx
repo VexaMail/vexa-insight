@@ -17,7 +17,7 @@ export default function SelfUpdateLogViewer({
     <div className="border-border/50 bg-secondary max-h-64 overflow-y-auto rounded-md border p-3 font-mono text-[11px] leading-relaxed">
       {lines.map((line, index) => (
         <div
-          key={`${index}-${line.slice(0, 16)}`}
+          key={`${String(index)}-${line.slice(0, 16)}`}
           className={
             line.startsWith('ERROR')
               ? 'text-destructive'

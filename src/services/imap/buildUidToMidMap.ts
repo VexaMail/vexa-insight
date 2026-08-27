@@ -13,7 +13,7 @@ export function buildUidToMidMap(envMessages: FetchMessageObject[]): {
     const msgUid = msg.uid
     const envelope = msg.envelope
     const messageId = envelope?.messageId ?? null
-    const mid = messageId ?? `uid:${msgUid}`
+    const mid = messageId ?? `uid:${String(msgUid)}`
     const date = envelopeDateToIso(envelope?.date)
     const subject = envelope?.subject
 

@@ -26,7 +26,9 @@ export default function IngestTabs({
               ? 'border-primary text-foreground'
               : 'text-muted-foreground hover:border-border hover:text-foreground border-transparent'
           }`}
-          onClick={() => setActiveTab('pollResults')}
+          onClick={() => {
+            setActiveTab('pollResults')
+          }}
         >
           Poll Results
           {isRunning && (
@@ -41,7 +43,9 @@ export default function IngestTabs({
               ? 'border-primary text-foreground'
               : 'text-muted-foreground hover:border-border hover:text-foreground border-transparent'
           }`}
-          onClick={() => setActiveTab('jobRuns')}
+          onClick={() => {
+            setActiveTab('jobRuns')
+          }}
         >
           Job Runs
         </button>
@@ -51,7 +55,9 @@ export default function IngestTabs({
               ? 'border-primary text-foreground'
               : 'text-muted-foreground hover:border-border hover:text-foreground border-transparent'
           }`}
-          onClick={() => setActiveTab('emails')}
+          onClick={() => {
+            setActiveTab('emails')
+          }}
         >
           Processed Emails
         </button>

@@ -42,8 +42,5 @@ export function updateAiSettings(
     updates.aiApiKeyIv = iv
   }
 
-  db.update(appSettings)
-    .set(updates as Record<string, string | Date | null>)
-    .where(eq(appSettings.id, 1))
-    .run()
+  db.update(appSettings).set(updates).where(eq(appSettings.id, 1)).run()
 }

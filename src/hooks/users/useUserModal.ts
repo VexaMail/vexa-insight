@@ -21,17 +21,20 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
     const url = user ? `/api/v1/users/${user.id}` : '/api/v1/users'
     const payload: Record<string, string | string[] | null> = { username, role }
     if (password) payload.password = password
-    else if (!user) return setError('Password is required')
+    else if (!user) {
+      setError('Password is required')
+      return
+    }
 
     if (domainMode === 'selected') {
       const arr = domainsInput
         .split(',')
         .map((d: string) => d.trim())
         .filter(Boolean)
-      if (arr.length === 0)
-        return setError(
-          'Please specify at least one domain or choose "All domains"',
-        )
+      if (arr.length === 0) {
+        setError('Please specify at least one domain or choose "All domains"')
+        return
+      }
       payload.allowedDomains = arr
     } else {
       payload.allowedDomains = null

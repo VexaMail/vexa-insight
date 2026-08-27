@@ -57,7 +57,9 @@ export default function ProcessedEmailsTable({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setViewingEmail(null)}
+                onClick={() => {
+                  setViewingEmail(null)
+                }}
                 className="text-muted-foreground hover:text-foreground h-8 w-8"
               >
                 <X className="h-4 w-4" />

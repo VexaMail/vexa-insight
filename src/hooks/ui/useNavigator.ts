@@ -56,7 +56,7 @@ export function useNavigator(props: NavigatorProps): UseNavigatorReturn {
 
     void (async () => {
       try {
-        const res = await fetch(`/api/v1${props.basePath}/ids`)
+        const res = await fetch(`/api/v1${String(props.basePath)}/ids`)
         if (!res.ok) return
         const json = (await res.json()) as { data: string[] }
         setScope(json.data)

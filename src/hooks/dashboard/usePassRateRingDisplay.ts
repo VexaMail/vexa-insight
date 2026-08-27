@@ -20,7 +20,9 @@ export function usePassRateRingDisplay(rate: number): number {
       window.requestAnimationFrame(step)
     }, 100)
 
-    return () => clearTimeout(timeout)
+    return () => {
+      clearTimeout(timeout)
+    }
   }, [rate])
 
   return displayRate

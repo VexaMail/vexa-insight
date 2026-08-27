@@ -12,7 +12,7 @@ export function applyEmailProgressToItem(
   current: ProgressItem | undefined,
   payload: EmailProgressPayload,
 ): ProgressItem {
-  const id = `${payload.accountId}:${payload.uid}`
+  const id = `${String(payload.accountId)}:${payload.uid}`
   const label = payload.subject ?? `Email UID ${payload.uid}`
   const emailDate = payload.emailDate ?? current?.emailDate
 
@@ -75,9 +75,7 @@ export function applyEmailProgressToItem(
           {
             key: payload.step,
             label: EMAIL_PROGRESS_STEP_LABELS[payload.step] ?? payload.step,
-            status: (TERMINAL_STEPS.has(payload.step)
-              ? 'done'
-              : 'active') as ProgressStep['status'],
+            status: TERMINAL_STEPS.has(payload.step) ? 'done' : 'active',
           },
         ]
 

@@ -11,12 +11,14 @@ export async function upsertIp(ipStr: string): Promise<number> {
   if (!normalizedIp) throw new Error('Invalid IP address')
 
   // Enqueue for background hostname lookup
-  await IpHostnameEnrichmentService.scheduleLookup(normalizedIp).catch((e) => {
+  try {
+    await IpHostnameEnrichmentService.scheduleLookup(normalizedIp)
+  } catch (error) {
     console.error(
       `[upsertIp] Error scheduling hostname lookup for ${normalizedIp}:`,
-      e,
+      error,
     )
-  })
+  }
 
   const existingResult = await db
     .select()
@@ -45,7 +47,7 @@ export async function upsertIp(ipStr: string): Promise<number> {
         updatedAt: now,
       })
       .returning({ id: ipAddresses.id })
-    if (!inserted || !inserted[0]) throw new Error('Failed to insert IP')
+    if (!inserted[0]) throw new Error('Failed to insert IP')
     return inserted[0].id
   }
 

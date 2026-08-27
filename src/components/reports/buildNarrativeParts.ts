@@ -20,11 +20,11 @@ export function buildNarrativeParts(
     parts.push('All traffic is fully aligned.')
   } else if (status === 'degraded') {
     parts.push(
-      `Most traffic is authenticated, but ${reviewCount} source${sourcePlural} require${sourceVerb} review.`,
+      `Most traffic is authenticated, but ${String(reviewCount)} source${sourcePlural} require${sourceVerb} review.`,
     )
   } else {
     parts.push(
-      `Significant alignment failures detected across ${reviewCount} source${sourcePlural}.`,
+      `Significant alignment failures detected across ${String(reviewCount)} source${sourcePlural}.`,
     )
   }
 

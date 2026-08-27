@@ -13,13 +13,13 @@ export function startScheduler(): void {
 
   // INGEST SCHEDULER (IMAP)
   const minutes = config.ingestionIntervalMinutes
-  const first = config.imapAccounts?.[0]
+  const first = config.imapAccounts[0]
   const hasImap = Boolean(
     first && first.server && first.username && first.password,
   )
 
   if (minutes >= 1 && hasImap) {
-    const cronExpr = `*/${minutes} * * * *`
+    const cronExpr = `*/${String(minutes)} * * * *`
     cron.schedule(cronExpr, async () => {
       await checkAndRecoverStuckJob()
       const status = await getPollStatus()
@@ -29,7 +29,7 @@ export function startScheduler(): void {
       }
       const result = await runIngestJob()
       console.info(
-        `[ingest] run: processed=${result.processed} ingested=${result.ingested} skipped=${result.skipped} errors=${result.errorCount}`,
+        `[ingest] run: processed=${String(result.processed)} ingested=${String(result.ingested)} skipped=${String(result.skipped)} errors=${String(result.errorCount)}`,
       )
     })
   }
@@ -41,7 +41,7 @@ export function startScheduler(): void {
       const result = await processIpHostnameLookupJob()
       if (result.processed > 0 || result.errors > 0) {
         console.info(
-          `[ip-hostname-lookup] run: processed=${result.processed} skipped=${result.skipped} errors=${result.errors}`,
+          `[ip-hostname-lookup] run: processed=${String(result.processed)} skipped=${String(result.skipped)} errors=${String(result.errors)}`,
         )
       }
     } catch (e) {

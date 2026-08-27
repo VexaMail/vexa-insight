@@ -37,9 +37,11 @@ export function DomainScoreBadge({
     <div className="bg-card flex flex-col items-center gap-4 rounded-xl border p-6 shadow-sm sm:flex-row sm:gap-8">
       {/* Grade circle */}
       <div
-        className={`flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-lg print:border-4 print:bg-none print:shadow-none ${gradientClass} ${printClass}`}
+        className={`flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-lg print:border-4 print:bg-none print:shadow-none ${String(gradientClass)} ${String(printClass)}`}
       >
-        <span className={`text-4xl font-black text-white ${printClass}`}>
+        <span
+          className={`text-4xl font-black text-white ${String(printClass)}`}
+        >
           {score.grade}
         </span>
       </div>
@@ -54,7 +56,7 @@ export function DomainScoreBadge({
           <span className="text-foreground font-semibold">{domain}</span>
         </p>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className={`text-3xl font-black ${textColor}`}>
+          <span className={`text-3xl font-black ${String(textColor)}`}>
             {score.percentage}%
           </span>
           <span className="text-muted-foreground text-sm">overall score</span>
@@ -62,8 +64,8 @@ export function DomainScoreBadge({
         {/* Progress bar */}
         <div className="bg-muted mt-2 h-2 w-full max-w-xs overflow-hidden rounded-full">
           <div
-            className={`h-full rounded-full bg-gradient-to-r ${gradientClass} transition-all duration-500`}
-            style={{ width: `${score.percentage}%` }}
+            className={`h-full rounded-full bg-gradient-to-r ${String(gradientClass)} transition-all duration-500`}
+            style={{ width: `${String(score.percentage)}%` }}
           />
         </div>
       </div>

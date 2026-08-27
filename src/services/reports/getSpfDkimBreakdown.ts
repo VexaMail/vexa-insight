@@ -50,9 +50,9 @@ export async function getSpfDkimBreakdown(
 
   const [row] = await base
   return {
-    spfPass: Number(row?.spfPass ?? 0),
-    spfFail: Number(row?.spfFail ?? 0),
-    dkimPass: Number(row?.dkimPass ?? 0),
-    dkimFail: Number(row?.dkimFail ?? 0),
+    spfPass: row?.spfPass ?? 0,
+    spfFail: row?.spfFail ?? 0,
+    dkimPass: row?.dkimPass ?? 0,
+    dkimFail: row?.dkimFail ?? 0,
   }
 }

@@ -67,7 +67,7 @@ export default function VolumeByOrgTable() {
               <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
                 <div
                   className="bg-primary h-full rounded-full transition-all"
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${String(pct)}%` }}
                 />
               </div>
             </Link>

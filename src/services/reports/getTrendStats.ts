@@ -44,7 +44,7 @@ export async function getTrendStats(
     .orderBy(dateExpr)
   return rows.map((r) => ({
     date: r.date,
-    passed: Number(r.passed ?? 0),
-    failed: Number(r.failed ?? 0),
+    passed: r.passed,
+    failed: r.failed,
   }))
 }

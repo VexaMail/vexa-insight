@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/services/api/hasValidApiKey', () => ({
-  hasValidApiKey: vi.fn(async () => false),
+  hasValidApiKey: vi.fn(() => Promise.resolve(false)),
 }))
 
 vi.mock('@/services/auth/getSession', () => ({
-  getSession: vi.fn(async () => null),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }))
 
 /**

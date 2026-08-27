@@ -6,10 +6,10 @@ export function formatPrometheusMetricLine(
   labels?: Record<string, string>,
 ): string {
   if (!labels || Object.keys(labels).length === 0) {
-    return `${name} ${value}`
+    return `${name} ${String(value)}`
   }
   const labelStr = Object.entries(labels)
     .map(([k, v]) => `${k}="${escapeLabelValue(v)}"`)
     .join(',')
-  return `${name}{${labelStr}} ${value}`
+  return `${name}{${labelStr}} ${String(value)}`
 }

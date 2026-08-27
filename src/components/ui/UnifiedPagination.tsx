@@ -50,7 +50,9 @@ export function UnifiedPagination({
           variant="ghost"
           size="sm"
           className="h-7 text-xs"
-          onClick={() => canPrevious && onPageChange(page - 1)}
+          onClick={() => {
+            if (canPrevious) onPageChange(page - 1)
+          }}
           disabled={!canPrevious}
           aria-label="Previous page"
         >
@@ -63,7 +65,9 @@ export function UnifiedPagination({
           variant="ghost"
           size="sm"
           className="h-7 text-xs"
-          onClick={() => canNext && onPageChange(page + 1)}
+          onClick={() => {
+            if (canNext) onPageChange(page + 1)
+          }}
           disabled={!canNext}
           aria-label="Next page"
         >

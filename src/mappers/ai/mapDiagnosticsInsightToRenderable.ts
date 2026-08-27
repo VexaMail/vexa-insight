@@ -13,7 +13,7 @@ export function mapDiagnosticsInsightToRenderable(
     tone: raw.tone ?? deriveToneFromSeverity(raw.severity),
     evidenceStrength: raw.evidenceStrength ?? 'medium',
     title: raw.title,
-    evidence: (raw.evidence ?? raw.explanation ?? '').trim(),
+    evidence: (raw.evidence ?? raw.explanation).trim(),
     impact: (raw.impact ?? '').trim(),
     action: (raw.action ?? raw.recommendation ?? '').trim(),
     legacyExplanation: raw.explanation,

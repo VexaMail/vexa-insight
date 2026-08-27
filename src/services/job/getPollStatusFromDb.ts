@@ -46,11 +46,11 @@ export async function getPollStatusFromDb(): Promise<PollStatusRow> {
     return {
       isRunning,
       lastCheck: derivedLastCheck,
-      currentProcessed: row.currentProcessed ?? 0,
-      totalEmails: row.totalEmails ?? 0,
-      processingEmails: row.processingEmails ?? 0,
-      etaMs: row.etaMs ?? 0,
-      abortRequested: row.abortRequested ?? false,
+      currentProcessed: row.currentProcessed,
+      totalEmails: row.totalEmails,
+      processingEmails: row.processingEmails,
+      etaMs: row.etaMs,
+      abortRequested: row.abortRequested,
       activeJobRunId,
       statusText: row.statusText ?? null,
     }

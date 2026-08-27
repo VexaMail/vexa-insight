@@ -16,14 +16,10 @@ export async function updateUser(
 
   if (data.role && data.role !== 'admin') {
     // Check if lowering role. Is this user currently an admin?
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .get()
+    const currentUser = db.select().from(users).where(eq(users.id, id)).get()
     if (currentUser?.role === 'admin') {
       // Are there other admins?
-      const admins = await db
+      const admins = db
         .select({ count: count() })
         .from(users)
         .where(and(eq(users.role, 'admin'), ne(users.id, id)))
@@ -41,9 +37,7 @@ export async function updateUser(
   if (data.username) updateData.username = data.username
   if (data.role) updateData.role = data.role
   if (data.allowedDomains !== undefined) {
-    updateData.allowedDomains = data.allowedDomains
-      ? JSON.stringify(data.allowedDomains)
-      : null
+    updateData.allowedDomains = JSON.stringify(data.allowedDomains)
   }
   if (data.password) updateData.passwordHash = hashPassword(data.password)
 

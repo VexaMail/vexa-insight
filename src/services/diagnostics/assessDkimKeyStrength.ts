@@ -16,7 +16,7 @@ export function assessDkimKeyStrength(
   if (keyType === 'ed25519') {
     if (byteLength !== ed25519KeyBytes) {
       errors.push(
-        `Unexpected Ed25519 key size (${byteLength} bytes; expected ${ed25519KeyBytes}).`,
+        `Unexpected Ed25519 key size (${String(byteLength)} bytes; expected ${String(ed25519KeyBytes)}).`,
       )
     }
     return { keyLengthBits: byteLength * 8, errors }
@@ -27,11 +27,11 @@ export function assessDkimKeyStrength(
 
   if (keyLengthBits < 1024) {
     errors.push(
-      `Key length is approximately ${keyLengthBits} bits. Minimum recommended is 1024 bits.`,
+      `Key length is approximately ${String(keyLengthBits)} bits. Minimum recommended is 1024 bits.`,
     )
   } else if (keyLengthBits < 2048) {
     errors.push(
-      `Key length is approximately ${keyLengthBits} bits. 2048 bits or higher is recommended for better security.`,
+      `Key length is approximately ${String(keyLengthBits)} bits. 2048 bits or higher is recommended for better security.`,
     )
   }
 

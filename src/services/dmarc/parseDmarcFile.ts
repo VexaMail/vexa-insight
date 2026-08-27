@@ -16,7 +16,7 @@ export async function parseDmarcFile(
 ): Promise<ParseResult> {
   if (fileContent.length > MAX_FILE_SIZE) {
     throw new Error(
-      `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024} MB`,
+      `File too large. Maximum size is ${String(MAX_FILE_SIZE / 1024 / 1024)} MB`,
     )
   }
   const xmlBuffer = await extractXmlFromBuffer(fileContent, filename)
@@ -25,7 +25,7 @@ export async function parseDmarcFile(
   }
   if (xmlBuffer.length > MAX_UNCOMPRESSED_SIZE) {
     throw new Error(
-      `Uncompressed content too large. Max ${MAX_UNCOMPRESSED_SIZE / 1024 / 1024} MB. Possible zip bomb.`,
+      `Uncompressed content too large. Max ${String(MAX_UNCOMPRESSED_SIZE / 1024 / 1024)} MB. Possible zip bomb.`,
     )
   }
   return parseDmarcXml(xmlBuffer)

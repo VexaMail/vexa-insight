@@ -10,11 +10,12 @@ describe('createAnthropicAdapter', () => {
   it('sends temperature to a model that still accepts it', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        content: [{ type: 'text', text: 'ok' }],
-        model: 'claude-sonnet-4-6',
-        usage: { input_tokens: 1, output_tokens: 1 },
-      }),
+      json: () =>
+        Promise.resolve({
+          content: [{ type: 'text', text: 'ok' }],
+          model: 'claude-sonnet-4-6',
+          usage: { input_tokens: 1, output_tokens: 1 },
+        }),
     })
     vi.stubGlobal('fetch', fetchMock)
 
@@ -34,11 +35,12 @@ describe('createAnthropicAdapter', () => {
   it('omits temperature for a model that rejects it', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        content: [{ type: 'text', text: 'ok' }],
-        model: 'claude-opus-5',
-        usage: { input_tokens: 1, output_tokens: 1 },
-      }),
+      json: () =>
+        Promise.resolve({
+          content: [{ type: 'text', text: 'ok' }],
+          model: 'claude-opus-5',
+          usage: { input_tokens: 1, output_tokens: 1 },
+        }),
     })
     vi.stubGlobal('fetch', fetchMock)
 

@@ -69,7 +69,11 @@ export async function main(): Promise<void> {
   console.log(`\nartifact: ${writeEvalArtifact(artifact)}`)
 }
 
-main().catch((err: unknown) => {
-  console.error('[eval:ai] Failed:', err)
-  process.exit(1)
-})
+void (async () => {
+  try {
+    await main()
+  } catch (error: unknown) {
+    console.error('[eval:ai] Failed:', error)
+    process.exit(1)
+  }
+})()

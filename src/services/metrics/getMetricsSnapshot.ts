@@ -10,7 +10,7 @@ import {
 import type { MetricsSnapshot } from '@/types/metrics'
 import { count, desc, eq } from 'drizzle-orm'
 
-export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
+export function getMetricsSnapshot(): MetricsSnapshot {
   const db = getDb()
 
   const domainsRow = db.select({ value: count() }).from(domains).get()

@@ -69,7 +69,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       codeVerifier: verifier,
     })
     const info = await fetchUserInfo(discovery, tokens.access_token)
-    const userId = await provisionUserFromUserInfo(info)
+    const userId = provisionUserFromUserInfo(info)
     await createSession(userId)
     await recordAuditEvent({
       action: 'auth.login.success',

@@ -22,20 +22,20 @@ export function buildReportAggregatePromptSection(
       : 0
 
   const dispositionStr = Object.entries(ra.dispositionBreakdown)
-    .map(([d, c]) => `${d}: ${c}`)
+    .map(([d, c]) => `${d}: ${String(c)}`)
     .join(', ')
 
   const orgsStr = ra.topOrgs
-    .map((o) => `${o.orgName} (${o.messageCount} msgs)`)
+    .map((o) => `${o.orgName} (${String(o.messageCount)} msgs)`)
     .join(', ')
 
-  return `AGGREGATED REPORT DATA (${ra.reportCount} reports, ${ra.orgCount} orgs, period: ${ra.dateRange.start ?? '?'} – ${ra.dateRange.end ?? '?'}):
-- Total messages: ${ra.totalMessages}
-- SPF pass: ${ra.spfPassCount} (${spfRate}%)
-- DKIM pass: ${ra.dkimPassCount} (${dkimRate}%)
-- SPF aligned: ${ra.spfAlignedCount} (${spfAlignRate}%)
-- DKIM aligned: ${ra.dkimAlignedCount} (${dkimAlignRate}%)
+  return `AGGREGATED REPORT DATA (${String(ra.reportCount)} reports, ${String(ra.orgCount)} orgs, period: ${ra.dateRange.start ?? '?'} – ${ra.dateRange.end ?? '?'}):
+- Total messages: ${String(ra.totalMessages)}
+- SPF pass: ${String(ra.spfPassCount)} (${String(spfRate)}%)
+- DKIM pass: ${String(ra.dkimPassCount)} (${String(dkimRate)}%)
+- SPF aligned: ${String(ra.spfAlignedCount)} (${String(spfAlignRate)}%)
+- DKIM aligned: ${String(ra.dkimAlignedCount)} (${String(dkimAlignRate)}%)
 - Dispositions: ${dispositionStr || 'none'}
-- Forwarded overrides: ${ra.forwardedOverrideCount}
+- Forwarded overrides: ${String(ra.forwardedOverrideCount)}
 - Top reporting orgs: ${orgsStr || 'none'}`
 }

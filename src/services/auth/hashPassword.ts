@@ -14,5 +14,5 @@ export function hashPassword(password: string): string {
     p: SCRYPT_P,
     maxmem: SCRYPT_MAXMEM,
   })
-  return `scrypt$${SCRYPT_N}$${SCRYPT_R}$${SCRYPT_P}$${salt}$${derivedKey.toString('hex')}`
+  return `scrypt$${String(SCRYPT_N)}$${String(SCRYPT_R)}$${String(SCRYPT_P)}$${salt}$${derivedKey.toString('hex')}`
 }

@@ -9,5 +9,5 @@ export function severityIcon(severity: InsightSeverity): string {
     low: '🔵',
     info: '✅',
   }
-  return map[severity] ?? '❓'
+  return map[severity]
 }

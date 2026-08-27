@@ -41,12 +41,14 @@ export function getDomainSourcesColumns({
           <IpDisplay
             ip={sourceIp}
             countryCode={countryCode ?? null}
-            countryName={countryName ?? null}
+            countryName={countryName}
             hostname={displayHostname ?? null}
             layout="stacked"
             showHostname={true}
             isRefreshing={isRefreshing}
-            onRefresh={() => onRefresh(sourceIp)}
+            onRefresh={() => {
+              onRefresh(sourceIp)
+            }}
           />
         )
       },
@@ -58,7 +60,9 @@ export function getDomainSourcesColumns({
         return (
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
-            onClick={() => column.toggleSorting(isSorted === 'asc')}
+            onClick={() => {
+              column.toggleSorting(isSorted === 'asc')
+            }}
           >
             Count
             <SortIcon
@@ -69,7 +73,7 @@ export function getDomainSourcesColumns({
         )
       },
       cell: ({ row }) => {
-        const val = row.getValue('count') as number
+        const val = row.original.count
         return (
           <span className="text-zinc-600 dark:text-zinc-400">
             {val.toLocaleString()}

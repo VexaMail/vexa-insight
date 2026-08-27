@@ -93,7 +93,7 @@ export async function updateGeoIpDb(
           })
           resolve()
         } else {
-          const errStr = `Updater exited with code ${code}`
+          const errStr = `Updater exited with code ${String(code)}`
           await db
             .update(appSettings)
             .set({ geoipLastDbUpdateError: errStr })

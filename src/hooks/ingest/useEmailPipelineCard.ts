@@ -19,7 +19,7 @@ export function useEmailPipelineCard({
   else if (overall.overall === 'error') headlineText = 'Error'
   else if (overall.overall === 'active') headlineText = 'Processing'
 
-  const progressLabel = `${overall.doneCount} of ${overall.total} steps completed`
+  const progressLabel = `${String(overall.doneCount)} of ${String(overall.total)} steps completed`
 
   let barColor = 'bg-info'
   if (overall.overall === 'done') barColor = 'bg-success'

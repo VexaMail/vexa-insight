@@ -37,7 +37,7 @@ export function useInstallForm(
       dispatch({
         type: 'SET_SUBMIT_STATUS',
         status: 'error',
-        message: `API key must be at least ${MIN_SECRET_LENGTH} characters.`,
+        message: `API key must be at least ${String(MIN_SECRET_LENGTH)} characters.`,
       })
       return
     }
@@ -68,7 +68,7 @@ export function useInstallForm(
           imapAccounts: valid.map((a) => ({
             label: a.label.trim() || 'Account',
             server: a.server.trim(),
-            port: Number(a.port),
+            port: a.port,
             username: a.username.trim(),
             password: a.password,
           })),
@@ -86,7 +86,7 @@ export function useInstallForm(
         dispatch({
           type: 'SET_SUBMIT_STATUS',
           status: 'error',
-          message: err.error?.message ?? `Error ${res.status}`,
+          message: err.error?.message ?? `Error ${String(res.status)}`,
         })
         return
       }

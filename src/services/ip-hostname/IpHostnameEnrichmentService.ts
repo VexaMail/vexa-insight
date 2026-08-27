@@ -66,8 +66,10 @@ export class IpHostnameEnrichmentService {
     timeoutMs: number,
   ): Promise<string[]> {
     let timer: NodeJS.Timeout | undefined
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      timer = setTimeout(() => reject(new Error('TIMEOUT')), timeoutMs)
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error('TIMEOUT'))
+      }, timeoutMs)
     })
     try {
       return await Promise.race([dns.promises.reverse(ip), timeoutPromise])
@@ -89,7 +91,7 @@ export class IpHostnameEnrichmentService {
   }> {
     try {
       const hostnames = await this.performDnsLookup(ip, timeoutMs)
-      if (hostnames && hostnames.length > 0) {
+      if (hostnames.length > 0) {
         return {
           hostname: hostnames[0] ?? null,
           status: 'success',
@@ -99,7 +101,7 @@ export class IpHostnameEnrichmentService {
       return { hostname: null, status: 'not_found', error: 'No PTR record' }
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : String(err)
-      const errorCode = (err as { code?: string })?.code
+      const errorCode = (err as { code?: string }).code
 
       if (errorCode === 'ENOTFOUND') {
         return { hostname: null, status: 'not_found', error: 'ENOTFOUND' }
@@ -251,7 +253,7 @@ export class IpHostnameEnrichmentService {
 
       return {
         hostname,
-        status: status as 'success' | 'failed' | 'not_found',
+        status,
         error,
         resolvedAt: now,
       }

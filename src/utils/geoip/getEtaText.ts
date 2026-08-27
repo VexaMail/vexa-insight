@@ -26,7 +26,7 @@ export function getEtaText(
   if (remainingSeconds > 60) {
     const mins = Math.floor(remainingSeconds / 60)
     const secs = remainingSeconds % 60
-    return `~${mins}m ${secs}s remaining`
+    return `~${String(mins)}m ${String(secs)}s remaining`
   }
-  return `~${remainingSeconds}s remaining`
+  return `~${String(remainingSeconds)}s remaining`
 }

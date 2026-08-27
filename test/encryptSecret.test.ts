@@ -32,7 +32,7 @@ describe('encryptSecret / decryptSecret', () => {
   it('throws on tampered ciphertext', () => {
     const ct = encryptSecret('hunter2', SECRET)
     const [iv, tag] = ct.slice(3).split('|')
-    const tampered = `v1:${iv}|${tag}|${Buffer.from('zzzzzzzz').toString('base64')}`
+    const tampered = `v1:${String(iv)}|${String(tag)}|${Buffer.from('zzzzzzzz').toString('base64')}`
     expect(() => decryptSecret(tampered, SECRET)).toThrow()
   })
 })

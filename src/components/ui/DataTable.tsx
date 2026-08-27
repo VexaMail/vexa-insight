@@ -49,8 +49,10 @@ export function DataTable<TData, TValue>({
             <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
               placeholder="Search all columns..."
-              value={globalFilter ?? ''}
-              onChange={(event) => setGlobalFilter(event.target.value)}
+              value={globalFilter}
+              onChange={(event) => {
+                setGlobalFilter(event.target.value)
+              }}
               className="bg-card border-border/50 pl-9"
             />
           </div>
@@ -91,7 +93,7 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -136,8 +138,12 @@ export function DataTable<TData, TValue>({
           page={table.getState().pagination.pageIndex + 1}
           pageSize={table.getState().pagination.pageSize}
           total={table.getFilteredRowModel().rows.length}
-          onPageChange={(p) => table.setPageIndex(p - 1)}
-          onPageSizeChange={(s) => table.setPageSize(s)}
+          onPageChange={(p) => {
+            table.setPageIndex(p - 1)
+          }}
+          onPageSizeChange={(s) => {
+            table.setPageSize(s)
+          }}
           pageSizeOptions={pageSizeOptions}
         />
       )}

@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 import { COUNTRY_CODES } from './demoCountryCodes'
 import { pickRandom } from './pickRandom'
 
-export async function ensureDemoIp(ip: string, now: Date): Promise<number> {
+export function ensureDemoIp(ip: string, now: Date): number {
   const db = getDb()
   const existing = db
     .select({ id: ipAddresses.id })

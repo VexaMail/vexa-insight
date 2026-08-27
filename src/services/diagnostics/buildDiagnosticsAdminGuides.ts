@@ -22,7 +22,7 @@ export function buildDiagnosticsAdminGuides(
       id: 'low-overall-score',
       severity: 'critical',
       title: 'The overall domain posture is weak',
-      summary: `The current score is ${score.percentage}% (${score.grade}) and combines outbound authentication gaps with incomplete inbound protections.`,
+      summary: `The current score is ${String(score.percentage)}% (${score.grade}) and combines outbound authentication gaps with incomplete inbound protections.`,
       whyItMatters:
         'When the score falls this low, there is usually more than one compounding issue: weak enforcement, incomplete DNS, or telemetry that already shows real failures.',
       howToFix:

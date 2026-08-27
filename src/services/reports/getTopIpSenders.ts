@@ -48,7 +48,7 @@ export async function getTopIpSenders(limit = 10): Promise<TopIpSender[]> {
     ip: r.ip,
     countryCode: r.countryCode,
     emailsSentCount: r.emailsSentCount,
-    totalMessages: Number(r.totalMessages),
+    totalMessages: r.totalMessages,
     hostname: r.hostname,
   }))
 }

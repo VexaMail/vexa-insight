@@ -34,8 +34,10 @@ describe('checkInstall', () => {
   }
 
   beforeEach(() => {
-    fetchMock = vi.fn(async () =>
-      Response.json({ data: { installed: true, requiresToken: false } }),
+    fetchMock = vi.fn(() =>
+      Promise.resolve(
+        Response.json({ data: { installed: true, requiresToken: false } }),
+      ),
     )
     vi.stubGlobal('fetch', fetchMock)
   })

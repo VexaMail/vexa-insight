@@ -66,10 +66,15 @@ export async function POST(
     )
   }
   const headerToken = request.headers.get('x-install-token')
-  const bodyToken =
-    typeof body === 'object' && body !== null && 'installToken' in body
-      ? String((body as Record<string, unknown>).installToken ?? '')
-      : ''
+  let bodyToken = ''
+  if (
+    typeof body === 'object' &&
+    body !== null &&
+    'installToken' in body &&
+    typeof body.installToken === 'string'
+  ) {
+    bodyToken = body.installToken
+  }
   const provided = headerToken ?? bodyToken
   if (!provided || !timingSafeStringEqual(provided, expectedToken)) {
     return NextResponse.json(

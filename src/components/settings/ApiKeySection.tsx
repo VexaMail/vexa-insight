@@ -78,7 +78,9 @@ export default function ApiKeySection({
               id="settings-secret-key-new"
               type="text"
               value={newKey}
-              onChange={(e) => onNewKeyChange(e.target.value)}
+              onChange={(e) => {
+                onNewKeyChange(e.target.value)
+              }}
               placeholder="Leave empty to keep current key"
               className="bg-card border-border/50 font-mono text-xs"
               autoComplete="off"

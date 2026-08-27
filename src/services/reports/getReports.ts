@@ -75,7 +75,7 @@ export async function getReports(
   }
 
   const [countResult] = await countQuery
-  const total = Number(countResult?.count ?? 0)
+  const total = countResult?.count ?? 0
 
   let items = await itemsQuery
     .orderBy(desc(rawReports.ingestedAt))

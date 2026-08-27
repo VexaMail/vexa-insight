@@ -12,7 +12,9 @@ export async function fetchLatestRelease(
   currentVersion: string,
 ): Promise<GithubReleaseResponse> {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), GITHUB_FETCH_TIMEOUT_MS)
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, GITHUB_FETCH_TIMEOUT_MS)
   try {
     const response = await fetch(buildLatestReleaseUrl(slug), {
       method: 'GET',
@@ -28,13 +30,39 @@ export async function fetchLatestRelease(
       throw new NoPublishedReleaseError()
     }
     if (!response.ok) {
-      throw new Error(`GitHub API responded with status ${response.status}`)
+      throw new Error(
+        `GitHub API responded with status ${String(response.status)}`,
+      )
     }
-    const json = (await response.json()) as GithubReleaseResponse
-    if (!json || typeof json.tag_name !== 'string') {
-      throw new Error('GitHub response missing tag_name')
+    const json: unknown = await response.json()
+    if (typeof json !== 'object' || json === null) {
+      throw new Error('GitHub response has an invalid release payload')
     }
-    return json
+    if (
+      !('tag_name' in json) ||
+      !('name' in json) ||
+      !('body' in json) ||
+      !('html_url' in json) ||
+      !('published_at' in json) ||
+      !('draft' in json) ||
+      !('prerelease' in json)
+    ) {
+      throw new Error('GitHub response has an invalid release payload')
+    }
+    const { tag_name, name, body, html_url, published_at, draft, prerelease } =
+      json
+    if (
+      typeof tag_name !== 'string' ||
+      (name !== null && typeof name !== 'string') ||
+      (body !== null && typeof body !== 'string') ||
+      typeof html_url !== 'string' ||
+      (published_at !== null && typeof published_at !== 'string') ||
+      typeof draft !== 'boolean' ||
+      typeof prerelease !== 'boolean'
+    ) {
+      throw new Error('GitHub response has an invalid release payload')
+    }
+    return { tag_name, name, body, html_url, published_at, draft, prerelease }
   } finally {
     clearTimeout(timeout)
   }

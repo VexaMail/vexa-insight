@@ -28,8 +28,18 @@ export function useUsersManagement(initialUsers: User[]) {
     if (!confirm('Are you sure you want to delete this user?')) return
     const res = await fetch(`/api/v1/users/${id}`, { method: 'DELETE' })
     if (!res.ok) {
-      const err = await res.json()
-      alert('Error: ' + err.error?.message)
+      const errorBody: unknown = await res.json()
+      const message =
+        typeof errorBody === 'object' &&
+        errorBody !== null &&
+        'error' in errorBody &&
+        typeof errorBody.error === 'object' &&
+        errorBody.error !== null &&
+        'message' in errorBody.error &&
+        typeof errorBody.error.message === 'string'
+          ? errorBody.error.message
+          : 'Failed to delete user'
+      alert(`Error: ${message}`)
     } else {
       void refreshUsersWrapper()
     }
@@ -40,7 +50,9 @@ export function useUsersManagement(initialUsers: User[]) {
     setIsEditOpen(true)
   }
 
-  const closeCreate = () => setIsCreateOpen(false)
+  const closeCreate = () => {
+    setIsCreateOpen(false)
+  }
 
   const closeEdit = () => {
     setIsEditOpen(false)

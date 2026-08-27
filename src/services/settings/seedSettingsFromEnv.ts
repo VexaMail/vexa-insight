@@ -14,6 +14,12 @@ function seedSettingsFromEnv(): void {
   const env = process.env
   if (!env.SECRET_KEY || env.SECRET_KEY.length < 32) return
   const db = getDb()
+  const environment =
+    env.ENVIRONMENT === 'development' ||
+    env.ENVIRONMENT === 'staging' ||
+    env.ENVIRONMENT === 'production'
+      ? env.ENVIRONMENT
+      : row.environment
   db.update(appSettings)
     .set({
       apiV1Str: env.API_V1_STR ?? row.apiV1Str,
@@ -25,9 +31,7 @@ function seedSettingsFromEnv(): void {
         : row.ingestionDaysBack,
       secretKey: env.SECRET_KEY,
       backendCorsOrigins: env.BACKEND_CORS_ORIGINS ?? row.backendCorsOrigins,
-      environment:
-        (env.ENVIRONMENT as 'development' | 'staging' | 'production') ??
-        row.environment,
+      environment,
       updatedAt: new Date(),
     })
     .where(eq(appSettings.id, SETTINGS_ID))

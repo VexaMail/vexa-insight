@@ -1,20 +1,16 @@
 import { getDb, users } from '@/lib/db'
 import { and, count, eq, ne } from 'drizzle-orm'
 
-export async function deleteUser(id: string) {
+export function deleteUser(id: string) {
   const db = getDb()
 
-  const currentUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, id))
-    .get()
+  const currentUser = db.select().from(users).where(eq(users.id, id)).get()
   if (!currentUser) {
     throw new Error('User not found.')
   }
 
   if (currentUser.role === 'admin') {
-    const admins = await db
+    const admins = db
       .select({ count: count() })
       .from(users)
       .where(and(eq(users.role, 'admin'), ne(users.id, id)))
@@ -24,6 +20,6 @@ export async function deleteUser(id: string) {
     }
   }
 
-  await db.delete(users).where(eq(users.id, id))
+  db.delete(users).where(eq(users.id, id)).run()
   return { success: true }
 }

@@ -19,7 +19,9 @@ export function useThemeProvider(): UseThemeProviderReturn {
       setMounted(true)
     }, 0)
 
-    return () => clearTimeout(t)
+    return () => {
+      clearTimeout(t)
+    }
   }, [])
 
   const contextValue = useMemo<ThemeContextValue>(() => {

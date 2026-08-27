@@ -16,7 +16,7 @@ export function InsightSection({
       </div>
       {insights.map((insight, i) => (
         <DiagnosticsInsightCard
-          key={`${insight.title}-${i}`}
+          key={`${insight.title}-${String(i)}`}
           insight={insight}
         />
       ))}

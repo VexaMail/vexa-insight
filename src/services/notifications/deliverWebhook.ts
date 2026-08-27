@@ -25,6 +25,6 @@ export async function deliverWebhook(
     error:
       res.status !== null && res.status >= 200 && res.status < 300
         ? null
-        : `HTTP ${res.status}`,
+        : `HTTP ${String(res.status)}`,
   }
 }

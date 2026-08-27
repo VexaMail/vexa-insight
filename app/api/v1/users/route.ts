@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server'
 export const GET = withApiAuth(async (): Promise<NextResponse> => {
   const denied = await requirePermission('users:read')
   if (denied) return denied
-  const usersList = await getUsers()
+  const usersList = getUsers()
   return NextResponse.json({ data: usersList })
 })
 

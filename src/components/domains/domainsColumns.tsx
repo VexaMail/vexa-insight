@@ -20,7 +20,9 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Domain
           {column.getIsSorted() === 'asc' && (
@@ -45,7 +47,9 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() !== 'desc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() !== 'desc')
+          }}
         >
           Messages
           {column.getIsSorted() === 'asc' && (
@@ -61,7 +65,7 @@ export function getDomainsColumns({
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
-          {(row.getValue('totalMessages') as number).toLocaleString()}
+          {row.original.totalMessages.toLocaleString()}
         </span>
       ),
     },
@@ -70,7 +74,9 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() !== 'desc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() !== 'desc')
+          }}
         >
           Compliance
           {column.getIsSorted() === 'asc' && (
@@ -85,7 +91,7 @@ export function getDomainsColumns({
         </div>
       ),
       cell: ({ row }) => {
-        const passRate = row.getValue('passRatePercent') as number
+        const passRate = row.original.passRatePercent
         const { textColor, barColor } = getComplianceStyles(passRate)
 
         return (
@@ -93,7 +99,7 @@ export function getDomainsColumns({
             <div className="bg-secondary h-1.5 flex-1 overflow-hidden rounded-full">
               <div
                 className={cn('h-full rounded-full', barColor)}
-                style={{ width: `${passRate}%` }}
+                style={{ width: `${String(passRate)}%` }}
               />
             </div>
             <span
@@ -111,7 +117,9 @@ export function getDomainsColumns({
       header: ({ column }) => (
         <div
           className="flex cursor-pointer items-center gap-1 select-none"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }}
         >
           Status
           {column.getIsSorted() === 'asc' && (
@@ -145,7 +153,9 @@ export function getDomainsColumns({
           <div className="flex items-center gap-1">
             <Link
               href={`/diagnostics/${domainName}`}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
               title="Diagnostics"
             >
               <Button

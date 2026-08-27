@@ -25,7 +25,7 @@ export async function checkForUpdates(): Promise<CheckForUpdatesOutcome> {
     return { ok: true, skipped: 'disabled' }
   }
   const dbRow = getUpdateStateRow()
-  if (dbRow && dbRow.enabled === false) {
+  if (dbRow && !dbRow.enabled) {
     return { ok: true, skipped: 'disabled' }
   }
   let slug
