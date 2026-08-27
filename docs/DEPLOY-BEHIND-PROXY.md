@@ -19,8 +19,12 @@ VEXA_ALLOWED_ORIGINS=https://dmarc.example.com
   requests by default. Set this to `1` when the install wizard is reached
   through the proxy.
 - `VEXA_ALLOWED_ORIGINS` — comma-separated list of origins allowed to invoke
-  Server Actions. Must exactly match the scheme + host the browser uses (e.g.
-  `https://dmarc.example.com`). Wildcards are not supported. Without this, all
+  Server Actions, read at request time (`proxy.ts`), so it works on a published
+  image without rebuilding. Entries may be bare hosts (`dmarc.example.com`) or
+  full origins (`https://dmarc.example.com`); the host must exactly match what
+  the browser sends, including any explicit port. Wildcards are not supported.
+  It is only needed when the proxy does not forward the public hostname in
+  `Host`/`X-Forwarded-Host` (both configs below do); without either, all
   mutating UI actions return `403`.
 
 ## nginx (TLS terminator)
