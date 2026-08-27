@@ -28,12 +28,14 @@ describe('createOpenAiAdapter', () => {
     const request = JSON.parse(init.body) as Record<string, unknown>
     expect(request.max_tokens).toBe(256)
     expect(request.temperature).toBeCloseTo(0.2)
+    expect(request.response_format).toEqual({ type: 'json_object' })
     expect('max_completion_tokens' in request).toBe(false)
   })
 
-  // A reasoning model rejects both halves with HTTP 400, so both have to
-  // change together or the model stays unusable.
-  it('sends max_completion_tokens and no temperature to a reasoning model', async () => {
+  // A reasoning model rejects sampling parameters and JSON mode with HTTP
+  // 400 on chat completions, so all of them have to change together or the
+  // model stays unusable.
+  it('sends max_completion_tokens and no temperature or JSON mode to a reasoning model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: () =>
@@ -56,5 +58,6 @@ describe('createOpenAiAdapter', () => {
     expect(request.max_completion_tokens).toBe(256)
     expect('max_tokens' in request).toBe(false)
     expect('temperature' in request).toBe(false)
+    expect('response_format' in request).toBe(false)
   })
 })
