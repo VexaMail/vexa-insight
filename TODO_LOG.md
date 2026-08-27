@@ -6,6 +6,77 @@
 
 ### 2026-08
 
+- [x] 2026-08-28 — **Security:** Add a `.dockerignore`, and make the Docker
+      build actually work.
+  - Result: `.dockerignore` covers `data/`, `.env*`, `.next/`, `node_modules/`,
+    `coverage/`, `evals/results/`, `.git/` and friends. While validating, the
+    Docker build itself turned out broken on alpine/arm64: `better-sqlite3` has
+    no musl/arm64 prebuilt and node-gyp failed with `gyp ERR! find Python`; the
+    build stage now installs `python3 make g++`.
+  - Evidence: `docker build` exit 0; `docker run --rm <img> ls -la /app/data`
+    shows an empty directory and no `.env*` in `/app`, with 261 MB of local
+    `data/` present in the build context.
+  - Commits:
+    `fix(security): keep local data and env files out of the docker image`,
+    `fix(docker): install the node-gyp toolchain in the build stage`.
+- [x] 2026-08-28 — **Security:** Keep the live database out of the build
+      artifact.
+  - Result: `outputFileTracingExcludes: { '*': ['data/**'] }` in
+    `next.config.ts`.
+  - Evidence: fresh-clone `pnpm run build` exit 0 with `.next/standalone/data`
+    absent. Commit: `fix(build): keep data/ out of the standalone output`.
+- [x] 2026-08-28 — **Infrastructure:** Make a clean checkout build.
+  - Result: the top-level `await import('geoip-lite')` in the geoip service
+    became a memoized `getGeoip()` resolved on first lookup, so collecting page
+    data no longer opens the MaxMind `.dat` files that only exist after a
+    download.
+  - Evidence: `git clone` into a scratch dir with no `data/`,
+    `pnpm install && pnpm run build` exit 0. Commit:
+    `fix(build): load geoip-lite lazily so a clean checkout builds`.
+- [x] 2026-08-28 — **Infrastructure:** Make `VEXA_ALLOWED_ORIGINS` a runtime
+      value.
+  - Result: `proxy.ts` reads the variable per request; when a POST's Origin host
+    is allow-listed but does not match the forwarded host it rewrites
+    `X-Forwarded-Host` so Next's own CSRF comparison passes. Docs and
+    `.env.example` describe it as runtime config; the build-time bake stays as a
+    fallback. Also documented that a proxy forwarding the public hostname in
+    `Host`/`X-Forwarded-Host` needs no list at all.
+  - Evidence: type-check and lint clean; `ƒ Proxy (Middleware)` present in the
+    fresh-clone build output. Not yet exercised against a live proxy — nova
+    still works via the build-time path, so the runtime path gets its live proof
+    on the next image-based deploy. Commit:
+    `feat(deploy): read the Server Actions origin allow-list at request time`.
+- [x] 2026-08-28 — **Infrastructure:** Fix `deploy/vexa.service`.
+  - Result: `ExecStart=node .next/standalone/server.js`,
+    `Environment=HOSTNAME=127.0.0.1`, and the standalone assembly steps
+    (`public/`, `.next/static/`, `drizzle/`) documented in the unit header.
+  - Evidence: config change only, validated by reading `next start`'s standalone
+    rejection and the standalone server's `HOSTNAME` default; not run under a
+    live systemd. Commit:
+    `fix(deploy): run the standalone server from the systemd unit`.
+- [x] 2026-08-28 — **Documentation:** Stop advertising PostgreSQL and MySQL.
+  - Result: claim deleted from `README.md` (four spots), `docs/UPDATING.md` and
+    `.env.example`; SQLite documented as the only supported database. Commit:
+    `docs: stop advertising PostgreSQL/MySQL support that does not exist`.
+- [x] 2026-08-28 — **Documentation:** Correct the health endpoint in
+      `docs/DEPLOY-BEHIND-PROXY.md`.
+  - Result: `/api/health` -> `/api/v1/health` and the real
+    `{ "data": { "status": "ok" } }` body in the nginx snippet, k8s probes and
+    smoke test. Commit:
+    `docs(deploy): correct the health endpoint path and response shape`.
+- [x] 2026-08-28 — **Limpieza de ramas:** the 15 `dependabot/*` branches on
+      origin were deleted in one `git push origin --delete` batch, as decided;
+      Dependabot regenerates any update that still applies.
+- [x] 2026-08-28 — **Baseline gate debt:** Resolve the `config`/`settings`
+      deep-import pair (2 of the 13 exceptions).
+  - Result: `getSettingsRow`, `getImapAccountsRow`, `seedSettingsFromEnv`,
+    `SETTINGS_ID` and the `ImapAccountRow` type moved to a new
+    `services/settings-store` slice; `getConfig` and `updateSettings` import
+    slice barrels; exception list down to eleven.
+  - Evidence: type-check clean, `depcruise` no-circular clean (1664 modules),
+    knip exit 0. Commit:
+    `refactor: extract the settings row readers into services/settings-store`.
+
 - [x] 2026-08-27 — **Baseline gate debt:** Move the root-level source
       directories under `src/`.
   - Context: `actions/`, `components/`, `constants/`, `contexts/`,

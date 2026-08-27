@@ -1,7 +1,7 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-07-26. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-08-28. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
@@ -10,30 +10,6 @@
 
 ## Security
 
-- [ ] Add a `.dockerignore`. The `Dockerfile` does `COPY . .` and the repository
-      has no `.dockerignore`, so `docker build` from any working checkout copies
-      `data/` into the image — including `data/vexa.db`, which holds the
-      operator's `SECRET_KEY` in `app_settings`, the AES-GCM-encrypted IMAP
-      password, and every ingested report with real domains and IP addresses.
-      `.env` and `.env.local` go in the same way. Anyone who builds and pushes
-      an image from a configured checkout publishes their own instance's
-      secrets. Found 2026-08-25 while deploying to a real host. Smallest next
-      step: add `.dockerignore` covering `data/`, `.env*`, `.next/`,
-      `node_modules/`, `coverage/`, `evals/results/`, `.git/`, then confirm with
-      `docker build` + `docker run --rm <img> ls /app/data` that the image
-      carries no database.
-- [ ] Keep the live database out of the build artifact. Next's file tracing
-      follows the `DirAssetReference` that `services/geoip/updateDb.ts` creates
-      on the data directory and copies the whole of `data/` into
-      `.next/standalone/data` — 261 MB on the nova deploy, `vexa.db` included.
-      So the secrets above leak into the build output even without Docker, and a
-      stale duplicate of the database sits next to the real one waiting to be
-      picked up by anything resolving `data/vexa.db` relative to the standalone
-      root. The nova deploy script deletes it after every build, which is a
-      workaround, not a fix. Smallest next step: declare
-      `outputFileTracingExcludes` for `data/**` in `next.config.ts` and check
-      that `.next/standalone/data` is absent after a build while GeoIP lookups
-      still work through the absolute `GEODATADIR`.
 - [!] Consider per-user API keys with real role mapping to replace the single
   shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their
   own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to
@@ -115,42 +91,6 @@
 
 ## Infrastructure
 
-- [ ] Make a clean checkout build. `pnpm run build` fails on a machine that has
-      never run the app: `geoip-lite` is loaded while Next collects page data
-      for `/api/v1/admin/geoip/refresh` and opens
-      `data/geoip/geoip-country.dat`, which `.gitignore` excludes and which only
-      exists after an authenticated MaxMind download triggered from the running
-      app. The error is `Failed to collect page data`, with no hint that GeoIP
-      data is the cause. This breaks every first-time contributor, every CI
-      image build, and it blocked the nova deploy on 2026-08-25 until 210 MB of
-      `.dat` files were copied over by hand. Smallest next step: stop pulling
-      `geoip-lite` into the module graph at build time — a lazy `await import`
-      inside the handler, or `export const dynamic = 'force-dynamic'` on that
-      route — then verify with `git clone` into a fresh directory,
-      `pnpm install && pnpm run build`, no `data/` present.
-- [ ] Make `VEXA_ALLOWED_ORIGINS` a runtime value. `next.config.ts` calls
-      `getAllowedOriginsFromEnv()` and bakes the result into
-      `serverActions.allowedOrigins` at build time, but `.env.example`,
-      `docs/DEPLOY-BEHIND-PROXY.md` and `docker-compose.yml` all present it as
-      runtime configuration. The published image therefore ships
-      `allowedOrigins: []` and every Server Action answers 403 behind any proxy
-      with a hostname of its own — the exact deployment the doc describes.
-      Confirmed on nova 2026-08-25 by reading the baked config out of
-      `.next/standalone/server.js`; the deploy works only because the build
-      itself is given the variable. Smallest next step: decide between reading
-      the origin at request time (a proxy check against the `Host`/forwarded
-      headers) and documenting the variable as build-time-only; either way the
-      Docker path needs to stop promising something it cannot deliver.
-- [ ] Fix `deploy/vexa.service`. Its `ExecStart=/usr/bin/env pnpm run start`
-      runs `next start`, which Next 16 rejects for this project —
-      `"next start" does not work with "output: standalone" configuration` — and
-      the unit sets no `HOSTNAME`, so the server binds `0.0.0.0` and publishes
-      itself on every interface of the host. On nova that briefly exposed port
-      3002 on the public IP, saved only by the firewall. Smallest next step:
-      point `ExecStart` at `node .next/standalone/server.js`, add
-      `Environment=HOSTNAME=127.0.0.1`, and document the standalone assembly
-      step (`public/`, `.next/static/` and `drizzle/` have to be copied into
-      `.next/standalone/`) that the unit silently assumes.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for
@@ -159,28 +99,6 @@
   because `eslint-config-next` pins 8.59.x. Re-checked 2026-07-26: unchanged —
   8.65.0 is still `latest` and both it and the 8.65.1-alpha.7 canary declare
   `typescript >=4.8.4 <6.1.0`. See ADR 0005.
-
-## Documentation
-
-- [ ] Stop advertising PostgreSQL and MySQL. `README.md` says the database is
-      switchable "via `DATABASE_URL`; no app code changes" and carries a
-      "Switching to PostgreSQL or MySQL" section, and `.env.example` repeats it.
-      The code supports neither: `lib/db/client.ts` imports `better-sqlite3` and
-      `drizzle-orm/better-sqlite3` directly, every schema file uses
-      `drizzle-orm/sqlite-core`, `drizzle.config.ts` pins `dialect: 'sqlite'`,
-      and all 30+ migrations are SQLite DDL. Someone who points `DATABASE_URL`
-      at Postgres gets a crash, not a database. Decide which: delete the claim,
-      or implement multi-dialect support behind it. Deleting is the honest
-      default until someone needs it — this is a public repository and the
-      promise is load-bearing for anyone choosing the project.
-- [ ] Correct the health endpoint in `docs/DEPLOY-BEHIND-PROXY.md`. It documents
-      `/api/health` returning `{ "ok": true }` in the nginx snippet, the
-      Kubernetes probes and the smoke-test command. The route is
-      `/api/v1/health` and it returns `{"data":{"status":"ok"}}`; `/api/health`
-      answers 404, verified on the nova deploy 2026-08-25. Anyone copying those
-      probes gets pods that never pass readiness. `Dockerfile` and
-      `deploy/k8s/deployment.yaml` already use the correct path, so only the doc
-      is wrong.
 
 ## Performance
 
@@ -240,19 +158,6 @@ order and information hierarchy before any code.
 - [ ] Generate copy-ready DNS examples from the inspected domain's real values
       instead of generic placeholders.
 
-## Limpieza de ramas
-
-- [ ] **15 ramas `dependabot/*` abiertas en origin.** Son PRs de bot, no
-      trabajo: borrarlas no pierde nada porque Dependabot las regenera si la
-      actualizacion sigue aplicando. Se dejaron el 2026-08-25 al limpiar el
-      resto de ramas, para no cerrar PRs sin mirarlos. O se mergean los que
-      sigan siendo validos, o se borran de golpe.
-
-```bash
-git ls-remote --heads origin | grep dependabot \
-  | sed 's|.*refs/heads/||' | xargs -n 20 git push origin --delete
-```
-
 ## Baseline gate debt
 
 Frozen when the repo adopted the shared `@busirocket/*` toolchain. Every gate
@@ -268,51 +173,42 @@ followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
 unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
-- [ ] Refine the thirteen deep-import exceptions in `eslint.config.ts`. Each
-      exists because importing the slice barrel would close a module cycle that
-      `no-circular` rejects, so `import/no-internal-modules` is turned off for
-      that file by name. It works and it is visible, but it is a standing
-      exception list that only grows, and the rule it disables is the one
-      enforcing "a slice is reached through its public API". The open question
-      is whether the cycles are telling us something the exception hides: four
-      of the pairs are mutual slice dependencies (`auth`/`api`/`install`,
-      `config`/`settings`, `ai/core`/`ai/settings`,
-      `types/ingest`/`utils/ingest`), and a mutual dependency between two slices
-      usually means a third thing wants extracting — the `ui`/`diagnostics`
-      cycle turned out to be `constants/metrics` plus
-      `types/metrics/MetricStatus` wanting to exist. Smallest next step: take
-      `config`/`settings` and find what each actually needs from the other; if
-      it is one symbol in each direction the extraction is small and the pattern
-      generalises, and if the slices are genuinely entangled, say so here and
-      the list stays as the honest answer. Do not widen it to a glob either way
-      — named entries are what keeps a new deep import failing.
+- [ ] Refine the remaining eleven deep-import exceptions in `eslint.config.ts`.
+      Each exists because importing the slice barrel would close a module cycle
+      that `no-circular` rejects, so `import/no-internal-modules` is turned off
+      for that file by name. The `config`/`settings` pair was resolved
+      2026-08-28 and proved the pattern: the row readers both slices needed
+      moved to `services/settings-store`, both former exceptions import barrels
+      now, and `no-circular` stays clean — see TODO_LOG. Three mutual pairs
+      remain (`auth`/`api`/`install`, `ai/core`/`ai/settings`,
+      `types/ingest`/`utils/ingest`); apply the same probe to each: find what
+      each side actually needs from the other, and extract the third thing if it
+      is a symbol or two. Do not widen the list to a glob — named entries are
+      what keeps a new deep import failing.
 
-- [ ] Finish the ESLint hardening: 193 of 886 violations are left. This is the
-      same work as adopting `@busirocket/eslint-config`, approached from the
-      other end — fix the source first, adopt the factories last, so the swap
-      becomes a no-op instead of an 886-violation switch. 693 are done and
-      committed (2026-08-27) across three passes: the type-level group, the
-      async-correctness group, and `only-throw-error` plus the React key and
-      nested-component rules. No rule was disabled and no `eslint-disable`
-      comment was added in any of them. What remains, in the order worth doing
-      it: 52 `jsx-a11y` violations in 11 files, which are real defects rather
-      than lint noise — a sortable table header rendered as a `div` with
-      `onClick` cannot be focused or activated from the keyboard and is
-      announced as nothing, and the fix is a real `<button type="button">`
-      carrying the same `className`; then 85 `react/jsx-no-leaked-render`, which
-      need reading one by one because the correct fix depends on the left
-      operand's type (a number needs `> 0`, a string an emptiness check, a
-      boolean `Boolean(x)`) and the autofix has already produced a type error
-      here; then 33 `no-unsafe-*` where an `any` escapes an untyped boundary;
-      then 21 `security/detect-non-literal-fs-filename`, each needing a
-      judgement about whether the path is reachable from outside the process. To
-      see the list, add `@busirocket/eslint-config@^0.7.3` and point
-      `eslint.config.ts` at its factories unfiltered. Delegating this to Codex
-      works, but only when each run is given an explicit short file list; asked
-      for a whole rule group it spends its time reading and never starts
-      writing.
+- [~] Finish the ESLint hardening: the a11y and leaked-render groups are left.
+  This is the same work as adopting `@busirocket/eslint-config`, approached from
+  the other end — fix the source first, adopt the factories last, so the swap
+  becomes a no-op. 693 were done through 2026-08-27; on 2026-08-28 the 31
+  `no-unsafe-*` findings outside the a11y file set were fixed and committed
+  (untyped `JSON.parse`/`res.json()` boundaries), and the 21
+  `security/detect-non-literal-fs-filename` findings were audited one by one:
+  every flagged path is built from constants, `process.cwd()`, env, or drizzle's
+  own migration journal — none is reachable from request input
+  (`applySqlFile`/`runMigrations` read repo-owned migration files,
+  `writeEvalArtifact` a constant dir, `updateDb` the env data dir, the
+  self-update log/audit fixed paths, tests their fixtures). The finding set is
+  documented false positives; resolve it at factory-adoption time as rule
+  configuration, not per-line disables. Still open: 52 `jsx-a11y` in 11 files
+  and 85 `react/jsx-no-leaked-render` in 38 files (Codex batches with explicit
+  file lists were in flight 2026-08-28; a run given a whole rule group reads
+  forever and never writes). The scratch `eslint.audit.config.ts` at the repo
+  root enumerates all four groups against the base config; delete it (and its
+  `tsconfig.json` exclude entry) when the rules land in `eslint.config.ts`.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
       dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`
-      ever ships a version that no longer needs it.
+      ever ships a version that no longer needs it. Re-checked 2026-08-28:
+      unchanged — `@lhci/cli` latest is still 0.15.1, pinning
+      `lighthouse@12.6.1`; the override stays.
