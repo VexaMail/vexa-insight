@@ -6,6 +6,33 @@
 
 ### 2026-08
 
+- [x] 2026-08-28 — **Artificial Intelligence:** Confirm whether OpenAI's
+      reasoning models accept `response_format: { type: 'json_object' }`.
+  - Result: they do not, on chat completions. OpenAI support (quoted in the
+    o4-mini structured-output community thread) states JSON object/schema
+    response formats are "not compatible with these models"; users get
+    `'response_format' of type 'json_schema' is not supported` and equivalent
+    failures, and the models are steered to the Responses API. JSON mode now
+    rides the same legacy-model branch as `max_tokens`/`temperature` in
+    `createOpenAiAdapter`, so reasoning models stop failing with HTTP 400; the
+    prompts already demand raw JSON and the parser strips fences.
+  - Evidence: `test/createOpenAiAdapter.test.ts` asserts JSON mode present for
+    `gpt-4o` and absent for `gpt-5`; 2/2 pass. No metered call was spent.
+    Commit: `fix(ai): stop sending JSON mode to OpenAI reasoning models`.
+- [x] 2026-08-28 — **Artificial Intelligence:** Check whether the Gemini and
+      OpenRouter adapters need the sampling-parameter gate.
+  - Result: Gemini yes, OpenRouter no. Google's Gemini 3 developer guide says to
+    keep `temperature` at its default 1.0 ("may lead to unexpected behavior,
+    such as looping or degraded performance" below 1.0) — the field is accepted,
+    not rejected, so this is an output-quality gate: `createGeminiAdapter` now
+    sends `temperature` only to the `gemini-1`/ `gemini-2` families.
+    OpenRouter's API reference states unsupported parameters "are ignored", and
+    its `/api/v1/models` metadata confirms it: `supported_parameters` omits
+    `temperature` for `anthropic/claude-*-5`, `openai/o3`/`gpt-5.6-*` while
+    listing it for `google/gemini-3.7-flash` — so the pass-through is already
+    safe and no deny-list is needed.
+  - Evidence: `test/createGeminiAdapter.test.ts` (2/2), type-check clean.
+    Commit: `fix(ai): keep temperature off Gemini 3 requests`.
 - [x] 2026-08-28 — **Security:** Add a `.dockerignore`, and make the Docker
       build actually work.
   - Result: `.dockerignore` covers `data/`, `.env*`, `.next/`, `node_modules/`,

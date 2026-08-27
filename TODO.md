@@ -25,32 +25,6 @@
 
 ## Artificial Intelligence
 
-- [ ] Confirm that OpenAI's reasoning models accept
-      `response_format: { type: 'json_object' }`. `createOpenAiAdapter` sends it
-      on every call and every prompt here depends on JSON mode, so if the
-      o-series and GPT-5 reject it those models are still unusable despite the
-      2026-07-26 parameter gate. Unresolved that day: the sources consulted
-      confirmed the `max_tokens`/`temperature` split for reasoning models but
-      said nothing definite about JSON mode, and `platform.openai.com` answered
-      403 to an unauthenticated fetch. Same sources also note reasoning models
-      are steered towards the Responses API rather than chat completions, which
-      may be the real answer here. Smallest next step: read the
-      structured-outputs guide with an account, or make one cheap metered call
-      against a reasoning model.
-- [ ] Check whether the Gemini and OpenRouter adapters need the same
-      sampling-parameter gate. Both pass `temperature` through unconditionally.
-      Checked partially on 2026-07-26 and left open rather than guessed at:
-      Gemini takes the field in `generationConfig` and 2.5 Flash documents it
-      (default 1, range 0-2), but nothing found covers the 3.x thinking models,
-      and at least one upstream tracker treats per-model temperature support as
-      varying — so "Gemini accepts it everywhere" is an assumption, not a
-      finding. OpenRouter is a different shape entirely: it proxies models from
-      every vendor, including the Claude 5 and GPT-5 families already known to
-      reject the field, so the allow-list used for the direct providers would
-      strip `temperature` from nearly everything; it more likely wants a
-      deny-list keyed on the upstream family in the model slug. Smallest next
-      step: read Gemini's current model-parameter table for the 3.x line, and
-      decide the OpenRouter shape before writing any of it.
 - [ ] Decide whether the diagnostics prompt should stop the model emitting
       markdown fences. The rewritten prompt still says "No markdown fences", and
       the parser strips them (`parseError` was null on all 10 eval runs), but 2
