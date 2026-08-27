@@ -94,8 +94,7 @@ definitely not_, this project exists for you.
 - **Idempotent processing** keyed on `report_id`; duplicates are skipped.
 - **Three-layer data model:** `RawReport` (audit), `NormalizedEvent`
   (query/analytics), optional `AggregatedMetric` (future precomputed metrics).
-- **SQLite by default** — no extra setup. Switch to PostgreSQL or MySQL via
-  `DATABASE_URL`; no app code changes.
+- **SQLite** — no extra setup, one file to back up.
 - **Dashboard:** KPI cards, authentication trend chart, SPF/DKIM breakdown,
   disposition metrics, top sending IPs, ingestion health.
 - **First-run web installer** at `/install` with permanent lockout after the
@@ -132,8 +131,7 @@ definitely not_, this project exists for you.
   API key.
 - **DMARC ingestion pipeline:** fetch attachments from IMAP → parse XML
   (including from `.zip`/`.gz`) → normalize → persist with idempotency.
-- **Database abstraction:** Drizzle ORM with SQLite by default and support for
-  PostgreSQL/MySQL via `DATABASE_URL`.
+- **Database:** Drizzle ORM on SQLite (`better-sqlite3`).
 
 **Data model**
 
@@ -185,7 +183,7 @@ docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
 
 | Variable                                                        | Required    | Description                                                                                                                                                                |
 | --------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`                                                  | No          | Default `file:./data/vexa.db`. Set to a PostgreSQL/MySQL connection string and run `pnpm run db:migrate`.                                                                  |
+| `DATABASE_URL`                                                  | No          | SQLite file path, default `file:./data/vexa.db`.                                                                                                                           |
 | `SECRET_KEY`                                                    | Recommended | Min 32 characters. Used for admin API auth (`X-API-Key` / `Authorization: Bearer`). Left as `CHANGE_ME`, admin API is disabled until you set it via installer or Settings. |
 | `IMAP_SERVER` / `IMAP_PORT` / `IMAP_USERNAME` / `IMAP_PASSWORD` | No          | IMAP credentials. Can also be set in the Settings UI.                                                                                                                      |
 | `INGESTION_INTERVAL_MINUTES`                                    | No          | Scheduler interval (default `60`).                                                                                                                                         |
@@ -259,16 +257,6 @@ the in-Node scheduler starts on server startup. It runs every
 
 ---
 
-## Switching to PostgreSQL or MySQL
-
-1. Set `DATABASE_URL` to your connection string.
-2. Run `pnpm run db:migrate`.
-
-No app code changes required. Recommended for production at scale and
-multi-process deployments.
-
----
-
 ## Updating
 
 The dashboard checks GitHub once per day for new stable releases and shows an
@@ -300,8 +288,8 @@ Migrations run on boot, but existing installs must run the one-time
 ## Roadmap
 
 - **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
-  dashboard analytics, SQLite default, optional PostgreSQL/MySQL, web installer,
-  recovery CLI, self-update flow.
+  dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
+  flow.
 - **Phase 2:** Outbound webhook / Slack / Teams alerts, Prometheus metrics,
   OpenAPI spec, forensic reports (RUF).
 - **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation

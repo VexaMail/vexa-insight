@@ -105,8 +105,7 @@ docker compose up -d
 ```
 
 The container's entrypoint runs migrations before the server starts.
-Volume-mount `./data` (default) or point `DATABASE_URL` at your PostgreSQL/MySQL
-instance so the database survives the restart.
+Volume-mount `./data` (default) so the SQLite database survives the restart.
 
 ## Upgrading from source
 
