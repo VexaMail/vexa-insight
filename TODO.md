@@ -287,28 +287,30 @@ is what those passes did not reach.
       the list stays as the honest answer. Do not widen it to a glob either way
       — named entries are what keeps a new deep import failing.
 
-- [!] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
-  `@busirocket/eslint-config` factories. It assembles `eslint-config-next` plus
-  boundaries, code-policy, promise, security, sonarjs, unicorn and
-  unused-imports by hand, including workarounds for "Cannot redefine plugin".
-  Attempted 2026-08-27 with `@busirocket/eslint-config@0.7.3` and reverted;
-  blocked on source work, not on the config. The swap itself is easy — what it
-  costs is the point: adopting the factories' real rule surface produces 886
-  violations, and holding the old surface means filtering every new rule back
-  out, which buys the indirection of a shared config with none of its hardening.
-  Of those, 252 are auto-fixable but `--fix` is not safe here: applied across 87
-  files it produced three type errors by itself (`no-unnecessary-type-assertion`
-  stripped an `as string | null` that TanStack's `row.getValue` genuinely needs;
-  `jsx-no-leaked-render` turned `checked={a && !b}` into a ternary yielding
-  `null`), and the other 85 `jsx-no-leaked-render` rewrites change render output
-  for falsy values in ways type-check cannot validate. The remaining 634 are
-  manual, led by `restrict-template-expressions` (251), `require-await` (69),
-  `no-unnecessary-condition` (68) and `no-unnecessary-type-conversion` (51), and
-  include 49 real accessibility findings (`click-events-have-key-events` 22,
-  `no-static-element-interactions` 22, `label-has-associated-control` 5) worth
-  fixing on their own merits whether or not the config moves. Smallest next
-  step: adopt the factories one rule group at a time, each with its own diff,
-  rather than as a single 886-violation switch.
+- [ ] Finish the ESLint hardening: 193 of 886 violations are left. This is the
+      same work as adopting `@busirocket/eslint-config`, approached from the
+      other end — fix the source first, adopt the factories last, so the swap
+      becomes a no-op instead of an 886-violation switch. 693 are done and
+      committed (2026-08-27) across three passes: the type-level group, the
+      async-correctness group, and `only-throw-error` plus the React key and
+      nested-component rules. No rule was disabled and no `eslint-disable`
+      comment was added in any of them. What remains, in the order worth doing
+      it: 52 `jsx-a11y` violations in 11 files, which are real defects rather
+      than lint noise — a sortable table header rendered as a `div` with
+      `onClick` cannot be focused or activated from the keyboard and is
+      announced as nothing, and the fix is a real `<button type="button">`
+      carrying the same `className`; then 85 `react/jsx-no-leaked-render`, which
+      need reading one by one because the correct fix depends on the left
+      operand's type (a number needs `> 0`, a string an emptiness check, a
+      boolean `Boolean(x)`) and the autofix has already produced a type error
+      here; then 33 `no-unsafe-*` where an `any` escapes an untyped boundary;
+      then 21 `security/detect-non-literal-fs-filename`, each needing a
+      judgement about whether the path is reachable from outside the process. To
+      see the list, add `@busirocket/eslint-config@^0.7.3` and point
+      `eslint.config.ts` at its factories unfiltered. Delegating this to Codex
+      works, but only when each run is given an explicit short file list; asked
+      for a whole rule group it spends its time reading and never starts
+      writing.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
