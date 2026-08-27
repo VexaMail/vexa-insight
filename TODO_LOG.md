@@ -6,6 +6,27 @@
 
 ### 2026-08
 
+- [x] 2026-08-27 — **Infrastructure:** Stop the systemd unit reporting every
+      restart as a crash.
+  - Symptom seen on nova: each restart logged
+    `vexa.service: Main process exited, code=exited, status=143/n/a` followed by
+    `Failed with result 'exit-code'`, so the unit sat in a failed state after a
+    perfectly normal stop.
+  - Cause: not an application bug. `next/dist/server/lib/start-server.js`
+    finishes its cleanup and then calls `process.exit(143)` for `SIGTERM` on
+    purpose, "so that Node.js treats this as a signal termination, not a normal
+    exit". `deploy/vexa.service` set `KillSignal=SIGTERM` without declaring that
+    exit code as success. Adding an app-level signal handler would have been the
+    wrong fix: it would race Next's own graceful shutdown.
+  - Result: `SuccessExitStatus=143` added to `deploy/vexa.service` and to the
+    live unit on nova.
+  - Evidence: after `daemon-reload` and `systemctl restart vexa`, the journal
+    shows only `Stopped` / `Started` with no `Failed` line, and `systemctl show`
+    reports `Result=success`, `ActiveState=active`. Health endpoint,
+    loopback-only bind and public `/login` (200) all re-checked.
+  - Files: `deploy/vexa.service`, plus `/etc/systemd/system/vexa.service` on
+    nova (backed up alongside as `.bak-20260827`).
+
 - [x] 2026-08-26 — **Ingestion:** Make "move to trash after process" actually
       move the message to the trash.
   - Symptom found while checking the nova mailbox: `handleMoveToTrash` called

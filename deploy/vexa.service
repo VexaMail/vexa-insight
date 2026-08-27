@@ -35,6 +35,14 @@ KillSignal=SIGTERM
 TimeoutStopSec=30
 LimitNOFILE=65535
 
+; Next.js runs its graceful shutdown on SIGTERM and then exits 128+15 on
+; purpose, so that Node reports a signal termination rather than a normal exit.
+; Without this line systemd reads that 143 as a crash: every `systemctl stop`,
+; every `restart`, and every dashboard-triggered update leaves the unit in
+; "Failed with result 'exit-code'", which is misleading in `systemctl status`
+; and false-alarms any monitoring that watches unit state.
+SuccessExitStatus=143
+
 ; Hardening (safe defaults – tighten as your environment allows)
 NoNewPrivileges=true
 PrivateTmp=true

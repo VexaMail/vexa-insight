@@ -110,6 +110,13 @@ and this project adheres to
 
 ### Fixed
 
+- **The systemd unit no longer reports every restart as a crash.** Next.js runs
+  its graceful shutdown on `SIGTERM` and then exits `143` deliberately, so Node
+  reports a signal termination rather than a normal exit. `deploy/vexa.service`
+  did not declare that as success, so every `systemctl stop`, every restart and
+  every dashboard-triggered update left the unit in
+  `Failed with result 'exit-code'` — misleading in `systemctl status` and a
+  false alarm for anything monitoring unit state. Added `SuccessExitStatus=143`.
 - **"Move to trash after process" now moves the message to the trash.** The
   handler called ImapFlow's `messageDelete()`, which issues `EXPUNGE`, so the
   message was destroyed rather than moved and the trash folder stayed empty. It
