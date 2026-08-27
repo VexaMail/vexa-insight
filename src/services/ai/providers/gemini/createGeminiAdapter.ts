@@ -1,3 +1,4 @@
+import { supportsGeminiTemperature } from '@/utils/ai'
 import type {
   AIProviderAdapter,
   ProviderRawResponse,
@@ -8,6 +9,10 @@ import { resolveEffectiveModel } from '../shared/resolveEffectiveModel'
 
 /**
  * Google Gemini adapter using the generateContent REST API.
+ *
+ * `temperature` is only sent to the pre-3 families: Gemini 3 accepts the
+ * field but its guide warns that overriding the default 1.0 can loop or
+ * degrade reasoning output, so those models get the provider default.
  */
 export function createGeminiAdapter(
   apiKey: string,
@@ -34,7 +39,9 @@ export function createGeminiAdapter(
           contents: [{ parts: [{ text: userPrompt }] }],
           generationConfig: {
             maxOutputTokens: options.maxTokens,
-            temperature: options.temperature,
+            ...(supportsGeminiTemperature(resolvedModel)
+              ? { temperature: options.temperature }
+              : {}),
             responseMimeType: 'application/json',
           },
         }),
