@@ -268,36 +268,47 @@ followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
 unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
+- [ ] Refine the thirteen deep-import exceptions in `eslint.config.ts`. Each
+      exists because importing the slice barrel would close a module cycle that
+      `no-circular` rejects, so `import/no-internal-modules` is turned off for
+      that file by name. It works and it is visible, but it is a standing
+      exception list that only grows, and the rule it disables is the one
+      enforcing "a slice is reached through its public API". The open question
+      is whether the cycles are telling us something the exception hides: four
+      of the pairs are mutual slice dependencies (`auth`/`api`/`install`,
+      `config`/`settings`, `ai/core`/`ai/settings`,
+      `types/ingest`/`utils/ingest`), and a mutual dependency between two slices
+      usually means a third thing wants extracting — the `ui`/`diagnostics`
+      cycle turned out to be `constants/metrics` plus
+      `types/metrics/MetricStatus` wanting to exist. Smallest next step: take
+      `config`/`settings` and find what each actually needs from the other; if
+      it is one symbol in each direction the extraction is small and the pattern
+      generalises, and if the slices are genuinely entangled, say so here and
+      the list stays as the honest answer. Do not widen it to a glob either way
+      — named entries are what keeps a new deep import failing.
+
 - [!] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
   `@busirocket/eslint-config` factories. It assembles `eslint-config-next` plus
   boundaries, code-policy, promise, security, sonarjs, unicorn and
   unused-imports by hand, including workarounds for "Cannot redefine plugin".
   Attempted 2026-08-27 with `@busirocket/eslint-config@0.7.3` and reverted;
-  blocked on the source work below, not on the config.
-
-      The swap itself is easy. What it costs is the point: adopting the
-      factories' real rule surface produces **886 violations**, and holding the
-      old surface means filtering every new rule back out, which buys the
-      indirection of a shared config with none of its hardening. Measured:
-
-      - 252 auto-fixable, but `--fix` is not safe here. Applied across 87
-        files it produced three type errors on its own
-        (`no-unnecessary-type-assertion` stripped an `as string | null` that
-        TanStack's `row.getValue` genuinely needs; `jsx-no-leaked-render`
-        turned `checked={a && !b}` into a ternary yielding `null`). The other
-        85 `jsx-no-leaked-render` rewrites change render output for falsy
-        values and type-check cannot validate them — they need reading.
-      - 634 manual, led by `restrict-template-expressions` (251),
-        `require-await` (69), `no-unnecessary-condition` (68),
-        `no-unnecessary-type-conversion` (51). Among them 49 real
-        accessibility findings (`click-events-have-key-events` 22,
-        `no-static-element-interactions` 22, `label-has-associated-control` 5)
-        that are worth fixing on their own merits, config migration or not.
-
-      Smallest next step: treat the accessibility findings as their own task,
-      independent of this entry; they are genuine defects rather than lint
-      noise. Then adopt the factories rule-group by rule-group, each with its
-      own diff, rather than as one 886-violation switch.
+  blocked on source work, not on the config. The swap itself is easy — what it
+  costs is the point: adopting the factories' real rule surface produces 886
+  violations, and holding the old surface means filtering every new rule back
+  out, which buys the indirection of a shared config with none of its hardening.
+  Of those, 252 are auto-fixable but `--fix` is not safe here: applied across 87
+  files it produced three type errors by itself (`no-unnecessary-type-assertion`
+  stripped an `as string | null` that TanStack's `row.getValue` genuinely needs;
+  `jsx-no-leaked-render` turned `checked={a && !b}` into a ternary yielding
+  `null`), and the other 85 `jsx-no-leaked-render` rewrites change render output
+  for falsy values in ways type-check cannot validate. The remaining 634 are
+  manual, led by `restrict-template-expressions` (251), `require-await` (69),
+  `no-unnecessary-condition` (68) and `no-unnecessary-type-conversion` (51), and
+  include 49 real accessibility findings (`click-events-have-key-events` 22,
+  `no-static-element-interactions` 22, `label-has-associated-control` 5) worth
+  fixing on their own merits whether or not the config moves. Smallest next
+  step: adopt the factories one rule group at a time, each with its own diff,
+  rather than as a single 886-violation switch.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
