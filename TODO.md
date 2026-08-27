@@ -268,11 +268,37 @@ followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
 unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
-- [ ] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
-      `@busirocket/eslint-config` factories. It assembles `eslint-config-next`
-      plus boundaries, code-policy, promise, security, sonarjs, unicorn and
-      unused-imports by hand, including workarounds for "Cannot redefine
-      plugin". Left as-is during adoption, same as verticagtm and rocket-agents.
+- [!] Replace the 391-line hand-rolled `eslint.config.ts` with the shared
+  `@busirocket/eslint-config` factories. It assembles `eslint-config-next` plus
+  boundaries, code-policy, promise, security, sonarjs, unicorn and
+  unused-imports by hand, including workarounds for "Cannot redefine plugin".
+  Attempted 2026-08-27 with `@busirocket/eslint-config@0.7.3` and reverted;
+  blocked on the source work below, not on the config.
+
+      The swap itself is easy. What it costs is the point: adopting the
+      factories' real rule surface produces **886 violations**, and holding the
+      old surface means filtering every new rule back out, which buys the
+      indirection of a shared config with none of its hardening. Measured:
+
+      - 252 auto-fixable, but `--fix` is not safe here. Applied across 87
+        files it produced three type errors on its own
+        (`no-unnecessary-type-assertion` stripped an `as string | null` that
+        TanStack's `row.getValue` genuinely needs; `jsx-no-leaked-render`
+        turned `checked={a && !b}` into a ternary yielding `null`). The other
+        85 `jsx-no-leaked-render` rewrites change render output for falsy
+        values and type-check cannot validate them — they need reading.
+      - 634 manual, led by `restrict-template-expressions` (251),
+        `require-await` (69), `no-unnecessary-condition` (68),
+        `no-unnecessary-type-conversion` (51). Among them 49 real
+        accessibility findings (`click-events-have-key-events` 22,
+        `no-static-element-interactions` 22, `label-has-associated-control` 5)
+        that are worth fixing on their own merits, config migration or not.
+
+      Smallest next step: treat the accessibility findings as their own task,
+      independent of this entry; they are genuine defects rather than lint
+      noise. Then adopt the factories rule-group by rule-group, each with its
+      own diff, rather than as one 886-violation switch.
+
 - [ ] Move the root-level source directories under `src/`. `actions/`,
       `components/`, `constants/`, `contexts/`, `data/`, `formatters/`,
       `hooks/`, `lib/`, `mappers/`, `services/`, `types/`, `utils/` and
