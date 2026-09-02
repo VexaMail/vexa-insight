@@ -141,6 +141,17 @@ app is listening and the DB is reachable. Use it for:
 - Kubernetes `livenessProbe` and `readinessProbe`.
 - External monitors (UptimeRobot, Pingdom, etc.).
 
+Point external monitors at the **public hostname**, not at the app's port. The
+endpoint only reports the app and its database; it stays green when the proxy or
+tunnel in front of it is down, so a probe that hits the loopback port sees
+nothing wrong while every visitor gets an error.
+
+If the proxy is a Cloudflare Tunnel run by a package-installed `cloudflared`,
+reference it in the systemd unit as `/usr/bin/cloudflared`, never
+`/usr/local/bin/cloudflared`. The rpm and deb packages only symlink the
+`/usr/local/bin` path, and an upgrade removes that symlink, which leaves the
+unit failing with `status=203/EXEC` until someone notices.
+
 Example k8s probe:
 
 ```yaml

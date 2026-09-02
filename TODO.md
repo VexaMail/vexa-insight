@@ -74,17 +74,6 @@
   8.65.0 is still `latest` and both it and the 8.65.1-alpha.7 canary declare
   `typescript >=4.8.4 <6.1.0`. See ADR 0005.
 
-- [ ] The live instance had no external uptime check: its Cloudflare Tunnel unit
-      crash-looped for 29 hours (2026-08-31 to 2026-09-02) while the app and its
-      `/api/v1/health` stayed green, because a `cloudflared` rpm upgrade removes
-      the `/usr/local/bin/cloudflared` symlink that the unit's `ExecStart` used
-      (the old package's `postuninstall` runs after the new one's
-      `postinstall`). Fixed on the box by pointing the unit at
-      `/usr/bin/cloudflared`. Smallest next steps: add a public-hostname probe
-      (external monitor, not the loopback health endpoint), and note in
-      `docs/DEPLOY-BEHIND-PROXY.md` that a package-installed `cloudflared` must
-      be referenced by its package path.
-
 ## Performance
 
 - [-] Stop re-fetching envelopes for folders that never carry DMARC mail.

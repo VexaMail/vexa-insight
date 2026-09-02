@@ -4,6 +4,24 @@
 
 ## 2026
 
+### 2026-09
+
+- [x] 2026-09-02 — **Infrastructure:** Live instance unreachable for 29 hours
+      while the app stayed healthy; no external uptime check.
+  - Cause: the nightly `cloudflared` rpm upgrade (2026.8.2 to 2026.8.3) removed
+    the `/usr/local/bin/cloudflared` symlink the tunnel unit's `ExecStart` used
+    (the old package's `postuninstall` runs after the new one's `postinstall`),
+    so the unit crash-looped with `status=203/EXEC` while the loopback
+    `/api/v1/health` stayed green.
+  - Result: tunnel units repointed to `/usr/bin/cloudflared`; a systemd timer on
+    the host now probes the public hostname every 5 minutes through Cloudflare,
+    restarts the tunnel unit on the first failure and mails root on failure and
+    recovery (mail delivery verified in the exim log);
+    `docs/DEPLOY-BEHIND-PROXY.md` tells operators to monitor the public hostname
+    and to reference the package path.
+  - Evidence: public health endpoint 200 through the tunnel; probe run exits 0;
+    timer listed by `systemctl list-timers`.
+
 ### 2026-08
 
 - [x] 2026-08-28 — **Baseline gate debt:** Finish the ESLint hardening source
