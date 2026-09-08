@@ -1,24 +1,17 @@
-import type { getDb } from '@/lib/db'
 import { rawReports } from '@/lib/db'
 import type { ParseResult } from '@/types/dmarc'
-import { eq } from 'drizzle-orm'
+import type { ReportTransaction } from '@/types/reports'
 
 /**
- * Inserts the raw report row. Returns null when the report id is already
- * stored, which is what makes the ingest idempotent.
+ * Inserts the raw report row inside the ingest transaction. Returns null when
+ * another ingest stored the same report_id first: the unique constraint turns
+ * the race into a no-op instead of a thrown constraint error.
  */
-export async function insertRawReport(
-  db: ReturnType<typeof getDb>,
+export function insertRawReport(
+  tx: ReportTransaction,
   raw: ParseResult['rawReport'],
-): Promise<number | null> {
-  const existing = await db
-    .select({ id: rawReports.id })
-    .from(rawReports)
-    .where(eq(rawReports.reportId, raw.reportId))
-    .limit(1)
-  if (existing.length > 0) return null
-
-  const inserted = await db
+): number | null {
+  const inserted = tx
     .insert(rawReports)
     .values({
       reportId: raw.reportId,
@@ -30,10 +23,9 @@ export async function insertRawReport(
       sourceMessageId: raw.sourceMessageId,
       ingestedAt: new Date(),
     })
+    .onConflictDoNothing({ target: rawReports.reportId })
     .returning({ id: rawReports.id })
+    .all()
 
-  const rawReportId = inserted[0]?.id
-  if (rawReportId == null) throw new Error('Failed to insert raw report')
-
-  return rawReportId
+  return inserted[0]?.id ?? null
 }
