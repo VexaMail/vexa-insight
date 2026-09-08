@@ -7,6 +7,7 @@ import {
   ProcessedEmailsTable,
 } from '@/components/ingest'
 import { PageContainer, PageHeader } from '@/components/shell'
+import { requirePageSession } from '@/services/auth'
 import { getIngestPageData } from '@/services/ingest'
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default async function IngestPage({
 }: {
   readonly searchParams: Promise<{ jobId?: string; hideEmpty?: string }>
 }) {
+  const session = await requirePageSession()
   const params = await searchParams
   const jobId = params.jobId ? parseInt(params.jobId, 10) : undefined
 
@@ -57,7 +59,10 @@ export default async function IngestPage({
       >
         <CronsSection
           ingestionIntervalMinutes={settings?.ingestionIntervalMinutes ?? 60}
-          initialApiKey={settings?.secretKey ?? ''}
+          // The shared key drives admin-only actions; never ship it to viewers.
+          initialApiKey={
+            session.user.role === 'admin' ? (settings?.secretKey ?? '') : ''
+          }
           isHistoricalJobContext={isHistoricalJobContext}
           jobId={effectiveJobId}
           jobRunsNode={

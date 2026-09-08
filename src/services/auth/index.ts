@@ -15,6 +15,7 @@ export {
   provisionUserFromUserInfo,
 } from './oidc'
 export { requireActionPermission } from './requireActionPermission'
+export { requirePageSession } from './requirePageSession'
 export { requirePermission } from './requirePermission'
 export { revokeUserSessions } from './revokeUserSessions'
 export { verifyPassword } from './verifyPassword'

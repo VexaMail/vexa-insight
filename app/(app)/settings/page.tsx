@@ -1,10 +1,15 @@
 import { SettingsConfigForm } from '@/components/settings'
 import { PageContainer, PageHeader } from '@/components/shell'
+import { requirePageSession } from '@/services/auth'
 import { getSettingsForAdmin } from '@/services/settings'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await requirePageSession()
+  if (session.user.role !== 'admin') redirect('/')
+
   const settings = getSettingsForAdmin()
 
   return (
