@@ -8,7 +8,7 @@ export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {
-      '@': path.resolve(import.meta.dirname, '.'),
+      '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
   test: {

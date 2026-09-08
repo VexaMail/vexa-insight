@@ -6,6 +6,15 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Fix the a11y Vitest config alias.
+  - Cause: `vitest.a11y.config.ts` mapped `@` to the repository root; the source
+    moved under `src/` on 2026-08-27 and the main config was updated, the a11y
+    one was not, so every a11y test failed to resolve `@/components/...`.
+  - Result: alias points at `./src`, matching `vitest.config.mts`.
+  - Evidence: `pnpm test:a11y` before: 17 files failed, no tests; after: 17
+    files, 47 tests passed.
+  - Files: `vitest.a11y.config.ts`.
+
 - [x] 2026-09-02 — **Infrastructure:** Live instance unreachable for 29 hours
       while the app stayed healthy; no external uptime check.
   - Cause: the nightly `cloudflared` rpm upgrade (2026.8.2 to 2026.8.3) removed

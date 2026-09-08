@@ -192,13 +192,6 @@ is what those passes did not reach.
       `eslint.audit.config.ts` plus its `tsconfig.json` exclude and
       `allowDefaultProject` entries.
 
-- [ ] Fix the a11y Vitest config alias: it maps `@` to the repository root
-      instead of `src/`, so `vitest.a11y.config.ts` resolves imports differently
-      from the app and the main test config. Noticed 2026-08-28 by a Codex
-      verification run that had to correct the alias in a disposable mirror
-      before component checks would run. Smallest next step: point the alias at
-      `./src` and run the a11y suite.
-
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
       dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`
