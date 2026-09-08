@@ -1,16 +1,17 @@
-import { getDb, jobRuns } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { getConfig } from '@/services/config'
-import { fireAndForgetDispatch } from '@/services/notifications'
-import type { EmailProgressPayload } from '@/types/dashboard'
-import { eq } from 'drizzle-orm'
+import { beginPollStatus } from './beginPollStatus'
 import { createJobEventBuffer } from './createJobEventBuffer'
 import { createPollStatusCoalescer } from './createPollStatusCoalescer'
-import { getPollStatusFromDb } from './getPollStatusFromDb'
-import { processAccount } from './processAccount'
+import { finalizeJobRun } from './finalizeJobRun'
+import { finishPollStatus } from './finishPollStatus'
+import type { IngestJobTotals } from './IngestJobTotals'
+import { notifyIngestFailure } from './notifyIngestFailure'
+import { processAllAccounts } from './processAllAccounts'
 import { repairStuckEvents } from './repairStuckEvents'
 import type { RunIngestJobOptions } from './RunIngestJobOptions'
-import { setPollStatusInDb } from './setPollStatusInDb'
 import { startHeartbeat } from './startHeartbeat'
+import { startJobRun } from './startJobRun'
 
 /**
  * Runs IMAP fetch+ingest for all configured accounts. Uses config.ingestionDaysBack,
@@ -25,135 +26,48 @@ export async function runIngestJob(options: RunIngestJobOptions = {}): Promise<{
 }> {
   const config = getConfig()
   const fullRescan = options.fullRescan === true
-  // getSinceDate() maps 0 to the epoch, i.e. no date filter at all.
-  const days = fullRescan ? 0 : config.ingestionDaysBack
-  const accounts = config.imapAccounts
 
   await repairStuckEvents()
 
   const db = getDb()
-  const insertedRows = await db
-    .insert(jobRuns)
-    .values({
-      runAt: new Date(),
-      success: true,
-      processed: 0,
-      ingested: 0,
-      errorCount: 0,
-    })
-    .returning({ id: jobRuns.id })
-  const jobRunId = insertedRows[0]?.id
-
-  await setPollStatusInDb({
-    isRunning: true,
-    lastCheck: new Date(),
-    currentProcessed: 0,
-    totalEmails: 0,
-    abortRequested: false,
-    activeJobRunId: jobRunId ?? null,
-    statusText: fullRescan
-      ? 'Connecting to mail servers (full rescan)...'
-      : 'Connecting to mail servers...',
-  })
-
-  let processed = 0
-  let ingested = 0
-  let skipped = 0
-  const errors: string[] = []
-  let totalProcessed = 0
+  const jobRunId = await startJobRun(db)
+  await beginPollStatus(jobRunId, fullRescan)
 
   const coalescer = createPollStatusCoalescer()
-
-  const getAbortRequested = async (): Promise<boolean> => {
-    const r = await getPollStatusFromDb()
-    return r.abortRequested
-  }
-
   const eventBuffer =
-    jobRunId !== undefined ? createJobEventBuffer(jobRunId) : null
-  const onEmailProgress = async (
-    payload: EmailProgressPayload,
-  ): Promise<void> => {
-    if (!eventBuffer) return
-    await eventBuffer.add(payload)
-  }
-
+    jobRunId === undefined ? null : createJobEventBuffer(jobRunId)
   const heartbeatInterval = startHeartbeat()
+  const totals: IngestJobTotals = {
+    processed: 0,
+    ingested: 0,
+    skipped: 0,
+    errors: [],
+  }
 
   try {
-    for (let ai = 0; ai < accounts.length; ai++) {
-      const account = accounts[ai]
-      if (!account) continue
-      if (await getAbortRequested()) break
-
-      const result = await processAccount(
-        account,
-        ai,
-        accounts.length,
-        days,
-        totalProcessed,
-        getAbortRequested,
-        onEmailProgress,
-        coalescer,
-        jobRunId,
-      )
-
-      processed += result.processed
-      ingested += result.ingested
-      skipped += result.skipped
-      totalProcessed += result.processed
-      for (const err of result.errors) {
-        errors.push(err)
-        console.error('[ingest]', err)
-      }
-    }
+    await processAllAccounts({
+      accounts: config.imapAccounts,
+      // getSinceDate() maps 0 to the epoch, i.e. no date filter at all.
+      days: fullRescan ? 0 : config.ingestionDaysBack,
+      totals,
+      coalescer,
+      eventBuffer,
+      jobRunId,
+    })
   } finally {
     clearInterval(heartbeatInterval)
     if (eventBuffer) await eventBuffer.flush()
     await coalescer.flush()
-    const errorCount = errors.length
-    await setPollStatusInDb({
-      isRunning: false,
-      lastCheck: new Date(),
-      abortRequested: false,
-      processingEmails: 0,
-      etaMs: 0,
-      activeJobRunId: null,
-      statusText: null,
-    })
-    if (jobRunId !== undefined) {
-      try {
-        await db
-          .update(jobRuns)
-          .set({
-            success: errorCount === 0,
-            processed,
-            ingested,
-            errorCount,
-            completedAt: new Date(),
-          })
-          .where(eq(jobRuns.id, jobRunId))
-      } catch (updateErr) {
-        console.error('[ingest] failed to update job run:', updateErr)
-      }
-    }
+    await finishPollStatus()
+    await finalizeJobRun(db, jobRunId, totals)
   }
 
-  if (errors.length > 0) {
-    fireAndForgetDispatch('ingest.failed', {
-      jobRunId: jobRunId ?? null,
-      processed,
-      ingested,
-      skipped,
-      errorCount: errors.length,
-      errors: errors.slice(0, 10),
-    })
-  }
+  notifyIngestFailure(jobRunId, totals)
 
   return {
-    processed,
-    ingested,
-    skipped,
-    errorCount: errors.length,
+    processed: totals.processed,
+    ingested: totals.ingested,
+    skipped: totals.skipped,
+    errorCount: totals.errors.length,
   }
 }

@@ -440,14 +440,6 @@
       "count": 1
     }
   },
-  "src/components/reports/reportsColumns.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
   "src/components/settings/AdvancedSection.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -502,12 +494,6 @@
     }
   },
   "src/components/settings/ModelCombobox.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -922,12 +908,6 @@
     }
   },
   "src/services/ip-hostname/resolveAndPersist.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -958,17 +938,6 @@
       "count": 1
     },
     "max-params": {
-      "count": 1
-    }
-  },
-  "src/services/job/runIngestJob.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -1067,14 +1036,6 @@
   "src/services/reports/getSpfDkimBreakdown.ts": {
     "complexity": {
       "count": 1
-    }
-  },
-  "src/services/reports/ingestParsedReport.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
     }
   },
   "src/services/security/checkSafeFetchTarget.ts": {

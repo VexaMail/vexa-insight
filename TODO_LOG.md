@@ -6,6 +6,35 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Seventh batch of the suppression
+      burn-down: the reports table, three services and the model combobox.
+      Ledger 350 findings in 225 files down to 337 in 222.
+  - `reportsColumns.tsx` sorts through a reducer rather than through TanStack,
+    so the shared `SortableHeaderButton` did not fit. The button split in two:
+    `SortHeaderButton` is presentational and takes `active`, `dir` and a click
+    handler, and `SortableHeaderButton` is now a thin wrapper that reads a
+    column's own sort state. The related-domains cell became three components.
+  - `ingestParsedReport.ts` (174 lines) split into a raw-report insert that
+    returns null on a duplicate id, an IP resolver, a per-event writer, a rollup
+    upsert and the notification. The transaction callback stays synchronous,
+    which is what better-sqlite3 requires, and `ReportTransaction` names the
+    handle so the helpers can accept it.
+  - `runIngestJob.ts` (159 lines) split into job-run open and close, poll-status
+    begin and finish, the account loop and the failure notification. The totals
+    are a mutable accumulator passed into the loop rather than its return value,
+    because the `finally` block records partial progress when an account throws.
+  - `resolveAndPersist.ts` (139 lines) gave up its retry arithmetic to a pure
+    `computeLookupSchedule`, which is where the `complexity` entry lived.
+  - `ModelCombobox.tsx` (196 lines) split into a trigger, a search row, a list
+    and one option component shared by the default entry and the model rows.
+  - A third placement rule surfaced and is now recorded in `TODO.md`:
+    `code-policy/no-hidden-top-level-declarations` rejects a module-scope
+    constant that is not the file's export, so the listbox id needed its own
+    file.
+  - Evidence: `pnpm run check:ci` green (542 tests, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` green
+    (dependency-cruiser 1840 modules with no violations, type coverage 99.76%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Sixth batch of the suppression
       burn-down: the AI diagnostics panel and the ingest pipeline card. Ledger
       355 findings in 227 files down to 350 in 225.
