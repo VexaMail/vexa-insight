@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { clearInstallToken } from '../src/services/install/clearInstallToken'
 import { generateInstallToken } from '../src/services/install/generateInstallToken'
 import { getInstallToken } from '../src/services/install/getInstallToken'
@@ -22,5 +22,15 @@ describe('installToken store', () => {
     setInstallTokenForBoot('xyz')
     clearInstallToken()
     expect(getInstallToken()).toBeNull()
+  })
+})
+
+describe('installToken store across module instances', () => {
+  it('shares the token with a freshly loaded copy of the module', async () => {
+    setInstallTokenForBoot('boot-token')
+    vi.resetModules()
+    const fresh = await import('../src/services/install/getInstallToken')
+    expect(fresh.getInstallToken()).toBe('boot-token')
+    clearInstallToken()
   })
 })
