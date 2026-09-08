@@ -8,5 +8,7 @@ export type SafeFetchError =
   | { code: 'HOSTNAME_INVALID'; message: string }
   | { code: 'DNS_FAILED'; message: string }
   | { code: 'PRIVATE_HOST_NOT_ALLOWED'; message: string }
+  | { code: 'REDIRECT_BLOCKED'; message: string }
+  | { code: 'TOO_MANY_REDIRECTS'; message: string }
   | { code: 'TIMEOUT'; message: string }
   | { code: 'NETWORK'; message: string }
