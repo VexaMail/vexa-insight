@@ -54,7 +54,9 @@ server {
     proxy_set_header Connection           "";
     proxy_set_header Host                 $host;
     proxy_set_header X-Real-IP            $remote_addr;
-    proxy_set_header X-Forwarded-For      $proxy_add_x_forwarded_for;
+    # Overwrite, do not append: the login rate limit keys on the first
+    # X-Forwarded-For entry, and a client-supplied one must never win.
+    proxy_set_header X-Forwarded-For      $remote_addr;
     proxy_set_header X-Forwarded-Proto    $scheme;
     proxy_set_header X-Forwarded-Host     $host;
     proxy_read_timeout 60s;

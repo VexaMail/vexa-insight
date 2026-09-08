@@ -174,7 +174,7 @@ creation. Once a user exists, the installer locks itself permanently.
 ### Docker install
 
 ```bash
-docker compose up -d              # builds + persists data + healthcheck
+docker compose up -d              # pulls the image + persists data + healthcheck
 # or, fully hands-off auto-update:
 docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
 ```

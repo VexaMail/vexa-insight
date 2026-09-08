@@ -414,15 +414,15 @@
     With `ingestion_include_all_folders` on, `processFolder` runs one IMAP
     `SEARCH SINCE` per folder and bulk-fetches the envelope of every UID it
     returns, because both the DMARC subject test and the `processed_messages`
-    de-duplication need the envelope. Measured on the nova mailbox: a `.Logs`
-    folder held 5,038 messages of which 5,037 fell inside the 30-day window, so
-    every hourly run pulled ~5,000 envelopes to discard all of them while the
-    run's real work was 1-22 reports. The 30-day window does not help, because
-    the noise folder is entirely recent. Moving that log mail to a separate
-    processor removes the cost at source and is cheaper than a folder allow-list
-    plus its migration and UI. Still true on 2026-09-08: the folder holds 8,456
-    messages and the flag is still on. Reopen only if a mailbox shows the same
-    cost with no way to drain the noisy folder.
+    de-duplication need the envelope. Measured on the the production host
+    mailbox: a `.Logs` folder held 5,038 messages of which 5,037 fell inside the
+    30-day window, so every hourly run pulled ~5,000 envelopes to discard all of
+    them while the run's real work was 1-22 reports. The 30-day window does not
+    help, because the noise folder is entirely recent. Moving that log mail to a
+    separate processor removes the cost at source and is cheaper than a folder
+    allow-list plus its migration and UI. Still true on 2026-09-08: the folder
+    holds 8,456 messages and the flag is still on. Reopen only if a mailbox
+    shows the same cost with no way to drain the noisy folder.
 
 - [x] 2026-09-08 — **Baseline gate debt:** Refine the remaining eleven
       deep-import exceptions.
@@ -601,9 +601,9 @@
     fallback. Also documented that a proxy forwarding the public hostname in
     `Host`/`X-Forwarded-Host` needs no list at all.
   - Evidence: type-check and lint clean; `ƒ Proxy (Middleware)` present in the
-    fresh-clone build output. Not yet exercised against a live proxy — nova
-    still works via the build-time path, so the runtime path gets its live proof
-    on the next image-based deploy. Commit:
+    fresh-clone build output. Not yet exercised against a live proxy — the
+    production host still works via the build-time path, so the runtime path
+    gets its live proof on the next image-based deploy. Commit:
     `feat(deploy): read the Server Actions origin allow-list at request time`.
 - [x] 2026-08-28 — **Infrastructure:** Fix `deploy/vexa.service`.
   - Result: `ExecStart=node .next/standalone/server.js`,
@@ -742,7 +742,7 @@
 
 - [x] 2026-08-27 — **Infrastructure:** Stop the systemd unit reporting every
       restart as a crash.
-  - Symptom seen on nova: each restart logged
+  - Symptom seen on the production host: each restart logged
     `vexa.service: Main process exited, code=exited, status=143/n/a` followed by
     `Failed with result 'exit-code'`, so the unit sat in a failed state after a
     perfectly normal stop.
@@ -753,22 +753,22 @@
     exit code as success. Adding an app-level signal handler would have been the
     wrong fix: it would race Next's own graceful shutdown.
   - Result: `SuccessExitStatus=143` added to `deploy/vexa.service` and to the
-    live unit on nova.
+    live unit on the production host.
   - Evidence: after `daemon-reload` and `systemctl restart vexa`, the journal
     shows only `Stopped` / `Started` with no `Failed` line, and `systemctl show`
     reports `Result=success`, `ActiveState=active`. Health endpoint,
     loopback-only bind and public `/login` (200) all re-checked.
-  - Files: `deploy/vexa.service`, plus `/etc/systemd/system/vexa.service` on
-    nova (backed up alongside as `.bak-20260827`).
+  - Files: `deploy/vexa.service`, plus `/etc/systemd/system/vexa.service` on the
+    production host (backed up alongside as `.bak-20260827`).
 
 - [x] 2026-08-26 — **Ingestion:** Make "move to trash after process" actually
       move the message to the trash.
-  - Symptom found while checking the nova mailbox: `handleMoveToTrash` called
-    ImapFlow's `client.messageDelete()`, which is `EXPUNGE` — the message was
-    destroyed on the server, not moved. The trash folder held 0 messages after
-    3,141 ingested reports, while the setting name, the UI label, the
-    `moving_to_trash` progress step and the `move_to_trash_after_process` column
-    all promised something recoverable.
+  - Symptom found while checking the the production host mailbox:
+    `handleMoveToTrash` called ImapFlow's `client.messageDelete()`, which is
+    `EXPUNGE` — the message was destroyed on the server, not moved. The trash
+    folder held 0 messages after 3,141 ingested reports, while the setting name,
+    the UI label, the `moving_to_trash` progress step and the
+    `move_to_trash_after_process` column all promised something recoverable.
   - Result: the handler now issues `client.messageMove()` to the mailbox flagged
     `\Trash`, resolved by `fetchAttachments` from the server's mailbox list and
     threaded to both post-process call sites. A server with no `\Trash` mailbox
@@ -780,9 +780,9 @@
   - Evidence: `pnpm run check:ci` green in a clean worktree (540 tests). New
     `test/moveToTrashIsAMove.test.ts` asserts the move, asserts `messageDelete`
     is never called, and asserts the message survives a failed move. Confirmed
-    on nova after deploy that the server advertises `INBOX.Trash` with
-    `specialUse="\Trash"`, so `getTrashPath` resolves and the non-destructive
-    path is the one that runs.
+    on the production host after deploy that the server advertises `INBOX.Trash`
+    with `specialUse="\Trash"`, so `getTrashPath` resolves and the
+    non-destructive path is the one that runs.
   - Files: `utils/imap/handleMoveToTrash.ts`,
     `utils/imap/HandlePostProcessParams.ts`,
     `types/imap/FetchAttachmentsOptions.ts`,
@@ -794,10 +794,10 @@
       filename.
   - Symptom: git tracked `components/ui/select.tsx` while
     `components/ui/index.ts` re-exports `'./Select'`. Invisible on macOS
-    (case-insensitive APFS) and invisible on nova too, because `vexa-deploy`
-    rsyncs the working tree, whose directory entry reads `Select.tsx`. Any fresh
-    clone on a case-sensitive filesystem fails type-check with
-    `TS1261 ... differs from file name ... only in casing`.
+    (case-insensitive APFS) and invisible on the production host too, because
+    `vexa-deploy` rsyncs the working tree, whose directory entry reads
+    `Select.tsx`. Any fresh clone on a case-sensitive filesystem fails
+    type-check with `TS1261 ... differs from file name ... only in casing`.
   - Result: renamed the tracked file to `Select.tsx`, matching every sibling
     (`SelectContent`, `SelectItem`, `SelectTrigger`) and the convention that a
     component file is named after its exported symbol.
@@ -807,12 +807,13 @@
 
 - [-] 2026-08-26 — **Performance:** Stop re-fetching envelopes for folders that
   never carry DMARC mail.
-  - Superseded by an owner decision, not by code. Measured on the nova mailbox:
-    a `.Logs` folder holds 5,038 messages of which 5,037 fall inside the 30-day
-    window, so every hourly run bulk-fetches ~5,000 envelopes and discards them
-    against 1-22 real reports. The envelope fetch is unavoidable — both the
-    DMARC subject test and the `processed_messages` de-duplication need it — so
-    the only levers were a folder allow-list or a narrower server-side SEARCH.
+  - Superseded by an owner decision, not by code. Measured on the the production
+    host mailbox: a `.Logs` folder holds 5,038 messages of which 5,037 fall
+    inside the 30-day window, so every hourly run bulk-fetches ~5,000 envelopes
+    and discards them against 1-22 real reports. The envelope fetch is
+    unavoidable — both the DMARC subject test and the `processed_messages`
+    de-duplication need it — so the only levers were a folder allow-list or a
+    narrower server-side SEARCH.
   - Result: the owner is moving that log mail to a separate processor, which
     removes the cost at source. No folder allow-list, no migration, no UI.
     Reopen only if a mailbox shows the same cost with no way to drain the noisy
@@ -820,10 +821,11 @@
 
 - [x] 2026-08-25 — **Ingestion:** Bound the scheduled ingest window and keep the
       full-mailbox pass as an explicit action.
-  - Symptom found while auditing the nova deployment: `ingestion_days_back` was
-    `0`, and `getSinceDate` maps `0` to the year 2000, so every hourly run
-    searched the whole mailbox (`poll_status.total_emails` = 4962) instead of a
-    window. Nothing was broken, but each run re-enumerated the entire INBOX.
+  - Symptom found while auditing the the production host deployment:
+    `ingestion_days_back` was `0`, and `getSinceDate` maps `0` to the year 2000,
+    so every hourly run searched the whole mailbox (`poll_status.total_emails`
+    = 4962) instead of a window. Nothing was broken, but each run re-enumerated
+    the entire INBOX.
   - Result: `ingestion_days_back` is now floored at 1 (default 30) in
     `parseIngestionDaysBack`, in `settingsUpdateSchema`, and in both numeric
     inputs; migration `0030_ingestion_days_back_floor` moves stored `0` values
@@ -835,11 +837,12 @@
     and posts `{"fullRescan": true}` to `/api/v1/admin/trigger-poll`, which
     forwards it to `runIngestJob({ fullRescan })`. Dedup by Message-ID is
     untouched, so a rescan cannot duplicate reports.
-  - Evidence on nova after deploy: `app_settings.ingestion_days_back` = 30 and
-    `__app_migrations` holds `0030_ingestion_days_back_floor`; a normal trigger
-    recorded `total_emails` = 4957 (30-day window) and a `fullRescan` trigger
-    recorded 4962 (whole mailbox), both HTTP 202 with `error_count` 0.
-    `pnpm run check:ci` clean, 530/530 tests across 72 files including the new
+  - Evidence on the production host after deploy:
+    `app_settings.ingestion_days_back` = 30 and `__app_migrations` holds
+    `0030_ingestion_days_back_floor`; a normal trigger recorded `total_emails` =
+    4957 (30-day window) and a `fullRescan` trigger recorded 4962 (whole
+    mailbox), both HTTP 202 with `error_count` 0. `pnpm run check:ci` clean,
+    530/530 tests across 72 files including the new
     `test/ingestionWindow.test.ts` and
     `test/rowToConfigIngestionWindow.test.ts`; `pnpm run test:a11y` 47/47 with
     `test/a11y/FullRescanDialog.test.tsx` covering the warning, the confirm and
@@ -861,10 +864,10 @@
 - [x] 2026-08-25 — **Security:** Stop writing the IMAP protocol trace to the
       production logs.
   - Symptom: `createClient` passed no `logger` to ImapFlow, so its default pino
-    instance wrote every protocol line to stdout. On nova that meant journald
-    held the subject, envelope, sender, recipient and Message-ID of all 4962
-    scanned messages on each hourly run — mailbox content sitting in the system
-    log with no retention control.
+    instance wrote every protocol line to stdout. On the production host that
+    meant journald held the subject, envelope, sender, recipient and Message-ID
+    of all 4962 scanned messages on each hourly run — mailbox content sitting in
+    the system log with no retention control.
   - Result: `createImapLogger` drops debug and info, forwards warn and error to
     the console, and restores the full trace only when `VEXA_IMAP_DEBUG` is
     `true`/`1`. Documented in `.env.example` and the README env table.

@@ -3,8 +3,8 @@
 # Two ways to run:
 #   1) Pull the latest published image (recommended for production):
 #        docker compose pull && docker compose up -d
-#   2) Build from source (for development / forks):
-#        VEXA_BUILD_FROM_SOURCE=1 docker compose up -d --build
+#   2) Build from source (for development / forks): swap `image:` for the
+#      commented `build: .` line below, then `docker compose up -d --build`.
 #
 # To enable hands-off auto-updates, layer the Watchtower override:
 #   docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
@@ -19,8 +19,10 @@ services:
     # from the local checkout instead of pulling the published image.
     # build: .
     pull_policy: always
+    # Loopback only: put a TLS reverse proxy in front (docs/DEPLOY-BEHIND-PROXY.md)
+    # and change this to '3000:3000' only if you really want a bare public port.
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
     environment:
       - NODE_ENV=production
       - DATABASE_URL=file:./data/vexa.db
@@ -36,6 +38,10 @@ services:
       - VEXA_IMAP_DEBUG=${VEXA_IMAP_DEBUG:-false}
       - VEXA_UPDATE_CHECK_ENABLED=${VEXA_UPDATE_CHECK_ENABLED:-true}
       - VEXA_UPDATE_REPO=${VEXA_UPDATE_REPO:-}
+      # First-run installer is loopback-only unless this is set; behind a proxy
+      # you also need the public origin(s) allow-listed for Server Actions.
+      - VEXA_ALLOW_REMOTE_INSTALL=${VEXA_ALLOW_REMOTE_INSTALL:-}
+      - VEXA_ALLOWED_ORIGINS=${VEXA_ALLOWED_ORIGINS:-}
     volumes:
       - vexa-data:/app/data
     restart: unless-stopped

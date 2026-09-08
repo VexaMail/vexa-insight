@@ -85,6 +85,15 @@ and this project adheres to
 
 ### Changed
 
+- **`docker-compose.yml` binds to loopback** (`127.0.0.1:3000`) as the README
+  already claimed, passes `VEXA_ALLOW_REMOTE_INSTALL` and `VEXA_ALLOWED_ORIGINS`
+  through to the container, and drops the `VEXA_BUILD_FROM_SOURCE` switch that
+  never did anything.
+- **The nginx example overwrites `X-Forwarded-For`** with `$remote_addr` instead
+  of appending, so a client cannot pick its own login rate-limit key.
+- **`next` 16.2.11 -> 16.3.4**, plus `nodemailer`, `browserslist` and `js-yaml`
+  overrides, clearing every high and critical `pnpm audit` finding.
+
 - **Ingestion always uses a bounded window.** `ingestion_days_back` no longer
   accepts `0` ("no limit"): every scheduled run now searches from `today - days`
   instead of walking the whole mailbox each time. Migration
@@ -134,6 +143,34 @@ and this project adheres to
 
 ### Fixed
 
+- **The first-run install token printed at boot is the one the installer
+  checks.** The token lived in a module-scope object, and Next.js bundles
+  `instrumentation.ts` and each route separately, so the production server
+  printed one token and compared against another: every documented Docker first
+  run ended in `Invalid install token`. The store now lives on `globalThis`,
+  with a test that reloads the module and still finds the token.
+- **Ingestion works without a GeoIP database.** `geoip-lite` opens its `.dat`
+  files at import time, and a fresh checkout or container has none, so the first
+  report to arrive threw `ENOENT` and no events were ever written. Country
+  lookups now answer `null` until a database is downloaded from Settings, and
+  the fallback is not cached so the download takes effect without a restart.
+- **A failed ingest can be retried.** The raw report row was inserted before the
+  normalized events, outside the transaction, so any failure in between left a
+  raw row that made every retry return `duplicate_report_id` with no events
+  behind it. The raw insert now happens inside the same transaction as the
+  events and rollups, with `onConflictDoNothing` on `report_id` for the
+  concurrent case.
+- **`pnpm run seed:demo` works on a database that has never been migrated.** The
+  README suggests seeding before the first `pnpm dev`; the script now runs the
+  app migrations first instead of failing on `no such table: raw_reports`.
+- **Demo seed data uses documentation IP ranges** (RFC 5737) instead of eight
+  real public addresses.
+- **`drizzle.config.ts` resolves `DATABASE_URL` the same way the app does**, so
+  an absolute `file:///...` URL no longer points drizzle-kit at a path relative
+  to the checkout.
+- **Branded `404` and error pages** replace the default Next.js fallbacks.
+- **CI no longer pins a pnpm version** that disagrees with `packageManager`;
+  every run on `main` had been failing at setup.
 - **`pnpm install` no longer fails outside a git checkout.** The `prepare`
   script ran `lefthook install` unconditionally, which exits 128 with
   `fatal: not a git repository` anywhere the repository was copied rather than
@@ -199,6 +236,24 @@ and this project adheres to
 
 ### Security
 
+- **Protected pages validate the session, not just the cookie.** The proxy only
+  checked that a `session` cookie existed, and no page under the app shell
+  looked the session up, so a forged `Cookie: session=anything` rendered every
+  page. On `/settings` and `/ingest` that included the shared admin API key in
+  the server-rendered props. The app layout now resolves the session server-side
+  and redirects to `/login` when it is missing or expired; `/settings` is
+  admin-only and `/ingest` only hands the key to admins. Rotate the key on any
+  instance that was reachable before this fix.
+- **Raw report XML honours domain restrictions.**
+  `GET /api/v1/processed-messages/content` returned the XML for any message id,
+  and the processed-messages listing showed every message, regardless of the
+  caller's domain allow-list. Both are scoped through the report's normalized
+  events now.
+- **Outbound fetches no longer follow redirects blindly.** `safeFetch` validated
+  the first URL and then let `fetch` follow a 30x anywhere, including loopback
+  and private ranges, from MTA-STS policy lookups and webhook deliveries.
+  Redirects are followed manually, each hop re-validated, capped at three, and a
+  blocked hop fails with `REDIRECT_BLOCKED`.
 - **IMAP protocol traces no longer reach the logs by default.** ImapFlow's
   debug/info output (subjects, envelopes, addresses, Message-IDs of every
   scanned message) was written to stdout on every run and ended up in

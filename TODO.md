@@ -8,6 +8,60 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+## Open-source launch
+
+Audited 2026-09-09 against the committed tree (`21276615c`) and the GitHub
+repository. Committed HEAD is green locally (`tsc`, `eslint`, 542 tests,
+prettier, migration check); the working tree carries an unfinished
+`useSelfUpdate` split with one lint error and stale suppressions.
+
+- [ ] Replace the eight `docs/screenshots/*.png` with captures of the
+      `pnpm run seed:demo` dataset. Today they show real client domains, a real
+      server IP and hostname (`domains.png`, `diagnostics.png`, `ips.png` at
+      least). They entered history in one commit (`eba5d8d0e`), so decide
+      whether to rewrite history before the repo goes public or accept that the
+      old files stay reachable. Validate with
+      `git grep -F -f <db-domain-list> -- . ':!docs/screenshots'` returning
+      nothing and a visual check of each new capture.
+- [ ] Fix CI: every one of the last 60 runs on `main` failed.
+      `pnpm/action-setup` aborts because the workflows pin `version: 11.1.2`
+      while `package.json` declares `packageManager: pnpm@11.17.0`. Drop the
+      `version:` lines in `ci.yml` (three jobs) and `release.yml`, then confirm
+      a green run.
+- [ ] Clear `pnpm audit --audit-level=high`, which the CI "Dependency audit" job
+      runs and which fails today: `next` 16.2.11 is under a critical advisory
+      fixed in 16.3.3, plus `browserslist` and `js-yaml` (both dev-only, via
+      eslint-plugin-unicorn and `@lhci/cli`). Bump `next` and verify with
+      `pnpm run build` per the Radix lesson in memory.
+- [ ] Cut the first release so the README quick start works: it runs
+      `ghcr.io/vexamail/vexa-insight-dashboard:latest`, and the org has no
+      container packages and the repo no tags. `release.yml` builds and pushes
+      the image on a `v*.*.*` tag, gated on `check:ci`, so CI must be green
+      first. `CHANGELOG.md` has a stale `[0.1.0] - 2026-04-26` section under a
+      long `[Unreleased]`; the tag should match `package.json` (0.1.0 today).
+      The self-update check also reports `no-releases` until this lands.
+- [ ] CodeQL fails on the private repo ("Advanced Security must be enabled"). It
+      becomes free once the repo is public; re-check the first public run and
+      keep the workflow.
+- [ ] Add `app/not-found.tsx` and `app/error.tsx`. Neither exists, so 404 and
+      render errors fall back to the unbranded Next.js defaults.
+- [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
+      `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
+      rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
+      twelfth had `p=quarantine` and scored 65. The scorer in
+      `src/services/diagnostics/score*.ts` has six coarse buckets and ignores
+      DMARC `rua`, `pct`, alignment, DKIM key strength and SPF lookup count, all
+      of which the page already computes. Blocked in spirit by the PowerDMARC
+      parity decision under Pending Decisions: either supply the reference
+      scores or drop parity and design our own rubric. Either way pin the rubric
+      in `test/computeDomainScore.test.ts`.
+- [ ] Split the diagnostics page. `DiagnosticsView` stacks the score hero, the
+      overview panel and eight full detail sections (DNS, DMARC, SPF, SPF tree,
+      DKIM, BIMI, MTA-STS, TLS-RPT) plus the AI panel on one scroll, each with
+      its explainer text. Overlaps the two Future Ideas below; the smallest
+      shippable step is the overview panel staying and each detail section
+      collapsing by default, opened from its overview row.
+
 ## Security
 
 - [!] Consider per-user API keys with real role mapping to replace the single
@@ -58,10 +112,10 @@
       blocked per-user API-key item above (ADR 0001) — an agent surface is
       exactly the client that wants a scoped, revocable key rather than the
       master secret. Smallest next step: pick the endpoint list from the queries
-      the 2026-08-18 hosting-estate session actually ran (they are the demand, written
-      down in that repo's `scripts/dmarc-report-summary.sh` and `TODO_LOG.md`),
-      and decide whether the agent key rides the existing shared-key model or
-      waits for ADR 0001's successor.
+      the 2026-08-18 hosting-estate session actually ran (they are the demand,
+      written down in that repo's `scripts/dmarc-report-summary.sh` and
+      `TODO_LOG.md`), and decide whether the agent key rides the existing
+      shared-key model or waits for ADR 0001's successor.
 
 ## Infrastructure
 

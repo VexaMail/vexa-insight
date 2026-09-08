@@ -60,8 +60,8 @@ docs/            Architecture, data model, API docs
 
 ## Database changes
 
-Schema lives in `drizzle/schema.ts` (or per-domain schema files). To add or
-modify a table:
+Schema lives in `src/lib/db/schema/` (one file per table, re-exported from
+`index.ts`). To add or modify a table:
 
 ```bash
 # After editing the schema:
@@ -117,8 +117,9 @@ pnpm test:watch       # watch mode
 pnpm test:a11y        # accessibility tests (vitest-axe)
 ```
 
-Place tests next to the unit they cover (`*.test.ts` / `*.test.tsx`). Prefer
-behavior-focused tests over implementation details.
+Tests live under `test/` (vitest only picks up `test/**/*.test.ts*`), named
+after the unit they cover. Prefer behavior-focused tests over implementation
+details.
 
 ## Pull requests
 
