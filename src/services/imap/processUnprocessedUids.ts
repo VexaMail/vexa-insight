@@ -14,14 +14,14 @@ export async function* processUnprocessedUids(
 ) {
   const results = await Promise.all(
     uidsToProcessFull.map(async (uid) =>
-      processOneMessageUid(
+      processOneMessageUid({
         client,
         account,
         uid,
         folder,
         options,
-        uidToMidMap.get(uid)?.env,
-      ),
+        providedEnvMsg: uidToMidMap.get(uid)?.env,
+      }),
     ),
   )
 

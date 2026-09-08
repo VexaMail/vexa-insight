@@ -6,6 +6,45 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Fourth batch of the suppression
+      burn-down: the DNS admin guides, the IP table columns and three services.
+      Ledger 374 findings in 233 files down to 359 in 229.
+  - `createDnsAdminGuides.ts` was 211 lines of eleven `if` blocks pushing guide
+    literals, carrying `complexity`, `max-lines` and `max-lines-per-function`.
+    Each guide is now its own builder under `dnsAdminGuides/`, and a
+    `dnsAdminGuideRules` table pairs a predicate with a builder, so the exported
+    function is a filter and a map. The MTA-STS `else if` became an explicit
+    `raw !== null && !policyFileAccessible` predicate, which is the same
+    condition. `test/buildDiagnosticsAdminGuides.test.ts` passes unchanged, 16
+    tests.
+  - `ipsColumns.tsx` was 299 lines with the same 19-line sortable-header button
+    repeated five times. That button is now
+    `components/ui/SortableHeaderButton`, composed from the `SortIcon` the other
+    four column files already used, and each column definition moved to its own
+    file under `components/ips/columns/`. The exported factory is 30 lines.
+    `domainsColumns.tsx` still inlines the same button four times and is the
+    obvious next user.
+  - `updateSettings.ts` (130 lines) split into a scalar-field constant, an
+    `app_settings` update builder, and a `syncImapAccounts` that deletes removed
+    rows and upserts the rest. The eleven column assignments duplicated between
+    the insert and update paths became `buildImapAccountRow`, typed as
+    `Omit<typeof imapAccounts.$inferInsert, 'id' | 'password'>` so drizzle still
+    checks it.
+  - `processOneMessageUid.ts` (121 lines, six parameters) now takes a
+    `ProcessOneMessageUidInput` and delegates the download, the post-processing
+    tail and the error report to three siblings.
+  - `buildDnsPromptSection.ts` lost its nine inline summarizers to
+    `prompts/dnsSection/formatters/`, and the `NOT CONFIGURED` and `none found`
+    literals became named constants, which is what cleared
+    `sonarjs/no-duplicate-string`.
+  - Two placement rules cost a round trip and are now recorded in `TODO.md`: a
+    `format*` file must live in a `formatters/` directory, and an extracted
+    helper still has to stay under four parameters.
+  - Evidence: `pnpm run check:ci` green (542 tests, 76 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` green (knip
+    clean, dependency-cruiser 1751 modules with no violations, type coverage
+    99.75%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** First batch of the suppression
       burn-down: the two worst components.
   - `ImapAccountsSection.tsx` was 386 lines carrying `max-lines`,

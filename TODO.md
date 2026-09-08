@@ -149,20 +149,24 @@ unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
-      2026-09-08 at 384 findings in 235 files and the first batch took it to 376
-      in 234: `max-lines-per-function` 208, `complexity` 72, `max-lines` 57,
-      `sonarjs/no-duplicate-string` 25, `max-params` 14. Both
+      2026-09-08 at 384 findings in 235 files and successive batches took it to
+      359 in 229: `max-lines-per-function` 203, `complexity` 68, `max-lines` 52,
+      `sonarjs/no-duplicate-string` 23, `max-params` 13. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
       they landed. The ledger is monotonic: `pnpm lint` fails on a suppression
       that no longer matches, `lint:prune` shrinks it, and a new violation of
       the same rule still fails. Work it file by file, splitting the component
-      or extracting the helper, never by raising a threshold. The remaining
-      `max-lines` files are the natural unit of work because splitting one also
-      clears the function-length entries inside it; the largest left are
-      `ipsColumns.tsx` (299), `IpHostnameSection.tsx` (243) and
-      `createDnsAdminGuides.ts` (211), plus four test files over 240 lines that
-      are covering more than one behaviour.
+      or extracting the helper, never by raising a threshold. Two placement
+      rules shape any split: a file named `format*` must sit in a `formatters/`
+      directory or `code-policy/file-kind-placement` rejects it, and a helper
+      pulled out of a long function still has to stay under four parameters, so
+      plan on an input type in `src/types/<area>/` rather than a longer
+      signature. The remaining `max-lines` files are the natural unit of work
+      because splitting one also clears the function-length entries inside it;
+      the largest left are `IpHostnameSection.tsx` (243) and
+      `AiDiagnosticsInsightsPanel.tsx` (206), plus five test files over 230
+      lines that are covering more than one behaviour.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

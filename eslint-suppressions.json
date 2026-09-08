@@ -428,14 +428,6 @@
       "count": 1
     }
   },
-  "src/components/ips/ipsColumns.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/reports/ReportHeader.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -787,17 +779,6 @@
       "count": 1
     }
   },
-  "src/services/ai/prompts/buildDnsPromptSection.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    },
-    "sonarjs/no-duplicate-string": {
-      "count": 2
-    }
-  },
   "src/services/ai/prompts/buildReportAnalysisPrompt.ts": {
     "max-lines-per-function": {
       "count": 1
@@ -863,17 +844,6 @@
     }
   },
   "src/services/diagnostics/buildSpfTreeNode.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/createDnsAdminGuides.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -967,13 +937,7 @@
     "complexity": {
       "count": 1
     },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
-      "count": 1
-    },
-    "max-params": {
       "count": 1
     }
   },
@@ -1165,17 +1129,6 @@
   },
   "src/services/settings-store/seedSettingsFromEnv.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/settings/updateSettings.ts": {
-    "complexity": {
-      "count": 2
-    },
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
       "count": 1
     }
   },
