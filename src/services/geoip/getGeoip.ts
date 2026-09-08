@@ -1,5 +1,6 @@
 import { env } from '@/lib/env'
-import type GeoIp from 'geoip-lite'
+import type { GeoipLookup } from '@/types/geoip'
+import { isMissingGeoipDataError } from '@/utils/geoip'
 import path from 'node:path'
 
 /**
@@ -10,16 +11,32 @@ import path from 'node:path'
  * routes. GEODATADIR is set here, before the import, because geoip-lite
  * reads it from process.env at import time; this is the single place that
  * assigns it.
+ *
+ * When no database exists yet, ingestion must still work: country lookups
+ * answer null until one is downloaded from Settings. The fallback is not
+ * cached, so the real module is picked up on the next call after a download.
  */
 export const getGeoip = (() => {
-  let geoipModule: typeof GeoIp | null = null
+  let geoipModule: GeoipLookup | null = null
+  let warned = false
 
-  return async function getGeoip(): Promise<typeof GeoIp> {
+  return async function getGeoip(): Promise<GeoipLookup> {
     if (geoipModule) return geoipModule
     if (!env.GEODATADIR) {
       process.env.GEODATADIR = path.join(process.cwd(), 'data', 'geoip')
     }
-    geoipModule = await import('geoip-lite')
+    try {
+      geoipModule = await import('geoip-lite')
+    } catch (error) {
+      if (!isMissingGeoipDataError(error)) throw error
+      if (!warned) {
+        warned = true
+        console.warn(
+          '[geoip] No GeoIP database found; country lookups return null until one is downloaded from Settings > GeoIP.',
+        )
+      }
+      return { lookup: () => null }
+    }
     return geoipModule
   }
 })()
