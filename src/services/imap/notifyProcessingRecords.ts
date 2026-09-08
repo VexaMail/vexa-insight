@@ -1,15 +1,15 @@
-import type { ImapAccountConfig } from '@/types/config'
-import type { FetchAttachmentsOptions } from '@/types/imap'
+import type { NotifyProcessingRecordsInput } from '@/types/imap'
 import { notifyProgress } from './notifyProgress'
 
-export async function notifyProcessingRecords(
-  options: FetchAttachmentsOptions,
-  account: ImapAccountConfig,
-  emailDate: string | undefined,
-  subject: string | undefined,
-  uidStr: string,
-  count: number,
-) {
+/** Emit one `processing_records` event per record found in a message. */
+export async function notifyProcessingRecords({
+  options,
+  account,
+  emailDate,
+  subject,
+  uidStr,
+  count,
+}: NotifyProcessingRecordsInput): Promise<void> {
   for (let i = 0; i < count; i++) {
     await notifyProgress(options, {
       accountId: account.id,

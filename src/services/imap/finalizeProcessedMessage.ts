@@ -17,14 +17,14 @@ export async function finalizeProcessedMessage(
   }
 
   await notifyProgress(options, { ...progress, step: 'dmarc_detected' })
-  await notifyProcessingRecords(
+  await notifyProcessingRecords({
     options,
     account,
     emailDate,
     subject,
     uidStr,
-    input.attachmentCount,
-  )
+    count: input.attachmentCount,
+  })
   await insertProcessedMessage(account.id, input.messageId, options.jobRunId)
   await handlePostProcessAndReport({
     accountId: account.id,

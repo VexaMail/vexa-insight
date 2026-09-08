@@ -26,7 +26,12 @@ export async function fetchOpenRouterModels(
   }
 
   const raw = json.data.map((m) =>
-    normalizeProviderModel(m.id, m.name || m.id, 'openrouter', m.description),
+    normalizeProviderModel({
+      id: m.id,
+      name: m.name || m.id,
+      providerId: 'openrouter',
+      description: m.description,
+    }),
   )
 
   const deduped = deduplicateProviderModels(raw)

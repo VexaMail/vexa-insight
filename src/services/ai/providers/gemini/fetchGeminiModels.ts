@@ -48,12 +48,12 @@ export async function fetchGeminiModels(
 
       const id = m.name.replace(/^models\//, '')
       allModels.push(
-        normalizeProviderModel(
+        normalizeProviderModel({
           id,
-          m.displayName || id,
-          'gemini',
-          m.description,
-        ),
+          name: m.displayName || id,
+          providerId: 'gemini',
+          description: m.description,
+        }),
       )
     }
 

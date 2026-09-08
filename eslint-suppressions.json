@@ -641,11 +641,6 @@
       "count": 1
     }
   },
-  "src/services/ai/providers/shared/normalize/normalizeProviderModel.ts": {
-    "max-params": {
-      "count": 1
-    }
-  },
   "src/services/ai/use-cases/buildDiagnosticsAnalysisInput.ts": {
     "max-lines-per-function": {
       "count": 1
@@ -728,36 +723,11 @@
       "count": 1
     }
   },
-  "src/services/imap/filterChunkUids.ts": {
-    "max-params": {
-      "count": 1
-    }
-  },
-  "src/services/imap/handleAlreadyProcessed.ts": {
-    "max-params": {
-      "count": 1
-    }
-  },
-  "src/services/imap/notifyProcessingRecords.ts": {
-    "max-params": {
-      "count": 1
-    }
-  },
   "src/services/imap/processOneMessageUid.ts": {
     "complexity": {
       "count": 1
     },
     "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/imap/processUnprocessedUids.ts": {
-    "max-params": {
-      "count": 1
-    }
-  },
-  "src/services/imap/reportBatchProgress.ts": {
-    "max-params": {
       "count": 1
     }
   },
@@ -869,11 +839,6 @@
   },
   "src/utils/dmarc/parseDmarcXml.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/dmarc/processZipEntry.ts": {
-    "max-params": {
       "count": 1
     }
   },
@@ -994,11 +959,6 @@
   },
   "test/parseDmarcXmlFixtures.test.ts": {
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "test/setup/seedReportSourcesFixture.ts": {
-    "max-params": {
       "count": 1
     }
   }

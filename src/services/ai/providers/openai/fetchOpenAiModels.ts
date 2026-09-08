@@ -25,7 +25,9 @@ export async function fetchOpenAiModels(
     data: { id: string; owned_by: string }[]
   }
 
-  const raw = json.data.map((m) => normalizeProviderModel(m.id, m.id, 'openai'))
+  const raw = json.data.map((m) =>
+    normalizeProviderModel({ id: m.id, name: m.id, providerId: 'openai' }),
+  )
 
   const filtered = filterProviderModels(
     raw,

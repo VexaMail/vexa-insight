@@ -9,6 +9,7 @@ import {
   rawReports,
 } from '@/lib/db'
 import { requireInsertedId } from './requireInsertedId'
+import type { SeedEventInput } from './SeedEventInput'
 import type { SeedReportSourcesResult } from './SeedReportSourcesResult'
 
 /**
@@ -90,14 +91,14 @@ export function seedReportSourcesFixture(now: Date): SeedReportSourcesResult {
     })
     .run()
 
-  const insertEvent = (
-    ipAddressId: number,
-    spfResult: string,
-    dkimResult: string,
-    aligned: boolean,
-    disposition: string,
-    count: number,
-  ): number =>
+  const insertEvent = ({
+    ipAddressId,
+    spfResult,
+    dkimResult,
+    aligned,
+    disposition,
+    count,
+  }: SeedEventInput): number =>
     requireInsertedId(
       db
         .insert(normalizedEvents)
@@ -121,10 +122,35 @@ export function seedReportSourcesFixture(now: Date): SeedReportSourcesResult {
       'normalized_events',
     )
 
-  const eventA1 = insertEvent(ipAId, 'pass', 'pass', true, 'none', 5)
-  const eventA2 = insertEvent(ipAId, 'pass', 'pass', true, 'none', 3)
-  const eventA3 = insertEvent(ipAId, 'fail', 'fail', false, 'quarantine', 2)
-  const eventB1 = insertEvent(ipBId, 'pass', 'fail', false, 'none', 10)
+  const passing = { spfResult: 'pass', dkimResult: 'pass', aligned: true }
+  const eventA1 = insertEvent({
+    ipAddressId: ipAId,
+    ...passing,
+    disposition: 'none',
+    count: 5,
+  })
+  const eventA2 = insertEvent({
+    ipAddressId: ipAId,
+    ...passing,
+    disposition: 'none',
+    count: 3,
+  })
+  const eventA3 = insertEvent({
+    ipAddressId: ipAId,
+    spfResult: 'fail',
+    dkimResult: 'fail',
+    aligned: false,
+    disposition: 'quarantine',
+    count: 2,
+  })
+  const eventB1 = insertEvent({
+    ipAddressId: ipBId,
+    spfResult: 'pass',
+    dkimResult: 'fail',
+    aligned: false,
+    disposition: 'none',
+    count: 10,
+  })
 
   db.insert(normalizedEventPolicyOverrides)
     .values([

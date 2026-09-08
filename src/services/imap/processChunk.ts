@@ -21,13 +21,13 @@ export async function* processChunk(
   const done = input.folderProcessedCount + chunk.length
 
   await emitStatus(options, chunkScanMessage(input))
-  await reportBatchProgress(
+  await reportBatchProgress({
     options,
-    input.folderProcessedCount,
-    chunk.length,
-    input.folderTotalEmails,
-    input.startTime,
-  )
+    folderProcessedCount: input.folderProcessedCount,
+    processingCount: chunk.length,
+    folderTotalEmails: input.folderTotalEmails,
+    startTime: input.startTime,
+  })
 
   let envMessages: FetchMessageObject[]
   try {
@@ -42,7 +42,7 @@ export async function* processChunk(
     account.id,
     messageIdsToLookup,
   )
-  const uidsToProcessFull = await filterChunkUids(
+  const uidsToProcessFull = await filterChunkUids({
     client,
     account,
     folder,
@@ -50,21 +50,21 @@ export async function* processChunk(
     uidToMidMap,
     processedIdsSet,
     options,
-  )
+  })
 
   if (uidsToProcessFull.length > 0) {
     await emitStatus(
       options,
       `Processing ${String(uidsToProcessFull.length)} DMARC email${uidsToProcessFull.length === 1 ? '' : 's'} (batch ${String(chunkIndex + 1)})…`,
     )
-    yield* processUnprocessedUids(
+    yield* processUnprocessedUids({
       client,
       account,
       folder,
-      uidsToProcessFull,
+      uids: uidsToProcessFull,
       uidToMidMap,
       options,
-    )
+    })
   }
 
   return done

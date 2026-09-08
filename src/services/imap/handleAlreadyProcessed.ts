@@ -1,26 +1,26 @@
-import type { ImapAccountConfig } from '@/types/config'
-import type { FetchAttachmentsOptions } from '@/types/imap'
+import type { HandleAlreadyProcessedInput } from '@/types/imap'
 import { handlePostProcessAndReport } from '@/utils/imap'
-import type { ImapFlow } from 'imapflow'
-import type { UidInfo } from './UidInfo'
 
-export async function handleAlreadyProcessed(
-  client: ImapFlow,
-  account: ImapAccountConfig,
-  folder: string,
-  uid: number,
-  info: UidInfo,
-  options: FetchAttachmentsOptions,
-) {
-  if (options.onEmailProgress) {
-    await options.onEmailProgress({
-      accountId: account.id,
-      emailDate: info.date,
-      subject: info.subject,
-      uid: String(uid),
-      step: 'already_processed',
-    })
+/** Report and post-process a message already in processed_messages. */
+export async function handleAlreadyProcessed({
+  client,
+  account,
+  folder,
+  uid,
+  info,
+  options,
+}: HandleAlreadyProcessedInput): Promise<void> {
+  const progress = {
+    accountId: account.id,
+    emailDate: info.date,
+    subject: info.subject,
+    uid: String(uid),
   }
+
+  if (options.onEmailProgress) {
+    await options.onEmailProgress({ ...progress, step: 'already_processed' })
+  }
+
   await handlePostProcessAndReport({
     accountId: account.id,
     client,
@@ -36,13 +36,8 @@ export async function handleAlreadyProcessed(
     trashPath: options.trashPath ?? null,
     uidStr: String(uid),
   })
+
   if (options.onEmailProgress) {
-    await options.onEmailProgress({
-      accountId: account.id,
-      emailDate: info.date,
-      subject: info.subject,
-      uid: String(uid),
-      step: 'done',
-    })
+    await options.onEmailProgress({ ...progress, step: 'done' })
   }
 }

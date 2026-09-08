@@ -42,7 +42,11 @@ export async function fetchAnthropicModels(
 
     for (const m of json.data) {
       allModels.push(
-        normalizeProviderModel(m.id, m.display_name || m.id, 'anthropic'),
+        normalizeProviderModel({
+          id: m.id,
+          name: m.display_name || m.id,
+          providerId: 'anthropic',
+        }),
       )
     }
 

@@ -1,6 +1,6 @@
+import type { UidInfo } from '@/types/imap'
 import { envelopeDateToIso } from '@/utils/imap'
 import type { FetchMessageObject } from 'imapflow'
-import type { UidInfo } from './UidInfo'
 
 export function buildUidToMidMap(envMessages: FetchMessageObject[]): {
   uidToMidMap: Map<number, UidInfo>

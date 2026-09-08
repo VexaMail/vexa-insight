@@ -6,6 +6,34 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Fifteenth batch of the suppression
+      burn-down closed `max-params`: the last eight functions taking more than
+      four positional arguments now take one input object each. Ledger 223
+      findings in 176 files down to 215 in 168, and the rule holds no
+      suppressions at all.
+  - `filterChunkUids`, `handleAlreadyProcessed`, `processUnprocessedUids`,
+    `notifyProcessingRecords` and `reportBatchProgress` take
+    `FilterChunkUidsInput`, `HandleAlreadyProcessedInput`,
+    `ProcessUnprocessedUidsInput`, `NotifyProcessingRecordsInput` and
+    `BatchProgressInput`. `UidInfo` moved from `src/services/imap/` to
+    `src/types/imap/` so those types can name it without a type file importing
+    the services layer.
+  - `normalizeProviderModel` takes a `NormalizeProviderModelInput`; its four
+    provider call sites now name the field they pass, which is what made the
+    Gemini and OpenRouter calls readable.
+  - `processZipEntry` takes a `ProcessZipEntryInput` and returns early on both
+    skip paths. Its yauzl callback parameter is deliberately named
+    `streamError`: `promise/prefer-await-to-callbacks` keys on a parameter named
+    `err`, and yauzl offers no promise form here.
+  - `seedReportSourcesFixture`'s inner `insertEvent` takes a `SeedEventInput`,
+    with the shared pass/aligned columns spread from one `passing` object.
+  - Evidence: `pnpm run check:ci` green (542 tests in 87 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 2027 modules, type coverage 99.80%). One earlier
+    `check:ci` run reported three failures while `eslint --prune-suppressions`
+    was still writing; two clean re-runs followed, so it was contention, not a
+    regression.
+
 - [x] 2026-09-08 — **Baseline gate debt:** Fourteenth batch of the suppression
       burn-down: eight service files, including the three ingest functions that
       carried the `max-params` entries. Ledger 239 findings in 184 files down to

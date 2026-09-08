@@ -1,19 +1,20 @@
-import type { ImapAccountConfig } from '@/types/config'
-import type { FetchAttachmentsOptions } from '@/types/imap'
-import type { ImapFlow } from 'imapflow'
+import type {
+  AttachmentResult,
+  ProcessUnprocessedUidsInput,
+} from '@/types/imap'
 import { processOneMessageUid } from './processOneMessageUid'
-import type { UidInfo } from './UidInfo'
 
-export async function* processUnprocessedUids(
-  client: ImapFlow,
-  account: ImapAccountConfig,
-  folder: string,
-  uidsToProcessFull: number[],
-  uidToMidMap: Map<number, UidInfo>,
-  options: FetchAttachmentsOptions,
-) {
+/** Fetch every unprocessed UID of a chunk in parallel, yielding attachments. */
+export async function* processUnprocessedUids({
+  client,
+  account,
+  folder,
+  uids,
+  uidToMidMap,
+  options,
+}: ProcessUnprocessedUidsInput): AsyncGenerator<AttachmentResult> {
   const results = await Promise.all(
-    uidsToProcessFull.map(async (uid) =>
+    uids.map(async (uid) =>
       processOneMessageUid({
         client,
         account,
@@ -26,6 +27,6 @@ export async function* processUnprocessedUids(
   )
 
   for (const attachments of results) {
-    for (const att of attachments) yield att
+    for (const attachment of attachments) yield attachment
   }
 }

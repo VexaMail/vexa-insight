@@ -24,18 +24,18 @@ export async function extractXmlFromZipImpl(
     })
 
     zipFile.on('entry', (entry: yauzl.Entry) => {
-      processZipEntry(
+      processZipEntry({
         zipFile,
         entry,
         entries,
-        xmlBuffer,
-        (buf) => {
+        currentXmlBuffer: xmlBuffer,
+        setXmlBuffer: (buf) => {
           xmlBuffer = buf
         },
-        () => {
+        readNext: () => {
           zipFile.readEntry()
         },
-      )
+      })
     })
 
     zipFile.on('end', () => {
