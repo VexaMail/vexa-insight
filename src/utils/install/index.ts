@@ -9,3 +9,5 @@ export { timingSafeStringEqual } from './timingSafeStringEqual'
 
 export * from '../../validators/install/validateInstallBody'
 export * from './generateSecretKey'
+export { imapAccountFieldUpdater } from './imapAccountFieldUpdater'
+export { imapInstallFieldId } from './imapInstallFieldId'

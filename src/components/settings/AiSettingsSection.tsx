@@ -1,13 +1,14 @@
 'use client'
 
-import { Button } from '@/components/ui'
 import { useAiSettings, useProviderModels } from '@/hooks/settings'
-import type { AIProviderId } from '@/types/ai'
 import { m as motion } from 'framer-motion'
-import { AlertCircle, CheckCircle, Sparkles, Trash2 } from 'lucide-react'
+import { AiApiKeyField } from './AiApiKeyField'
 import { AI_PROVIDERS } from './aiProviders'
+import { AiProviderSelect } from './AiProviderSelect'
+import { AiSettingsActions } from './AiSettingsActions'
+import { AiSettingsHeader } from './AiSettingsHeader'
+import { AiSettingsMessage } from './AiSettingsMessage'
 import type { AiSettingsSectionProps } from './AiSettingsSectionProps'
-import { getAiSaveButtonLabel } from './getAiSaveButtonLabel'
 import { ModelCombobox } from './ModelCombobox'
 
 export function AiSettingsSection({
@@ -32,11 +33,11 @@ export function AiSettingsSection({
     error: modelsError,
   } = useProviderModels(apiKey, form.providerId, form.apiKey)
 
-  const selectedProvider = AI_PROVIDERS.find((p) => p.id === form.providerId)
   const isSaving = saveStatus === 'loading' || saveStatus === 'validating'
-
   const savedModelMissing =
-    form.model && models.length > 0 && !models.some((m) => m.id === form.model)
+    form.model !== '' &&
+    models.length > 0 &&
+    !models.some((m) => m.id === form.model)
 
   return (
     <motion.section
@@ -44,15 +45,7 @@ export function AiSettingsSection({
       animate={{ opacity: 1, y: 0 }}
       className="border-border/50 bg-background/50 space-y-4 rounded-lg border p-6 backdrop-blur-sm"
     >
-      <div className="flex items-center gap-2">
-        <Sparkles className="text-muted-foreground h-5 w-5" />
-        <h2 className="text-xl font-semibold tracking-tight">AI Provider</h2>
-        {isConfigured ? (
-          <span className="bg-success/10 text-success rounded-full px-2 py-0.5 text-xs font-medium">
-            Configured
-          </span>
-        ) : null}
-      </div>
+      <AiSettingsHeader isConfigured={isConfigured} />
 
       <p className="text-muted-foreground text-sm">
         Connect an AI provider to enable AI-powered report insights,
@@ -60,117 +53,45 @@ export function AiSettingsSection({
       </p>
 
       <div className="flex max-w-xl flex-col gap-4 pt-2">
-        {/* Provider selector */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="ai-provider" className="text-sm font-medium">
-            Provider
-          </label>
-          <select
-            id="ai-provider"
-            className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-            value={form.providerId ?? ''}
-            onChange={(e) => {
-              const providerId = e.target.value
-              handleProviderChange(
-                providerId === '' ? null : (providerId as AIProviderId),
-              )
-            }}
-          >
-            <option value="">Select a provider…</option>
-            {AI_PROVIDERS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        <AiProviderSelect
+          value={form.providerId}
+          onChange={handleProviderChange}
+        />
 
-        {/* API Key */}
         {form.providerId != null && (
-          <div className="flex flex-col gap-2">
-            <label htmlFor="ai-api-key" className="text-sm font-medium">
-              API Key
-            </label>
-            <input
-              id="ai-api-key"
-              type="password"
-              placeholder={
-                apiKeyMasked
-                  ? `Current: ${apiKeyMasked}`
-                  : (selectedProvider?.placeholder ?? 'Enter API key...')
-              }
-              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          <>
+            <AiApiKeyField
               value={form.apiKey}
-              onChange={(e) => {
-                handleApiKeyChange(e.target.value)
-              }}
+              apiKeyMasked={apiKeyMasked}
+              providerPlaceholder={
+                AI_PROVIDERS.find((p) => p.id === form.providerId)?.placeholder
+              }
+              onChange={handleApiKeyChange}
             />
-            {apiKeyMasked != null &&
-              apiKeyMasked !== '' &&
-              form.apiKey === '' && (
-                <p className="text-muted-foreground text-xs">
-                  Leave blank to keep the existing key.
-                </p>
-              )}
-          </div>
-        )}
-
-        {/* Model selector (searchable combobox) */}
-        {form.providerId != null && (
-          <ModelCombobox
-            models={models}
-            value={form.model}
-            isLoading={isLoadingModels}
-            error={modelsError}
-            savedModelMissing={Boolean(savedModelMissing)}
-            onChange={handleModelChange}
-          />
-        )}
-
-        {/* Action buttons */}
-        {form.providerId != null && (
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              disabled={isSaving || (!form.apiKey.trim() && !isConfigured)}
-              onClick={() => {
+            <ModelCombobox
+              models={models}
+              value={form.model}
+              isLoading={isLoadingModels}
+              error={modelsError}
+              savedModelMissing={savedModelMissing}
+              onChange={handleModelChange}
+            />
+            <AiSettingsActions
+              saveStatus={saveStatus}
+              isSaving={isSaving}
+              isConfigured={isConfigured}
+              canSave={form.apiKey.trim() !== '' || isConfigured}
+              onSave={() => {
                 void handleSave()
               }}
-            >
-              {getAiSaveButtonLabel(saveStatus)}
-            </Button>
-
-            {isConfigured ? (
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isSaving}
-                onClick={() => {
-                  void handleClear()
-                }}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Clear
-              </Button>
-            ) : null}
-          </div>
+              onClear={() => {
+                void handleClear()
+              }}
+            />
+          </>
         )}
 
-        {/* Status message */}
-        {message !== '' && (
-          <div
-            className={`flex items-center gap-2 text-sm font-medium ${
-              saveStatus === 'error' ? 'text-danger' : 'text-success'
-            }`}
-          >
-            {saveStatus === 'error' ? (
-              <AlertCircle className="h-4 w-4" />
-            ) : (
-              <CheckCircle className="h-4 w-4" />
-            )}
-            <span>{message}</span>
-          </div>
-        )}
+        <AiSettingsMessage message={message} saveStatus={saveStatus} />
       </div>
     </motion.section>
   )

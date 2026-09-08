@@ -6,6 +6,32 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Eighth batch of the suppression
+      burn-down: the settings hook, the AI settings section, the reports table
+      hook, the crons section and the installer IMAP fieldset. Ledger 300
+      findings in 200 files down to 292 in 199.
+  - `useSettingsConfig.ts` became an orchestrator over six new
+    `src/utils/settings/` helpers (`newImapAccountEntry`,
+    `toImapAccountPayload`, `buildSettingsUpdatePayload`, `toSavedFormState`,
+    `testImapConnection`, `saveSettings`), with its save status typed by
+    `SettingsSaveStatus`.
+  - `AiSettingsSection.tsx` split into header, provider select, API key field,
+    actions and message; `CronsSection.tsx` into `EngineHeader`,
+    `EngineStopButton` and `EngineSummary`.
+  - `useReportsTable.ts` lost its duplicated option-fetch effects to a new
+    `useFetchedOptions` hook, and its query building to `buildReportsQuery` /
+    `filterAndSortReports`; `fetchReports` now takes a `FetchReportsParams`
+    object, which is what cleared `max-params`.
+  - `ImapAccountsFieldset.tsx` now maps accounts onto `ImapAccountFields`, which
+    composes `ImapAccountLabelRow`, `ImapAccountServerFields` and
+    `InstallTextField`. The per-field change handler moved out of the view into
+    `imapAccountFieldUpdater`, so `code-policy/view-logic-separation` stays
+    quiet; the shared input and label class names live in
+    `src/constants/install/`.
+  - Evidence: `pnpm run check:ci` green (542 tests, 76 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 1882 modules, type coverage 99.76%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** `max-lines-per-function` was wrongly
       enforced inside `test/**`. Ledger 337 findings in 222 files down to 300 in
       200, without touching a line of test code.

@@ -3,15 +3,18 @@
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/constants/reports'
 import { useDateFilterParams } from '@/hooks/useDateFilterParams'
 import type {
+  FetchReportsParams,
   PaginatedReports,
   ReportsTableState,
+  SortKey,
   UseReportsTableParams,
   UseReportsTableReturn,
 } from '@/types/reports'
+import { buildReportsQuery, filterAndSortReports } from '@/utils/reports'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import type { SortKey } from '../../types/reports/SortKey'
+import { useCallback, useEffect, useMemo, useReducer } from 'react'
 import { reducer } from './reportsReducer'
+import { useFetchedOptions } from './useFetchedOptions'
 
 export function useReportsTable({
   domainId,
@@ -54,121 +57,64 @@ export function useReportsTable({
     [searchParams, router],
   )
 
-  const fetchReports = useCallback(
-    async (
-      p: number,
-      ps: number,
-      filterQs: string,
-      org: string,
-      domain: string,
-    ) => {
-      dispatch({ type: 'FETCH_START' })
-      try {
-        const params = new URLSearchParams(filterQs)
-        params.set('page', String(p))
-        params.set('pageSize', String(ps))
-        if (domainId) params.set('domainId', String(domainId))
-        if (org) params.set('org', org)
-        if (domain) params.set('domain', domain)
-        const res = await fetch(`/api/v1/reports?${params.toString()}`)
-        const json = (await res.json()) as { data: PaginatedReports }
-        dispatch({ type: 'FETCH_SUCCESS', payload: json.data })
-      } finally {
-        dispatch({ type: 'FETCH_END' })
-      }
-    },
-    [domainId],
+  const fetchReports = useCallback(async (params: FetchReportsParams) => {
+    dispatch({ type: 'FETCH_START' })
+    try {
+      const res = await fetch(`/api/v1/reports?${buildReportsQuery(params)}`)
+      const json = (await res.json()) as { data: PaginatedReports }
+      dispatch({ type: 'FETCH_SUCCESS', payload: json.data })
+    } finally {
+      dispatch({ type: 'FETCH_END' })
+    }
+  }, [])
+
+  useEffect(() => {
+    void fetchReports({
+      page,
+      pageSize,
+      dateFilterParams,
+      org: filterOrg,
+      domain: filterDomain,
+      domainId,
+    })
+  }, [
+    page,
+    pageSize,
+    fetchReports,
+    dateFilterParams,
+    filterOrg,
+    filterDomain,
+    domainId,
+  ])
+
+  const orgOptionsQuery = useMemo(() => {
+    const params = new URLSearchParams(dateFilterParams)
+    if (domainId) params.set('domainId', String(domainId))
+    return params.toString()
+  }, [dateFilterParams, domainId])
+
+  const orgOptions = useFetchedOptions(
+    '/api/v1/reports/org-options',
+    orgOptionsQuery,
+    true,
+  )
+  const fetchedDomainOptions = useFetchedOptions(
+    '/api/v1/reports/domain-options',
+    dateFilterParams,
+    !domainId,
   )
 
-  useEffect(() => {
-    void fetchReports(page, pageSize, dateFilterParams, filterOrg, filterDomain)
-  }, [page, pageSize, fetchReports, dateFilterParams, filterOrg, filterDomain])
-
-  const [orgOptions, setOrgOptions] = useState<string[]>([])
-
-  useEffect(() => {
-    const ctrl = new AbortController()
-    const run = async () => {
-      try {
-        const params = new URLSearchParams(dateFilterParams)
-        if (domainId) params.set('domainId', String(domainId))
-        const qs = params.toString()
-        const url = qs
-          ? `/api/v1/reports/org-options?${qs}`
-          : `/api/v1/reports/org-options`
-        const res = await fetch(url, { signal: ctrl.signal })
-        const json = (await res.json()) as { data: string[] }
-        setOrgOptions(json.data)
-      } catch (e) {
-        if (e instanceof Error && e.name === 'AbortError') return
-      }
-    }
-    void run()
-    return () => {
-      ctrl.abort()
-    }
-  }, [domainId, dateFilterParams])
-
-  const [fetchedDomainOptions, setFetchedDomainOptions] = useState<string[]>([])
-  const domainOptions = domainId ? [] : fetchedDomainOptions
-
-  useEffect(() => {
-    if (domainId) return
-    const ctrl = new AbortController()
-    const run = async () => {
-      try {
-        const qs = dateFilterParams
-        const url = qs
-          ? `/api/v1/reports/domain-options?${qs}`
-          : `/api/v1/reports/domain-options`
-        const res = await fetch(url, { signal: ctrl.signal })
-        const json = (await res.json()) as { data: string[] }
-        setFetchedDomainOptions(json.data)
-      } catch (e) {
-        if (e instanceof Error && e.name === 'AbortError') return
-      }
-    }
-    void run()
-    return () => {
-      ctrl.abort()
-    }
-  }, [domainId, dateFilterParams])
-
-  const filtered = useMemo(() => {
-    if (!data) return []
-    let items = data.items
-
-    if (search.trim()) {
-      const q = search.toLowerCase()
-      items = items.filter(
-        (r) =>
-          r.reportId.toLowerCase().includes(q) ||
-          r.orgName.toLowerCase().includes(q),
-      )
-    }
-
-    return [...items].sort((a, b) => {
-      let cmp = 0
-      switch (sortKey) {
-        case 'reportId':
-          cmp = a.reportId.localeCompare(b.reportId)
-          break
-        case 'orgName':
-          cmp = a.orgName.localeCompare(b.orgName)
-          break
-        case 'beginDate':
-          cmp = a.beginDate - b.beginDate
-          break
-      }
-      return sortDir === 'desc' ? -cmp : cmp
-    })
-  }, [data, search, sortKey, sortDir])
+  const filtered = useMemo(
+    () =>
+      data ? filterAndSortReports(data.items, search, sortKey, sortDir) : [],
+    [data, search, sortKey, sortDir],
+  )
 
   return {
     state,
     dispatch,
     orgOptions,
-    domainOptions,
+    domainOptions: domainId ? [] : fetchedDomainOptions,
     filtered,
     updateUrlParams,
   }

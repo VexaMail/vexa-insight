@@ -150,8 +150,8 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      300 in 200: `max-lines-per-function` 157, `complexity` 64, `max-lines` 43,
-      `sonarjs/no-duplicate-string` 23, `max-params` 13. Both
+      292 in 199: `max-lines-per-function` 154, `complexity` 62, `max-lines` 41,
+      `sonarjs/no-duplicate-string` 23, `max-params` 12. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
       they landed. The ledger is monotonic: `pnpm lint` fails on a suppression
@@ -162,12 +162,11 @@ is what those passes did not reach.
       clears the function-length entries inside it; what remains in `test/` is
       the `max-lines` budget of 200, which four files exceed at 248 to 335 lines
       because each covers more than one behaviour. In `src/` the work is a long
-      tail of files carrying exactly three entries each; the largest are
-      `useSettingsConfig.ts` (191), `useReportsTable.ts` (175),
-      `AiSettingsSection.tsx` (177), `CronsSection.tsx` (162) and
-      `ImapAccountsFieldset.tsx` (159). Three placement rules shape any split: a
-      file named `format*` must sit in a `formatters/` directory, an extracted
-      helper still has to stay under four parameters, and
+      tail of files carrying exactly three entries each; the five largest were
+      split on 2026-09-08 and the next ones are of the same shape, a client
+      component or hook of 120 to 160 lines. Three placement rules shape any
+      split: a file named `format*` must sit in a `formatters/` directory, an
+      extracted helper still has to stay under four parameters, and
       `code-policy/no-hidden-top-level-declarations` rejects a module-scope
       constant that is not the file's export, so a shared literal needs its own
       file.

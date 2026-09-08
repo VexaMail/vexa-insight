@@ -266,9 +266,6 @@
     }
   },
   "src/components/ingest/CronsSection.tsx": {
-    "complexity": {
-      "count": 1
-    },
     "max-lines": {
       "count": 1
     },
@@ -331,14 +328,6 @@
   "src/components/install/AdvancedSettingsFieldset.tsx": {
     "max-lines-per-function": {
       "count": 1
-    }
-  },
-  "src/components/install/ImapAccountsFieldset.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
     }
   },
   "src/components/install/InstallForm.tsx": {
@@ -441,12 +430,6 @@
     }
   },
   "src/components/settings/AiSettingsSection.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -624,9 +607,6 @@
     },
     "max-lines-per-function": {
       "count": 1
-    },
-    "max-params": {
-      "count": 1
     }
   },
   "src/hooks/settings/useAiSettings.ts": {
@@ -673,7 +653,7 @@
       "count": 1
     },
     "max-lines-per-function": {
-      "count": 2
+      "count": 1
     }
   },
   "src/hooks/settings/useUpdateStatus.ts": {

@@ -1,11 +1,18 @@
 import type {
+  ImapAccountFormEntry,
   SettingsConfigFormProps,
   SettingsFormState,
-  SettingsPublic,
+  SettingsSaveStatus,
 } from '@/types/settings'
-import { generateApiKey, getSettingsFormState } from '@/utils/settings'
+import {
+  generateApiKey,
+  getSettingsFormState,
+  newImapAccountEntry,
+  saveSettings,
+  testImapConnection,
+  toSavedFormState,
+} from '@/utils/settings'
 import { useState } from 'react'
-import type { ImapAccountFormEntry } from '../../types/settings/ImapAccountFormEntry'
 
 export function useSettingsConfig(
   initialData: SettingsConfigFormProps['initialData'],
@@ -14,9 +21,7 @@ export function useSettingsConfig(
   const [form, setForm] = useState<SettingsFormState>(() =>
     getSettingsFormState(initialData),
   )
-  const [saveStatus, setSaveStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle')
+  const [saveStatus, setSaveStatus] = useState<SettingsSaveStatus>('idle')
   const [message, setMessage] = useState('')
 
   function handleCopyApiKey() {
@@ -36,23 +41,9 @@ export function useSettingsConfig(
   async function handleTestConnection(accountId: number) {
     if (!apiKey.trim()) return
     try {
-      const res = await fetch('/api/v1/imap/test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-        body: JSON.stringify({ accountId }),
-      })
-      const json = (await res.json()) as
-        { data?: { message?: string } } | { error?: { message?: string } }
-      if (res.ok) {
-        setMessage((json as { data: { message: string } }).data.message)
-        setSaveStatus('success')
-      } else {
-        setMessage((json as { error: { message: string } }).error.message)
-        setSaveStatus('error')
-      }
+      const result = await testImapConnection(accountId, apiKey)
+      setMessage(result.message)
+      setSaveStatus(result.ok ? 'success' : 'error')
     } catch {
       setMessage('Test request failed.')
       setSaveStatus('error')
@@ -74,24 +65,7 @@ export function useSettingsConfig(
   function handleImapAdd() {
     setForm((prev) => ({
       ...prev,
-      imapAccounts: [
-        ...prev.imapAccounts,
-        {
-          id: 0,
-          label: '',
-          server: '',
-          port: 993,
-          username: '',
-          passwordMasked: false,
-          passwordNew: '',
-          fetchIncludeTrash: false,
-          fetchIncludeAllFolders: false,
-          postProcessAction: 'none',
-          postProcessFolder: null,
-          moveToTrashAfterProcess: false,
-          markAsReadAfterProcess: false,
-        },
-      ],
+      imapAccounts: [...prev.imapAccounts, newImapAccountEntry()],
     }))
   }
 
@@ -108,68 +82,13 @@ export function useSettingsConfig(
     setSaveStatus('loading')
     setMessage('')
     try {
-      const payload: Record<string, unknown> = {
-        imapAccounts: form.imapAccounts.map((acc) => ({
-          ...(acc.id > 0 ? { id: acc.id } : {}),
-          label: acc.label,
-          server: acc.server,
-          port: acc.port,
-          username: acc.username,
-          fetchIncludeTrash: acc.fetchIncludeTrash,
-          fetchIncludeAllFolders: acc.fetchIncludeAllFolders,
-          postProcessAction: acc.postProcessAction,
-          postProcessFolder: acc.postProcessFolder ?? null,
-          moveToTrashAfterProcess: acc.moveToTrashAfterProcess,
-          markAsReadAfterProcess: acc.markAsReadAfterProcess,
-          ...(acc.passwordNew?.trim() ? { password: acc.passwordNew } : {}),
-        })),
-        ingestionIntervalMinutes: form.ingestionIntervalMinutes,
-        ingestionDaysBack: form.ingestionDaysBack,
-        ingestionIncludeTrash: form.ingestionIncludeTrash,
-        ingestionIncludeAllFolders: form.ingestionIncludeAllFolders,
-        backendCorsOrigins: form.backendCorsOrigins,
-        environment: form.environment,
-        ipHostnameLookupEnabled: form.ipHostnameLookupEnabled,
-        ipHostnameRefreshIntervalHours: form.ipHostnameRefreshIntervalHours,
-        ipHostnameTimeoutMs: form.ipHostnameTimeoutMs,
-        ipHostnameMaxRetries: form.ipHostnameMaxRetries,
-        ipHostnameRetryBackoffMinutes: form.ipHostnameRetryBackoffMinutes,
-        ipHostnameBatchSize: form.ipHostnameBatchSize,
-        ipHostnameManualRefreshEnabled: form.ipHostnameManualRefreshEnabled,
-        ipHostnameAllowPrivateIps: form.ipHostnameAllowPrivateIps,
-        ipHostnameNegativeCacheHours: form.ipHostnameNegativeCacheHours,
-      }
-      if (form.secretKeyNew.trim()) payload.secretKey = form.secretKeyNew
-      const res = await fetch('/api/v1/admin/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-        body: JSON.stringify(payload),
-      })
-      const json = (await res.json()) as
-        { data?: SettingsPublic } | { error?: { message?: string } }
-      if (!res.ok) {
-        const err = json as { error?: { message?: string } }
-        setMessage(err.error?.message ?? `Error ${String(res.status)}`)
-        setSaveStatus('error')
-        return
-      }
-      const data = (json as { data: SettingsPublic }).data
-      setForm({
-        ...data,
-        imapAccounts: data.imapAccounts.map((a) => ({
-          ...a,
-          passwordNew: '',
-        })),
-        secretKeyNew: '',
-      })
+      const saved = await saveSettings(form, apiKey)
+      setForm(toSavedFormState(saved))
       if (form.secretKeyNew.trim()) setApiKey(form.secretKeyNew)
       setSaveStatus('success')
       setMessage('Settings saved.')
-    } catch {
-      setMessage('Request failed.')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Request failed.')
       setSaveStatus('error')
     }
   }

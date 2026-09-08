@@ -1,20 +1,17 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-
-import { Button } from '@/components/ui'
 import { useRefreshOnCronsStop } from '@/hooks/ingest'
 import type { CronsSectionProps } from '@/types/ingest'
 import { m as motion } from 'framer-motion'
-import { Activity } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useAbortPoll } from '../../hooks/ingest/useAbortPoll'
 import { useCronsSectionViewModel } from '../../hooks/ingest/useCronsSectionViewModel'
 import { usePollStatusFetcher } from '../../hooks/ingest/usePollStatusFetcher'
+import { EngineHeader } from './EngineHeader'
 import { EngineProgress } from './EngineProgress'
-import { EngineStatusIndicator } from './EngineStatusIndicator'
+import { EngineSummary } from './EngineSummary'
 import IngestTabs from './IngestTabs'
 import PollProgressList from './PollProgressList'
-import TriggerPollForm from './TriggerPollForm'
 
 export default function CronsSection({
   ingestionIntervalMinutes,
@@ -58,6 +55,8 @@ export default function CronsSection({
     applyPollStatusData,
   })
 
+  const isActive = isRunning || runRequested
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -66,69 +65,24 @@ export default function CronsSection({
         transition={{ duration: 0.4 }}
         className="glass-card-hover p-5"
       >
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="text-primary h-4 w-4" />
-            <h3 className="font-display text-foreground text-sm font-semibold">
-              DMARC Ingest Engine
-            </h3>
-          </div>
-          <div className="flex items-center gap-4">
-            {!(isRunning || runRequested) ? (
-              <TriggerPollForm
-                className="m-0"
-                hideApiKeyWhenPrefilled
-                initialApiKey={initialApiKey}
-              />
-            ) : (
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-8 gap-1.5 px-3 text-xs"
-                onClick={() => {
-                  void handleAbort()
-                }}
-                disabled={abortStatus === 'loading' || !initialApiKey.trim()}
-                title={
-                  !initialApiKey.trim()
-                    ? 'Set API key in settings to stop the job'
-                    : undefined
-                }
-                aria-label="Stop running ingest job"
-              >
-                {abortStatus === 'loading' ? 'Canceling…' : 'Stop process'}
-              </Button>
-            )}
-            <EngineStatusIndicator
-              abortStatus={abortStatus}
-              isRunning={isRunning}
-              runRequested={runRequested}
-            />
-          </div>
-        </div>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Schedule</span>
-            <span className="text-foreground font-medium">{scheduleText}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Last run</span>
-            <span className="text-foreground font-medium">
-              {lastRunFormatted}
-            </span>
-          </div>
-          {isRunning || runRequested ? (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Processed</span>
-              <span className="text-foreground font-medium">
-                {currentProcessed.toLocaleString()}
-                {runRequested && !isRunning ? ' (starting…)' : ''}
-              </span>
-            </div>
-          ) : null}
-        </div>
+        <EngineHeader
+          initialApiKey={initialApiKey}
+          isRunning={isRunning}
+          runRequested={runRequested}
+          abortStatus={abortStatus}
+          onAbort={() => {
+            void handleAbort()
+          }}
+        />
+        <EngineSummary
+          scheduleText={scheduleText}
+          lastRunFormatted={lastRunFormatted}
+          currentProcessed={currentProcessed}
+          isRunning={isRunning}
+          runRequested={runRequested}
+        />
 
-        {isRunning || runRequested ? (
+        {isActive ? (
           <EngineProgress
             currentProcessed={currentProcessed}
             totalEmails={totalEmails}
