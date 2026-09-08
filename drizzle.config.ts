@@ -1,10 +1,11 @@
 import { defineConfig } from 'drizzle-kit'
-import path from 'node:path'
+import { resolveDbFilePath } from './src/lib/db/resolveDbFilePath'
 
-const databaseUrl = process.env.DATABASE_URL ?? 'file:./data/vexa.db'
-const filePath = databaseUrl.startsWith('file:')
-  ? path.resolve(process.cwd(), databaseUrl.replace(/^file:\/?/, ''))
-  : databaseUrl
+// Same resolver the application uses, so `db:migrate` and the running app
+// always open the same file for a given DATABASE_URL (absolute or relative).
+const filePath = resolveDbFilePath(
+  process.env.DATABASE_URL ?? 'file:./data/vexa.db',
+)
 
 export default defineConfig({
   schema: './src/lib/db/schema/index.ts',
