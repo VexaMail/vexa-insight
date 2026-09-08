@@ -1,4 +1,5 @@
 import type { RecentUpload } from '@/types/upload'
+import { newRecentUpload, uploadReportFile } from '@/utils/upload'
 import { useState } from 'react'
 
 export function useUploadForm() {
@@ -9,62 +10,16 @@ export function useUploadForm() {
   const [dragActive, setDragActive] = useState(false)
   const [recentUploads, setRecentUploads] = useState<RecentUpload[]>([])
 
-  function addRecentUpload(
-    name: string,
-    uploadStatus: 'success' | 'error',
-    msg: string,
-  ) {
-    setRecentUploads((prev) => [
-      {
-        id: crypto.randomUUID(),
-        name,
-        status: uploadStatus,
-        message: msg,
-        time: 'Just now',
-      },
-      ...prev.slice(0, 4),
-    ])
-  }
-
   async function handleFile(file: File) {
     setStatus('loading')
     setMessage('')
-    const formData = new FormData()
-    formData.append('file', file)
-    try {
-      const res = await fetch('/api/v1/reports/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const json = (await res.json()) as
-        | {
-            data?: {
-              reportId?: number
-              domain?: string
-              processedRecords?: number
-            }
-          }
-        | { error?: { message?: string } }
-      if (!res.ok) {
-        const err = json as { error?: { message?: string } }
-        const msg = err.error?.message ?? `Error ${String(res.status)}`
-        setMessage(msg)
-        setStatus('error')
-        addRecentUpload(file.name, 'error', msg)
-        return
-      }
-      const data = json as {
-        data?: { reportId?: number; domain?: string; processedRecords?: number }
-      }
-      const successMsg = `Report #${String(data.data?.reportId ?? '—')} — ${data.data?.domain ?? '—'} — ${String(data.data?.processedRecords ?? 0)} records`
-      setMessage(successMsg)
-      setStatus('success')
-      addRecentUpload(file.name, 'success', successMsg)
-    } catch {
-      setMessage('Upload failed.')
-      setStatus('error')
-      addRecentUpload(file.name, 'error', 'Upload failed.')
-    }
+    const result = await uploadReportFile(file)
+    setMessage(result.message)
+    setStatus(result.status)
+    setRecentUploads((prev) => [
+      newRecentUpload(file.name, result),
+      ...prev.slice(0, 4),
+    ])
   }
 
   async function handleSubmit(e: React.SyntheticEvent) {
@@ -84,11 +39,7 @@ export function useUploadForm() {
   function handleDrag(e: React.DragEvent) {
     e.preventDefault()
     e.stopPropagation()
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else {
-      setDragActive(false)
-    }
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover')
   }
 
   function handleDrop(e: React.DragEvent) {

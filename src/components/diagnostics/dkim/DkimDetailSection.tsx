@@ -1,14 +1,7 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui'
-import { KeyRound, ShieldCheck } from 'lucide-react'
-import { ProtocolExplainer, RecordDisplay, SectionHeader } from '../shared'
+import { ShieldCheck } from 'lucide-react'
+import { ProtocolExplainer, SectionHeader } from '../shared'
 import type { DkimDetailSectionProps } from './DkimDetailSectionProps'
+import { DkimSelectorCard } from './DkimSelectorCard'
 
 export function DkimDetailSection({ dns }: Readonly<DkimDetailSectionProps>) {
   const parsedRecords = dns.dkimParsedRecords
@@ -31,96 +24,7 @@ export function DkimDetailSection({ dns }: Readonly<DkimDetailSectionProps>) {
 
       <div className="flex flex-col gap-6">
         {parsedRecords.map((parsed) => (
-          <div
-            key={parsed.selector}
-            className="flex flex-col gap-4 rounded-lg border p-4"
-          >
-            <div className="flex items-center gap-2 border-b pb-3">
-              <KeyRound className="text-muted-foreground h-4 w-4" />
-              <h4 className="text-foreground text-sm font-bold">
-                Selector:{' '}
-                <span className="text-primary font-mono">
-                  {parsed.selector}
-                </span>
-              </h4>
-            </div>
-
-            <RecordDisplay label="DKIM" record={parsed.raw} />
-
-            {parsed.errors.length > 0 && (
-              <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3">
-                <h5 className="mb-1 text-xs font-semibold text-red-500">
-                  Issues Found
-                </h5>
-                <ul className="list-inside list-disc text-xs text-red-500/90">
-                  {[...new Set(parsed.errors)].map((error) => (
-                    <li key={error}>{error}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {parsed.raw !== null && (
-              <div className="overflow-hidden rounded-md border">
-                <Table>
-                  <TableHeader className="bg-muted/30">
-                    <TableRow>
-                      <TableHead className="text-foreground w-[150px] font-semibold">
-                        Check
-                      </TableHead>
-                      <TableHead className="text-foreground font-semibold">
-                        Result
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="text-xs font-medium">
-                        Valid Record
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {parsed.valid ? 'Yes' : 'No'}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="text-xs font-medium">
-                        Version
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {parsed.version ?? 'Unknown'}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="text-xs font-medium">
-                        Key Type
-                      </TableCell>
-                      <TableCell className="text-xs uppercase">
-                        {parsed.keyType ?? 'Unknown'}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="text-xs font-medium">
-                        Key Length
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {parsed.keyLengthBits
-                          ? `~${String(parsed.keyLengthBits)} bits`
-                          : 'Unknown'}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="text-xs font-medium">
-                        Public Key
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {parsed.publicKeyPresent ? 'Present' : 'Missing'}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </div>
+          <DkimSelectorCard key={parsed.selector} parsed={parsed} />
         ))}
       </div>
     </section>

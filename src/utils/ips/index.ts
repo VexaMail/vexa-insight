@@ -1,3 +1,4 @@
+export { authResultClassName } from './authResultClassName'
 export { computeIpsKpis } from './computeIpsKpis'
 export { computeRate } from './computeRate'
 export { getAuthHealthStatus } from './getAuthHealthStatus'

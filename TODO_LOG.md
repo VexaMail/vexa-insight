@@ -6,6 +6,32 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Ninth batch of the suppression
+      burn-down: the GeoIP settings section, the shared data table, the IP event
+      timeline, the DKIM detail section, two report services, the upload hook
+      and the report sources table. Ledger 292 findings in 199 files down to 272
+      in 194.
+  - `GeoIpSection.tsx` composes `GeoIpLicenseKeyField` and `GeoIpDatabaseCard`,
+    whose status branch became the `GeoIpDbStatus` component; `DataTable.tsx`
+    composes `DataTableToolbar`, `DataTableHeaderRows` and `DataTableBodyRows`,
+    with the selected-row test extracted to `isSelectedTableRow` in the new
+    `src/utils/ui/` slice.
+  - `IpEventLogs.tsx` renders `IpEventTimelineItem`, which reuses one
+    `IpEventBadge` for the four result badges and colours SPF and DKIM through
+    `authResultClassName`; `DkimDetailSection.tsx` renders one
+    `DkimSelectorCard` per selector, whose five parsed checks are now a table
+    over a list instead of five hand-written rows.
+  - `getDomainDiagnosticsReportAggregate.ts` became an orchestrator over five
+    query functions and one filter builder under
+    `src/services/ai/use-cases/diagnosticsAggregate/`; `getIpDetail.ts` split
+    into `queryIpDetailRow`, `ipDetailSelection`, `ipDetailEventFilter` and
+    `toIpSummaryData`, with the row typed by `IpDetailRow`.
+  - `useUploadForm.ts` no longer speaks HTTP: `uploadReportFile` returns an
+    `UploadReportResult` the hook only stores.
+  - Evidence: `pnpm run check:ci` green (542 tests, 76 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 1931 modules, type coverage 99.77%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Eighth batch of the suppression
       burn-down: the settings hook, the AI settings section, the reports table
       hook, the crons section and the installer IMAP fieldset. Ledger 300

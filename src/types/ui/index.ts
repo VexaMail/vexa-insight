@@ -1,4 +1,6 @@
 export type { DataTableProps } from './DataTableProps'
+export type { DataTableRowsProps } from './DataTableRowsProps'
+export type { DataTableToolbarProps } from './DataTableToolbarProps'
 export type { NavigatorProps } from './NavigatorProps'
 export type { UseDataTableReturn } from './UseDataTableReturn'
 export type { UseNavigatorReturn } from './UseNavigatorReturn'

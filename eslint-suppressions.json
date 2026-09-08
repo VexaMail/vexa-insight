@@ -211,14 +211,6 @@
       "count": 1
     }
   },
-  "src/components/diagnostics/dkim/DkimDetailSection.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
   "src/components/diagnostics/dns/DnsRecordsSection.tsx": {
     "max-lines": {
       "count": 1
@@ -351,14 +343,6 @@
       "count": 1
     }
   },
-  "src/components/ips/IpEventLogs.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
   "src/components/ips/IpHostname.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -393,14 +377,6 @@
   "src/components/reports/ReportKpiCards.tsx": {
     "max-lines-per-function": {
       "count": 1
-    }
-  },
-  "src/components/reports/ReportSourcesTable.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
     }
   },
   "src/components/reports/ReportTransportSecurityPrimer.tsx": {
@@ -451,12 +427,6 @@
     }
   },
   "src/components/settings/GeoIpSection.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -507,9 +477,6 @@
   },
   "src/components/ui/DataTable.tsx": {
     "complexity": {
-      "count": 1
-    },
-    "max-lines": {
       "count": 1
     },
     "max-lines-per-function": {
@@ -667,12 +634,6 @@
     }
   },
   "src/hooks/upload/useUploadForm.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -749,17 +710,6 @@
     }
   },
   "src/services/ai/use-cases/generateReportInsights.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/use-cases/getDomainDiagnosticsReportAggregate.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -936,17 +886,6 @@
   },
   "src/services/reports/getAggregateStats.ts": {
     "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getIpDetail.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
       "count": 1
     },
     "max-lines-per-function": {

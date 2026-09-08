@@ -1,0 +1,1 @@
+export { isSelectedTableRow } from './isSelectedTableRow'
