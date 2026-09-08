@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-09
+
 ### Added
 
 - **Outbound webhooks.** New `webhook_endpoints` table and CRUD API at
@@ -116,9 +118,6 @@ and this project adheres to
 - README quickstart now binds the published image to `127.0.0.1:3000` by default
   and documents the new install-token flow, the `VEXA_ALLOW_REMOTE_INSTALL` env
   var, and `VEXA_ALLOWED_ORIGINS`.
-
-### Changed
-
 - **The import graph is acyclic.** All 77 cycles ran through a slice `index.ts`:
   either a module importing its own barrel to reach a sibling, or two slices
   each reaching the other through one. Sibling imports now name the sibling and
@@ -328,6 +327,8 @@ and this project adheres to
 
 ## [0.1.0] - 2026-04-26
 
+Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
+
 ### Added
 
 - Initial public open-source release of Vexa Mail Insight.
@@ -355,5 +356,5 @@ and this project adheres to
 - `/install` permanently locked after the first user exists.
 
 [Unreleased]:
-  https://github.com/VexaMail/vexa-insight-dashboard/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.1.0
+  https://github.com/VexaMail/vexa-insight-dashboard/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.2.0
