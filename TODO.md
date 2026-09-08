@@ -160,9 +160,9 @@ is what those passes did not reach.
       or extracting the helper, never by raising a threshold. The remaining
       `max-lines` files are the natural unit of work because splitting one also
       clears the function-length entries inside it; the largest left are
-      `buildOpenApiDocument.ts` (309), `ipsColumns.tsx` (299),
-      `IpHostnameSection.tsx` (243) and `createDnsAdminGuides.ts` (211), plus
-      four test files over 240 lines that are covering more than one behaviour.
+      `ipsColumns.tsx` (299), `IpHostnameSection.tsx` (243) and
+      `createDnsAdminGuides.ts` (211), plus four test files over 240 lines that
+      are covering more than one behaviour.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

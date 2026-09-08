@@ -26,6 +26,22 @@
   - Markup is unchanged in both: same elements, classes, ids and ARIA. The
     accessibility suite is the check that says so, and it asserts the header is
     a real button with `aria-expanded` and no nested button inside it.
+- [x] 2026-09-08 — **Baseline gate debt:** Split the OpenAPI document builder.
+  - `buildOpenApiDocument.ts` was 309 lines: five schema literals, a wrapper
+    helper and seven path definitions all inside one function. The schemas, the
+    `{ data }` wrapper and the shared error response are now their own files
+    under `services/api/openapi/`, and the paths are three groups by audience:
+    the unauthenticated health and metrics probes, the admin job and self-update
+    endpoints, and the webhook CRUD. The builder is a 42-line assembler that
+    spreads the three groups.
+  - Evidence: the served document is unchanged, proved rather than assumed. A
+    scratch test dumped `buildOpenApiDocument()` to JSON on the split code and
+    again on the pre-split code recovered from HEAD: both are 13,441 bytes and
+    compare equal, with the same seven paths. The scratch test was removed
+    afterwards. `pnpm run check:ci` green, `pnpm run check:quality` green once
+    the unused internal barrel was deleted - `openapi/` is internal to the api
+    slice, so it is reached relatively and has no public entrypoint.
+
   - Evidence: ledger 384 findings / 235 files before, 376 / 234 after, with
     `sonarjs/cognitive-complexity` now at zero. `pnpm run check:ci` green (76
     files / 542 tests), `pnpm test:a11y` 17 files / 47 tests,

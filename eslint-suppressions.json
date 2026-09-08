@@ -857,14 +857,6 @@
       "count": 1
     }
   },
-  "src/services/api/buildOpenApiDocument.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/config/getConfig.ts": {
     "max-lines-per-function": {
       "count": 1
