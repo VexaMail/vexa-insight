@@ -17,20 +17,20 @@ store per bundle, seed before migrations, real demo IPs, `next` advisory, CI
 pnpm pin, compose public bind, missing error pages, Code of Conduct contact.
 What remains:
 
-- [ ] Replace the eight `docs/screenshots/*.png` with captures of the
-      `pnpm run seed:demo` dataset. Today they show real client domains, a real
-      server IP and hostname, and `settings.png` shows a real-looking API key.
-      They entered history in one commit (`eba5d8d0e`), so decide whether to
-      rewrite history before the repo goes public or accept that the old files
-      stay reachable. The same decision covers the internal host names removed
-      from `TODO.md` and `TODO_LOG.md` today, which are still in older commits.
-- [ ] Cut the first release so the README quick start works: it runs
-      `ghcr.io/vexamail/vexa-insight-dashboard:latest`, and the org has no
-      container packages and the repo no tags. `release.yml` builds and pushes
-      the image on a `v*.*.*` tag, gated on `check:ci`. `CHANGELOG.md` has a
-      stale `[0.1.0] - 2026-04-26` section under a long `[Unreleased]`; the tag
-      must match `package.json`. The self-update check also reports
-      `no-releases` until this lands.
+- [ ] Decide whether to rewrite history before the repo goes public. The old
+      `docs/screenshots/*.png` (real client domains, a real server IP and
+      hostname, a real-looking API key) entered history in `eba5d8d0e` and were
+      replaced by demo captures in `5e6f48838`, but stay reachable in older
+      commits, as do the internal host names removed from `TODO.md` and
+      `TODO_LOG.md` on 2026-09-09. Either accept that or rewrite and force-push
+      before flipping the repo public; the owner's call.
+- [ ] Make the `vexa-insight-dashboard` container package public when the repo
+      goes public. `v0.2.0` pushed `ghcr.io/vexamail/vexa-insight-dashboard`
+      with tags `latest`, `0`, `0.2`, `0.2.0`, but GHCR package visibility is
+      separate from repo visibility and the package is private today, so the
+      README quick start only works for org members until it is flipped in the
+      package settings. The build-provenance attestation step is skipped on the
+      private repo; re-check it on the first public release.
 - [ ] Rotate `SECRET_KEY` on the production instance once the session fix is
       deployed: any forged-cookie request before it could read the key.
 - [ ] CodeQL fails on the private repo ("Advanced Security must be enabled"). It

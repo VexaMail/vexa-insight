@@ -6,6 +6,22 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Open-source launch, first release:** `v0.2.0` tagged on
+      `610cb8c7a` (minor bump: the Unreleased changelog was all features and
+      fixes on top of a `0.1.0` that was never tagged). `release.yml` run
+      34290113725 published the GitHub Release with the CycloneDX SBOM, and
+      built, pushed and cosign-signed the multi-arch image
+      `ghcr.io/vexamail/vexa-insight-dashboard:{latest,0,0.2,0.2.0}`. The only
+      failed step was the build-provenance attestation ("Feature not available
+      for the VexaMail organization"), which is a private-repo limitation; the
+      step now skips while the repo is private. Local `pnpm run check:ci` before
+      tagging: 91 files, 564 tests, migrations OK.
+- [x] 2026-09-09 — **Open-source launch, screenshots:** the eight
+      `docs/screenshots/*.png` are regenerated from the `pnpm run seed:demo`
+      dataset at 1440x900 (example.com domains, documentation-range IPs, demo
+      report IDs, the demo API key). Commit `5e6f48838`. The `.playwright-mcp/`
+      capture directory is gitignored (`9b094791d`). The history-rewrite
+      decision for the old captures stays in `TODO.md`.
 - [x] 2026-09-08 — **Baseline gate debt:** Sixteenth batch of the suppression
       burn-down: five oversized view files, split by finding what two of them
       were duplicating. Ledger 215 findings in 168 files down to 204 in 163, and

@@ -146,7 +146,11 @@ jobs:
             cosign sign --yes "${tag}@${DIGEST}"
           done <<< "$TAGS"
 
+      # Artifact attestations are free only on public repositories; on a
+      # private one the API answers "Feature not available", so skip the step
+      # rather than fail a release whose image is already pushed and signed.
       - name: Attest build provenance for image
+        if: ${{ !github.event.repository.private }}
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ghcr.io/${{ github.repository }}
