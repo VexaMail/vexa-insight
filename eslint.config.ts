@@ -67,6 +67,24 @@ const config = defineConfig([
       'sonarjs/no-duplicate-string': ['error', { threshold: 4 }],
     },
   },
+  {
+    // The promotion above is repository-wide, so it also re-enabled
+    // `max-lines-per-function` inside test files, which the shared
+    // code-quality layer deliberately turns off: the longest function in a
+    // test file is the top-level `describe` callback, so the rule measures the
+    // wrapper rather than any real complexity, and twenty trivial `it` cases
+    // already report a 62-line arrow. File size in tests is governed by
+    // `max-lines` at 200 instead. Globs match the shared layer's.
+    files: [
+      '**/*.{test,spec}.{ts,tsx}',
+      '**/__tests__/**/*.{ts,tsx}',
+      '**/tests/**/*.{ts,tsx}',
+      '**/test/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'max-lines-per-function': 'off',
+    },
+  },
 
   // This is a self-hosted server whose stdout is its journal: the scheduler,
   // the ingestion job and the AI use-cases report what they did through

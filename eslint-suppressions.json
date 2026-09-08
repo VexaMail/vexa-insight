@@ -98,11 +98,6 @@
       "count": 1
     }
   },
-  "app/api/v1/imap/test/route.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/api/v1/reports/upload/route.ts": {
     "complexity": {
       "count": 1
@@ -1165,100 +1160,30 @@
     }
   },
   "test/DiagnosticsPdfExport.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 1
     }
   },
   "test/ProtocolExplainer.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 2
-    }
-  },
-  "test/SpfLookupTreeSection.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/a11y/AiSettingsSection.test.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/a11y/DiagnosticsDetailSections.test.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/a11y/ImapAccountsSection.test.tsx": {
-    "max-lines-per-function": {
-      "count": 1
     }
   },
   "test/analyzeSpfRecord.test.ts": {
     "max-lines": {
       "count": 1
     },
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 4
-    }
-  },
-  "test/apiRbacSmoke.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
     }
   },
   "test/buildDiagnosticsAdminGuides.test.ts": {
     "max-lines": {
       "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
-  "test/checkInstall.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/computeDomainScore.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/createOpenAiAdapter.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/dateRangeQuerySchema.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
     }
   },
   "test/diagnosticsAiPrompts.test.ts": {
     "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
-  "test/diagnosticsInsightsRequestSchema.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/filterQuerySchemas.test.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -1267,15 +1192,7 @@
       "count": 1
     }
   },
-  "test/getAllowedDomainIds.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "test/getDomainDnsRecords.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 1
     }
@@ -1283,15 +1200,9 @@
   "test/getDomainsSummaryAll.test.ts": {
     "complexity": {
       "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
     }
   },
   "test/getReportSources.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 3
     }
@@ -1302,20 +1213,7 @@
     }
   },
   "test/imapTestRequestSchema.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "test/ipDomainScoping.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/moveToTrashIsAMove.test.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -1324,34 +1222,13 @@
       "count": 1
     }
   },
-  "test/paginationQuerySchemas.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/parseDkimRecord.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "test/parseDmarcTags.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 1
     }
   },
   "test/parseDmarcXmlFixtures.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "test/requireSameOrigin.test.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -1362,38 +1239,12 @@
     "max-lines": {
       "count": 1
     },
-    "max-lines-per-function": {
-      "count": 1
-    },
     "sonarjs/no-duplicate-string": {
       "count": 3
     }
   },
-  "test/revokeUserSessions.test.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/setup/buildZip.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "test/setup/insertSeedEvents.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "test/setup/seedReportSourcesFixture.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
     "max-params": {
-      "count": 1
-    }
-  },
-  "test/updateCheckNoReleases.test.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   }

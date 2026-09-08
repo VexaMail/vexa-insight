@@ -150,7 +150,7 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      337 in 222: `max-lines-per-function` 194, `complexity` 64, `max-lines` 43,
+      300 in 200: `max-lines-per-function` 157, `complexity` 64, `max-lines` 43,
       `sonarjs/no-duplicate-string` 23, `max-params` 13. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
@@ -159,11 +159,11 @@ is what those passes did not reach.
       the same rule still fails. Work it file by file, splitting the component
       or extracting the helper, never by raising a threshold. The remaining
       `max-lines` files are the natural unit of work because splitting one also
-      clears the function-length entries inside it; the four largest left are
-      now test files, 248 to 335 lines, each covering more than one behaviour,
-      and blocked below on what the rule should mean there. In `src/` the work
-      is a long tail of files carrying exactly three entries each; the largest
-      are `useSettingsConfig.ts` (191), `useReportsTable.ts` (175),
+      clears the function-length entries inside it; what remains in `test/` is
+      the `max-lines` budget of 200, which four files exceed at 248 to 335 lines
+      because each covers more than one behaviour. In `src/` the work is a long
+      tail of files carrying exactly three entries each; the largest are
+      `useSettingsConfig.ts` (191), `useReportsTable.ts` (175),
       `AiSettingsSection.tsx` (177), `CronsSection.tsx` (162) and
       `ImapAccountsFieldset.tsx` (159). Three placement rules shape any split: a
       file named `format*` must sit in a `formatters/` directory, an extracted
@@ -171,22 +171,6 @@ is what those passes did not reach.
       `code-policy/no-hidden-top-level-declarations` rejects a module-scope
       constant that is not the file's export, so a shared literal needs its own
       file.
-
-- [!] Decide what `max-lines-per-function` should mean inside `test/**`. Blocked
-  on the owner because the only two ways forward both change a declared rule,
-  and the ledger entry says never to raise a threshold. Of the 350 findings, 63
-  are in `test/`, and 36 of those are `max-lines-per-function` reported against
-  a `describe` callback in 34 files. That callback is a file, not a function: a
-  suite of twelve behaviours cannot be brought under fifty lines without
-  splitting it into six files of two tests each, which makes the suite harder to
-  read rather than easier. Measured on `test/resolveSpfTree.test.ts`, extracting
-  the repeated `mockResolveTxt.mockImplementation` scaffolding into a shared
-  helper still leaves the describe body around 144 lines. The smallest
-  unblocking action is a decision between scoping `max-lines-per-function` off
-  for `describe` and `it` callbacks in `test/**`, or accepting that those 36
-  entries stay in the ledger permanently. The other 27 test findings are real
-  duplication and stay workable either way. Nothing in `src/` depends on this:
-  287 findings there are still ordinary splitting work.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

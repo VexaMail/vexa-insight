@@ -6,6 +6,26 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** `max-lines-per-function` was wrongly
+      enforced inside `test/**`. Ledger 337 findings in 222 files down to 300 in
+      200, without touching a line of test code.
+  - The shared `createCodeQualityConfig()` layer already turns the rule off for
+    test files, and says why: the longest function in a test file is the
+    top-level `describe` callback, so the rule measures the wrapper rather than
+    any real complexity, and twenty trivial `it` cases already report a 62-line
+    arrow. Test file size is governed by `max-lines` at 200 instead of 100.
+  - This repository's `eslint.config.ts` promotes four rules from `warn` to
+    `error` so their pre-existing debt is expressible in the ledger. That block
+    matches `**/*.{js,jsx,ts,tsx,mjs,cjs}`, comes after the shared layers, and
+    so silently re-enabled the rule in tests. 37 of the 337 ledger entries were
+    that override, not debt.
+  - Fixed by re-applying the exemption after the promotion, with the shared
+    layer's own globs, and a comment saying which block it is undoing.
+  - Found while sizing the four remaining oversized test files: the question
+    logged earlier as needing an owner decision turned out to be a local
+    configuration bug, so it is closed rather than parked.
+  - Evidence: `pnpm run check:ci` green (542 tests, migrations OK).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Seventh batch of the suppression
       burn-down: the reports table, three services and the model combobox.
       Ledger 350 findings in 225 files down to 337 in 222.
