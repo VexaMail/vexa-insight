@@ -1,7 +1,7 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-08-28. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-09-08. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
@@ -106,6 +106,22 @@
       0008-style consistency test.
 
 ## Pending Decisions
+
+- [!] Decide whether ingested DMARC mail should be deleted outright or keep the
+  current "move to Trash" behaviour. Verified 2026-09-08 against the production
+  mailbox: there is no bug. The account has `move_to_trash_after_process` on,
+  `handleMoveToTrash` issues `messageMove` to the `\Trash` mailbox (the
+  2026-08-26 decision to honour the label rather than expunge), zero
+  post-process failures in 30 days of journal, and the Trash held 540 messages
+  dated from the moment that fix was deployed. The INBOX leftovers are all
+  non-DMARC alerts. Actual deletion happens outside the app: a daily cron on the
+  mail server expunges Trash older than 30 days, so the effective retention is
+  30 days. Owner's call, two options: shorten that retention on the server (one
+  number in the cron), or add an explicit `delete` post-process option in the
+  app alongside "move to trash". Do not change either without the answer. Side
+  note from the same check: `fetch_include_all_folders` is on, so every hourly
+  run also scans the ~8,400-message log folder; the Performance entry above
+  already records that as accepted cost.
 
 - [!] Match the domain score to PowerDMARC's output exactly. Decided 2026-07-26:
   parity is the goal, so any divergence in the
