@@ -76,21 +76,6 @@
 
 ## Performance
 
-- [-] Stop re-fetching envelopes for folders that never carry DMARC mail.
-  Decided 2026-08-26: not this project's problem to solve. With
-  `ingestion_include_all_folders` on, `processFolder` runs one IMAP
-  `SEARCH SINCE` per folder and then bulk-fetches the envelope of every UID it
-  returns, because the DMARC subject test (`isDmarcCandidate`) and the
-  `processed_messages` de-duplication both need the envelope. Measured on the
-  nova mailbox: a `.Logs` folder holds 5,038 messages of which 5,037 fall inside
-  the 30-day window, so every hourly run pulls ~5,000 envelopes to discard all
-  of them, while the run's real work is 1-22 reports. The 30-day window added on
-  2026-08-25 does not help — the noise folder is entirely recent, so bounding by
-  date bounds nothing. The owner is moving that log mail out to a separate
-  processor, which removes the cost at source and is cheaper than a folder
-  allow-list plus its migration and UI. Reopen only if a mailbox shows the same
-  cost with no way to drain the noisy folder.
-
 - [ ] Revisit rollup-style pre-aggregation for `getTopIpSenders` once the
       dataset justifies it. Measured 2026-07-26 against the local dev DB (6,901
       `normalized_events`, 2,178 `raw_reports`, 899 IPs, 51 domains): the query
@@ -163,19 +148,21 @@ followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
 unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
-- [ ] Burn down the `eslint-suppressions.json` ledger the factory adoption wrote
-      on 2026-09-08: 384 findings in 235 files, all structural -
-      `max-lines-per-function` 210, `complexity` 74, `max-lines` 59,
-      `sonarjs/no-duplicate-string` 25, `max-params` 14,
-      `sonarjs/cognitive-complexity` 2 (`IpDisplay.tsx`,
-      `ImapAccountsSection.tsx`). Every other rule the factories brought was
-      fixed at the source in the same change. The ledger is monotonic:
-      `pnpm     lint` fails on a suppression that no longer matches,
-      `lint:prune` shrinks it, and a new violation of the same rule still fails.
-      Work it file by file (split the component, extract the helper), never by
-      raising a threshold; the 59 `max-lines` files are the natural first batch
-      because splitting them also clears most of the function-length entries
-      inside.
+- [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
+      2026-09-08 at 384 findings in 235 files and the first batch took it to 376
+      in 234: `max-lines-per-function` 208, `complexity` 72, `max-lines` 57,
+      `sonarjs/no-duplicate-string` 25, `max-params` 14. Both
+      `sonarjs/cognitive-complexity` entries are gone, and every rule the
+      factories brought that was not structural was fixed at the source when
+      they landed. The ledger is monotonic: `pnpm lint` fails on a suppression
+      that no longer matches, `lint:prune` shrinks it, and a new violation of
+      the same rule still fails. Work it file by file, splitting the component
+      or extracting the helper, never by raising a threshold. The remaining
+      `max-lines` files are the natural unit of work because splitting one also
+      clears the function-length entries inside it; the largest left are
+      `buildOpenApiDocument.ts` (309), `ipsColumns.tsx` (299),
+      `IpHostnameSection.tsx` (243) and `createDnsAdminGuides.ts` (211), plus
+      four test files over 240 lines that are covering more than one behaviour.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

@@ -6,6 +6,48 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** First batch of the suppression
+      burn-down: the two worst components.
+  - `ImapAccountsSection.tsx` was 386 lines carrying `max-lines`,
+    `cognitive-complexity` and a 300-line render function. Split into eleven
+    files, largest 76 lines: a section shell that maps accounts, a row, its
+    header and toolbar, the three field groups, the two option groups, the
+    move-to-folder control and the move-to-trash checkbox. The repeated
+    `imap-account-${index}-${field}` id template became
+    `utils/settings/imapAccountFieldId`, which is also what removed the inline
+    helper `code-policy/view-logic-separation` was reporting.
+  - `IpDisplay.tsx` was one function with three layouts and
+    `cognitive-complexity`. Now a dispatcher plus one component per layout, with
+    the stacked layout's hostname line (the only one carrying a last-lookup
+    timestamp and a refresh control) extracted. The eight presentation defaults
+    were about to be copied into all three layouts, so they went to
+    `utils/ips/resolveIpDisplayOptions` instead - one definition, and it is what
+    brought the stacked layout under the complexity ceiling.
+  - Markup is unchanged in both: same elements, classes, ids and ARIA. The
+    accessibility suite is the check that says so, and it asserts the header is
+    a real button with `aria-expanded` and no nested button inside it.
+  - Evidence: ledger 384 findings / 235 files before, 376 / 234 after, with
+    `sonarjs/cognitive-complexity` now at zero. `pnpm run check:ci` green (76
+    files / 542 tests), `pnpm test:a11y` 17 files / 47 tests,
+    `pnpm run check:quality` green with no dependency violations over 1,692
+    modules.
+
+- [-] 2026-08-26 — **Performance:** Stop re-fetching envelopes for folders that
+  never carry DMARC mail.
+  - Resolution: superseded by the owner draining the noisy folder at source.
+    With `ingestion_include_all_folders` on, `processFolder` runs one IMAP
+    `SEARCH SINCE` per folder and bulk-fetches the envelope of every UID it
+    returns, because both the DMARC subject test and the `processed_messages`
+    de-duplication need the envelope. Measured on the nova mailbox: a `.Logs`
+    folder held 5,038 messages of which 5,037 fell inside the 30-day window, so
+    every hourly run pulled ~5,000 envelopes to discard all of them while the
+    run's real work was 1-22 reports. The 30-day window does not help, because
+    the noise folder is entirely recent. Moving that log mail to a separate
+    processor removes the cost at source and is cheaper than a folder allow-list
+    plus its migration and UI. Still true on 2026-09-08: the folder holds 8,456
+    messages and the flag is still on. Reopen only if a mailbox shows the same
+    cost with no way to drain the noisy folder.
+
 - [x] 2026-09-08 — **Baseline gate debt:** Refine the remaining eleven
       deep-import exceptions.
   - Result: all eleven gone, `import/no-internal-modules` now runs with no
