@@ -77,3 +77,6 @@ TODO_HISTORY_INDEX.jsonl
 # holds, so they contain real report and domain data. Keep them local.
 /evals/results/*
 !/evals/results/.gitkeep
+
+# Playwright MCP session artifacts
+.playwright-mcp/
