@@ -445,14 +445,6 @@
       "count": 1
     }
   },
-  "src/formatters/metrics/formatPrometheusOutput.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/hooks/dashboard/useTopIpSendersTable.ts": {
     "max-lines-per-function": {
       "count": 1
@@ -487,9 +479,6 @@
     }
   },
   "src/hooks/settings/useAiSettings.ts": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -515,9 +504,6 @@
     }
   },
   "src/hooks/settings/useSelfUpdate.ts": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }

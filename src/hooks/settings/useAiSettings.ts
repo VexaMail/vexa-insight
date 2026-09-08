@@ -1,13 +1,17 @@
 'use client'
 
-import { CLEARED_AI_SETTINGS_FORM } from '@/constants/settings'
-import type { AIProviderId } from '@/types/ai'
+import {
+  AI_SETTINGS_MESSAGE_MS,
+  CLEARED_AI_SETTINGS_FORM,
+} from '@/constants/settings'
 import type {
   AiSettingsFormState,
   AiSettingsSaveStatus,
 } from '@/types/settings'
-import { fetchAiSettings, putAiSettings } from '@/utils/settings'
-import { useCallback, useEffect, useState } from 'react'
+import { putAiSettings } from '@/utils/settings'
+import { useCallback, useState } from 'react'
+import { useAiSettingsFields } from './useAiSettingsFields'
+import { useAiSettingsLoader } from './useAiSettingsLoader'
 
 export function useAiSettings(apiKey: string) {
   const [form, setForm] = useState<AiSettingsFormState>(
@@ -17,13 +21,10 @@ export function useAiSettings(apiKey: string) {
   const [isConfigured, setIsConfigured] = useState(false)
   const [saveStatus, setSaveStatus] = useState<AiSettingsSaveStatus>('idle')
   const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    if (!apiKey.trim()) return
-    const controller = new AbortController()
-    const load = async () => {
-      const data = await fetchAiSettings(apiKey, controller.signal)
-      if (!data) return
+  const fields = useAiSettingsFields(setForm)
+  useAiSettingsLoader(
+    apiKey,
+    useCallback((data) => {
       setForm((prev) => ({
         ...prev,
         providerId: data.providerId,
@@ -31,27 +32,8 @@ export function useAiSettings(apiKey: string) {
       }))
       setApiKeyMasked(data.apiKeyMasked)
       setIsConfigured(data.isConfigured)
-    }
-    void load()
-    return () => {
-      controller.abort()
-    }
-  }, [apiKey])
-
-  const handleProviderChange = useCallback(
-    (providerId: AIProviderId | null) => {
-      setForm((prev) => ({ ...prev, providerId }))
-    },
-    [],
+    }, []),
   )
-
-  const handleApiKeyChange = useCallback((value: string) => {
-    setForm((prev) => ({ ...prev, apiKey: value }))
-  }, [])
-
-  const handleModelChange = useCallback((value: string) => {
-    setForm((prev) => ({ ...prev, model: value }))
-  }, [])
 
   const reportSuccess = useCallback((text: string) => {
     setSaveStatus('success')
@@ -59,7 +41,7 @@ export function useAiSettings(apiKey: string) {
     setTimeout(() => {
       setMessage('')
       setSaveStatus('idle')
-    }, 3000)
+    }, AI_SETTINGS_MESSAGE_MS)
   }, [])
 
   const handleSave = useCallback(async () => {
@@ -117,9 +99,7 @@ export function useAiSettings(apiKey: string) {
     isConfigured,
     saveStatus,
     message,
-    handleProviderChange,
-    handleApiKeyChange,
-    handleModelChange,
+    ...fields,
     handleSave,
     handleClear,
   }

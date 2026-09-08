@@ -1,3 +1,4 @@
+export { APPLY_UPDATE_CONFIRM_MESSAGE } from './applyUpdateConfirmMessage'
 export { APPLY_UPDATE_ENDPOINT_PATH } from './applyUpdateEndpointPath'
 export { DEFAULT_BASH_PATH } from './defaultBashPath'
 export { DEFAULT_REPO_SLUG } from './defaultRepoSlug'

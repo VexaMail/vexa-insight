@@ -1,7 +1,9 @@
 export { createImapFolder } from './createImapFolder'
 export { fetchFolders } from './fetchFolders'
+export { fetchSelfUpdateStatus } from './fetchSelfUpdateStatus'
 export { imapAccountFieldId } from './imapAccountFieldId'
 export { saveSettings } from './saveSettings'
+export { startSelfUpdate } from './startSelfUpdate'
 export { testImapConnection } from './testImapConnection'
 
 export * from './buildSettingsUpdatePayload'
