@@ -150,7 +150,7 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      263 in 192: `max-lines-per-function` 142, `complexity` 57, `max-lines` 30,
+      258 in 191: `max-lines-per-function` 141, `complexity` 57, `max-lines` 26,
       `sonarjs/no-duplicate-string` 23, `max-params` 11. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when

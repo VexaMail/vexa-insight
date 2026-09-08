@@ -1,8 +1,11 @@
 'use client'
 
-import { Button, Input } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { useUserModal } from '../../hooks/users/useUserModal'
+import { UserCredentialFields } from './UserCredentialFields'
+import { UserDomainAccessFields } from './UserDomainAccessFields'
 import type { UserModalProps } from './UserModalProps'
+import { UserRoleField } from './UserRoleField'
 
 export default function UserModal({
   user,
@@ -42,96 +45,20 @@ export default function UserModal({
           }}
           className="space-y-4"
         >
-          <div className="space-y-2">
-            <label htmlFor="user-username" className="text-sm font-medium">
-              Username
-            </label>
-            <Input
-              id="user-username"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value)
-              }}
-              required
-              type="email"
-              placeholder="user@example.com"
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="user-password" className="text-sm font-medium">
-              Password{' '}
-              {user !== undefined && (
-                <span className="text-muted-foreground text-xs">
-                  (leave blank to keep current)
-                </span>
-              )}
-            </label>
-            <Input
-              id="user-password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-              }}
-              type="password"
-              required={!user}
-              minLength={6}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="user-role" className="text-sm font-medium">
-              Role
-            </label>
-            <select
-              id="user-role"
-              value={role}
-              onChange={(e) => {
-                setRole(e.target.value)
-              }}
-              className="bg-background border-input text-foreground focus-visible:ring-primary h-9 w-full rounded-md border px-3 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-            <p className="text-muted-foreground text-xs">
-              Admins have full access. Users have read-only analytics access.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="user-domain-mode" className="text-sm font-medium">
-              Domain Access
-            </label>
-            <select
-              id="user-domain-mode"
-              value={domainMode}
-              onChange={(e) => {
-                setDomainMode(e.target.value as 'all' | 'selected')
-              }}
-              className="bg-background border-input text-foreground focus-visible:ring-primary h-9 w-full rounded-md border px-3 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
-            >
-              <option value="all">All Domains</option>
-              <option value="selected">Selected Domains</option>
-            </select>
-          </div>
-
-          {domainMode === 'selected' && (
-            <div className="space-y-2">
-              <label htmlFor="user-domains" className="text-sm font-medium">
-                Specify Domains
-              </label>
-              <Input
-                id="user-domains"
-                value={domainsInput}
-                onChange={(e) => {
-                  setDomainsInput(e.target.value)
-                }}
-                placeholder="example.com, another.com"
-              />
-              <p className="text-muted-foreground text-xs">
-                Comma separated list of domains.
-              </p>
-            </div>
-          )}
+          <UserCredentialFields
+            username={username}
+            password={password}
+            isEdit={user !== undefined}
+            onUsernameChange={setUsername}
+            onPasswordChange={setPassword}
+          />
+          <UserRoleField role={role} onChange={setRole} />
+          <UserDomainAccessFields
+            domainMode={domainMode}
+            domainsInput={domainsInput}
+            onModeChange={setDomainMode}
+            onDomainsChange={setDomainsInput}
+          />
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" onClick={onClose}>

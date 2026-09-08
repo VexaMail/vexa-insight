@@ -6,6 +6,24 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Eleventh batch of the suppression
+      burn-down: the reports table, the user modal, the GeoIP hook and the
+      upload form. Ledger 263 findings in 192 files down to 258 in 191.
+  - `ReportsTable.tsx` composes `ReportsTableToolbar` (itself
+    `ReportsSearchInput` plus two `ReportsFilterSelect`s), `ReportsTableLoading`
+    and `ReportsTableEmpty`.
+  - `UserModal.tsx` composes `UserCredentialFields`, `UserPasswordField`,
+    `UserRoleField` and `UserDomainAccessFields`, with the shared dropdown
+    styling in `USER_SELECT_CLASS_NAME`.
+  - `useGeoIp.ts` moved its three network calls to `fetchGeoIpSettings`,
+    `saveGeoIpLicenseKey` and `openGeoIpUpdateStream`, which now owns the
+    single-use ticket comment and the EventSource construction.
+  - `UploadForm.tsx` composes `UploadDropZone`, `UploadStatusMessage` and
+    `RecentUploadsCard`.
+  - Evidence: `pnpm run check:ci` green (542 tests, 76 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 1976 modules, type coverage 99.79%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Tenth batch of the suppression
       burn-down: the latest-reports service, the poll trigger, the job run
       history columns, the AI settings hook, the installer form and the DNS

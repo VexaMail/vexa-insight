@@ -4,8 +4,9 @@ import type { GeoIpProgressEvent } from '@/types/geoipProgress'
 import type { GeoIpStreamHandlers, UseGeoIpReturn } from '@/types/settings'
 import { getEtaText } from '@/utils/geoip'
 import {
-  attachGeoIpStreamHandlers,
-  fetchGeoIpStreamTicket,
+  fetchGeoIpSettings,
+  openGeoIpUpdateStream,
+  saveGeoIpLicenseKey,
 } from '@/utils/settings'
 import { useEffect, useState } from 'react'
 
@@ -25,25 +26,11 @@ export function useGeoIp(apiKey: string): UseGeoIpReturn {
   useEffect(() => {
     if (!apiKey) return
     const loadSettings = async () => {
-      try {
-        const res = await fetch('/api/v1/admin/geoip/settings', {
-          headers: { 'X-API-Key': apiKey },
-        })
-        const data = (await res.json()) as {
-          data?: {
-            hasLicenseKey: boolean
-            geoipLastDbUpdateAt: string
-            geoipLastDbUpdateError: string
-          }
-        }
-        if (data.data) {
-          setHasLicenseKey(data.data.hasLicenseKey)
-          setLastUpdate(data.data.geoipLastDbUpdateAt)
-          setErrorStatus(data.data.geoipLastDbUpdateError)
-        }
-      } catch (err) {
-        console.error(err)
-      }
+      const settings = await fetchGeoIpSettings(apiKey)
+      if (!settings) return
+      setHasLicenseKey(settings.hasLicenseKey)
+      setLastUpdate(settings.geoipLastDbUpdateAt)
+      setErrorStatus(settings.geoipLastDbUpdateError)
     }
     void loadSettings()
   }, [apiKey])
@@ -53,25 +40,13 @@ export function useGeoIp(apiKey: string): UseGeoIpReturn {
     setIsLoading(true)
     setMessage('')
     const saveKey = async () => {
-      try {
-        const res = await fetch('/api/v1/admin/geoip/settings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-          body: JSON.stringify({ licenseKey }),
-        })
-        const json = (await res.json()) as { error?: { message?: string } }
-        if (!res.ok) {
-          setMessage(json.error?.message ?? 'Failed to save key')
-        } else {
-          setMessage('License key saved.')
-          setHasLicenseKey(true)
-          setLicenseKey('')
-        }
-      } catch {
-        setMessage('Request failed.')
-      } finally {
-        setIsLoading(false)
+      const result = await saveGeoIpLicenseKey(apiKey, licenseKey)
+      setMessage(result.message)
+      if (result.ok) {
+        setHasLicenseKey(true)
+        setLicenseKey('')
       }
+      setIsLoading(false)
     }
     void saveKey()
   }
@@ -101,26 +76,7 @@ export function useGeoIp(apiKey: string): UseGeoIpReturn {
       },
     }
 
-    // EventSource cannot set headers, so the stream is authorized by a
-    // single-use ticket minted over an authenticated POST. The admin key
-    // itself never reaches the URL.
-    const openStream = async (): Promise<void> => {
-      try {
-        const ticket = await fetchGeoIpStreamTicket(apiKey)
-        attachGeoIpStreamHandlers(
-          new EventSource(
-            `/api/v1/admin/geoip/update-db-stream?ticket=${encodeURIComponent(ticket)}`,
-          ),
-          handlers,
-        )
-      } catch (err: unknown) {
-        handlers.onError(
-          err instanceof Error ? err.message : 'Update request failed.',
-        )
-      }
-    }
-
-    void openStream()
+    void openGeoIpUpdateStream(apiKey, handlers)
   }
 
   const etaText = getEtaText(isUpdatingDb, progressData, startTime)

@@ -374,9 +374,6 @@
     }
   },
   "src/components/reports/ReportsTable.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -487,18 +484,7 @@
       "count": 1
     }
   },
-  "src/components/upload/UploadForm.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/users/UserModal.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -568,9 +554,6 @@
     }
   },
   "src/hooks/settings/useGeoIp.ts": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
