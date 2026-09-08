@@ -154,9 +154,11 @@ const config = defineConfig([
     },
   },
 
-  // Allow overrides: db schema files and script files can use kebab-case
+  // Allow overrides: db schema files, script files and the Next.js
+  // `not-found` convention file can use kebab-case
   {
     files: [
+      'app/**/not-found.tsx',
       'src/lib/db/schema/**/*.{ts,tsx}',
       'scripts/**/*.{js,mjs,cjs,ts}',
       'drizzle/**/*.{js,ts}',
