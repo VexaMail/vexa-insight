@@ -1,7 +1,7 @@
 'use client'
 
-import { useDashboardFilters } from '@/hooks/dashboard/useDashboardFilters'
 import { format } from 'date-fns'
+import { useDashboardFilters } from './dashboard/useDashboardFilters'
 
 /**
  * Builds URLSearchParams string from the current dashboard date filter state.

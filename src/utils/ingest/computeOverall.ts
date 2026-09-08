@@ -1,5 +1,5 @@
 import type { ProgressStep } from '@/types/dashboard'
-import type { OverallResult } from './OverallResult'
+import type { OverallResult } from '@/types/ingest'
 
 export function computeOverall(steps: readonly ProgressStep[]): OverallResult {
   const total = steps.length || 1

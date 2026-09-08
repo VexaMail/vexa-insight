@@ -1,6 +1,7 @@
 export * from './CronsSectionProps'
 export * from './EmailPipelineCardProps'
 export * from './FullRescanDialogProps'
+export * from './OverallResult'
 export * from './PollProgressListProps'
 export * from './PollStatusResponseData'
 export * from './ProcessedEmail'

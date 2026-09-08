@@ -1,5 +1,5 @@
 import { API_KEY_PERMISSIONS } from '@/constants/auth'
-import { hasValidApiKey } from '@/services/api/hasValidApiKey'
+import { hasValidApiKey } from '@/services/credentials'
 import type { Permission } from '@/types/auth'
 import { hasPermission } from '@/utils/auth'
 import { NextResponse } from 'next/server'

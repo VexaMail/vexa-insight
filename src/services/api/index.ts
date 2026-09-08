@@ -1,6 +1,5 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
 export { consumeStreamTicket } from './consumeStreamTicket'
-export { hasValidApiKey } from './hasValidApiKey'
 export { issueStreamTicket } from './issueStreamTicket'
 export { requireAdminAccess } from './requireAdminAccess'
 export { requireAdminAuth } from './requireAdminAuth'

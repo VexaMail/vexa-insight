@@ -1,12 +1,12 @@
 'use client'
 
+import { MIN_SECRET_LENGTH } from '@/constants/auth'
 import {
   DEFAULT_DAYS_BACK,
   DEFAULT_INTERVAL,
   defaultAccount,
   generateSecretKey,
   installReducer,
-  MIN_SECRET_LENGTH,
 } from '@/utils/install'
 import { useReducer } from 'react'
 

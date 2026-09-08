@@ -1,6 +1,6 @@
-import { decryptApiKey } from '@/services/ai/settings/decryptApiKey'
-import { getAiSettings } from '@/services/ai/settings/getAiSettings'
 import { getConfig } from '@/services/config'
+import { decryptApiKey } from './decryptApiKey'
+import { getAiSettings } from './getAiSettings'
 
 /**
  * Reads and decrypts the API key stored in the database.

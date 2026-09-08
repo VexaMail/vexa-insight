@@ -1,7 +1,6 @@
 import { getConfig } from '@/services/config'
+import { isUsableSecret, timingSafeTokenEqual } from '@/services/credentials'
 import type { NextRequest } from 'next/server'
-import { isUsableSecret } from './isUsableSecret'
-import { timingSafeTokenEqual } from './timingSafeTokenEqual'
 
 export function requireAdminAuth(
   request: NextRequest,

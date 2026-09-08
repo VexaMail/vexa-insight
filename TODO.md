@@ -163,19 +163,6 @@ followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
 unnarrowed and the two stale orphan exemptions are deleted. What remains below
 is what those passes did not reach.
 
-- [ ] Refine the remaining eleven deep-import exceptions in `eslint.config.ts`.
-      Each exists because importing the slice barrel would close a module cycle
-      that `no-circular` rejects, so `import/no-internal-modules` is turned off
-      for that file by name. The `config`/`settings` pair was resolved
-      2026-08-28 and proved the pattern: the row readers both slices needed
-      moved to `services/settings-store`, both former exceptions import barrels
-      now, and `no-circular` stays clean — see TODO_LOG. Three mutual pairs
-      remain (`auth`/`api`/`install`, `ai/core`/`ai/settings`,
-      `types/ingest`/`utils/ingest`); apply the same probe to each: find what
-      each side actually needs from the other, and extract the third thing if it
-      is a symbol or two. Do not widen the list to a glob — named entries are
-      what keeps a new deep import failing.
-
 - [ ] Burn down the `eslint-suppressions.json` ledger the factory adoption wrote
       on 2026-09-08: 384 findings in 235 files, all structural -
       `max-lines-per-function` 210, `complexity` 74, `max-lines` 59,

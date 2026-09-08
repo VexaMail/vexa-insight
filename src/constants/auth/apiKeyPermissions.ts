@@ -2,7 +2,7 @@ import type { Permission } from '@/types/auth'
 
 /**
  * Permissions granted to a request authenticated with the shared
- * `SECRET_KEY` (see `services/api/hasValidApiKey.ts`).
+ * `SECRET_KEY` (see `services/credentials/hasValidApiKey.ts`).
  *
  * The key is a single secret shared by every automation client, so it is
  * deliberately NOT the `admin` role: it can move report data and read

@@ -1,4 +1,4 @@
-import { getAiSettings } from '@/services/ai/settings/getAiSettings'
+import { getAiSettings } from '../settings/getAiSettings'
 /**
  * Returns true if an AI provider, encrypted API key, and model are configured.
  *

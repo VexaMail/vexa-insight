@@ -1,4 +1,4 @@
-import type { OverallResult } from '@/utils/ingest/OverallResult'
+import type { OverallResult } from './OverallResult'
 
 export type UseEmailPipelineCardReturn = {
   readonly barColor: string

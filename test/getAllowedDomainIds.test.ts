@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { insertSeedDomains } from './setup/insertSeedDomains'
 import { setupTestDb } from './setup/setupTestDb'
 
-vi.mock('@/services/api/hasValidApiKey', () => ({
+vi.mock('@/services/credentials/hasValidApiKey', () => ({
   hasValidApiKey: vi.fn(async () => Promise.resolve(false)),
 }))
 
@@ -36,13 +36,13 @@ describe('getAllowedDomainIds', () => {
     const { resetDmarcDb } = await import('./setup/resetDmarcDb')
     resetDmarcDb()
     const { getSession } = await import('@/services/auth')
-    const { hasValidApiKey } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/credentials')
     vi.mocked(getSession).mockResolvedValue(null)
     vi.mocked(hasValidApiKey).mockResolvedValue(false)
   })
 
   it('treats a valid shared API key as unrestricted', async () => {
-    const { hasValidApiKey } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/credentials')
     const { getAllowedDomainIds } = await import('@/services/auth')
     vi.mocked(hasValidApiKey).mockResolvedValue(true)
 

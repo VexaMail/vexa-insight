@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/services/api/hasValidApiKey', () => ({
+vi.mock('@/services/credentials/hasValidApiKey', () => ({
   hasValidApiKey: vi.fn(async () => Promise.resolve(false)),
 }))
 
@@ -17,7 +17,7 @@ vi.mock('@/services/auth/getSession', () => ({
  */
 describe('requirePermission with the shared API key', () => {
   beforeEach(async () => {
-    const { hasValidApiKey } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/credentials')
     const { getSession } = await import('@/services/auth')
     vi.mocked(getSession).mockResolvedValue(null)
     vi.mocked(hasValidApiKey).mockResolvedValue(true)
@@ -50,7 +50,7 @@ describe('requirePermission with the shared API key', () => {
   })
 
   it('answers 401, not 403, without a session or a key', async () => {
-    const { hasValidApiKey } = await import('@/services/api')
+    const { hasValidApiKey } = await import('@/services/credentials')
     const { requirePermission } = await import('@/services/auth')
     vi.mocked(hasValidApiKey).mockResolvedValue(false)
 

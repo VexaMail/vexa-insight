@@ -1,6 +1,6 @@
+import { PLACEHOLDER_SECRET } from '@/constants/auth'
 import { getDb, users } from '@/lib/db'
 import { getSettingsRow } from '@/services/settings-store'
-import { PLACEHOLDER_SECRET } from './placeholderSecret'
 
 /**
  * Returns true if the app is installed: app_settings row id=1 exists, secret_key !== 'CHANGE_ME',

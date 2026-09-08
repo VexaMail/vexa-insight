@@ -6,6 +6,33 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Refine the remaining eleven
+      deep-import exceptions.
+  - Result: all eleven gone, `import/no-internal-modules` now runs with no
+    per-file exception anywhere. Four were never cross-slice at all and became
+    relative imports, which the rule does not match and which the layout
+    convention already prefers inside a domain: `resolveStoredApiKey` and
+    `PollStatus` import their own folder, `isAiConfigured` reaches `../settings`
+    exactly as its sibling `resolveProvider` already did, and
+    `useDateFilterParams` reaches `./dashboard`. The `types/ingest` /
+    `utils/ingest` pair was one misplaced file: `OverallResult` is a type and
+    now lives in `types/ingest`, so the edge runs one way. The
+    `auth`/`api`/`install` triangle was cut by extracting what all three shared:
+    `hasValidApiKey`, `isUsableSecret` and `timingSafeTokenEqual` moved to a new
+    `services/credentials` slice, and `PLACEHOLDER_SECRET` plus
+    `MIN_SECRET_LENGTH` moved to `constants/auth`. Both remaining edges (api to
+    auth, install to auth) are one-directional and import barrels.
+  - Found on the way: `MIN_SECRET_LENGTH = 32` existed twice, in
+    `services/api/minSecretLength.ts` and `utils/install/minSecretLength.ts`,
+    with the install UI reading one and the API key check the other. Same value,
+    so no behaviour changed, but the two could have drifted apart silently.
+    Consolidated into the single `constants/auth` definition both now read.
+  - Evidence: `pnpm run check:ci` green (type-check, lint with no suppression
+    for these files, format, 76 files / 542 tests, migrations);
+    `pnpm run check:quality` reports no dependency violations over 1,666 modules
+    and 3,693 dependencies, which is what proves no cycle was reintroduced;
+    `pnpm test:a11y` 17 files / 47 tests.
+
 - [x] 2026-09-08 — **Baseline gate debt:** Adopt the `@busirocket/eslint-config`
       factories.
   - Result: `eslint.config.ts` composes base, nextjs, code-quality and

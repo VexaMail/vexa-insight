@@ -159,39 +159,6 @@ const config = defineConfig([
     },
   },
 
-  // Eleven modules that must reach a concrete file rather than a slice
-  // barrel, because importing the barrel closes a cycle that
-  // `.dependency-cruiser.cjs`'s `no-circular` rejects. A barrel aggregates
-  // unrelated modules, so importing one for a single symbol drags in
-  // everything it re-exports - and where two slices each need one symbol from
-  // the other (`auth`/`api`/`install`, `ai/core`/`ai/settings`,
-  // `types/ingest`/`utils/ingest`), that is enough to make the module graph
-  // circular even though no symbol is. Deep-importing removes the artificial
-  // edge; the symbols themselves were never circular. The `config`/`settings`
-  // pair was resolved for real: the row readers both slices needed moved to
-  // `services/settings-store`, and both former exceptions import barrels now.
-  //
-  // Named individually rather than as a glob so a new deep import somewhere
-  // else still fails.
-  {
-    files: [
-      'src/hooks/useDateFilterParams.ts',
-      'src/services/ai/core/isAiConfigured.ts',
-      'src/services/ai/settings/resolveStoredApiKey.ts',
-      'src/services/api/isUsableSecret.ts',
-      'src/services/api/requireAdminAccess.ts',
-      'src/services/auth/domainAccess.ts',
-      'src/services/auth/requirePermission.ts',
-      'src/services/install/completeInstall.ts',
-      'src/types/dashboard/PollStatus.ts',
-      'src/types/ingest/UseEmailPipelineCardReturn.ts',
-      'src/utils/ingest/computeNextStoreState.ts',
-    ],
-    rules: {
-      'import/no-internal-modules': 'off',
-    },
-  },
-
   // Every path these files build comes from constants, `process.cwd()`, env,
   // or drizzle's own migration journal - none is reachable from request
   // input. Audited one by one on 2026-08-28; listed by name so a new fs call
@@ -224,7 +191,7 @@ const config = defineConfig([
     // `isUsableSecret` compares the configured secret against the public
     // installer placeholder to refuse an unconfigured instance; nothing
     // secret is on either side of that `===`, so there is no timing to leak.
-    files: ['src/services/api/isUsableSecret.ts'],
+    files: ['src/services/credentials/isUsableSecret.ts'],
     rules: {
       'security/detect-possible-timing-attacks': 'off',
     },

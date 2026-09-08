@@ -1,8 +1,8 @@
 'use client'
 
+import { MIN_SECRET_LENGTH } from '@/constants/auth'
 import { useInstallForm } from '@/hooks/install'
 import type { InstallFormProps } from '@/types/install'
-import { MIN_SECRET_LENGTH } from '@/utils/install'
 import { AdvancedSettingsFieldset } from './AdvancedSettingsFieldset'
 import { ImapAccountsFieldset } from './ImapAccountsFieldset'
 

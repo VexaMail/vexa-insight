@@ -1,6 +1,6 @@
+import { MIN_SECRET_LENGTH } from '@/constants/auth'
 import type { ImapAccountInstall } from '@/types/install'
 import { isString } from '../../utils/install/isString'
-import { MIN_SECRET_LENGTH } from '../../utils/install/minSecretLength'
 import { parseAccountsList } from '../../utils/install/parseAccountsList'
 import { parseIngestionDaysBack } from '../../utils/install/parseIngestionDaysBack'
 import { parseIngestionInterval } from '../../utils/install/parseIngestionInterval'
