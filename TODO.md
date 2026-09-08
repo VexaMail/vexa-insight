@@ -10,41 +10,43 @@
 
 ## Open-source launch
 
-Audited 2026-09-09 against the committed tree (`21276615c`) and the GitHub
-repository. Committed HEAD is green locally (`tsc`, `eslint`, 542 tests,
-prettier, migration check); the working tree carries an unfinished
-`useSelfUpdate` split with one lint error and stale suppressions.
+Audited 2026-09-09 (this session plus an independent Codex audit). Fixed the
+same day, in main: forged-cookie key disclosure, unscoped report XML, redirect
+SSRF in `safeFetch`, non-atomic ingest, GeoIP hard dependency, install-token
+store per bundle, seed before migrations, real demo IPs, `next` advisory, CI
+pnpm pin, compose public bind, missing error pages, Code of Conduct contact.
+What remains:
 
 - [ ] Replace the eight `docs/screenshots/*.png` with captures of the
       `pnpm run seed:demo` dataset. Today they show real client domains, a real
-      server IP and hostname (`domains.png`, `diagnostics.png`, `ips.png` at
-      least). They entered history in one commit (`eba5d8d0e`), so decide
-      whether to rewrite history before the repo goes public or accept that the
-      old files stay reachable. Validate with
-      `git grep -F -f <db-domain-list> -- . ':!docs/screenshots'` returning
-      nothing and a visual check of each new capture.
-- [ ] Fix CI: every one of the last 60 runs on `main` failed.
-      `pnpm/action-setup` aborts because the workflows pin `version: 11.1.2`
-      while `package.json` declares `packageManager: pnpm@11.17.0`. Drop the
-      `version:` lines in `ci.yml` (three jobs) and `release.yml`, then confirm
-      a green run.
-- [ ] Clear `pnpm audit --audit-level=high`, which the CI "Dependency audit" job
-      runs and which fails today: `next` 16.2.11 is under a critical advisory
-      fixed in 16.3.3, plus `browserslist` and `js-yaml` (both dev-only, via
-      eslint-plugin-unicorn and `@lhci/cli`). Bump `next` and verify with
-      `pnpm run build` per the Radix lesson in memory.
+      server IP and hostname, and `settings.png` shows a real-looking API key.
+      They entered history in one commit (`eba5d8d0e`), so decide whether to
+      rewrite history before the repo goes public or accept that the old files
+      stay reachable. The same decision covers the internal host names removed
+      from `TODO.md` and `TODO_LOG.md` today, which are still in older commits.
 - [ ] Cut the first release so the README quick start works: it runs
       `ghcr.io/vexamail/vexa-insight-dashboard:latest`, and the org has no
       container packages and the repo no tags. `release.yml` builds and pushes
-      the image on a `v*.*.*` tag, gated on `check:ci`, so CI must be green
-      first. `CHANGELOG.md` has a stale `[0.1.0] - 2026-04-26` section under a
-      long `[Unreleased]`; the tag should match `package.json` (0.1.0 today).
-      The self-update check also reports `no-releases` until this lands.
+      the image on a `v*.*.*` tag, gated on `check:ci`. `CHANGELOG.md` has a
+      stale `[0.1.0] - 2026-04-26` section under a long `[Unreleased]`; the tag
+      must match `package.json`. The self-update check also reports
+      `no-releases` until this lands.
+- [ ] Rotate `SECRET_KEY` on the production instance once the session fix is
+      deployed: any forged-cookie request before it could read the key.
 - [ ] CodeQL fails on the private repo ("Advanced Security must be enabled"). It
-      becomes free once the repo is public; re-check the first public run and
-      keep the workflow.
-- [ ] Add `app/not-found.tsx` and `app/error.tsx`. Neither exists, so 404 and
-      render errors fall back to the unbranded Next.js defaults.
+      becomes free once the repo is public; re-check the first public run.
+- [ ] `pnpm run db:migrate` (drizzle-kit) exits 1 with no message on both
+      absolute and relative `DATABASE_URL`, before and after the config fix,
+      while the app's own `runMigrations()` works. CONTRIBUTING documents the
+      command. Smallest next step: run drizzle-kit with `--verbose` against an
+      empty file and decide whether to keep the script or point the docs at
+      `runMigrations` (`scripts/check-migrations.sh` already covers CI).
+- [ ] The CI "Dependency audit" job carries `continue-on-error: true`, so a
+      high-severity advisory does not fail the run. Audit is clean today; decide
+      whether it should gate.
+- [ ] `next build` downloads Google Fonts (`app/inter.tsx`,
+      `app/spaceGrotesk.tsx`), so an offline or air-gapped source build fails.
+      Self-host the two fonts or document the requirement.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
