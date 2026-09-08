@@ -6,6 +6,32 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Thirteenth batch of the suppression
+      burn-down: two view files, the IP detail page and the two remaining
+      report-source services. Ledger 246 findings in 187 files down to 239
+      in 184.
+  - `SettingsConfigForm.tsx` became a form rendering `SettingsAccessSections`,
+    `SettingsIngestionSections` and `SettingsSaveBar`, with the two new props
+    types under `src/types/settings/`. Those two types import their siblings
+    directly rather than the slice barrel, which is what dependency-cruiser's
+    `no-circular` requires of a type that the barrel itself re-exports.
+  - `app/(app)/ips/[...ip]/page.tsx` lost its date arithmetic to
+    `buildIpDateRange`, which delegates the "days, explicit from, or all time"
+    branch to `ipRangeFromTimestamp`, and its three panels to `IpDetailPanels`.
+    The panel props are typed from `@/types/Ip*Row`, never from
+    `@/services/reports`, so the component stays on the client side of the
+    boundary rule.
+  - `getReportSources.ts` became an orchestrator over
+    `reportSources/queryReportSourceRows`, `queryOverrideTypesByIp` and
+    `queryPrimaryDkimByIp`; each map-building loop moved next to the query that
+    feeds it.
+  - `getIpsSummary.ts` now reuses `ipDetailSelection` and `toIpSummaryData` from
+    the ninth batch over a new `queryIpsSummaryRows` and `ipsSummaryFilter`, so
+    the IP list and the IP detail read the same columns through one selection.
+  - Evidence: `pnpm run check:ci` green (542 tests in 87 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 1990 modules, type coverage 99.79%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Twelfth batch of the suppression
       burn-down: the four oversized test files split by behaviour. Ledger 258
       findings in 191 files down to 246 in 187, and `test/` no longer carries a

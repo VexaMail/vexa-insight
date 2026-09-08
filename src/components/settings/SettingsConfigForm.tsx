@@ -1,17 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui'
 import type { SettingsConfigFormProps } from '@/types/settings'
-import { m as motion } from 'framer-motion'
 import { useSettingsConfig } from '../../hooks/settings/useSettingsConfig'
-import AdvancedSection from './AdvancedSection'
-import { AiSettingsSection } from './AiSettingsSection'
-import ApiKeySection from './ApiKeySection'
-import { GeoIpSection } from './GeoIpSection'
-import ImapAccountsSection from './ImapAccountsSection'
-import IngestionSection from './IngestionSection'
-import IpHostnameSection from './IpHostnameSection'
-import UpdateStatusSection from './UpdateStatusSection'
+import { SettingsAccessSections } from './SettingsAccessSections'
+import { SettingsIngestionSections } from './SettingsIngestionSections'
+import { SettingsSaveBar } from './SettingsSaveBar'
 
 export default function SettingsConfigForm({
   className = '',
@@ -39,93 +32,31 @@ export default function SettingsConfigForm({
       }}
       className={`space-y-6 ${className}`}
     >
-      <UpdateStatusSection apiKey={apiKey} />
-
-      <ApiKeySection
+      <SettingsAccessSections
         apiKey={apiKey}
-        newKey={form.secretKeyNew}
-        onCopy={handleCopyApiKey}
-        onGenerate={handleGenerateNewApiKey}
-        onNewKeyChange={(v) => {
-          setForm((prev) => ({ ...prev, secretKeyNew: v }))
-        }}
-      />
-
-      <ImapAccountsSection
-        accounts={form.imapAccounts}
-        apiKey={apiKey}
-        onUpdate={handleImapUpdate}
-        onAdd={handleImapAdd}
-        onRemove={handleImapRemove}
+        form={form}
+        setForm={setForm}
+        onImapUpdate={handleImapUpdate}
+        onImapAdd={handleImapAdd}
+        onImapRemove={handleImapRemove}
         onTestConnection={(id) => {
           void handleTestConnection(id)
         }}
+        onCopyApiKey={handleCopyApiKey}
+        onGenerateNewApiKey={handleGenerateNewApiKey}
       />
 
-      <IngestionSection
-        intervalMinutes={form.ingestionIntervalMinutes}
-        daysBack={form.ingestionDaysBack}
-        onIntervalChange={(v) => {
-          setForm((prev) => ({ ...prev, ingestionIntervalMinutes: v }))
-        }}
-        onDaysBackChange={(v) => {
-          setForm((prev) => ({ ...prev, ingestionDaysBack: v }))
-        }}
+      <SettingsIngestionSections
+        apiKey={apiKey}
+        form={form}
+        setForm={setForm}
       />
 
-      <AdvancedSection
-        corsOrigins={form.backendCorsOrigins}
-        environment={
-          form.environment as 'development' | 'staging' | 'production'
-        }
-        onCorsChange={(v) => {
-          setForm((prev) => ({ ...prev, backendCorsOrigins: v }))
-        }}
-        onEnvironmentChange={(v) => {
-          setForm((prev) => ({ ...prev, environment: v }))
-        }}
+      <SettingsSaveBar
+        saveStatus={saveStatus}
+        message={message}
+        canSave={apiKey.trim() !== ''}
       />
-
-      <GeoIpSection apiKey={apiKey} />
-
-      <AiSettingsSection apiKey={apiKey} />
-
-      <IpHostnameSection
-        enabled={form.ipHostnameLookupEnabled}
-        refreshIntervalHours={form.ipHostnameRefreshIntervalHours}
-        timeoutMs={form.ipHostnameTimeoutMs}
-        maxRetries={form.ipHostnameMaxRetries}
-        retryBackoffMinutes={form.ipHostnameRetryBackoffMinutes}
-        batchSize={form.ipHostnameBatchSize}
-        manualRefreshEnabled={form.ipHostnameManualRefreshEnabled}
-        allowPrivateIps={form.ipHostnameAllowPrivateIps}
-        negativeCacheHours={form.ipHostnameNegativeCacheHours}
-        onChange={(key, value) => {
-          setForm((prev) => ({ ...prev, [key]: value }))
-        }}
-      />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-        className="flex flex-wrap items-center gap-4"
-      >
-        <Button
-          type="submit"
-          disabled={saveStatus === 'loading' || !apiKey.trim()}
-        >
-          {saveStatus === 'loading' ? 'Saving…' : 'Save configuration'}
-        </Button>
-        {message !== '' && (
-          <p
-            role="status"
-            className={`text-sm ${saveStatus === 'error' ? 'text-danger' : 'text-success'}`}
-          >
-            {message}
-          </p>
-        )}
-      </motion.div>
     </form>
   )
 }

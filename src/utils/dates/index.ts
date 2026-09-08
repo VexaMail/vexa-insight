@@ -1,3 +1,4 @@
+export { buildIpDateRange } from './buildIpDateRange'
 export { DAY_SECONDS } from './daySeconds'
 export { getCutoffUnixSecondsFromDays } from './getCutoffUnixSecondsFromDays'
 export { getDurationHours } from './getDurationHours'

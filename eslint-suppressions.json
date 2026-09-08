@@ -14,14 +14,6 @@
       "count": 1
     }
   },
-  "app/(app)/ips/[...ip]/page.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/(app)/page.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -438,9 +430,6 @@
     }
   },
   "src/components/settings/SettingsConfigForm.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -863,14 +852,6 @@
       "count": 1
     }
   },
-  "src/services/reports/getIpsSummary.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/reports/getLatestReports.ts": {
     "complexity": {
       "count": 1
@@ -878,14 +859,6 @@
   },
   "src/services/reports/getReportOrgOptions.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getReportSources.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
       "count": 1
     }
   },
