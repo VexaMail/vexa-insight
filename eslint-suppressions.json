@@ -172,22 +172,6 @@
       "count": 1
     }
   },
-  "src/components/dashboard/TopDomainsTable.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/TopIpSendersTable.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/dashboard/VolumeByOrgTable.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -269,14 +253,6 @@
       "count": 1
     }
   },
-  "src/components/ingest/ProcessedEmailsTable.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/ingest/TriggerPollForm.tsx": {
     "complexity": {
       "count": 1
@@ -291,9 +267,6 @@
     }
   },
   "src/components/ingest/processedEmailsColumns.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -322,22 +295,6 @@
     }
   },
   "src/components/ips/IpHostname.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/IpRelatedDomains.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/IpRelatedReports.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }

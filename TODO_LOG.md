@@ -6,6 +6,31 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Sixteenth batch of the suppression
+      burn-down: five oversized view files, split by finding what two of them
+      were duplicating. Ledger 215 findings in 168 files down to 204 in 163, and
+      `max-lines` from 19 to 13.
+  - The two dashboard ranked lists shared a card, a five-row loading skeleton,
+    an empty state and a share bar written twice; those are now
+    `RankedListCard`, `RankedListSkeleton`, `RankedListEmpty` and `ShareBar`,
+    with `sharePercent`, `passRateTextClassName` and `passRateBarClassName` in
+    `src/utils/dashboard/`. `TopDomainsTable` and `TopIpSendersTable` are the
+    composition plus one row component each.
+  - `IpRelatedDomains` and `IpRelatedReports` had the same hand-written
+    load-more button as the event timeline, spinner SVG included.
+    `IpEventLoadMoreButton` became `IpLoadMoreButton` with a `label`, all three
+    now use it, and the two inline chevron SVGs became lucide's `ChevronRight`.
+    Their rows are `IpRelatedDomainLink` and `IpRelatedReportLink`, and the two
+    hooks are exported from `@/hooks/ips` rather than deep-imported.
+  - `ProcessedEmailsTable` kept a full-screen modal inline; it is now
+    `ProcessedEmailModal` over `ProcessedEmailMeta` and `ProcessedEmailContent`,
+    with `ProcessedEmailsEmpty` for the pre-ingest state.
+  - `processedEmailsColumns` replaced its three hand-written sort headers with
+    the shared `SortableHeaderButton`.
+  - Evidence: `pnpm run check:ci` green (542 tests in 87 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 2057 modules, type coverage 99.80%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Fifteenth batch of the suppression
       burn-down closed `max-params`: the last eight functions taking more than
       four positional arguments now take one input object each. Ledger 223

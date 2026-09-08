@@ -1,9 +1,8 @@
-import { Button, SortIcon } from '@/components/ui'
-
+import { Button, SortableHeaderButton } from '@/components/ui'
+import type { ProcessedEmail } from '@/types/ingest'
 import { formatPollStatusTime } from '@/utils/format'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Eye } from 'lucide-react'
-import type { ProcessedEmail } from '../../types/ingest/ProcessedEmail'
 import type { GetProcessedEmailsColumnsParams } from './GetProcessedEmailsColumnsParams'
 
 export function getProcessedEmailsColumns({
@@ -12,24 +11,9 @@ export function getProcessedEmailsColumns({
   return [
     {
       accessorKey: 'processedAt',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Processed At
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Processed At" />
+      ),
       cell: ({ row }) => (
         <span className="text-foreground text-sm">
           {formatPollStatusTime(row.getValue('processedAt'))}
@@ -39,24 +23,9 @@ export function getProcessedEmailsColumns({
     },
     {
       accessorKey: 'messageId',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Message ID
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Message ID" />
+      ),
       cell: ({ row }) => (
         <span className="text-muted-foreground max-w-xs truncate font-mono text-xs">
           {row.getValue('messageId')}
@@ -65,30 +34,14 @@ export function getProcessedEmailsColumns({
     },
     {
       accessorKey: 'accountLabel',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Account
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
-      cell: ({ row }) => {
-        const val = row.original.accountLabel
-        return (
-          <span className="text-muted-foreground text-sm">{val ?? '—'}</span>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Account" />
+      ),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">
+          {row.original.accountLabel ?? '—'}
+        </span>
+      ),
     },
     {
       id: 'actions',

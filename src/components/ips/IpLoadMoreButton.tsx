@@ -1,10 +1,12 @@
 import { Loader2 } from 'lucide-react'
+import type { IpLoadMoreButtonProps } from './IpLoadMoreButtonProps'
 
-/** Trigger that appends the next page of events to the timeline. */
-export function IpEventLoadMoreButton({
+/** Trigger that appends the next page to one of the IP detail lists. */
+export function IpLoadMoreButton({
   isLoading,
   onLoadMore,
-}: Readonly<{ isLoading: boolean; onLoadMore: () => void }>) {
+  label,
+}: IpLoadMoreButtonProps) {
   return (
     <div className="flex justify-center pt-6">
       <button
@@ -22,7 +24,7 @@ export function IpEventLoadMoreButton({
             <span>Loading...</span>
           </>
         ) : (
-          <span>Load Older Events</span>
+          <span>{label}</span>
         )}
       </button>
     </div>

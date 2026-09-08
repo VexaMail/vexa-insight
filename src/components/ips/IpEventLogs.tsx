@@ -5,8 +5,8 @@ import type { IpLogRow } from '@/types/IpLogRow'
 import { useIpEventLogs } from '../../hooks/ips/useIpEventLogs'
 import { IpDetailEmptyState } from './IpDetailEmptyState'
 import { IpDetailSection } from './IpDetailSection'
-import { IpEventLoadMoreButton } from './IpEventLoadMoreButton'
 import { IpEventTimelineItem } from './IpEventTimelineItem'
+import { IpLoadMoreButton } from './IpLoadMoreButton'
 
 export function IpEventLogs({
   initialLogs,
@@ -36,8 +36,9 @@ export function IpEventLogs({
       </div>
 
       {hasMore ? (
-        <IpEventLoadMoreButton
+        <IpLoadMoreButton
           isLoading={isLoading}
+          label="Load Older Events"
           onLoadMore={() => {
             void handleLoadMore()
           }}
