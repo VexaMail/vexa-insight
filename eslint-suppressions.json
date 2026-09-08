@@ -121,14 +121,6 @@
       "count": 1
     }
   },
-  "src/components/ai/AiDiagnosticsInsightsPanel.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/ai/AiReportInsightsPanel.tsx": {
     "max-lines": {
       "count": 1
@@ -279,17 +271,6 @@
     }
   },
   "src/components/ingest/CronsSection.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/EmailPipelineCard.tsx": {
     "complexity": {
       "count": 1
     },

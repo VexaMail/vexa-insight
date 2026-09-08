@@ -6,6 +6,27 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Sixth batch of the suppression
+      burn-down: the AI diagnostics panel and the ingest pipeline card. Ledger
+      355 findings in 227 files down to 350 in 225.
+  - `AiDiagnosticsInsightsPanel.tsx` returned six times, and every one of those
+    branches repeated the same `DiagnosticsAdminRunbook` call with the same four
+    props plus the same sparkle-and-title header. The runbook is now rendered
+    once by the panel, and the branching moved to `AiDiagnosticsInsightsBody`,
+    which picks between the not-configured call to action, an idle card, a
+    loading card, a titled notice wrapping the error or empty state, and the
+    results.
+  - `EmailPipelineCard.tsx` (202 lines) split into a header, a progress bar, the
+    wide and narrow step lists, the metadata list and the expanded details. The
+    metadata component owns its own emptiness check, which is what removed the
+    outer `metadataDate` guard and the `complexity` entry.
+  - The header takes the overall status as the same four-value union
+    `StatusPill` declares; typing it as `string` compiled in the old inline JSX
+    but not across a component boundary.
+  - Evidence: `pnpm run check:ci` green (542 tests, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` green
+    (dependency-cruiser 1791 modules with no violations, type coverage 99.75%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Fifth batch of the suppression
       burn-down: the domains table and the IP-hostname settings section. Ledger
       359 findings in 229 files down to 355 in 227.
