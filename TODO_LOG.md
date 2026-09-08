@@ -6,6 +6,32 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Twelfth batch of the suppression
+      burn-down: the four oversized test files split by behaviour. Ledger 258
+      findings in 191 files down to 246 in 187, and `test/` no longer carries a
+      `max-lines` entry.
+  - `resolveSpfTree.test.ts` (320 lines) became `spfTreeStructure`,
+    `spfTreeRedirect`, `spfTreeMacros`, `spfTreeLimits` and a
+    `resolveSpfTree.test.ts` holding only the caching test. The repeated
+    `mockResolveTxt.mockImplementation` bodies became `mockSpfZone`, a
+    host-to-record map, which is what cleared `sonarjs/no-duplicate-string`.
+  - `analyzeSpfRecord.test.ts` (248) split by category into `spfRecordSyntax`,
+    `spfRecordConfiguration`, `spfRecordLimits` and the scope/dependencies half
+    under the original name, over a shared `findSpfCheck` and `SPF_CATEGORY`.
+  - `buildDiagnosticsAdminGuides.test.ts` (335) split into selection/cap, DNS
+    guides and traffic thresholds, with `makeHealthyDnsDiagnostics`,
+    `makeBrokenDnsDiagnostics`, `makeQuietDiagnosticStats` and `GRADE_A_SCORE`
+    moved to `test/setup/`.
+  - `diagnosticsAiPrompts.test.ts` (310) split into system prompt, DNS section
+    and the traffic/runbook/empty-input half, over
+    `makeDiagnosticsAnalysisInput` and `makeDiagnosticsDnsSummary`.
+  - `.prettierignore` now skips `.worktrees/**`, which another session had
+    checked out inside the repo; `eslint.config.ts` already ignored it, so the
+    format step was the only one failing on a Helm chart it must not touch.
+  - Evidence: `pnpm run check:ci` green (542 tests, now 87 files, migrations
+    OK), `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean
+    (knip, dependency-cruiser 1976 modules, type coverage 99.79%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Eleventh batch of the suppression
       burn-down: the reports table, the user modal, the GeoIP hook and the
       upload form. Ledger 263 findings in 192 files down to 258 in 191.

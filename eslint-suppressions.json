@@ -1043,24 +1043,6 @@
       "count": 2
     }
   },
-  "test/analyzeSpfRecord.test.ts": {
-    "max-lines": {
-      "count": 1
-    },
-    "sonarjs/no-duplicate-string": {
-      "count": 4
-    }
-  },
-  "test/buildDiagnosticsAdminGuides.test.ts": {
-    "max-lines": {
-      "count": 1
-    }
-  },
-  "test/diagnosticsAiPrompts.test.ts": {
-    "max-lines": {
-      "count": 1
-    }
-  },
   "test/geoipEnrichSchema.test.ts": {
     "sonarjs/no-duplicate-string": {
       "count": 1
@@ -1104,17 +1086,6 @@
   "test/parseDmarcXmlFixtures.test.ts": {
     "sonarjs/no-duplicate-string": {
       "count": 1
-    }
-  },
-  "test/resolveSpfTree.test.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines": {
-      "count": 1
-    },
-    "sonarjs/no-duplicate-string": {
-      "count": 3
     }
   },
   "test/setup/seedReportSourcesFixture.ts": {

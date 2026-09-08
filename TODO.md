@@ -150,8 +150,8 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      258 in 191: `max-lines-per-function` 141, `complexity` 57, `max-lines` 26,
-      `sonarjs/no-duplicate-string` 23, `max-params` 11. Both
+      246 in 187: `max-lines-per-function` 141, `complexity` 56, `max-lines` 22,
+      `sonarjs/no-duplicate-string` 16, `max-params` 11. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
       they landed. The ledger is monotonic: `pnpm lint` fails on a suppression
@@ -159,15 +159,15 @@ is what those passes did not reach.
       the same rule still fails. Work it file by file, splitting the component
       or extracting the helper, never by raising a threshold. The remaining
       `max-lines` files are the natural unit of work because splitting one also
-      clears the function-length entries inside it; what remains in `test/` is
-      the `max-lines` budget of 200, which four files exceed at 248 to 335 lines
-      because each covers more than one behaviour. In `src/` the work is a long
-      tail of files carrying exactly three entries each; the five largest were
-      split on 2026-09-08 and the next ones are of the same shape, a client
-      component or hook of 120 to 160 lines. Three placement rules shape any
-      split: a file named `format*` must sit in a `formatters/` directory, an
-      extracted helper still has to stay under four parameters, and
-      `code-policy/no-hidden-top-level-declarations` rejects a module-scope
+      clears the function-length entries inside it; `test/` no longer carries a
+      `max-lines` entry: the four oversized files were split by behaviour on
+      2026-09-08 and their fixtures moved to `test/setup/`. In `src/` the work
+      is a long tail of files carrying exactly three entries each; the five
+      largest were split on 2026-09-08 and the next ones are of the same shape,
+      a client component or hook of 120 to 160 lines. Three placement rules
+      shape any split: a file named `format*` must sit in a `formatters/`
+      directory, an extracted helper still has to stay under four parameters,
+      and `code-policy/no-hidden-top-level-declarations` rejects a module-scope
       constant that is not the file's export, so a shared literal needs its own
       file.
 
