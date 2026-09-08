@@ -6,6 +6,28 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Tenth batch of the suppression
+      burn-down: the latest-reports service, the poll trigger, the job run
+      history columns, the AI settings hook, the installer form and the DNS
+      records section. Ledger 272 findings in 194 files down to 263 in 192.
+  - `getLatestReports` takes a `GetLatestReportsParams` object, looks the domain
+    up through `resolveDomainIdByName`, joins `normalizedEvents` once instead of
+    three times behind a `hasJoined` flag, and builds its conditions in
+    `latestReportsConditions`.
+  - `useTriggerPoll` and `useAiSettings` stopped speaking HTTP: `triggerPoll`,
+    `fetchAiSettings` and `putAiSettings` return normalized results the hooks
+    only store, and the cleared AI form is now `CLEARED_AI_SETTINGS_FORM`.
+  - `jobRunHistoryColumns.tsx` dropped five hand-written sort headers for the
+    shared `SortableHeaderButton` and moved the "is this row the running job"
+    test into `isActiveJobRun`; the status pill became `JobRunStatusBadge`.
+  - `InstallForm.tsx` composes `InstallTokenField`, `InstallAdminFields` (over a
+    shared `InstallRequiredField`) and `InstallSecretKeyField`;
+    `DnsRecordsSection.tsx` renders two `DnsRecordList`s and one `MxRecordList`,
+    with deduplication moved to `uniqueMxRecords`.
+  - Evidence: `pnpm run check:ci` green (542 tests, 76 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 1956 modules, type coverage 99.79%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Ninth batch of the suppression
       burn-down: the GeoIP settings section, the shared data table, the IP event
       timeline, the DKIM detail section, two report services, the upload hook

@@ -150,8 +150,8 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      272 in 194: `max-lines-per-function` 146, `complexity` 58, `max-lines` 33,
-      `sonarjs/no-duplicate-string` 23, `max-params` 12. Both
+      263 in 192: `max-lines-per-function` 142, `complexity` 57, `max-lines` 30,
+      `sonarjs/no-duplicate-string` 23, `max-params` 11. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
       they landed. The ledger is monotonic: `pnpm lint` fails on a suppression

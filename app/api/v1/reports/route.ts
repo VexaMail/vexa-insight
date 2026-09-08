@@ -43,7 +43,13 @@ export const GET = withApiAuth(
       Object.fromEntries(searchParams),
     )
     if (from ?? to) {
-      const items = await getLatestReports(pageSize, from, to, org, domain)
+      const items = await getLatestReports({
+        limit: pageSize,
+        from,
+        to,
+        org,
+        domain,
+      })
       return NextResponse.json({
         data: { items, total: items.length, page, pageSize },
       })

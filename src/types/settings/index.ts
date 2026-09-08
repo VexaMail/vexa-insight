@@ -1,4 +1,5 @@
 export type { AiSettingsFormState } from './AiSettingsFormState'
+export type { AiSettingsSaveResult } from './AiSettingsSaveResult'
 export type { AiSettingsSaveStatus } from './AiSettingsSaveStatus'
 export * from './DerivePasswordForWriteInput'
 export * from './FolderEntry'

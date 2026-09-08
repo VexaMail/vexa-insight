@@ -211,14 +211,6 @@
       "count": 1
     }
   },
-  "src/components/diagnostics/dns/DnsRecordsSection.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/diagnostics/mtasts/MtaStsDetailSection.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -302,9 +294,6 @@
     }
   },
   "src/components/ingest/jobRunHistoryColumns.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -323,9 +312,6 @@
     }
   },
   "src/components/install/InstallForm.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -548,14 +534,6 @@
   "src/hooks/ingest/usePollStatusFetcher.ts": {
     "max-lines-per-function": {
       "count": 1
-    }
-  },
-  "src/hooks/ingest/useTriggerPoll.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 2
     }
   },
   "src/hooks/install/useInstallForm.ts": {
@@ -912,12 +890,6 @@
   },
   "src/services/reports/getLatestReports.ts": {
     "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    },
-    "max-params": {
       "count": 1
     }
   },

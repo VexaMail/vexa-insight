@@ -1,10 +1,10 @@
-import { SortIcon } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import { SortableHeaderButton } from '@/components/ui'
 import { formatRunAt } from '@/utils/format'
+import { isActiveJobRun } from '@/utils/ingest'
 import type { ColumnDef } from '@tanstack/react-table'
-import { CheckCircle, Loader2, XCircle } from 'lucide-react'
 import type { GetJobRunHistoryColumnsParams } from './GetJobRunHistoryColumnsParams'
 import type { JobRunRow } from './JobRunRow'
+import { JobRunStatusBadge } from './JobRunStatusBadge'
 
 export function getJobRunHistoryColumns({
   runs,
@@ -15,24 +15,9 @@ export function getJobRunHistoryColumns({
   return [
     {
       accessorKey: 'runAt',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Run at
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Run at" />
+      ),
       cell: ({ row }) => (
         <span className="text-foreground text-sm">
           {formatRunAt(row.getValue('runAt'))}
@@ -42,115 +27,45 @@ export function getJobRunHistoryColumns({
     },
     {
       accessorKey: 'success',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Status
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
-      cell: ({ row }) => {
-        const success = row.original.success
-        const jobId = row.original.id
-        const isCurrentlyRunning =
-          isGlobalRunning &&
-          (activeJobRunId ? activeJobRunId === jobId : jobId === runs[0]?.id)
-
-        if (isCurrentlyRunning) {
-          return (
-            <span className="bg-info/10 text-info inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Running
-            </span>
-          )
-        }
-
-        return (
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
-              success
-                ? 'bg-success/10 text-success'
-                : 'bg-danger/10 text-danger',
-            )}
-          >
-            {success ? (
-              <CheckCircle className="h-3 w-3" />
-            ) : (
-              <XCircle className="h-3 w-3" />
-            )}
-            {success ? 'OK' : 'Failed'}
-          </span>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Status" />
+      ),
+      cell: ({ row }) => (
+        <JobRunStatusBadge
+          success={row.original.success}
+          isRunning={isActiveJobRun(
+            row.original.id,
+            isGlobalRunning,
+            activeJobRunId,
+            runs,
+          )}
+        />
+      ),
     },
     {
       accessorKey: 'processed',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Processed
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
-      cell: ({ row }) => {
-        const jobId = row.original.id
-        const isCurrentlyRunning =
-          isGlobalRunning &&
-          (activeJobRunId ? activeJobRunId === jobId : jobId === runs[0]?.id)
-        const count = isCurrentlyRunning
-          ? Math.max(row.original.processed, currentProcessed)
-          : row.original.processed
-
-        return (
-          <span className="text-muted-foreground text-sm">
-            {count.toLocaleString()}
-          </span>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Processed" />
+      ),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">
+          {(isActiveJobRun(
+            row.original.id,
+            isGlobalRunning,
+            activeJobRunId,
+            runs,
+          )
+            ? Math.max(row.original.processed, currentProcessed)
+            : row.original.processed
+          ).toLocaleString()}
+        </span>
+      ),
     },
     {
       accessorKey: 'ingested',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Ingested
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Ingested" />
+      ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
           {row.original.ingested.toLocaleString()}
@@ -159,24 +74,9 @@ export function getJobRunHistoryColumns({
     },
     {
       accessorKey: 'errorCount',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
-            onClick={() => {
-              column.toggleSorting(isSorted === 'asc')
-            }}
-          >
-            Errors
-            <SortIcon
-              active={isSorted !== false}
-              dir={isSorted === 'asc' ? 'asc' : 'desc'}
-            />
-          </button>
-        )
-      },
+      header: ({ column }) => (
+        <SortableHeaderButton column={column} label="Errors" />
+      ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
           {row.getValue('errorCount')}

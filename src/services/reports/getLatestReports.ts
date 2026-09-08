@@ -1,36 +1,32 @@
-import { domains, getDb, normalizedEvents, rawReports } from '@/lib/db'
+import { getDb, normalizedEvents, rawReports } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
-import type { ReportRow } from '@/types/reports'
-import { and, desc, eq, inArray } from 'drizzle-orm'
-import { getDateRangeConditions } from './formatters/dateRangeConditions'
+import type { GetLatestReportsParams, ReportRow } from '@/types/reports'
+import { and, desc, eq } from 'drizzle-orm'
+import { latestReportsConditions } from './latestReportsConditions'
 import { attachRelatedDomains } from './mappers/attachRelatedDomains'
+import { resolveDomainIdByName } from './resolveDomainIdByName'
 
 /**
  * Returns the latest N reports (for dashboard).
  */
-export async function getLatestReports(
+export async function getLatestReports({
   limit = 8,
-  from?: Date,
-  to?: Date,
-  org?: string,
-  domain?: string,
-): Promise<ReportRow[]> {
-  const db = getDb()
+  from,
+  to,
+  org,
+  domain,
+}: GetLatestReportsParams = {}): Promise<ReportRow[]> {
   const allowedIds = await getAllowedDomainIds()
   if (allowedIds !== null && allowedIds.length === 0) return []
 
-  let domainFilterId: number | undefined
-  if (domain) {
-    const found = await db
-      .select({ id: domains.id })
-      .from(domains)
-      .where(eq(domains.name, domain))
-      .limit(1)
-    if (!found[0]) return []
-    domainFilterId = found[0].id
+  let domainId: number | undefined
+  if (domain !== undefined && domain !== '') {
+    const found = await resolveDomainIdByName(domain)
+    if (found === null) return []
+    domainId = found
   }
 
-  const query = db
+  const query = getDb()
     .selectDistinct({
       id: rawReports.id,
       reportId: rawReports.reportId,
@@ -42,48 +38,26 @@ export async function getLatestReports(
     })
     .from(rawReports)
 
-  const conditions = []
-  let hasJoinedNormalizedEvents = false
-
-  if (allowedIds !== null) {
+  // Every filter but `org` reads a column of normalizedEvents, so the join is
+  // needed exactly when one of them is present.
+  if (allowedIds !== null || from || to || domainId !== undefined) {
     query.innerJoin(
       normalizedEvents,
       eq(rawReports.id, normalizedEvents.rawReportId),
     )
-    hasJoinedNormalizedEvents = true
-    conditions.push(inArray(normalizedEvents.domainId, allowedIds))
   }
 
-  if (from || to) {
-    if (!hasJoinedNormalizedEvents) {
-      query.innerJoin(
-        normalizedEvents,
-        eq(rawReports.id, normalizedEvents.rawReportId),
-      )
-      hasJoinedNormalizedEvents = true
-    }
-    conditions.push(...getDateRangeConditions(from, to))
-  }
-
-  if (domainFilterId !== undefined) {
-    if (!hasJoinedNormalizedEvents) {
-      query.innerJoin(
-        normalizedEvents,
-        eq(rawReports.id, normalizedEvents.rawReportId),
-      )
-    }
-    conditions.push(eq(normalizedEvents.domainId, domainFilterId))
-  }
-
-  if (org) {
-    conditions.push(eq(rawReports.orgName, org))
-  }
-
+  const conditions = latestReportsConditions({
+    allowedIds,
+    from,
+    to,
+    org,
+    domainId,
+  })
   if (conditions.length > 0) {
     query.where(and(...conditions))
   }
 
-  let items = await query.orderBy(desc(rawReports.ingestedAt)).limit(limit)
-  items = await attachRelatedDomains(items)
-  return items
+  const items = await query.orderBy(desc(rawReports.ingestedAt)).limit(limit)
+  return attachRelatedDomains(items)
 }

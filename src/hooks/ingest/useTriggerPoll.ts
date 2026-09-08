@@ -1,3 +1,4 @@
+import { triggerPoll } from '@/utils/ingest'
 import { useState } from 'react'
 
 import { useIngestContext } from './useIngestContext'
@@ -16,51 +17,13 @@ export function useTriggerPoll(initialApiKey: string) {
     setMessage('')
     setActiveTab('pollResults')
     setRunRequested(true)
-    try {
-      const res = await fetch('/api/v1/admin/trigger-poll', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-        body: JSON.stringify({ fullRescan }),
-      })
-      const json = (await res.json()) as
-        | {
-            data?: {
-              success?: boolean
-              processed?: number
-              ingested?: number
-              errors?: number
-            }
-          }
-        | { error?: { message?: string } }
-      if (!res.ok) {
-        setRunRequested(false)
-        const err = json as { error?: { message?: string } }
-        setMessage(err.error?.message ?? `Error ${String(res.status)}`)
-        setStatus('error')
-        return
-      }
-      const data = json as {
-        data?: {
-          success?: boolean
-          processed?: number
-          ingested?: number
-          errors?: number
-        }
-      }
-      setMessage(
-        data.data?.success
-          ? `Processed ${String(data.data.processed ?? 0)}, ingested ${String(data.data.ingested ?? 0)}.`
-          : `Done with ${String(data.data?.errors ?? 0)} errors.`,
-      )
-      setStatus('success')
-    } catch {
+
+    const result = await triggerPoll(apiKey, fullRescan)
+    if (result.status === 'error') {
       setRunRequested(false)
-      setMessage('Request failed.')
-      setStatus('error')
     }
+    setMessage(result.message)
+    setStatus(result.status)
   }
 
   async function handleSubmit(e: React.SyntheticEvent) {
