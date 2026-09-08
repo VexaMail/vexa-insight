@@ -143,7 +143,7 @@ describe('ImapAccountsSection accessibility', () => {
 
     expect(header).toHaveAttribute('aria-expanded', 'false')
     expect(header.tagName).toBe('BUTTON')
-    expect(header.querySelector('button')).toBeNull()
+    expect(within(header).queryByRole('button')).toBeNull()
   })
 
   // `FolderPicker` only renders for a saved account set to move processed

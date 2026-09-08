@@ -60,7 +60,7 @@ export default function IpHostnameSection({
         </label>
       </div>
 
-      {enabled === true && (
+      {enabled ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Refresh Intervals */}
           <div>
@@ -237,7 +237,7 @@ export default function IpHostnameSection({
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </motion.section>
   )
 }

@@ -1,179 +1,37 @@
-import nextVitals from 'eslint-config-next/core-web-vitals'
-import nextTs from 'eslint-config-next/typescript'
-import prettier from 'eslint-config-prettier'
-import boundaries from 'eslint-plugin-boundaries'
-import codePolicy from 'eslint-plugin-code-policy'
-import promise from 'eslint-plugin-promise'
-import security from 'eslint-plugin-security'
+import { createAccessibilityConfig } from '@busirocket/eslint-config/accessibility'
+import { createBaseConfig } from '@busirocket/eslint-config/base'
+import { createCodeQualityConfig } from '@busirocket/eslint-config/code-quality'
+import { createNextjsConfig } from '@busirocket/eslint-config/nextjs'
 import sonarjs from 'eslint-plugin-sonarjs'
 import unicorn from 'eslint-plugin-unicorn'
-import unusedImports from 'eslint-plugin-unused-imports'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-// eslint-config-next already registers: react, react-hooks, import, jsx-a11y, @next/next, @typescript-eslint
-// Extract the 'import' plugin instance from Next's config to avoid "Cannot redefine plugin" errors.
-// We must use the SAME instance when adding import/* rules in subsequent config blocks.
-type PluginRecord = Record<string, unknown>
-
-const allNextConfigs = [...nextVitals, ...nextTs].flat(Infinity as 10)
-const importPlugin = allNextConfigs.flatMap((c) => {
-  if (c && typeof c === 'object' && 'plugins' in c) {
-    const plugins = (c as { plugins?: PluginRecord }).plugins
-    if (plugins && typeof plugins === 'object' && 'import' in plugins) {
-      return [plugins['import']]
-    }
-  }
-  return []
-})[0] as PluginRecord | undefined
-
-const sonarRecommended = sonarjs.configs?.['recommended']
-const sonarRules: Record<string, unknown> =
-  sonarRecommended &&
-  !Array.isArray(sonarRecommended) &&
-  'rules' in sonarRecommended
-    ? (sonarRecommended.rules as Record<string, unknown>)
-    : {}
-
+// Layer order: base -> framework -> code-quality -> accessibility, then the
+// project's own architecture and the named exceptions below.
 const config = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  codePolicy.configs.next,
+  ...createBaseConfig({ tsconfigRootDir: import.meta.dirname }),
+  ...createNextjsConfig({ tsconfigRootDir: import.meta.dirname }),
+  ...createCodeQualityConfig(),
+  ...createAccessibilityConfig(),
 
   globalIgnores([
-    '.next/**',
+    // Agent scratch space and git worktrees checked out inside the repo.
     '.claude/**',
-    'out/**',
-    'build/**',
-    'dist/**',
-    'coverage/**',
-    'next-env.d.ts',
+    '.worktrees/**',
   ]),
 
-  {
-    settings: {
-      react: { version: '19.0' },
-    },
-  },
-
-  // Type-aware linting for TS files
-  {
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: [
-            'eslint.config.ts',
-            'eslint.audit.config.ts',
-            'scripts/recovery.ts',
-            'scripts/migrate-emails-to-jobs.ts',
-            'scripts/migrate-ips.ts',
-            'scripts/backfill-email-counts.ts',
-            'scripts/extract-all.ts',
-            'scripts/extract-pass2.ts',
-            'scripts/fix-imports.ts',
-            'scripts/rename-constants.ts',
-            'scripts/seed-demo.ts',
-            'scripts/backfill-rollup.ts',
-            'scripts/run-ai-eval.ts',
-          ],
-        },
-        tsconfigRootDir: import.meta.dirname,
-      } as any,
-    },
-    rules: {
-      // Hard bans / high-signal correctness
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-non-null-assertion': 'error',
-
-      // Promise correctness
-      '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/no-floating-promises': 'error',
-
-      // Maintainability
-      '@typescript-eslint/consistent-type-imports': [
-        'error',
-        { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
-      ],
-      '@typescript-eslint/switch-exhaustiveness-check': 'error',
-      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/prefer-readonly': 'warn',
-    },
-  },
-
-  // Import hygiene rules - re-use the exact same 'import' plugin instance from eslint-config-next
-  ...(importPlugin
-    ? [
-        {
-          files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'] as [string],
-          plugins: { import: importPlugin },
-          settings: {
-            'import/resolver': { typescript: true },
-          },
-          rules: {
-            'import/first': 'error' as const,
-            'import/newline-after-import': 'error' as const,
-            'import/no-duplicates': 'error' as const,
-            'import/no-cycle': ['error', { maxDepth: 1 }] as [
-              'error',
-              { maxDepth: number },
-            ],
-            'import/no-self-import': 'error' as const,
-
-            /**
-             * "Public API only" enforcement.
-             * Each module directory must expose its contract via index.ts.
-             * Deep imports (e.g. @/services/auth/password) are forbidden.
-             * Only index files, styles, and co-located assets are allowed through.
-             */
-            'import/no-internal-modules': [
-              'error',
-              { forbid: ['@/*/*/**'] },
-            ] as ['error', { forbid: string[] }],
-          },
-        },
-      ]
-    : []),
-
-  // Unused imports/vars + unicorn + sonarjs + boundaries
+  // Repository-wide file and module hygiene on top of the shared layers.
   {
     files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
-    plugins: {
-      'unused-imports': unusedImports,
-      unicorn,
-      sonarjs,
-      boundaries,
-      promise,
-      security,
-    },
+    plugins: { unicorn },
     rules: {
-      /**
-       * Unused imports/vars (hard fail)
-       */
-      'unused-imports/no-unused-imports': 'error',
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      'unused-imports/no-unused-vars': [
-        'error',
-        {
-          args: 'after-used',
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          ignoreRestSiblings: true,
-        },
-      ],
-
-      /**
-       * Unicorn: modern correctness / guardrails
-       */
       'unicorn/no-abusive-eslint-disable': 'error',
       'unicorn/prefer-node-protocol': 'error',
       'unicorn/prefer-optional-catch-binding': 'error',
-      'unicorn/no-null': 'off',
-      'unicorn/prevent-abbreviations': 'off',
       'unicorn/filename-case': [
         'error',
-        // checkDirectories (new default in unicorn v72) is off because Next.js
-        // route directories are URL segments and must stay kebab-case.
+        // checkDirectories is off because Next.js route directories are URL
+        // segments and must stay kebab-case.
         {
           cases: { camelCase: true, pascalCase: true },
           checkDirectories: false,
@@ -181,124 +39,55 @@ const config = defineConfig([
       ],
 
       /**
-       * Promise / security hygiene
+       * "Public API only" enforcement.
+       * Each module directory must expose its contract via index.ts.
+       * Deep imports (e.g. @/services/auth/password) are forbidden.
        */
-      'promise/prefer-await-to-then': 'warn',
-      'promise/no-nesting': 'warn',
-      'promise/no-return-wrap': 'error',
-      'security/detect-eval-with-expression': 'error',
-      'security/detect-non-literal-regexp': 'warn',
-      'security/detect-object-injection': 'off',
-
-      /**
-       * SonarJS: bug patterns with high signal
-       */
-      ...sonarRules,
-      // Downgrade noisy / opinionated SonarJS rules
-      'sonarjs/prefer-read-only-props': 'warn',
-      'sonarjs/no-nested-conditional': 'warn',
-      'sonarjs/cognitive-complexity': 'warn',
-      'sonarjs/pseudo-random': 'warn',
-      'sonarjs/deprecation': 'warn',
-      'sonarjs/slow-regex': 'warn',
-      'sonarjs/no-nested-functions': 'warn',
-      'sonarjs/no-duplicate-string': 'off',
-
-      /**
-       * Architecture boundaries (folder-level dependency governance)
-       * Matched to the source layout under src/.
-       *
-       * Types:
-       *   app       → Next.js App Router pages & API routes
-       *   components → Client-safe UI components
-       *   shared    → Runtime-neutral shared code (lib, utils, hooks, types)
-       *   server    → Server-only code (services, actions)
-       *
-       * Dependency rules:
-       *   - app can import everything (it's the composition root)
-       *   - components can only import from shared (no server deps)
-       *   - server can only import from shared (no client UI deps)
-       *   - shared stays runtime-neutral
-       */
-      'boundaries/dependencies': [
-        'error',
-        {
-          default: 'disallow',
-          policies: [
-            {
-              from: { element: { type: 'app' } },
-              allow: {
-                to: {
-                  element: {
-                    types: { anyOf: ['components', 'shared', 'server'] },
-                  },
-                },
-              },
-            },
-            {
-              from: { element: { type: 'components' } },
-              allow: {
-                to: { element: { types: { anyOf: ['components', 'shared'] } } },
-              },
-            },
-            {
-              from: { element: { type: 'shared' } },
-              allow: { to: { element: { type: 'shared' } } },
-            },
-            {
-              from: { element: { type: 'server' } },
-              allow: {
-                to: { element: { types: { anyOf: ['server', 'shared'] } } },
-              },
-            },
-          ],
-        },
-      ],
+      'import/no-internal-modules': ['error', { forbid: ['@/*/*/**'] }],
     },
   },
 
-  // Boundaries: map filesystem patterns to element types
-  // Matched to the source layout under src/.
+  // Warnings that would otherwise be invisible to the gate. `pnpm lint` runs
+  // without --max-warnings 0 and ESLint's bulk suppressions only record
+  // errors, so a rule left at `warn` is either ignored by CI or blocks every
+  // commit that touches a file it flags (the pre-commit hook does use
+  // --max-warnings 0). At `error` the pre-existing debt is expressible in
+  // `eslint-suppressions.json` - a ledger review can see and `lint:prune`
+  // can only shrink - while new violations still fail.
   {
     files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
-    settings: {
-      'boundaries/elements': [
-        // App Router: pages and API routes
-        { type: 'app', pattern: 'app/*' },
-        { type: 'app', pattern: 'app/**/*' },
-
-        // Client-safe UI components
-        { type: 'components', pattern: 'src/components/*' },
-        { type: 'components', pattern: 'src/components/**/*' },
-
-        // Runtime-neutral shared code
-        { type: 'shared', pattern: 'src/lib/*' },
-        { type: 'shared', pattern: 'src/lib/**/*' },
-        { type: 'shared', pattern: 'src/utils/*' },
-        { type: 'shared', pattern: 'src/utils/**/*' },
-        { type: 'shared', pattern: 'src/hooks/*' },
-        { type: 'shared', pattern: 'src/hooks/**/*' },
-        { type: 'shared', pattern: 'src/types/*' },
-        { type: 'shared', pattern: 'src/types/**/*' },
-
-        // Server-only code
-        { type: 'server', pattern: 'src/services/*' },
-        { type: 'server', pattern: 'src/services/**/*' },
-        { type: 'server', pattern: 'src/actions/*' },
-        { type: 'server', pattern: 'src/actions/**/*' },
+    plugins: { sonarjs },
+    rules: {
+      'max-lines-per-function': [
+        'error',
+        { max: 50, skipBlankLines: true, skipComments: true, IIFEs: true },
       ],
+      complexity: ['error', { max: 10 }],
+      'max-params': ['error', { max: 4 }],
+      'sonarjs/no-duplicate-string': ['error', { threshold: 4 }],
     },
   },
 
-  /**
-   * Runtime boundary enforcement (server ↔ client)
-   *
-   * Prevents the classic "imported server secrets into client bundle" failure:
-   * - Client/component code must NEVER import from services/ (server-only)
-   * - Server code must NOT import from components/ (client UI)
-   *
-   * Uses import/no-restricted-paths for path-based zone enforcement.
-   */
+  // This is a self-hosted server whose stdout is its journal: the scheduler,
+  // the ingestion job and the AI use-cases report what they did through
+  // `console.info`, and operators grep those lines. `console.log` and
+  // `console.debug` stay banned as debugging leftovers; the two logging
+  // primitives are the only files allowed to reach them.
+  {
+    files: ['src/services/**/*.ts', 'instrumentation.ts'],
+    rules: { 'no-console': ['error', { allow: ['warn', 'error', 'info'] }] },
+  },
+  {
+    files: ['src/utils/log/emit.ts', 'src/utils/imap/createImapLogger.ts'],
+    rules: { 'no-console': 'off' },
+  },
+
+  // Runtime boundary enforcement (server <-> client), stricter than the
+  // shared boundaries layer, which lets shared code reach services.
+  //
+  // Prevents the classic "imported server secrets into client bundle" failure:
+  // - Client/component code must NEVER import from services/ (server-only)
+  // - Server code must NOT import from components/ (client UI)
   {
     files: ['src/components/**/*.{ts,tsx}', 'src/hooks/**/*.{ts,tsx}'],
     rules: {
@@ -347,9 +136,6 @@ const config = defineConfig([
     },
   },
 
-  // Prettier last (formatting conflicts off)
-  prettier,
-
   // Allow overrides: db schema files and script files can use kebab-case
   {
     files: [
@@ -362,15 +148,13 @@ const config = defineConfig([
     },
   },
 
-  // Allow eslint.config.ts and scripts without project-service type checking
+  // Scripts run standalone via tsx: their stdout is their output, and they
+  // deep-import specific service modules to avoid pulling barrel side effects
+  // (e.g. top-level-await modules).
   {
-    files: ['eslint.config.ts', 'scripts/**/*.ts'],
+    files: ['scripts/**/*.ts'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      // Scripts run standalone via tsx and deep-import specific service modules
-      // to avoid pulling barrel side effects (e.g. top-level-await modules).
+      'no-console': 'off',
       'import/no-internal-modules': 'off',
     },
   },
@@ -387,9 +171,8 @@ const config = defineConfig([
   // pair was resolved for real: the row readers both slices needed moved to
   // `services/settings-store`, and both former exceptions import barrels now.
   //
-  // Same reasoning the `scripts/` override below already applies: reach past
-  // the barrel when pulling it in costs more than it buys. Named individually
-  // rather than as a glob so a new deep import somewhere else still fails.
+  // Named individually rather than as a glob so a new deep import somewhere
+  // else still fails.
   {
     files: [
       'src/hooks/useDateFilterParams.ts',
@@ -409,6 +192,67 @@ const config = defineConfig([
     },
   },
 
+  // Every path these files build comes from constants, `process.cwd()`, env,
+  // or drizzle's own migration journal - none is reachable from request
+  // input. Audited one by one on 2026-08-28; listed by name so a new fs call
+  // on a caller-supplied path elsewhere still reports.
+  {
+    files: [
+      'src/lib/db/applySqlFile.ts',
+      'src/lib/db/runMigrations.ts',
+      'src/services/ai/evals/writeEvalArtifact.ts',
+      'src/services/geoip/updateDb.ts',
+      'src/services/updates/internals/isGitCheckout.ts',
+      'src/services/updates/readSelfUpdateLog.ts',
+      'src/services/updates/writeSelfUpdateAuditEntry.ts',
+    ],
+    rules: {
+      'security/detect-non-literal-fs-filename': 'off',
+    },
+  },
+  {
+    // A test process reads fixture paths it builds itself from repository
+    // constants, which is the untrusted-input case the rule exists to catch
+    // inverted.
+    files: ['test/**/*.{ts,tsx}'],
+    rules: {
+      'security/detect-non-literal-fs-filename': 'off',
+    },
+  },
+
+  {
+    // `isUsableSecret` compares the configured secret against the public
+    // installer placeholder to refuse an unconfigured instance; nothing
+    // secret is on either side of that `===`, so there is no timing to leak.
+    files: ['src/services/api/isUsableSecret.ts'],
+    rules: {
+      'security/detect-possible-timing-attacks': 'off',
+    },
+  },
+  {
+    // TypeScript's prop types are the validation. `react/prop-types` cannot
+    // see through `forwardRef`'s generic, so it reports the destructured props
+    // of every ref-forwarding primitive as unvalidated.
+    files: ['**/*.tsx'],
+    rules: {
+      'react/prop-types': 'off',
+    },
+  },
+  {
+    // cmdk styles its parts through bare `cmdk-*` attributes and its own
+    // selectors expect them verbatim; `data-` prefixes would not match.
+    files: [
+      'src/components/ui/CommandEmpty.tsx',
+      'src/components/ui/CommandInput.tsx',
+    ],
+    rules: {
+      'react/no-unknown-property': [
+        'error',
+        { ignore: ['cmdk-empty', 'cmdk-input-wrapper'] },
+      ],
+    },
+  },
+
   // TanStack Table's `useReactTable()` returns functions that React Compiler
   // cannot safely memoize. The hook already carries `'use no memo'` to opt
   // out of compilation; the lint rule still detects the call site statically
@@ -420,13 +264,6 @@ const config = defineConfig([
     rules: {
       'react-hooks/incompatible-library': 'off',
     },
-  },
-  {
-    // dependency-cruiser loads CommonJS config only, so this one file is CJS
-    // in an ESM project: it reaches the shared TypeScript factory through a
-    // jiti require. eslint-config-next applies no-require-imports repo-wide.
-    files: ['.dependency-cruiser.cjs'],
-    rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
 ])
 

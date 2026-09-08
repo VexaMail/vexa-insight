@@ -31,11 +31,11 @@ export default function IngestTabs({
           }}
         >
           Poll Results
-          {isRunning === true && (
+          {isRunning ? (
             <span className="bg-info/10 text-info ml-2 rounded-full px-2 py-0.5 text-xs">
               Running
             </span>
-          )}
+          ) : null}
         </button>
         <button
           className={`font-display border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${

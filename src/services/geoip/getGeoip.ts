@@ -19,7 +19,7 @@ export const getGeoip = (() => {
     if (!env.GEODATADIR) {
       process.env.GEODATADIR = path.join(process.cwd(), 'data', 'geoip')
     }
-    geoipModule = (await import('geoip-lite')) as typeof GeoIp
+    geoipModule = await import('geoip-lite')
     return geoipModule
   }
 })()

@@ -48,3 +48,11 @@ install.
   `eslint-config-next`) does not support it yet.
 - Drop `eslint-config-next`: rejected; not worth losing the Next.js lint rules
   to remove one override.
+
+## Update 2026-09-08
+
+`eslint-config-next` is no longer a direct dependency: the lint config now
+composes the `@busirocket/eslint-config` factories, whose Next.js layer takes
+the Core Web Vitals rules straight from `@next/eslint-plugin-next`. The package
+still lands in the tree as an optional peer of that factory, so the
+`typescript-eslint` overrides above stay in place for the same reason.

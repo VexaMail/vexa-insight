@@ -7,8 +7,8 @@ import { resetDmarcDb } from './setup/resetDmarcDb'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth', () => ({
-  getAllowedDomainIds: vi.fn(() => Promise.resolve(null)),
-  getSession: vi.fn(() => Promise.resolve(null)),
+  getAllowedDomainIds: vi.fn(async () => Promise.resolve(null)),
+  getSession: vi.fn(async () => Promise.resolve(null)),
 }))
 
 describe('event_rollup_daily consistency', () => {

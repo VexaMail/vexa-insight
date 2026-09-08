@@ -5,7 +5,7 @@ export function analyzeDependencies(spf: string): SpfCheckResult[] {
 
   // Every include delegates authorization to an externally controlled
   // record, so all of them count as third-party dependencies.
-  const thirdParty = spf.match(/include:([^\s;]+)/gi) ?? []
+  const thirdParty = spf.match(/include:[^\s;]+/gi) ?? []
 
   checks.push({
     name: 'Third-party includes',

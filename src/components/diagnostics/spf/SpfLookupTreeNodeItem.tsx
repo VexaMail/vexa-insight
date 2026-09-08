@@ -12,21 +12,21 @@ export function SpfLookupTreeNodeItem({
         <span className="text-muted-foreground text-xs">
           {node.lookupCount} lookup{node.lookupCount === 1 ? '' : 's'}
         </span>
-        {node.missingRecord === true && (
+        {node.missingRecord ? (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             No SPF record
           </span>
-        )}
-        {node.cycleDetected === true && (
+        ) : null}
+        {node.cycleDetected ? (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             Cycle detected
           </span>
-        )}
-        {node.exceedsLookupLimit === true && (
+        ) : null}
+        {node.exceedsLookupLimit ? (
           <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
             Exceeds 10-lookup limit
           </span>
-        )}
+        ) : null}
       </div>
       {node.mechanisms.length > 0 && (
         <p className="text-muted-foreground pl-3 font-mono text-xs">

@@ -1,0 +1,1552 @@
+{
+  "app/(app)/dashboard/page.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/(app)/diagnostics/[domain]/page.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/(app)/ingest/page.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/(app)/ips/[...ip]/page.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/(app)/page.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/auth/oidc/callback/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/install/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/admin/ai-models/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/admin/ai-settings/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/admin/apply-update/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/admin/trigger-poll/route.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/ai/diagnostics-insights/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/ai/report-insights/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/imap/folders/create/route.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/imap/folders/route.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/imap/test/route.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/api/v1/reports/upload/route.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "app/login/page.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/actions/login.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ai/AiDiagnosticsInsightsPanel.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ai/AiReportInsightsPanel.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ai/DiagnosticsAdminGuideCard.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ai/DiagnosticsAdminRunbook.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ai/DiagnosticsInsightCard.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/charts/_DispositionChart.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/charts/_SpfDkimChart.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/charts/_TrendChart.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/KpiCards.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/LatestReportsTable.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/PassRateRingDisplay.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/PollStatusCard.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/TopDomainsTable.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/TopIpSendersTable.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/dashboard/VolumeByOrgTable.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/DiagnosticsView.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/bimi/BimiDetailSection.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/dkim/DkimDetailSection.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/components/diagnostics/dns/DnsRecordsSection.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/mtasts/MtaStsDetailSection.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/overview/ProtocolOverviewPanel.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/score/DomainScoreBadge.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/spf/SpfLookupTreeNodeItem.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/tlsrpt/TlsRptDetailSection.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/domains/domainSourcesColumns.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/domains/domainsColumns.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/filters/DateRangeFilterContent.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/CronsSection.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/EmailPipelineCard.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/EngineProgress.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/IngestTabs.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/JobRunHistoryTable.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/PollProgressList.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/ProcessedEmailsTable.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/TriggerPollForm.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/jobRunHistoryColumns.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/processedEmailsColumns.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/install/AdvancedSettingsFieldset.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/install/ImapAccountsFieldset.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/components/install/InstallForm.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/FilterCombobox.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpDetailSummary.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpDisplay.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/cognitive-complexity": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpEventLogs.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/components/ips/IpHostname.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpRelatedDomains.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpRelatedReports.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpsTableToolbar.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ips/ipsColumns.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportHeader.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportKpiCards.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportSourcesTable.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/components/reports/ReportTransportSecurityPrimer.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportsTable.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/XmlViewerCollapsible.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/reports/reportsColumns.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/components/settings/AdvancedSection.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/AiSettingsSection.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/ApiKeySection.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/FolderPicker.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/GeoIpSection.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/ImapAccountsSection.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    },
+    "sonarjs/cognitive-complexity": {
+      "count": 1
+    }
+  },
+  "src/components/settings/IngestionSection.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/IpHostnameSection.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/ModelCombobox.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/SelfUpdatePanel.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/SettingsConfigForm.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/settings/UpdateStatusSection.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/shell/TopBar.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/DataTable.tsx": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/Navigator.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/UnifiedPagination.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/calendar.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/upload/UploadForm.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/users/UserModal.tsx": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/users/UsersClient.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/constants/auth/rolePermissions.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "src/formatters/metrics/formatPrometheusOutput.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/useTopIpSendersTable.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/filters/useDateRangeFilterContent.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/ingest/usePollStatusFetcher.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/ingest/useTriggerPoll.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/hooks/install/useInstallForm.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/hooks/reports/reportsReducer.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/hooks/reports/useReportsTable.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useAiSettings.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useFolderPicker.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useGeoIp.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useModelCombobox.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useProviderModels.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useSelfUpdate.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useSettingsConfig.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/hooks/settings/useUpdateStatus.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/ui/useNavigator.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/upload/useUploadForm.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/users/useUserModal.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/users/useUsersColumns.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/users/useUsersManagement.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/lib/db/applySqlFile.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/mappers/ai/mapDiagnosticsInsightToRenderable.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/ai/prompts/buildDnsPromptSection.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 2
+    }
+  },
+  "src/services/ai/prompts/buildReportAnalysisPrompt.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/anthropic/createAnthropicAdapter.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/services/ai/providers/gemini/createGeminiAdapter.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/openai/createOpenAiAdapter.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/openrouter/createOpenRouterAdapter.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/shared/normalize/normalizeProviderModel.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/ai/use-cases/buildDiagnosticsAnalysisInput.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/use-cases/generateDiagnosticsInsights.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/use-cases/generateReportInsights.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/ai/use-cases/getDomainDiagnosticsReportAggregate.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/api/buildOpenApiDocument.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/config/getConfig.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/buildSpfTreeNode.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/createDnsAdminGuides.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/createTrafficAdminGuides.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/getDiagnosticStats.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/getDomainDnsRecords.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/parseDkimRecord.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/parseDmarcTags.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/resolveMtaSts.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/geoip/updateDb.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/services/geoip/upsertIp.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/geoip/upsertIpsBatch.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/imap/filterChunkUids.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/handleAlreadyProcessed.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/notifyProcessingRecords.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/processChunk.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/processFolder.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/processOneMessageUid.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/processUnprocessedUids.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/imap/reportBatchProgress.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/ip-hostname/isPrivateIp.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/ip-hostname/resolveAndPersist.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/job/applyEmailProgressToItem.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/job/getPollStatus.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/job/getPollStatusFromDb.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/job/processAccount.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/job/runIngestJob.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/job/setPollStatusInDb.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/metrics/getMetricsSnapshot.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/backfillDiagnosticFields.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getAggregateStats.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getIpDetail.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getIpDomains.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getIpLogs.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getIpsSummary.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getLatestReports.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getReportOrgOptions.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getReportSources.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getReportStats.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getReports.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/reports/getSpfDkimBreakdown.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/reports/ingestParsedReport.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/services/security/checkSafeFetchTarget.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/security/requireSameOrigin.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/seed/seedDemoDay.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/settings-store/seedSettingsFromEnv.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/settings/updateSettings.ts": {
+    "complexity": {
+      "count": 2
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/updates/checkForUpdates.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/updates/fetchLatestRelease.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/services/updates/upsertUpdateState.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/services/users/updateUser.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/normalizeDkimResults.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/parseDmarcXml.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/processZipEntry.ts": {
+    "max-params": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/recordToEvent.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/domains/extractMainDomain.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/extractFilenameFromNode.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/getDmarcCandidatePartIds.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/getFilenameForPartId.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/ingest/computeNextStoreState.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/install/installReducer.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/install/parseImapAccount.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/utils/updates/parseRepoSlug.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/validators/ai/reportInsightsRequestSchema.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "src/validators/diagnostics/validateDmarcTag.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/validators/query/dateRangeQuerySchema.ts": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "src/validators/users/createUserInputSchema.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/DiagnosticsPdfExport.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/ProtocolExplainer.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 2
+    }
+  },
+  "test/SpfLookupTreeSection.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/a11y/AiSettingsSection.test.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/a11y/DiagnosticsDetailSections.test.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/a11y/ImapAccountsSection.test.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/analyzeSpfRecord.test.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 4
+    }
+  },
+  "test/apiRbacSmoke.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/buildDiagnosticsAdminGuides.test.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "test/checkInstall.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/computeDomainScore.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/createOpenAiAdapter.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/dateRangeQuerySchema.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/diagnosticsAiPrompts.test.ts": {
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "test/diagnosticsInsightsRequestSchema.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/filterQuerySchemas.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/geoipEnrichSchema.test.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/getAllowedDomainIds.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/getDomainDnsRecords.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/getDomainsSummaryAll.test.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/getReportSources.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 3
+    }
+  },
+  "test/hasPermission.test.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/imapTestRequestSchema.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/ipDomainScoping.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/moveToTrashIsAMove.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/normalizeDmarcAuthResults.test.ts": {
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/paginationQuerySchemas.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/parseDkimRecord.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/parseDmarcTags.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/parseDmarcXmlFixtures.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 1
+    }
+  },
+  "test/requireSameOrigin.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/resolveSpfTree.test.ts": {
+    "complexity": {
+      "count": 1
+    },
+    "max-lines": {
+      "count": 1
+    },
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "sonarjs/no-duplicate-string": {
+      "count": 3
+    }
+  },
+  "test/revokeUserSessions.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/setup/buildZip.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/setup/insertSeedEvents.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "test/setup/seedReportSourcesFixture.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
+    "max-params": {
+      "count": 1
+    }
+  },
+  "test/updateCheckNoReleases.test.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  }
+}

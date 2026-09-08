@@ -13,7 +13,7 @@ export async function* processUnprocessedUids(
   options: FetchAttachmentsOptions,
 ) {
   const results = await Promise.all(
-    uidsToProcessFull.map((uid) =>
+    uidsToProcessFull.map(async (uid) =>
       processOneMessageUid(
         client,
         account,

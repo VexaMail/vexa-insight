@@ -15,13 +15,13 @@ export function runSeedDemo({ force }: RunSeedDemoArgs): SeedSummary | null {
   refuseInProduction()
 
   if (isDemoAlreadySeeded() && !force) {
-    console.log(
+    console.info(
       '[seed:demo] Demo data already present. Re-run with --force to refresh.',
     )
     return null
   }
   if (force) {
-    console.log('[seed:demo] --force flag set; wiping existing demo data...')
+    console.info('[seed:demo] --force flag set; wiping existing demo data...')
     wipeDemoData()
   }
 

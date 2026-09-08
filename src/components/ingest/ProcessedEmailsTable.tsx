@@ -101,11 +101,11 @@ export default function ProcessedEmailsTable({
                   File Content
                 </div>
                 <div>
-                  {contentLoading === true && (
+                  {contentLoading ? (
                     <div className="flex items-center justify-center p-12">
                       <Loader2 className="text-primary h-8 w-8 animate-spin" />
                     </div>
-                  )}
+                  ) : null}
                   {contentError !== null && contentError !== '' && (
                     <div className="text-danger bg-danger/5 flex items-center justify-center rounded-md p-6 text-center text-sm">
                       {contentError}

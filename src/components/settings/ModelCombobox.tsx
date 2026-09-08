@@ -70,9 +70,9 @@ export function ModelCombobox({
               {savedModelMissing ? `${value} (unavailable)` : displayLabel}
             </span>
             <span className="flex items-center gap-1">
-              {isLoading === true && (
+              {isLoading ? (
                 <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-              )}
+              ) : null}
               <ChevronsUpDown className="text-muted-foreground h-4 w-4 shrink-0 opacity-50" />
             </span>
           </button>

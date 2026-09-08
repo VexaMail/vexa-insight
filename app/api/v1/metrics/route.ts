@@ -3,7 +3,7 @@ import { withApiAuth } from '@/services/api'
 import { getMetricsSnapshot } from '@/services/metrics'
 import { NextResponse } from 'next/server'
 
-export const GET = withApiAuth((): Promise<NextResponse> => {
+export const GET = withApiAuth(async (): Promise<NextResponse> => {
   const snapshot = getMetricsSnapshot()
   const body = formatPrometheusOutput(snapshot)
   return Promise.resolve(

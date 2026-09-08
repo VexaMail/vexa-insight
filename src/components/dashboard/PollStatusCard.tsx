@@ -54,7 +54,7 @@ export default function PollStatusCard({
           </span>
         </div>
 
-        {isRunning === true && totalEmails > 0 && (
+        {isRunning && totalEmails > 0 ? (
           <>
             <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
               <div
@@ -83,7 +83,7 @@ export default function PollStatusCard({
               </div>
             </div>
           </>
-        )}
+        ) : null}
       </div>
     </div>
   )

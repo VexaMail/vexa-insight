@@ -6,8 +6,8 @@ import { seedDomainsSummaryFixture } from './setup/seedDomainsSummaryFixture'
 import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth', () => ({
-  getAllowedDomainIds: vi.fn(() => Promise.resolve(null)),
-  getSession: vi.fn(() => Promise.resolve(null)),
+  getAllowedDomainIds: vi.fn(async () => Promise.resolve(null)),
+  getSession: vi.fn(async () => Promise.resolve(null)),
 }))
 
 describe('IP views honour the per-user domain allow-list', () => {

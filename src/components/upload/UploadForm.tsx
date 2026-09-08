@@ -25,38 +25,45 @@ export default function UploadForm() {
         transition={{ duration: 0.4 }}
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
-          <label
-            htmlFor="upload-file"
-            className={`glass-card-hover flex cursor-pointer flex-col items-center justify-center gap-3 border-2 border-dashed p-12 transition-colors ${
-              dragActive
-                ? 'border-primary bg-primary/5'
-                : 'border-border/50 hover:border-primary/30'
-            }`}
+          {/* The drop target is a presentational wrapper: drag events are a
+              pointer affordance with no keyboard equivalent, and the label
+              underneath keeps its semantics for the file input. */}
+          <div
+            role="presentation"
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-xl">
-              <Upload className="h-7 w-7" />
-            </div>
-            <div className="text-center">
-              <p className="font-display text-foreground text-sm font-semibold">
-                Drop your DMARC report here
-              </p>
-              <p className="text-muted-foreground mt-1 text-xs">
-                Supports .xml, .gz, .gzip, and .zip files
-              </p>
-            </div>
-            <input
-              id="upload-file"
-              type="file"
-              name="file"
-              accept=".xml,.gz,.gzip,.zip"
-              className="sr-only"
-              required
-            />
-          </label>
+            <label
+              htmlFor="upload-file"
+              className={`glass-card-hover flex cursor-pointer flex-col items-center justify-center gap-3 border-2 border-dashed p-12 transition-colors ${
+                dragActive
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border/50 hover:border-primary/30'
+              }`}
+            >
+              <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-xl">
+                <Upload className="h-7 w-7" />
+              </div>
+              <div className="text-center">
+                <p className="font-display text-foreground text-sm font-semibold">
+                  Drop your DMARC report here
+                </p>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Supports .xml, .gz, .gzip, and .zip files
+                </p>
+              </div>
+              <input
+                id="upload-file"
+                type="file"
+                name="file"
+                accept=".xml,.gz,.gzip,.zip"
+                className="sr-only"
+                required
+              />
+            </label>
+          </div>
           <Button
             type="submit"
             disabled={status === 'loading'}

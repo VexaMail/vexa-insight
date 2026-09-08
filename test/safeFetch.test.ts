@@ -5,8 +5,10 @@ import { safeFetch } from '../src/services/security/safeFetch'
 describe('safeFetch', () => {
   it('rejects ftp://', async () => {
     const res = await safeFetch('ftp://example.com/x', { method: 'GET' })
-    expect(res.ok).toBe(false)
-    if (!res.ok) expect(res.error.code).toBe('SCHEME_NOT_ALLOWED')
+    expect(res).toMatchObject({
+      ok: false,
+      error: { code: 'SCHEME_NOT_ALLOWED' },
+    })
   })
 
   it('rejects file://', async () => {
@@ -16,16 +18,20 @@ describe('safeFetch', () => {
 
   it('rejects literal loopback IPv4', async () => {
     const res = await safeFetch('http://127.0.0.1:80/x', { method: 'GET' })
-    expect(res.ok).toBe(false)
-    if (!res.ok) expect(res.error.code).toBe('PRIVATE_HOST_NOT_ALLOWED')
+    expect(res).toMatchObject({
+      ok: false,
+      error: { code: 'PRIVATE_HOST_NOT_ALLOWED' },
+    })
   })
 
   it('rejects literal AWS metadata IP', async () => {
     const res = await safeFetch('http://169.254.169.254/latest/', {
       method: 'GET',
     })
-    expect(res.ok).toBe(false)
-    if (!res.ok) expect(res.error.code).toBe('PRIVATE_HOST_NOT_ALLOWED')
+    expect(res).toMatchObject({
+      ok: false,
+      error: { code: 'PRIVATE_HOST_NOT_ALLOWED' },
+    })
   })
 
   it('rejects literal IPv6 loopback', async () => {

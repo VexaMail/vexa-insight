@@ -27,10 +27,10 @@ export function IpDisplay({
   if (layout === 'none') {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        {showFlag === true && (
+        {showFlag ? (
           <IpFlag countryCode={countryCode} countryName={countryName} />
-        )}
-        {showIp === true && <IpAddressLink ip={ip} ipAsLink={ipAsLink} />}
+        ) : null}
+        {showIp ? <IpAddressLink ip={ip} ipAsLink={ipAsLink} /> : null}
         {showHostname !== false && (
           <IpHostname
             hostname={hostname}
@@ -48,11 +48,11 @@ export function IpDisplay({
   if (layout === 'inline') {
     return (
       <div className={`group flex items-center gap-2 ${className}`}>
-        {showFlag === true && (
+        {showFlag ? (
           <IpFlag countryCode={countryCode} countryName={countryName} />
-        )}
+        ) : null}
         <div className="flex min-w-0 items-center gap-2">
-          {showIp === true && <IpAddressLink ip={ip} ipAsLink={ipAsLink} />}
+          {showIp ? <IpAddressLink ip={ip} ipAsLink={ipAsLink} /> : null}
           {showHostname !== false && (
             <IpHostname
               hostname={hostname}
@@ -70,14 +70,14 @@ export function IpDisplay({
   // default 'stacked'
   return (
     <div className={`group flex items-start gap-2 ${className}`}>
-      {showFlag === true && (
+      {showFlag ? (
         <div className="mt-0.5">
           <IpFlag countryCode={countryCode} countryName={countryName} />
         </div>
-      )}
+      ) : null}
       <div className="flex min-w-0 flex-col">
         <div className="flex items-center gap-2">
-          {showIp === true && <IpAddressLink ip={ip} ipAsLink={ipAsLink} />}
+          {showIp ? <IpAddressLink ip={ip} ipAsLink={ipAsLink} /> : null}
         </div>
         {showHostname !== false &&
           ((hostname != null && hostname !== '') ||

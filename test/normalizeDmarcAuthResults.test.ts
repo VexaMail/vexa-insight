@@ -54,16 +54,14 @@ describe('normalizeDkimResults', () => {
     const res = normalizeDkimResults(raw, 'example.com')
     expect(res).toBeInstanceOf(Array)
     expect(res).toHaveLength(1)
-    const first = res[0]
-    expect(first).toBeDefined()
-    if (first) {
-      expect(first).toEqual({
+    expect(res).toEqual([
+      {
         domain: 'example.com',
         selector: 's1',
         result: 'pass',
         isAligned: true,
-      })
-    }
+      },
+    ])
   })
   it('handles arrays correctly (multiple DKIM signatures)', () => {
     const raw = [
@@ -72,12 +70,7 @@ describe('normalizeDkimResults', () => {
     ]
     const res = normalizeDkimResults(raw, 'example.com')
     expect(res).toHaveLength(2)
-    const first = res[0]
-    const second = res[1]
-    if (first && second) {
-      expect(first.isAligned).toBe(true)
-      expect(second.isAligned).toBe(false)
-    }
+    expect(res.map((r) => r.isAligned)).toEqual([true, false])
   })
 })
 
@@ -89,10 +82,7 @@ describe('normalizePolicyOverrides', () => {
     const raw = { type: 'forwarded', comment: 'trusted' }
     const res = normalizePolicyOverrides(raw)
     expect(res).toHaveLength(1)
-    const first = res[0]
-    if (first) {
-      expect(first).toEqual({ type: 'forwarded', comment: 'trusted' })
-    }
+    expect(res).toEqual([{ type: 'forwarded', comment: 'trusted' }])
   })
   it('handles arrays correctly', () => {
     const raw = [
@@ -102,13 +92,11 @@ describe('normalizePolicyOverrides', () => {
     ]
     const res = normalizePolicyOverrides(raw)
     expect(res).toHaveLength(3)
-    const first = res[0]
-    const second = res[1]
-    const third = res[2]
-    if (first && second && third) {
-      expect(first.type).toBe('forwarded')
-      expect(second.type).toBe('local_policy')
-      expect(third.type).toBe('other') // normalized
-    }
+    // the third type is unknown and normalized to `other`
+    expect(res.map((r) => r.type)).toEqual([
+      'forwarded',
+      'local_policy',
+      'other',
+    ])
   })
 })

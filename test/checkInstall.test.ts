@@ -34,7 +34,7 @@ describe('checkInstall', () => {
   }
 
   beforeEach(() => {
-    fetchMock = vi.fn(() =>
+    fetchMock = vi.fn(async () =>
       Promise.resolve(
         Response.json({ data: { installed: true, requiresToken: false } }),
       ),

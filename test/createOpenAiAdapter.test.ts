@@ -9,7 +9,7 @@ describe('createOpenAiAdapter', () => {
   it('sends max_tokens and temperature to a pre-reasoning model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           choices: [{ message: { content: '{}' } }],
           model: 'gpt-4o',
@@ -38,7 +38,7 @@ describe('createOpenAiAdapter', () => {
   it('sends max_completion_tokens and no temperature or JSON mode to a reasoning model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           choices: [{ message: { content: '{}' } }],
           model: 'gpt-5',

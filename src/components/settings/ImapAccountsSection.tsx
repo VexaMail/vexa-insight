@@ -95,7 +95,7 @@ export default function ImapAccountsSection({
               </button>
 
               {/* Expanded form */}
-              {isExpanded === true && (
+              {isExpanded ? (
                 <div className="border-border/30 space-y-3 border-t p-4">
                   <div className="flex items-center justify-end gap-2">
                     <Button
@@ -308,8 +308,7 @@ export default function ImapAccountsSection({
                         <input
                           type="checkbox"
                           checked={
-                            acc.moveToTrashAfterProcess === true &&
-                            moveToFolder === false
+                            acc.moveToTrashAfterProcess ? !moveToFolder : false
                           }
                           disabled={moveToFolder}
                           onChange={(e) => {
@@ -349,7 +348,7 @@ export default function ImapAccountsSection({
                           Move to a folder
                         </span>
                       </label>
-                      {moveToFolder === true && acc.id > 0 && (
+                      {moveToFolder && acc.id > 0 ? (
                         <FolderPicker
                           accountId={acc.id}
                           apiKey={apiKey}
@@ -358,16 +357,16 @@ export default function ImapAccountsSection({
                             onUpdate(index, { postProcessFolder: path })
                           }}
                         />
-                      )}
-                      {moveToFolder === true && acc.id === 0 && (
+                      ) : null}
+                      {moveToFolder && acc.id === 0 ? (
                         <p className="text-muted-foreground text-xs italic">
                           Save the account first to pick a folder.
                         </p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           )
         })}

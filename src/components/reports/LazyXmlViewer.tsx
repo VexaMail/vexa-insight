@@ -2,6 +2,6 @@
 
 import dynamic from 'next/dynamic'
 
-export const LazyXmlViewer = dynamic(() => import('./XmlViewer'), {
+export const LazyXmlViewer = dynamic(async () => import('./XmlViewer'), {
   ssr: false,
 })

@@ -6,9 +6,9 @@ import type { HandlePostProcessParams } from '../src/utils/imap/HandlePostProces
 
 describe('move to trash after process', () => {
   const makeClient = () => {
-    const messageMove = vi.fn(() => Promise.resolve(undefined))
-    const messageDelete = vi.fn(() => Promise.resolve(undefined))
-    const messageFlagsAdd = vi.fn(() => Promise.resolve(undefined))
+    const messageMove = vi.fn(async () => Promise.resolve(undefined))
+    const messageDelete = vi.fn(async () => Promise.resolve(undefined))
+    const messageFlagsAdd = vi.fn(async () => Promise.resolve(undefined))
     const client = {
       messageMove,
       messageDelete,
@@ -81,7 +81,7 @@ describe('move to trash after process', () => {
 
   it('reports progress with the moving_to_trash step', async () => {
     const { client } = makeClient()
-    const onProgress = vi.fn(() => Promise.resolve(undefined))
+    const onProgress = vi.fn(async () => Promise.resolve(undefined))
     await handleMoveToTrash(client, makeParams(client, { onProgress }))
 
     expect(onProgress).toHaveBeenCalledWith(

@@ -23,7 +23,7 @@ export default function TriggerPollForm({
       }}
       className={`flex flex-wrap items-end gap-4 ${className}`}
     >
-      {showApiKeyInput === true && (
+      {showApiKeyInput ? (
         <div className="min-w-[200px] flex-1">
           <label
             htmlFor="trigger-poll-api-key"
@@ -43,7 +43,7 @@ export default function TriggerPollForm({
             autoComplete="off"
           />
         </div>
-      )}
+      ) : null}
       <Button
         type="submit"
         variant="outline"

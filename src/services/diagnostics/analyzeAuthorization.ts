@@ -18,7 +18,7 @@ export function analyzeAuthorization(spf: string): SpfCheckResult[] {
 
   const hasBroadIp4 = /ip4:\d+\.\d+\.\d+\.\d+\/\d{1,2}/.test(spf)
   if (hasBroadIp4) {
-    const cidrs = spf.match(/ip4:\d+\.\d+\.\d+\.\d+\/(\d+)/g) ?? []
+    const cidrs = spf.match(/ip4:\d+\.\d+\.\d+\.\d+\/\d+/g) ?? []
     const hasTooWide = cidrs.some((cidr) => {
       if (!cidr) return false
       const prefixStr = cidr.split('/')[1]

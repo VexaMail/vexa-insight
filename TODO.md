@@ -176,21 +176,19 @@ is what those passes did not reach.
       is a symbol or two. Do not widen the list to a glob — named entries are
       what keeps a new deep import failing.
 
-- [ ] Adopt the `@busirocket/eslint-config` factories now that the source is
-      fixed. The 886-violation hardening finished 2026-08-28: all of `jsx-a11y`,
-      `react/jsx-no-leaked-render` and `no-unsafe-*` are at zero against the
-      scratch `eslint.audit.config.ts`, with no rule disabled and no
-      `eslint-disable` added anywhere. The only remaining findings are the 21
-      `security/detect-non-literal-fs-filename`, audited one by one on
-      2026-08-28: every flagged path is built from constants, `process.cwd()`,
-      env, or drizzle's own migration journal — none is reachable from request
-      input — so resolve them at adoption time as rule configuration (off for
-      `test/**`, and either off or documented for the seven server files), not
-      per-line disables. Adoption itself: add
-      `@busirocket/eslint-config@^0.7.3`, point `eslint.config.ts` at its
-      factories, confirm the swap reports zero new errors, then delete
-      `eslint.audit.config.ts` plus its `tsconfig.json` exclude and
-      `allowDefaultProject` entries.
+- [ ] Burn down the `eslint-suppressions.json` ledger the factory adoption wrote
+      on 2026-09-08: 384 findings in 235 files, all structural -
+      `max-lines-per-function` 210, `complexity` 74, `max-lines` 59,
+      `sonarjs/no-duplicate-string` 25, `max-params` 14,
+      `sonarjs/cognitive-complexity` 2 (`IpDisplay.tsx`,
+      `ImapAccountsSection.tsx`). Every other rule the factories brought was
+      fixed at the source in the same change. The ledger is monotonic:
+      `pnpm     lint` fails on a suppression that no longer matches,
+      `lint:prune` shrinks it, and a new violation of the same rule still fails.
+      Work it file by file (split the component, extract the helper), never by
+      raising a threshold; the 59 `max-lines` files are the natural first batch
+      because splitting them also clears most of the function-length entries
+      inside.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

@@ -9,7 +9,7 @@ describe('createGeminiAdapter', () => {
   it('sends temperature to a Gemini 2.x model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           candidates: [{ content: { parts: [{ text: '{}' }] } }],
           modelVersion: 'test',
@@ -36,7 +36,7 @@ describe('createGeminiAdapter', () => {
   it('omits temperature for a Gemini 3.x model', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           candidates: [{ content: { parts: [{ text: '{}' }] } }],
           modelVersion: 'test',

@@ -10,7 +10,7 @@ import { EVAL_RESULTS_DIR } from './evalResultsDir'
 export function writeEvalArtifact(artifact: AiEvalArtifact): string {
   mkdirSync(EVAL_RESULTS_DIR, { recursive: true })
   const stamp = artifact.generatedAt.replace(/[:.]/g, '-')
-  const slug = artifact.target.replace(/[^a-zA-Z0-9]+/g, '-')
+  const slug = artifact.target.replace(/[^a-z0-9]+/gi, '-')
   const path = join(EVAL_RESULTS_DIR, `${stamp}-${slug}.json`)
   writeFileSync(path, `${JSON.stringify(artifact, null, 2)}\n`, 'utf8')
   return path

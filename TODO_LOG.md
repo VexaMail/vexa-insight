@@ -6,6 +6,45 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Adopt the `@busirocket/eslint-config`
+      factories.
+  - Result: `eslint.config.ts` composes base, nextjs, code-quality and
+    accessibility from `@busirocket/eslint-config@0.8.0` plus the project's own
+    layers (unicorn file hygiene, public-API-only imports with the eleven named
+    deep-import exceptions, server/client `no-restricted-paths` zones, the
+    audited fs-path files, console policy for a server whose stdout is its
+    journal). `eslint.audit.config.ts` deleted with its tsconfig exclude;
+    `scripts/` got its own `tsconfig.json` so the project service types the
+    scripts instead of the default-project cap; `eslint-config-next` dropped as
+    a direct dependency (ADR 0005 updated). The four rules the factories leave
+    at `warn` are raised to `error` here so the debt is expressible in the
+    suppressions ledger rather than invisible to `pnpm lint`.
+  - Source fixes surfaced by the swap, all at the source: 70
+    `promise-function-async` (autofix), 39
+    `no-unnecessary-boolean-literal- compare` (the 2026-08-28 `=== true` guards
+    became ternaries; one checkbox `checked` expression needed a boolean
+    fallback to type-check), 13 `vitest/no-conditional-expect` (array `toEqual`,
+    `toMatchObject`, a throw guard, one `it` split), 3 unused regexp capture
+    groups, 3 regexp classes, 4 `consistent-type-imports`, 2 `console.log` in
+    the seed service, the drop zone's drag handlers moved off the `<label>` onto
+    a presentational wrapper, one `querySelector` in an a11y test replaced by
+    `within`, one stale `eslint-disable` removed. Rule configuration with a
+    reason, not per-line disables: `react/prop-types` off for `.tsx` (cannot see
+    through `forwardRef`), cmdk's bare attributes allow-listed for two files,
+    the timing-attack rule off for the placeholder-secret comparison.
+  - Not fixed, recorded: 384 structural findings in 235 files
+    (`max-lines-per-function` 210, `complexity` 74, `max-lines` 59,
+    `no-duplicate-string` 25, `max-params` 14, `cognitive-complexity` 2) went to
+    `eslint-suppressions.json`; the burn-down is the new TODO item. The TODO's
+    "zero new errors" estimate was wrong: the 2026-08-28 hardening covered a11y,
+    leaked-render and `no-unsafe-*`, not the strict type-checked set or the size
+    rules.
+  - Evidence: bare-factory run before any fix: 220 errors, 319 warnings, 8
+    fatals; after: `pnpm run check:ci` green (type-check, lint, format, 76 files
+    / 542 tests, migrations), `pnpm test:a11y` 17 files / 47 tests,
+    `pnpm run check:quality` green (no dependency violations over 1,666 modules;
+    type coverage 99.75%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Fix the a11y Vitest config alias.
   - Cause: `vitest.a11y.config.ts` mapped `@` to the repository root; the source
     moved under `src/` on 2026-08-27 and the main config was updated, the a11y

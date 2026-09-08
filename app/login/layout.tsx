@@ -5,6 +5,10 @@ import type { ReactNode } from 'react'
 // nonce applies.
 export const dynamic = 'force-dynamic'
 
-export default function LoginLayout({ children }: { children: ReactNode }) {
+export default async function LoginLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
   return children
 }

@@ -76,7 +76,7 @@ export function FolderPicker({
       {state.error != null && state.error !== '' && (
         <p className="text-danger text-xs">{state.error}</p>
       )}
-      {showCreate === true && (
+      {showCreate ? (
         <div className="space-y-1.5">
           <Input
             aria-label="New folder path"
@@ -112,7 +112,7 @@ export function FolderPicker({
             </Button>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

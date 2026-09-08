@@ -19,7 +19,7 @@ export function SpfLookupTreeSection({
 
       {tree ? (
         <>
-          {tree.exceedsLookupLimit === true && (
+          {tree.exceedsLookupLimit ? (
             <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
               <h4 className="mb-1 text-sm font-semibold text-red-500">
                 Lookup limit exceeded
@@ -30,7 +30,7 @@ export function SpfLookupTreeSection({
                 SPF entirely.
               </p>
             </div>
-          )}
+          ) : null}
           <ul className="flex flex-col gap-1">
             <SpfLookupTreeNodeItem node={tree} />
           </ul>

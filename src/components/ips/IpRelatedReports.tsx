@@ -80,7 +80,7 @@ export function IpRelatedReports({
         })}
       </div>
 
-      {hasMore === true && (
+      {hasMore ? (
         <div className="flex justify-center pt-4">
           <button
             onClick={() => {
@@ -118,7 +118,7 @@ export function IpRelatedReports({
             )}
           </button>
         </div>
-      )}
+      ) : null}
     </IpDetailSection>
   )
 }

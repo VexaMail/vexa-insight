@@ -26,9 +26,8 @@ describe('ingestParsedReport idempotency', () => {
     const parsed = parseDmarcXml(readFileSync(FIXTURE))
     const result = await ingestParsedReport(parsed)
     expect(result.ingested).toBe(true)
-    if (result.ingested) {
-      expect(result.rawReportId).toBeGreaterThan(0)
-    }
+    if (!result.ingested) throw new Error('report was not ingested')
+    expect(result.rawReportId).toBeGreaterThan(0)
   })
 
   it('skips a duplicate reportId on second ingest', async () => {
@@ -36,9 +35,9 @@ describe('ingestParsedReport idempotency', () => {
     const first = await ingestParsedReport(parsed)
     expect(first.ingested).toBe(true)
     const second = await ingestParsedReport(parsed)
-    expect(second.ingested).toBe(false)
-    if (!second.ingested) {
-      expect(second.reason).toBe('duplicate_report_id')
-    }
+    expect(second).toMatchObject({
+      ingested: false,
+      reason: 'duplicate_report_id',
+    })
   })
 })

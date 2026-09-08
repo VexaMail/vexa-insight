@@ -30,15 +30,18 @@ describe('every /api/v1/** route handler enforces auth', () => {
   for (const file of routes) {
     const rel = path.relative(root, file)
     if (publicAllow.has(rel)) continue
-    it(rel, () => {
-      const src = readFileSync(file, 'utf8')
-      if (streamTicketAllow.has(rel)) {
+    if (streamTicketAllow.has(rel)) {
+      it(rel, () => {
+        const src = readFileSync(file, 'utf8')
         expect(
           src.includes('consumeStreamTicket('),
           `${rel} is allow-listed as an SSE route and must redeem a stream ticket`,
         ).toBe(true)
-        return
-      }
+      })
+      continue
+    }
+    it(rel, () => {
+      const src = readFileSync(file, 'utf8')
       const usesWithApiAuth = src.includes('withApiAuth(')
       const usesRequireAdminAuth = src.includes('requireAdminAuth(')
       const usesRequireAdminAccess = src.includes('requireAdminAccess(')

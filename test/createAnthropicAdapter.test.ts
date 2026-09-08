@@ -10,7 +10,7 @@ describe('createAnthropicAdapter', () => {
   it('sends temperature to a model that still accepts it', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           content: [{ type: 'text', text: 'ok' }],
           model: 'claude-sonnet-4-6',
@@ -35,7 +35,7 @@ describe('createAnthropicAdapter', () => {
   it('omits temperature for a model that rejects it', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
+      json: async () =>
         Promise.resolve({
           content: [{ type: 'text', text: 'ok' }],
           model: 'claude-opus-5',

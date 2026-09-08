@@ -11,7 +11,7 @@ export function redactReportXml(xml: string): string {
   const ipMap = new Map<string, string>()
   let ipCounter = 0
 
-  const ipRedacted = xml.replace(/\b(\d{1,3}\.){3}\d{1,3}\b/g, (match) => {
+  const ipRedacted = xml.replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, (match) => {
     const existing = ipMap.get(match)
     if (existing) return existing
     const hash = crypto
