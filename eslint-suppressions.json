@@ -273,14 +273,6 @@
       "count": 1
     }
   },
-  "src/components/domains/domainsColumns.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/filters/DateRangeFilterContent.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -524,14 +516,6 @@
     }
   },
   "src/components/settings/IngestionSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/IpHostnameSection.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }

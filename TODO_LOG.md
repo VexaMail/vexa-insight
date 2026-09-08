@@ -6,6 +6,27 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Fifth batch of the suppression
+      burn-down: the domains table and the IP-hostname settings section. Ledger
+      359 findings in 229 files down to 355 in 227.
+  - `domainsColumns.tsx` was the second file inlining the sortable-header
+    button, four times. Two of those sort descending first, so
+    `SortableHeaderButton` gained a `descendingFirst` prop; without it the
+    Messages and Compliance columns would have started ascending. Each column
+    definition moved under `components/domains/columns/`, the progress bar
+    became `ComplianceBar` and the two identical icon links became
+    `DomainRowAction`.
+  - `IpHostnameSection.tsx` was 243 lines: six copies of the same numeric field
+    and three of the same checkbox. The field and the checkbox are now one
+    component each, and the six numeric settings are a constant table in
+    `constants/settings/ipHostnameNumberFieldSpecs.ts`, mapped over. `step` is
+    declared on every entry as `number | undefined` because
+    `exactOptionalPropertyTypes` rejects reading an absent optional, and only
+    the timeout field sets it, so the rendered markup is unchanged.
+  - Evidence: `pnpm run check:ci` green (542 tests, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` green
+    (dependency-cruiser 1771 modules with no violations, type coverage 99.75%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Fourth batch of the suppression
       burn-down: the DNS admin guides, the IP table columns and three services.
       Ledger 374 findings in 233 files down to 359 in 229.

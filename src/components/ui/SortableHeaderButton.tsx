@@ -10,6 +10,7 @@ import type { SortableHeaderButtonProps } from './SortableHeaderButtonProps'
 export default function SortableHeaderButton<TData>({
   column,
   label,
+  descendingFirst = false,
 }: SortableHeaderButtonProps<TData>) {
   const sorted = column.getIsSorted()
 
@@ -18,7 +19,9 @@ export default function SortableHeaderButton<TData>({
       type="button"
       className="flex cursor-pointer items-center gap-1 bg-transparent p-0 text-left select-none"
       onClick={() => {
-        column.toggleSorting(sorted === 'asc')
+        column.toggleSorting(
+          descendingFirst ? sorted !== 'desc' : sorted === 'asc',
+        )
       }}
     >
       {label}

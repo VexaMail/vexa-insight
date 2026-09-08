@@ -150,7 +150,7 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      359 in 229: `max-lines-per-function` 203, `complexity` 68, `max-lines` 52,
+      355 in 227: `max-lines-per-function` 201, `complexity` 68, `max-lines` 50,
       `sonarjs/no-duplicate-string` 23, `max-params` 13. Both
       `sonarjs/cognitive-complexity` entries are gone, and every rule the
       factories brought that was not structural was fixed at the source when
@@ -164,9 +164,9 @@ is what those passes did not reach.
       plan on an input type in `src/types/<area>/` rather than a longer
       signature. The remaining `max-lines` files are the natural unit of work
       because splitting one also clears the function-length entries inside it;
-      the largest left are `IpHostnameSection.tsx` (243) and
-      `AiDiagnosticsInsightsPanel.tsx` (206), plus five test files over 230
-      lines that are covering more than one behaviour.
+      the largest left are `AiDiagnosticsInsightsPanel.tsx` (206) and
+      `EmailPipelineCard.tsx` (202), plus five test files over 230 lines that
+      are covering more than one behaviour.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

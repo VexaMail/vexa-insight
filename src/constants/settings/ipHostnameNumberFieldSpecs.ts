@@ -1,0 +1,66 @@
+import type { IpHostnameNumberFieldSpec } from '@/types/settings'
+
+/** Rendered in this order into the two-column grid of the lookup section. */
+export const IP_HOSTNAME_NUMBER_FIELD_SPECS: readonly IpHostnameNumberFieldSpec[] =
+  [
+    {
+      id: 'ip-refresh-hours',
+      label: 'Refresh Interval (Hours)',
+      min: 1,
+      max: 8760,
+      step: undefined,
+      fallback: 48,
+      settingKey: 'ipHostnameRefreshIntervalHours',
+      valueKey: 'refreshIntervalHours',
+    },
+    {
+      id: 'ip-negative-cache',
+      label: 'Negative Cache (Hours)',
+      min: 1,
+      max: 8760,
+      step: undefined,
+      fallback: 24,
+      settingKey: 'ipHostnameNegativeCacheHours',
+      valueKey: 'negativeCacheHours',
+    },
+    {
+      id: 'ip-timeout',
+      label: 'Lookup Timeout (ms)',
+      min: 100,
+      max: 60000,
+      step: 100,
+      fallback: 2000,
+      settingKey: 'ipHostnameTimeoutMs',
+      valueKey: 'timeoutMs',
+    },
+    {
+      id: 'ip-max-retries',
+      label: 'Max Retries',
+      min: 0,
+      max: 10,
+      step: undefined,
+      fallback: 3,
+      settingKey: 'ipHostnameMaxRetries',
+      valueKey: 'maxRetries',
+    },
+    {
+      id: 'ip-retry-backoff',
+      label: 'Retry Backoff (Minutes)',
+      min: 1,
+      max: 1440,
+      step: undefined,
+      fallback: 60,
+      settingKey: 'ipHostnameRetryBackoffMinutes',
+      valueKey: 'retryBackoffMinutes',
+    },
+    {
+      id: 'ip-batch-size',
+      label: 'Processing Batch Size',
+      min: 1,
+      max: 1000,
+      step: undefined,
+      fallback: 100,
+      settingKey: 'ipHostnameBatchSize',
+      valueKey: 'batchSize',
+    },
+  ]
