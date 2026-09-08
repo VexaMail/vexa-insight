@@ -1,29 +1,23 @@
-import type { ImapAccountConfig } from '@/types/config'
-import type { AttachmentResult, FetchAttachmentsOptions } from '@/types/imap'
+import { CHUNK_UID_COUNT } from '@/constants/ingest'
+import type { AttachmentResult, ProcessFolderInput } from '@/types/imap'
 import { buildDmarcSearchQuery } from '@/utils/imap'
-import type { ImapFlow } from 'imapflow'
 import { emitStatus } from './emitStatus'
 import { processChunk } from './processChunk'
 
+/** Scan one mailbox folder, yielding every DMARC attachment it holds. */
 export async function* processFolder(
-  client: ImapFlow,
-  account: ImapAccountConfig,
-  folder: string,
-  since: Date,
-  options: FetchAttachmentsOptions,
+  input: ProcessFolderInput,
 ): AsyncGenerator<AttachmentResult> {
+  const { client, account, folder, since, options } = input
+
   await emitStatus(
     options,
-    `Searching for DMARC emails in ${folder} on ${account.server}\u2026`,
+    `Searching for DMARC emails in ${folder} on ${account.server}…`,
   )
 
   const uids = await client.search(buildDmarcSearchQuery(since), { uid: true })
   const uidList = Array.isArray(uids) ? uids : []
-  const PARALLEL_EMAILS = 100
-  let folderProcessedCount = 0
   const folderTotalEmails = uidList.length
-  const startTime = Date.now()
-
   if (folderTotalEmails === 0) {
     await emitStatus(
       options,
@@ -37,37 +31,30 @@ export async function* processFolder(
     `Found ${folderTotalEmails.toLocaleString()} emails in ${folder} on ${account.server}`,
   )
 
-  for (let i = 0; i < uidList.length; i += PARALLEL_EMAILS) {
+  const startTime = Date.now()
+  let folderProcessedCount = 0
+  for (let i = 0; i < uidList.length; i += CHUNK_UID_COUNT) {
     if (options.getAbortRequested && (await options.getAbortRequested())) break
-    const chunk = uidList.slice(i, i + PARALLEL_EMAILS)
-    const chunkIndex = Math.floor(i / PARALLEL_EMAILS)
 
-    const gen = processChunk(
+    const chunkGenerator = processChunk({
       client,
       account,
       folder,
-      chunk,
-      chunkIndex,
-      PARALLEL_EMAILS,
+      chunk: uidList.slice(i, i + CHUNK_UID_COUNT),
+      chunkIndex: Math.floor(i / CHUNK_UID_COUNT),
+      chunkSize: CHUNK_UID_COUNT,
       folderTotalEmails,
       folderProcessedCount,
       startTime,
       options,
-    )
-
-    let result = await gen.next()
-    while (!result.done) {
-      yield result.value
-      result = await gen.next()
-    }
-    folderProcessedCount = result.value
+    })
+    folderProcessedCount = yield* chunkGenerator
   }
 
   await emitStatus(
     options,
     `Completed ${folder} on ${account.server}: ${folderProcessedCount.toLocaleString()} emails scanned`,
   )
-
   if (options.onBatchProgress && folderProcessedCount > 0) {
     await options.onBatchProgress(folderProcessedCount, 0, folderTotalEmails, 0)
   }

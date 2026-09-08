@@ -4,12 +4,9 @@ import type {
   FetchAttachmentsOptions,
   MailboxListItem,
 } from '@/types/imap'
-import {
-  buildFetchAttachmentsContext,
-  getTrashPath,
-  isNoConnectionError,
-} from '@/utils/imap'
+import { buildFetchAttachmentsContext, getTrashPath } from '@/utils/imap'
 import { createClient } from './createClient'
+import { lockFolderWithReconnect } from './lockFolderWithReconnect'
 import { processFolder } from './processFolder'
 
 /**
@@ -48,24 +45,18 @@ export async function* fetchAttachments(
         )
       }
 
-      let lock: { release: () => void }
+      const held = await lockFolderWithReconnect(client, account, folder)
+      client = held.client
       try {
-        lock = await client.getMailboxLock(folder)
-      } catch (e) {
-        if (!isNoConnectionError(e)) throw e
-        try {
-          await client.logout()
-        } catch {
-          /* ignore */
-        }
-        client = createClient(account)
-        await client.connect()
-        lock = await client.getMailboxLock(folder)
-      }
-      try {
-        yield* processFolder(client, account, folder, since, folderOptions)
+        yield* processFolder({
+          client,
+          account,
+          folder,
+          since,
+          options: folderOptions,
+        })
       } finally {
-        lock.release()
+        held.lock.release()
       }
     }
   } finally {

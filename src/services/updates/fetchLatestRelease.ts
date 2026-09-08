@@ -1,6 +1,10 @@
 import { GITHUB_FETCH_TIMEOUT_MS } from '@/constants/updates'
 import type { GithubReleaseResponse, RepoSlug } from '@/types/updates'
-import { buildLatestReleaseUrl, buildUserAgent } from '@/utils/updates'
+import {
+  buildLatestReleaseUrl,
+  buildUserAgent,
+  parseGithubRelease,
+} from '@/utils/updates'
 import { NoPublishedReleaseError } from './NoPublishedReleaseError'
 
 /**
@@ -34,35 +38,7 @@ export async function fetchLatestRelease(
         `GitHub API responded with status ${String(response.status)}`,
       )
     }
-    const json: unknown = await response.json()
-    if (typeof json !== 'object' || json === null) {
-      throw new Error('GitHub response has an invalid release payload')
-    }
-    if (
-      !('tag_name' in json) ||
-      !('name' in json) ||
-      !('body' in json) ||
-      !('html_url' in json) ||
-      !('published_at' in json) ||
-      !('draft' in json) ||
-      !('prerelease' in json)
-    ) {
-      throw new Error('GitHub response has an invalid release payload')
-    }
-    const { tag_name, name, body, html_url, published_at, draft, prerelease } =
-      json
-    if (
-      typeof tag_name !== 'string' ||
-      (name !== null && typeof name !== 'string') ||
-      (body !== null && typeof body !== 'string') ||
-      typeof html_url !== 'string' ||
-      (published_at !== null && typeof published_at !== 'string') ||
-      typeof draft !== 'boolean' ||
-      typeof prerelease !== 'boolean'
-    ) {
-      throw new Error('GitHub response has an invalid release payload')
-    }
-    return { tag_name, name, body, html_url, published_at, draft, prerelease }
+    return parseGithubRelease(await response.json())
   } finally {
     clearTimeout(timeout)
   }

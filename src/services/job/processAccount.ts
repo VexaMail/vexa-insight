@@ -1,60 +1,23 @@
 import { runFetchAndIngest } from '@/services/imap'
-import type { ImapAccountConfig } from '@/types/config'
-import type { EmailProgressPayload } from '@/types/dashboard'
+import { accountFetchHooks } from './accountFetchHooks'
 import type { AccountResult } from './AccountResult'
-import type { PollStatusCoalescer } from './PollStatusCoalescer'
+import type { ProcessAccountInput } from './ProcessAccountInput'
+import { reportAccountStart } from './reportAccountStart'
 
-/**
- * Runs fetch + ingest for a single IMAP account.
- *
- * Progress is routed through the coalescer so poll_status is written at a
- * bounded cadence rather than once per email; status-text transitions flush
- * immediately so the UI reflects the current folder/account without lag.
- */
+/** Runs fetch + ingest for a single IMAP account. */
 export async function processAccount(
-  account: ImapAccountConfig,
-  accountIndex: number,
-  totalAccounts: number,
-  days: number,
-  totalProcessedSoFar: number,
-  getAbortRequested: () => Promise<boolean>,
-  onEmailProgress: (payload: EmailProgressPayload) => Promise<void>,
-  coalescer: PollStatusCoalescer,
-  jobRunId: number | undefined,
+  input: ProcessAccountInput,
 ): Promise<AccountResult> {
-  await coalescer.report(
-    {
-      statusText: `Starting account ${String(accountIndex + 1)}/${String(totalAccounts)}: ${account.server}…`,
-    },
-    true,
-  )
+  const { account, days } = input
+
+  await reportAccountStart(input)
 
   try {
-    const fetchResult = await runFetchAndIngest(days, account, {
-      getAbortRequested,
-      onProgress: async (n) => {
-        await coalescer.report({ currentProcessed: totalProcessedSoFar + n })
-      },
-      onBatchProgress: async (p, processing, total, etaMs) => {
-        await coalescer.report({
-          currentProcessed: totalProcessedSoFar + p,
-          totalEmails: totalProcessedSoFar + total,
-          processingEmails: processing,
-          etaMs,
-        })
-      },
-      onStatus: async (statusText) => {
-        await coalescer.report({ statusText }, true)
-      },
-      onEmailProgress,
-      postProcessAction: account.postProcessAction,
-      postProcessFolder: account.postProcessFolder,
-      fetchIncludeTrash: account.fetchIncludeTrash,
-      fetchIncludeAllFolders: account.fetchIncludeAllFolders,
-      moveToTrashAfterProcess: account.moveToTrashAfterProcess,
-      markAsReadAfterProcess: account.markAsReadAfterProcess,
-      ...(jobRunId !== undefined ? { jobRunId } : {}),
-    })
+    const fetchResult = await runFetchAndIngest(
+      days,
+      account,
+      accountFetchHooks(input),
+    )
 
     return {
       processed: fetchResult.processed,

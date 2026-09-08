@@ -28,17 +28,17 @@ export async function processAllAccounts({
     if (!account) continue
     if (await getAbortRequested()) break
 
-    const result = await processAccount(
+    const result = await processAccount({
       account,
-      ai,
-      accounts.length,
+      accountIndex: ai,
+      totalAccounts: accounts.length,
       days,
-      totals.processed,
+      totalProcessedSoFar: totals.processed,
       getAbortRequested,
       onEmailProgress,
       coalescer,
       jobRunId,
-    )
+    })
 
     totals.processed += result.processed
     totals.ingested += result.ingested

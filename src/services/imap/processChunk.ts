@@ -1,8 +1,9 @@
 import { getProcessedMessageIdsByMessageIds } from '@/services/processed-messages'
-import type { ImapAccountConfig } from '@/types/config'
-import type { AttachmentResult, FetchAttachmentsOptions } from '@/types/imap'
-import type { FetchMessageObject, ImapFlow } from 'imapflow'
+import type { AttachmentResult, ProcessChunkInput } from '@/types/imap'
+import { chunkScanMessage } from '@/utils/imap'
+import type { FetchMessageObject } from 'imapflow'
 import { buildUidToMidMap } from './buildUidToMidMap'
+
 import { emitStatus } from './emitStatus'
 import { fetchEnvelopesForChunk } from './fetchEnvelopesForChunk'
 import { filterChunkUids } from './filterChunkUids'
@@ -14,31 +15,18 @@ import { reportBatchProgress } from './reportBatchProgress'
  * Returns the updated folderProcessedCount.
  */
 export async function* processChunk(
-  client: ImapFlow,
-  account: ImapAccountConfig,
-  folder: string,
-  chunk: number[],
-  chunkIndex: number,
-  chunkSize: number,
-  folderTotalEmails: number,
-  folderProcessedCount: number,
-  startTime: number,
-  options: FetchAttachmentsOptions,
+  input: ProcessChunkInput,
 ): AsyncGenerator<AttachmentResult, number> {
-  const chunkStart = chunkIndex * chunkSize
-  const chunkEnd = Math.min(chunkStart + chunkSize, folderTotalEmails)
+  const { client, account, folder, chunk, chunkIndex, options } = input
+  const done = input.folderProcessedCount + chunk.length
 
-  await emitStatus(
-    options,
-    `Scanning emails ${(chunkStart + 1).toLocaleString()}\u2013${chunkEnd.toLocaleString()} of ${folderTotalEmails.toLocaleString()} in ${folder}\u2026`,
-  )
-
+  await emitStatus(options, chunkScanMessage(input))
   await reportBatchProgress(
     options,
-    folderProcessedCount,
+    input.folderProcessedCount,
     chunk.length,
-    folderTotalEmails,
-    startTime,
+    input.folderTotalEmails,
+    input.startTime,
   )
 
   let envMessages: FetchMessageObject[]
@@ -46,16 +34,14 @@ export async function* processChunk(
     envMessages = await fetchEnvelopesForChunk(client, chunk)
   } catch (err) {
     console.error('[ingest] bulk fetch envelopes failed:', err)
-    return folderProcessedCount + chunk.length
+    return done
   }
 
   const { uidToMidMap, messageIdsToLookup } = buildUidToMidMap(envMessages)
-
   const processedIdsSet = await getProcessedMessageIdsByMessageIds(
     account.id,
     messageIdsToLookup,
   )
-
   const uidsToProcessFull = await filterChunkUids(
     client,
     account,
@@ -69,7 +55,7 @@ export async function* processChunk(
   if (uidsToProcessFull.length > 0) {
     await emitStatus(
       options,
-      `Processing ${String(uidsToProcessFull.length)} DMARC email${uidsToProcessFull.length === 1 ? '' : 's'} (batch ${String(chunkIndex + 1)})\u2026`,
+      `Processing ${String(uidsToProcessFull.length)} DMARC email${uidsToProcessFull.length === 1 ? '' : 's'} (batch ${String(chunkIndex + 1)})…`,
     )
     yield* processUnprocessedUids(
       client,
@@ -81,5 +67,5 @@ export async function* processChunk(
     )
   }
 
-  return folderProcessedCount + chunk.length
+  return done
 }

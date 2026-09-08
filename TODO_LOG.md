@@ -6,6 +6,39 @@
 
 ### 2026-09
 
+- [x] 2026-09-08 — **Baseline gate debt:** Fourteenth batch of the suppression
+      burn-down: eight service files, including the three ingest functions that
+      carried the `max-params` entries. Ledger 239 findings in 184 files down to
+      223 in 176, and `max-params` fell from 11 to 8.
+  - `getReports` now resolves the domain through the existing
+    `resolveDomainIdByName` and shares `reportsListConditions`,
+    `reportListSelection` and `countDistinctReports` between its count and its
+    page, so both queries can no longer drift apart.
+  - `getAggregateStats` became three parallel queries — `queryDomainCount`,
+    `queryScopedReportCount`, `queryRollupSums` — under `Promise.all`; the
+    rollup rationale moved next to the query it explains.
+  - `getMetricsSnapshot` split into `queryTableTotals`, `queryEventsBySpfAuth`,
+    `queryEventsByDisposition` and `queryIngestState`, and now spreads them into
+    the snapshot rather than assembling twelve fields inline.
+  - `fetchLatestRelease` delegates payload narrowing to `parseGithubRelease`
+    over an `isGithubReleaseShape` guard and `isNullableString`, which is what
+    took its complexity from 13 to single digits; the repeated error text is
+    `INVALID_RELEASE_PAYLOAD_MESSAGE`.
+  - `checkForUpdates` reads as its four outcomes: `recordLatestRelease`,
+    `recordNoPublishedRelease` and `recordUpdateCheckError`, the last of which
+    both persists and returns the failure outcome.
+  - The ingest path lost its long positional signatures: `processChunk` takes a
+    `ProcessChunkInput` (was ten parameters), `processFolder` a
+    `ProcessFolderInput`, and `processAccount` a `ProcessAccountInput` with its
+    hooks in `accountFetchHooks` and its status line in `reportAccountStart`.
+    The chunk loop now uses `yield*` for the value the drained generator
+    returns, the batch size is `CHUNK_UID_COUNT`, and the reconnect-on-lock
+    dance moved to `lockFolderWithReconnect`, which returns the client holding
+    the lock because a reconnect replaces it.
+  - Evidence: `pnpm run check:ci` green (542 tests in 87 files, migrations OK),
+    `pnpm test:a11y` green (47 tests), `pnpm run check:quality` clean (knip,
+    dependency-cruiser 2020 modules, type coverage 99.80%).
+
 - [x] 2026-09-08 — **Baseline gate debt:** Thirteenth batch of the suppression
       burn-down: two view files, the IP detail page and the two remaining
       report-source services. Ledger 246 findings in 187 files down to 239

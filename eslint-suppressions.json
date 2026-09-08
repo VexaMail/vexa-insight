@@ -743,22 +743,6 @@
       "count": 1
     }
   },
-  "src/services/imap/processChunk.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
-    "max-params": {
-      "count": 1
-    }
-  },
-  "src/services/imap/processFolder.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
-    "max-params": {
-      "count": 1
-    }
-  },
   "src/services/imap/processOneMessageUid.ts": {
     "complexity": {
       "count": 1
@@ -808,36 +792,12 @@
       "count": 1
     }
   },
-  "src/services/job/processAccount.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    },
-    "max-params": {
-      "count": 1
-    }
-  },
   "src/services/job/setPollStatusInDb.ts": {
     "complexity": {
       "count": 1
     }
   },
-  "src/services/metrics/getMetricsSnapshot.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/reports/backfillDiagnosticFields.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getAggregateStats.ts": {
-    "complexity": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -867,14 +827,6 @@
       "count": 1
     }
   },
-  "src/services/reports/getReports.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/reports/getSpfDkimBreakdown.ts": {
     "complexity": {
       "count": 1
@@ -897,22 +849,6 @@
   },
   "src/services/settings-store/seedSettingsFromEnv.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/updates/checkForUpdates.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/updates/fetchLatestRelease.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
       "count": 1
     }
   },
