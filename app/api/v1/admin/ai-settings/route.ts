@@ -1,10 +1,11 @@
-import { checkProviderApiKey, updateAiSettings } from '@/services/ai'
+import { updateAiSettings } from '@/services/ai'
 import { requireAdminAuth } from '@/services/api'
 import { getConfig } from '@/services/config'
 import { getAiSettingsPublic } from '@/services/settings'
 import { aiSettingsUpdateSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { rejectInvalidApiKey } from './rejectInvalidApiKey'
 
 export function GET(request: NextRequest): NextResponse {
   const auth = requireAdminAuth(request)
@@ -44,30 +45,13 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     )
   }
 
-  const config = getConfig()
-
-  if (parsed.data.apiKey && parsed.data.providerId) {
-    const isValid = await checkProviderApiKey(
-      parsed.data.providerId,
-      parsed.data.apiKey,
-    )
-    if (!isValid) {
-      return NextResponse.json(
-        {
-          error: {
-            code: 'VALIDATION_ERROR',
-            message: 'API key validation failed. Check the key and try again.',
-          },
-        },
-        { status: 400 },
-      )
-    }
-  }
+  const rejected = await rejectInvalidApiKey(parsed.data)
+  if (rejected) return rejected
 
   updateAiSettings(
     parsed.data.providerId ?? null,
     parsed.data.apiKey ?? null,
-    config.secretKey,
+    getConfig().secretKey,
     parsed.data.model,
   )
 

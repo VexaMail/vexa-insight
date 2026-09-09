@@ -1,9 +1,9 @@
 import {
-  buildDiagnosticsAdminGuides,
   computeDomainScore,
   getDiagnosticStats,
   getDomainDnsRecords,
 } from '@/services/diagnostics'
+import { settledValue } from '@/utils/async'
 import type {
   DiagnosticsAnalysisInput,
   GenerateDiagnosticsInsightsOptions,
@@ -12,6 +12,7 @@ import { AIServiceErrorException } from '../core/AiServiceErrorException'
 import { buildDiagnosticsDnsSummary } from './buildDiagnosticsDnsSummary'
 import { buildDiagnosticsStatsSummary } from './buildDiagnosticsStatsSummary'
 import { getDomainDiagnosticsReportAggregate } from './getDomainDiagnosticsReportAggregate'
+import { summarizeAdminGuides } from './summarizeAdminGuides'
 
 /**
  * Assembles everything the diagnostics prompt reads, from the three sources it
@@ -39,38 +40,15 @@ export async function buildDiagnosticsAnalysisInput(
       ),
     ])
 
-  const dns =
-    dnsResult.status === 'fulfilled'
-      ? buildDiagnosticsDnsSummary(dnsResult.value)
-      : null
-  const score =
-    dnsResult.status === 'fulfilled'
-      ? computeDomainScore(dnsResult.value)
-      : null
-  const stats =
-    statsResult.status === 'fulfilled'
-      ? buildDiagnosticsStatsSummary(statsResult.value)
-      : null
-  const reportAggregate =
-    reportAggregateResult.status === 'fulfilled'
-      ? reportAggregateResult.value
-      : null
-
+  const dnsRecords = settledValue(dnsResult)
+  const rawStats = settledValue(statsResult)
+  const dns = dnsRecords ? buildDiagnosticsDnsSummary(dnsRecords) : null
+  const score = dnsRecords ? computeDomainScore(dnsRecords) : null
+  const stats = rawStats ? buildDiagnosticsStatsSummary(rawStats) : null
+  const reportAggregate = settledValue(reportAggregateResult)
   const adminGuides =
-    dnsResult.status === 'fulfilled' &&
-    statsResult.status === 'fulfilled' &&
-    score
-      ? buildDiagnosticsAdminGuides(
-          dnsResult.value,
-          statsResult.value,
-          score,
-        ).map((guide) => ({
-          severity: guide.severity,
-          title: guide.title,
-          summary: guide.summary,
-          howToFix: guide.howToFix,
-          verifySteps: guide.verifySteps,
-        }))
+    dnsRecords && rawStats && score
+      ? summarizeAdminGuides(dnsRecords, rawStats, score)
       : []
 
   if (!dns && !stats) {

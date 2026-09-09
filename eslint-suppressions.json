@@ -25,39 +25,7 @@
       "count": 1
     }
   },
-  "app/api/v1/admin/ai-models/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/admin/ai-settings/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/api/v1/admin/apply-update/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/ai/diagnostics-insights/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/ai/report-insights/route.ts": {
     "complexity": {
       "count": 1
     },
@@ -79,24 +47,6 @@
     }
   },
   "src/actions/login.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ai/DiagnosticsAdminGuideCard.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ai/DiagnosticsAdminRunbook.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ai/DiagnosticsInsightCard.tsx": {
-    "complexity": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -294,49 +244,6 @@
   },
   "src/mappers/ai/mapDiagnosticsInsightToRenderable.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/ai/prompts/buildReportAnalysisPrompt.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/providers/anthropic/createAnthropicAdapter.ts": {
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
-  "src/services/ai/providers/gemini/createGeminiAdapter.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/providers/openai/createOpenAiAdapter.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/providers/openrouter/createOpenRouterAdapter.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/use-cases/buildDiagnosticsAnalysisInput.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/use-cases/generateDiagnosticsInsights.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/ai/use-cases/generateReportInsights.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },

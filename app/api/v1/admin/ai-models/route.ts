@@ -1,8 +1,10 @@
-import { fetchProviderModels, resolveStoredApiKey } from '@/services/ai'
+import { fetchProviderModels } from '@/services/ai'
 import { requireAdminAuth } from '@/services/api'
 import { aiModelsRequestSchema } from '@/validators/ai'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { resolveModelsApiKey } from './resolveModelsApiKey'
+import { validationErrorResponse } from './validationErrorResponse'
 
 /**
  * POST /api/v1/admin/ai-models
@@ -28,35 +30,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const parsed = aiModelsRequestSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json(
-      {
-        error: {
-          code: 'VALIDATION_ERROR',
-          message:
-            parsed.error.issues[0]?.message ?? 'A valid providerId is required',
-        },
-      },
-      { status: 400 },
+    return validationErrorResponse(
+      parsed.error.issues[0]?.message ?? 'A valid providerId is required',
     )
   }
 
   const providerId = parsed.data.providerId
-  let apiKey = parsed.data.apiKey?.trim() ?? ''
-
+  const apiKey = resolveModelsApiKey(parsed.data.apiKey)
   if (!apiKey) {
-    apiKey = resolveStoredApiKey()
-  }
-
-  if (!apiKey) {
-    return NextResponse.json(
-      {
-        error: {
-          code: 'VALIDATION_ERROR',
-          message:
-            'No API key provided and no saved key found. Enter an API key first.',
-        },
-      },
-      { status: 400 },
+    return validationErrorResponse(
+      'No API key provided and no saved key found. Enter an API key first.',
     )
   }
 

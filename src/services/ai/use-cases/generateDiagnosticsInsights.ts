@@ -1,13 +1,13 @@
 import type { DiagnosticsAnalysisResult } from '@/types/ai'
 import type { GenerateDiagnosticsInsightsOptions } from '../contracts'
-import { AIServiceErrorException } from '../core/AiServiceErrorException'
-import { AI_REQUEST_TIMEOUT_MS } from '../core/aiRequestTimeoutMs'
 import { resolveProvider } from '../core/resolveProvider'
 import { buildDiagnosticsAnalysisPrompt } from '../prompts/buildDiagnosticsAnalysisPrompt'
 import { buildDiagnosticsAnalysisInput } from './buildDiagnosticsAnalysisInput'
-import { parseDiagnosticsInsightsFromContent } from './parseDiagnosticsInsightsFromContent'
+import { buildDiagnosticsInputMeta } from './buildDiagnosticsInputMeta'
+import { parseDiagnosticsInsightsOrThrow } from './parseDiagnosticsInsightsOrThrow'
 import { parseDiagnosticsRolloutPlanFromContent } from './parseDiagnosticsRolloutPlanFromContent'
-import { wrapProviderError } from './wrapProviderError'
+import { requestCompletion } from './requestCompletion'
+import { resolveRequestOptions } from './resolveRequestOptions'
 
 /**
  * Main orchestrator for diagnostics AI insights.
@@ -18,46 +18,21 @@ export async function generateDiagnosticsInsights(
   options: GenerateDiagnosticsInsightsOptions,
 ): Promise<DiagnosticsAnalysisResult> {
   const startMs = Date.now()
-
   const input = await buildDiagnosticsAnalysisInput(options)
-  const { dns, stats, reportAggregate } = input
-
   const { systemPrompt, userPrompt } = buildDiagnosticsAnalysisPrompt(input)
-
   const adapter = resolveProvider()
-
-  const timeoutMs = options.timeoutMs ?? AI_REQUEST_TIMEOUT_MS
-  const maxTokens = options.maxTokens ?? 3072
-  const temperature = options.temperature ?? 0.2
-
-  let rawResponse
-  try {
-    rawResponse = await adapter.complete(systemPrompt, userPrompt, {
-      timeoutMs,
-      maxTokens,
-      temperature,
-    })
-  } catch (err: unknown) {
-    throw wrapProviderError(err)
-  }
-
-  const insights = parseDiagnosticsInsightsFromContent(rawResponse.content)
-  if (!insights) {
-    console.error(
-      '[ai/diagnostics] MALFORMED_RESPONSE — raw content:',
-      rawResponse.content.slice(0, 500),
-    )
-    throw new AIServiceErrorException(
-      'MALFORMED_RESPONSE',
-      'AI produced an unexpected response. Please try again.',
-    )
-  }
-
+  const rawResponse = await requestCompletion(
+    adapter,
+    systemPrompt,
+    userPrompt,
+    resolveRequestOptions(options, 3072),
+  )
+  const insights = parseDiagnosticsInsightsOrThrow(rawResponse.content)
   const rolloutPlan = parseDiagnosticsRolloutPlanFromContent(
     rawResponse.content,
   )
-
   const durationMs = Date.now() - startMs
+  const inputMeta = buildDiagnosticsInputMeta(input)
 
   console.info(
     JSON.stringify({
@@ -71,10 +46,10 @@ export async function generateDiagnosticsInsights(
       rolloutPlanSteps: rolloutPlan.length,
       tokensUsed: rawResponse.tokensUsed,
       model: rawResponse.model,
-      hasDns: dns !== null,
-      hasDiagnosticStats: stats !== null,
-      hasReportAggregate: reportAggregate !== null,
-      reportCount: reportAggregate?.reportCount ?? 0,
+      hasDns: inputMeta.hasDns,
+      hasDiagnosticStats: inputMeta.hasDiagnosticStats,
+      hasReportAggregate: inputMeta.hasReportAggregate,
+      reportCount: inputMeta.reportCount ?? 0,
     }),
   )
 
@@ -82,20 +57,7 @@ export async function generateDiagnosticsInsights(
     insights,
     rolloutPlan,
     analyzedAt: new Date().toISOString(),
-    inputMeta: {
-      domainName: options.domainName,
-      hasDns: dns !== null,
-      hasDiagnosticStats: stats !== null,
-      hasReportAggregate: reportAggregate !== null,
-      reportCount: reportAggregate?.reportCount,
-      orgCount: reportAggregate?.orgCount,
-      dateRange: reportAggregate?.dateRange
-        ? {
-            start: reportAggregate.dateRange.start ?? undefined,
-            end: reportAggregate.dateRange.end ?? undefined,
-          }
-        : undefined,
-    },
+    inputMeta,
     metadata: {
       providerId: adapter.providerId,
       model: rawResponse.model,

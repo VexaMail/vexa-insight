@@ -1,0 +1,11 @@
+/** HTTP status for each AI service error code. */
+export const AI_ERROR_STATUS_MAP: Record<string, number> = {
+  NOT_CONFIGURED: 422,
+  UNAUTHORIZED: 401,
+  RATE_LIMITED: 429,
+  PROVIDER_UNAVAILABLE: 503,
+  TIMEOUT: 504,
+  MALFORMED_RESPONSE: 502,
+  INSUFFICIENT_DATA: 422,
+  UNKNOWN: 500,
+}

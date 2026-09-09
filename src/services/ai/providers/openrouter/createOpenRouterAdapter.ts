@@ -1,8 +1,12 @@
 import type {
   AIProviderAdapter,
+  OpenAiChatCompletionResponse,
   ProviderRawResponse,
   ProviderRequestOptions,
 } from '../../contracts'
+import { buildChatMessages } from '../shared/buildChatMessages'
+import { parseOpenAiChatResponse } from '../shared/parseOpenAiChatResponse'
+import { postJsonWithTiming } from '../shared/postJsonWithTiming'
 import { mapProviderError } from '../shared/providerError'
 import { resolveEffectiveModel } from '../shared/resolveEffectiveModel'
 
@@ -23,31 +27,22 @@ export function createOpenRouterAdapter(
       userPrompt: string,
       options: ProviderRequestOptions,
     ): Promise<ProviderRawResponse> {
-      const start = Date.now()
-      const response = await fetch(
+      const { response, durationMs } = await postJsonWithTiming(
         'https://openrouter.ai/api/v1/chat/completions',
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://vexa-insight.local',
-            'X-Title': 'Vexa Insight Dashboard',
-          },
-          body: JSON.stringify({
-            model: resolvedModel,
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userPrompt },
-            ],
-            max_tokens: options.maxTokens,
-            temperature: options.temperature,
-          }),
-          signal: AbortSignal.timeout(options.timeoutMs),
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+          'HTTP-Referer': 'https://vexa-insight.local',
+          'X-Title': 'Vexa Insight Dashboard',
         },
+        {
+          model: resolvedModel,
+          messages: buildChatMessages(systemPrompt, userPrompt),
+          max_tokens: options.maxTokens,
+          temperature: options.temperature,
+        },
+        options.timeoutMs,
       )
-      const durationMs = Date.now() - start
-
       if (!response.ok) {
         throw mapProviderError(
           'openrouter',
@@ -55,19 +50,8 @@ export function createOpenRouterAdapter(
           await response.text(),
         )
       }
-
-      const json = (await response.json()) as {
-        choices: { message: { content: string } }[]
-        model: string
-        usage?: { total_tokens: number }
-      }
-
-      return {
-        content: json.choices[0]?.message.content ?? '',
-        model: json.model,
-        tokensUsed: json.usage?.total_tokens ?? null,
-        durationMs,
-      }
+      const json = (await response.json()) as OpenAiChatCompletionResponse
+      return parseOpenAiChatResponse(json, durationMs)
     },
   }
 }

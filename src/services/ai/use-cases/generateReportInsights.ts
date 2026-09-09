@@ -3,13 +3,14 @@ import type {
   GenerateReportInsightsOptions,
   ReportAnalysisResult,
 } from '../contracts'
-import { AI_REQUEST_TIMEOUT_MS } from '../core/aiRequestTimeoutMs'
 import { AIServiceErrorException } from '../core/AiServiceErrorException'
 import { resolveProvider } from '../core/resolveProvider'
 import { buildReportAnalysisPrompt } from '../prompts/buildReportAnalysisPrompt'
-import { getReportEventSummaries } from './getReportEventSummaries'
+import { emptyReportAnalysisResult } from './emptyReportAnalysisResult'
 import { parseInsightsFromContent } from './parseInsightsFromContent'
-import { wrapProviderError } from './wrapProviderError'
+import { requestCompletion } from './requestCompletion'
+import { resolveRequestOptions } from './resolveRequestOptions'
+import { toReportAnalysisInput } from './toReportAnalysisInput'
 
 /**
  * Main orchestrator: fetches report data, builds prompt, calls the AI
@@ -22,48 +23,18 @@ export async function generateReportInsights(
   if (!report) {
     throw new AIServiceErrorException('INSUFFICIENT_DATA', 'Report not found.')
   }
+  if (!report.rawXml) return emptyReportAnalysisResult()
 
-  if (!report.rawXml) {
-    return {
-      insights: [],
-      metadata: {
-        providerId: 'openai',
-        model: 'none',
-        durationMs: 0,
-        generatedAt: new Date().toISOString(),
-      },
-    }
-  }
-
-  const events = getReportEventSummaries(report.id)
-
-  const { systemPrompt, userPrompt } = buildReportAnalysisPrompt({
-    reportId: report.id,
-    orgName: report.orgName,
-    beginDate: report.beginDate,
-    endDate: report.endDate,
-    rawXml: report.rawXml,
-    relatedDomains: report.relatedDomains ?? [],
-    events,
-  })
-
+  const { systemPrompt, userPrompt } = buildReportAnalysisPrompt(
+    toReportAnalysisInput(report, report.rawXml),
+  )
   const adapter = resolveProvider()
-
-  const timeoutMs = options.timeoutMs ?? AI_REQUEST_TIMEOUT_MS
-  const maxTokens = options.maxTokens ?? 2048
-  const temperature = options.temperature ?? 0.2
-
-  let rawResponse
-  try {
-    rawResponse = await adapter.complete(systemPrompt, userPrompt, {
-      timeoutMs,
-      maxTokens,
-      temperature,
-    })
-  } catch (err: unknown) {
-    throw wrapProviderError(err)
-  }
-
+  const rawResponse = await requestCompletion(
+    adapter,
+    systemPrompt,
+    userPrompt,
+    resolveRequestOptions(options, 2048),
+  )
   const insights = parseInsightsFromContent(rawResponse.content)
   if (!insights) {
     throw new AIServiceErrorException(
@@ -84,13 +55,15 @@ export async function generateReportInsights(
     }),
   )
 
+  const { model, durationMs } = rawResponse
+  const generatedAt = new Date().toISOString()
   return {
     insights,
     metadata: {
       providerId: adapter.providerId,
-      model: rawResponse.model,
-      durationMs: rawResponse.durationMs,
-      generatedAt: new Date().toISOString(),
+      model,
+      durationMs,
+      generatedAt,
     },
   }
 }
