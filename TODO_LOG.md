@@ -6,6 +6,37 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Ledger burn-down, `max-lines-per-function` cleared:** the
+      116 functions over 50 lines were split across eleven commits
+      (`98ecf6277..c314533b8`) without raising a threshold or adding a disable,
+      and with the markup, effect triggers, status codes and messages of every
+      path preserved. By partition: diagnostics views and services (`a3ef12344`,
+      `894a08a6b`; 182 in 154 to 167 in 142), settings hooks and the Prometheus
+      formatter (`87bb649b1`), settings components and hooks (`d1b939676`; to
+      148), ingest components, hooks, services and routes (`7e841edfd`; to 127),
+      AI components, prompt builder, adapters, use cases and routes
+      (`c20a8f83e`; to 105, not the 102 its message claims), dashboard pages,
+      charts, cards and the date filter (`c156a6924`; to 88), reports, IPs and
+      domain sources (`c6127a07c`; to 78), users, install and upload forms and
+      hooks (`d7b871ac4`; to 68), shell, table, navigator and the geoip,
+      ip-hostname, backfill, security and seed services (`327ea7931`; to 51),
+      and the OIDC, install, self-update, upload and login paths (`c314533b8`;
+      to 41 in 41, `complexity` 28 and `sonarjs/no-duplicate-string` 13,
+      `max-lines-per-function` gone). Recurring shapes: a props type per
+      component in `XProps.ts`, sub-hooks typed in `src/types/<area>`, pure
+      helpers in `src/utils/<area>`, client fetch helpers in `utils/<area>`,
+      route-local response helpers beside `route.ts`, and column factories
+      beside the component. Rules met on the way and now recorded in `TODO.md`:
+      `boundaries/dependencies` (hooks may not import components, so
+      `useUsersColumns` became `getUsersColumns`),
+      `react-hooks/error-boundaries` (no JSX inside `try`), the path-keyed
+      `detect-non-literal-fs-filename` exemption that had to follow `mkdirSync`
+      to `ensureGeoipDataDir.ts`, and the APFS case clash between a `Foo.ts`
+      type and a `foo.ts` helper. Evidence: `pnpm run check:ci` green after
+      every batch (93 files, 568 tests), `pnpm run test:a11y` green (50 tests),
+      CI green on `d1b939676`, `7e841edfd`, `c20a8f83e`, `d7b871ac4` and
+      `327ea7931` (the runs for `c156a6924` and `c6127a07c` were cancelled by
+      the next push); `pnpm run build` green after the last batch.
 - [x] 2026-09-09 — **Ledger burn-down, `max-lines` cleared:** the last ten files
       over 100 lines were split without raising a threshold.
       `AiReportInsightsPanel` into heading, pending card and results;
