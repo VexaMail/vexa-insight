@@ -4,7 +4,8 @@ import { Input } from '@/components/ui'
 import { m as motion } from 'framer-motion'
 import { Server } from 'lucide-react'
 import type { AdvancedSectionProps } from './AdvancedSectionProps'
-import type { EnvironmentType } from './EnvironmentType'
+import { EnvironmentSelect } from './EnvironmentSelect'
+import { SettingsSectionHeader } from './SettingsSectionHeader'
 
 export default function AdvancedSection({
   corsOrigins,
@@ -20,22 +21,13 @@ export default function AdvancedSection({
       className="glass-card p-6"
       aria-labelledby="settings-advanced-heading"
     >
-      <div className="mb-4 flex items-center gap-2">
-        <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-lg">
-          <Server className="h-4 w-4" />
-        </div>
-        <div>
-          <h2
-            id="settings-advanced-heading"
-            className="font-display text-foreground text-sm font-semibold"
-          >
-            Advanced
-          </h2>
-          <p className="text-muted-foreground text-xs">
-            CORS, environment, and system configuration
-          </p>
-        </div>
-      </div>
+      <SettingsSectionHeader
+        headingId="settings-advanced-heading"
+        icon={<Server className="h-4 w-4" />}
+        iconClassName="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-lg"
+        title="Advanced"
+        description="CORS, environment, and system configuration"
+      />
       <div className="space-y-4">
         <div>
           <label
@@ -54,26 +46,7 @@ export default function AdvancedSection({
             className="bg-secondary border-border/50 text-xs"
           />
         </div>
-        <div>
-          <label
-            htmlFor="settings-environment"
-            className="text-foreground mb-1.5 block text-xs font-medium"
-          >
-            Environment
-          </label>
-          <select
-            id="settings-environment"
-            value={environment}
-            onChange={(e) => {
-              onEnvironmentChange(e.target.value as EnvironmentType)
-            }}
-            className="bg-secondary border-border/50 text-foreground h-9 w-full rounded-md border px-3 text-xs"
-          >
-            <option value="development">development</option>
-            <option value="staging">staging</option>
-            <option value="production">production</option>
-          </select>
-        </div>
+        <EnvironmentSelect value={environment} onChange={onEnvironmentChange} />
       </div>
     </motion.section>
   )

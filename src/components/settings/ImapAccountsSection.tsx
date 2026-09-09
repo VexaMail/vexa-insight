@@ -1,12 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui'
-
 import { useImapAccountsSection } from '@/hooks/settings'
 import { m as motion } from 'framer-motion'
-import { Mail, Plus } from 'lucide-react'
+import { Mail } from 'lucide-react'
+import { ImapAccountAddButton } from './ImapAccountAddButton'
 import { ImapAccountRow } from './ImapAccountRow'
 import type { ImapAccountsSectionProps } from './ImapAccountsSectionProps'
+import { SettingsSectionHeader } from './SettingsSectionHeader'
 
 export default function ImapAccountsSection({
   accounts,
@@ -29,22 +29,13 @@ export default function ImapAccountsSection({
       className="glass-card p-6"
       aria-labelledby="settings-imap-heading"
     >
-      <div className="mb-4 flex items-center gap-2">
-        <div className="bg-info/10 text-info flex h-8 w-8 items-center justify-center rounded-lg">
-          <Mail className="h-4 w-4" />
-        </div>
-        <div>
-          <h2
-            id="settings-imap-heading"
-            className="font-display text-foreground text-sm font-semibold"
-          >
-            IMAP Accounts
-          </h2>
-          <p className="text-muted-foreground text-xs">
-            Email accounts for fetching DMARC reports
-          </p>
-        </div>
-      </div>
+      <SettingsSectionHeader
+        headingId="settings-imap-heading"
+        icon={<Mail className="h-4 w-4" />}
+        iconClassName="bg-info/10 text-info flex h-8 w-8 items-center justify-center rounded-lg"
+        title="IMAP Accounts"
+        description="Email accounts for fetching DMARC reports"
+      />
       <div className="space-y-2">
         {accounts.map((acc, index) => (
           <ImapAccountRow
@@ -60,16 +51,7 @@ export default function ImapAccountsSection({
             removable={accounts.length > 1}
           />
         ))}
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="text-primary text-xs"
-          onClick={handleAdd}
-        >
-          <Plus className="mr-1 h-3.5 w-3.5" />
-          Add another account
-        </Button>
+        <ImapAccountAddButton onClick={handleAdd} />
       </div>
     </motion.section>
   )

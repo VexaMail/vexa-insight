@@ -1,39 +1,29 @@
 'use client'
 
-import type { GeoIpProgressEvent } from '@/types/geoipProgress'
-import type { GeoIpStreamHandlers, UseGeoIpReturn } from '@/types/settings'
+import type { UseGeoIpReturn } from '@/types/settings'
 import { getEtaText } from '@/utils/geoip'
-import {
-  fetchGeoIpSettings,
-  openGeoIpUpdateStream,
-  saveGeoIpLicenseKey,
-} from '@/utils/settings'
-import { useEffect, useState } from 'react'
+import { saveGeoIpLicenseKey } from '@/utils/settings'
+import { useState } from 'react'
+import { useGeoIpDbUpdate } from './useGeoIpDbUpdate'
+import { useGeoIpStoredStatus } from './useGeoIpStoredStatus'
 
 export function useGeoIp(apiKey: string): UseGeoIpReturn {
   const [licenseKey, setLicenseKey] = useState('')
-  const [hasLicenseKey, setHasLicenseKey] = useState(false)
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null)
-  const [errorStatus, setErrorStatus] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isUpdatingDb, setIsUpdatingDb] = useState(false)
   const [message, setMessage] = useState('')
-  const [progressData, setProgressData] = useState<GeoIpProgressEvent | null>(
-    null,
-  )
-  const [startTime, setStartTime] = useState<number | null>(null)
+  const stored = useGeoIpStoredStatus(apiKey)
+  const { hasLicenseKey, setHasLicenseKey, setLastUpdate, setErrorStatus } =
+    stored
 
-  useEffect(() => {
-    if (!apiKey) return
-    const loadSettings = async () => {
-      const settings = await fetchGeoIpSettings(apiKey)
-      if (!settings) return
-      setHasLicenseKey(settings.hasLicenseKey)
-      setLastUpdate(settings.geoipLastDbUpdateAt)
-      setErrorStatus(settings.geoipLastDbUpdateError)
-    }
-    void loadSettings()
-  }, [apiKey])
+  const update = useGeoIpDbUpdate({
+    apiKey,
+    canUpdate: hasLicenseKey || licenseKey !== '',
+    setMessage,
+    onUpdated: () => {
+      setLastUpdate(new Date().toISOString())
+      setErrorStatus(null)
+    },
+  })
 
   function handleSaveKey(): void {
     if (!licenseKey.trim()) return
@@ -51,49 +41,22 @@ export function useGeoIp(apiKey: string): UseGeoIpReturn {
     void saveKey()
   }
 
-  function handleUpdateDb(): void {
-    if (!hasLicenseKey && !licenseKey) return
-    setIsUpdatingDb(true)
-    setMessage('')
-    setProgressData({ step: 'Starting download...', progress: 0 })
-    setStartTime(Date.now())
-
-    const handlers: GeoIpStreamHandlers = {
-      onProgress: setProgressData,
-      onDone: () => {
-        setTimeout(() => {
-          setIsUpdatingDb(false)
-          setMessage('Database updated successfully!')
-          setLastUpdate(new Date().toISOString())
-          setErrorStatus(null)
-          setProgressData(null)
-        }, 1000)
-      },
-      onError: (errMsg: string) => {
-        setIsUpdatingDb(false)
-        setMessage(errMsg)
-        setProgressData(null)
-      },
-    }
-
-    void openGeoIpUpdateStream(apiKey, handlers)
-  }
-
-  const etaText = getEtaText(isUpdatingDb, progressData, startTime)
+  const etaText = getEtaText(
+    update.isUpdatingDb,
+    update.progressData,
+    update.startTime,
+  )
 
   return {
     licenseKey,
     setLicenseKey,
     hasLicenseKey,
-    lastUpdate,
-    errorStatus,
+    lastUpdate: stored.lastUpdate,
+    errorStatus: stored.errorStatus,
     isLoading,
-    isUpdatingDb,
     message,
-    progressData,
-    startTime,
     etaText,
     handleSaveKey,
-    handleUpdateDb,
+    ...update,
   }
 }

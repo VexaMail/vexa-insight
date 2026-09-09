@@ -1,10 +1,9 @@
 'use client'
 
-import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui'
+import { Popover, PopoverAnchor } from '@/components/ui'
 import { useModelCombobox } from '../../hooks/settings/useModelCombobox'
-import { ModelComboboxList } from './ModelComboboxList'
+import { ModelComboboxPanel } from './ModelComboboxPanel'
 import type { ModelComboboxProps } from './ModelComboboxProps'
-import { ModelComboboxSearch } from './ModelComboboxSearch'
 import { ModelComboboxTrigger } from './ModelComboboxTrigger'
 import { MODEL_LISTBOX_ID } from './modelListboxId'
 
@@ -20,20 +19,8 @@ export function ModelCombobox({
   savedModelMissing,
   onChange,
 }: Readonly<ModelComboboxProps>) {
-  const {
-    isOpen,
-    setIsOpen,
-    query,
-    setQuery,
-    filtered,
-    highlightIndex,
-    displayLabel,
-    inputRef,
-    listRef,
-    handleSelect,
-    handleClear,
-    handleKeyDown,
-  } = useModelCombobox(models, value, onChange)
+  const combobox = useModelCombobox(models, value, onChange)
+  const { isOpen, setIsOpen } = combobox
 
   return (
     <div className="flex flex-col gap-2">
@@ -48,7 +35,11 @@ export function ModelCombobox({
             isOpen={isOpen}
             isLoading={isLoading}
             listboxId={MODEL_LISTBOX_ID}
-            label={savedModelMissing ? `${value} (unavailable)` : displayLabel}
+            label={
+              savedModelMissing
+                ? `${value} (unavailable)`
+                : combobox.displayLabel
+            }
             hasValue={Boolean(value)}
             savedModelMissing={savedModelMissing}
             onToggle={() => {
@@ -56,35 +47,7 @@ export function ModelCombobox({
             }}
           />
         </PopoverAnchor>
-
-        <PopoverContent
-          className="w-(--radix-popover-trigger-width) p-0"
-          align="start"
-          onOpenAutoFocus={(e) => {
-            e.preventDefault()
-            inputRef.current?.focus()
-          }}
-        >
-          <ModelComboboxSearch
-            inputRef={inputRef}
-            query={query}
-            onQueryChange={setQuery}
-            onKeyDown={handleKeyDown}
-          />
-          <ModelComboboxList
-            listRef={listRef}
-            listboxId={MODEL_LISTBOX_ID}
-            models={filtered}
-            query={query}
-            value={value}
-            highlightIndex={highlightIndex}
-            onSelect={handleSelect}
-            onClear={handleClear}
-          />
-          <div className="border-border/50 text-muted-foreground border-t px-3 py-1.5 text-xs">
-            {filtered.length} of {models.length} models
-          </div>
-        </PopoverContent>
+        <ModelComboboxPanel combobox={combobox} models={models} value={value} />
       </Popover>
 
       {error != null && error !== '' && (

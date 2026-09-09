@@ -1,9 +1,8 @@
-import { Button } from '@/components/ui'
 import { useFolderPicker } from '@/hooks/settings'
-import { FolderPlus, RefreshCw } from 'lucide-react'
 import { FolderPickerCreateForm } from './FolderPickerCreateForm'
 import type { FolderPickerProps } from './FolderPickerProps'
 import { FolderPickerSelect } from './FolderPickerSelect'
+import { FolderPickerToolbar } from './FolderPickerToolbar'
 
 export function FolderPicker({
   accountId,
@@ -11,19 +10,8 @@ export function FolderPicker({
   value,
   onChange,
 }: Readonly<FolderPickerProps>) {
-  const {
-    state,
-    newFolderPath,
-    showCreate,
-    creating,
-    createError,
-    hasLoaded,
-    handleLoadFolders,
-    handleCreate,
-    handleNewFolderPathChange,
-    handleToggleShowCreate,
-    handleCancelCreate,
-  } = useFolderPicker(accountId, apiKey, onChange)
+  const picker = useFolderPicker(accountId, apiKey, onChange)
+  const { state } = picker
 
   return (
     <div className="space-y-2">
@@ -31,44 +19,27 @@ export function FolderPicker({
         <FolderPickerSelect
           value={value}
           state={state}
-          hasLoaded={hasLoaded}
+          hasLoaded={picker.hasLoaded}
           onChange={onChange}
-          onLoad={handleLoadFolders}
+          onLoad={picker.handleLoadFolders}
         />
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground h-7 w-7 shrink-0"
-          onClick={() => void handleLoadFolders()}
-          title="Refresh folders"
-        >
-          <RefreshCw
-            className={`h-3.5 w-3.5 ${state.loading ? 'animate-spin' : ''}`}
-          />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground h-7 w-7 shrink-0"
-          onClick={handleToggleShowCreate}
-          title="Create new folder"
-        >
-          <FolderPlus className="h-3.5 w-3.5" />
-        </Button>
+        <FolderPickerToolbar
+          loading={state.loading}
+          onReload={picker.handleLoadFolders}
+          onToggleCreate={picker.handleToggleShowCreate}
+        />
       </div>
       {state.error != null && state.error !== '' && (
         <p className="text-danger text-xs">{state.error}</p>
       )}
-      {showCreate ? (
+      {picker.showCreate ? (
         <FolderPickerCreateForm
-          newFolderPath={newFolderPath}
-          creating={creating}
-          createError={createError}
-          onPathChange={handleNewFolderPathChange}
-          onCreate={handleCreate}
-          onCancel={handleCancelCreate}
+          newFolderPath={picker.newFolderPath}
+          creating={picker.creating}
+          createError={picker.createError}
+          onPathChange={picker.handleNewFolderPathChange}
+          onCreate={picker.handleCreate}
+          onCancel={picker.handleCancelCreate}
         />
       ) : null}
     </div>

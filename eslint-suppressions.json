@@ -259,62 +259,6 @@
       "count": 1
     }
   },
-  "src/components/settings/AdvancedSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/AiSettingsSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/FolderPicker.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/GeoIpSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/ImapAccountsSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/IngestionSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/ModelCombobox.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/SelfUpdatePanel.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/SettingsConfigForm.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/settings/UpdateStatusSection.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/shell/TopBar.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -379,41 +323,6 @@
     }
   },
   "src/hooks/reports/useReportsTable.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useAiSettings.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useFolderPicker.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useGeoIp.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useModelCombobox.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useProviderModels.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useSelfUpdate.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useUpdateStatus.ts": {
     "max-lines-per-function": {
       "count": 1
     }

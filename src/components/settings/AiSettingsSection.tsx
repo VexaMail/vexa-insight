@@ -2,42 +2,18 @@
 
 import { useAiSettings, useProviderModels } from '@/hooks/settings'
 import { m as motion } from 'framer-motion'
-import { AiApiKeyField } from './AiApiKeyField'
-import { AI_PROVIDERS } from './aiProviders'
 import { AiProviderSelect } from './AiProviderSelect'
-import { AiSettingsActions } from './AiSettingsActions'
 import { AiSettingsHeader } from './AiSettingsHeader'
 import { AiSettingsMessage } from './AiSettingsMessage'
+import { AiSettingsProviderFields } from './AiSettingsProviderFields'
 import type { AiSettingsSectionProps } from './AiSettingsSectionProps'
-import { ModelCombobox } from './ModelCombobox'
 
 export function AiSettingsSection({
   apiKey,
 }: Readonly<AiSettingsSectionProps>) {
-  const {
-    form,
-    apiKeyMasked,
-    isConfigured,
-    saveStatus,
-    message,
-    handleProviderChange,
-    handleApiKeyChange,
-    handleModelChange,
-    handleSave,
-    handleClear,
-  } = useAiSettings(apiKey)
-
-  const {
-    models,
-    isLoading: isLoadingModels,
-    error: modelsError,
-  } = useProviderModels(apiKey, form.providerId, form.apiKey)
-
-  const isSaving = saveStatus === 'loading' || saveStatus === 'validating'
-  const savedModelMissing =
-    form.model !== '' &&
-    models.length > 0 &&
-    !models.some((m) => m.id === form.model)
+  const settings = useAiSettings(apiKey)
+  const { form, isConfigured, saveStatus, message } = settings
+  const providerModels = useProviderModels(apiKey, form.providerId, form.apiKey)
 
   return (
     <motion.section
@@ -55,40 +31,23 @@ export function AiSettingsSection({
       <div className="flex max-w-xl flex-col gap-4 pt-2">
         <AiProviderSelect
           value={form.providerId}
-          onChange={handleProviderChange}
+          onChange={settings.handleProviderChange}
         />
 
         {form.providerId != null && (
-          <>
-            <AiApiKeyField
-              value={form.apiKey}
-              apiKeyMasked={apiKeyMasked}
-              providerPlaceholder={
-                AI_PROVIDERS.find((p) => p.id === form.providerId)?.placeholder
-              }
-              onChange={handleApiKeyChange}
-            />
-            <ModelCombobox
-              models={models}
-              value={form.model}
-              isLoading={isLoadingModels}
-              error={modelsError}
-              savedModelMissing={savedModelMissing}
-              onChange={handleModelChange}
-            />
-            <AiSettingsActions
-              saveStatus={saveStatus}
-              isSaving={isSaving}
-              isConfigured={isConfigured}
-              canSave={form.apiKey.trim() !== '' || isConfigured}
-              onSave={() => {
-                void handleSave()
-              }}
-              onClear={() => {
-                void handleClear()
-              }}
-            />
-          </>
+          <AiSettingsProviderFields
+            form={form}
+            apiKeyMasked={settings.apiKeyMasked}
+            isConfigured={isConfigured}
+            saveStatus={saveStatus}
+            models={providerModels.models}
+            isLoadingModels={providerModels.isLoading}
+            modelsError={providerModels.error}
+            onApiKeyChange={settings.handleApiKeyChange}
+            onModelChange={settings.handleModelChange}
+            onSave={settings.handleSave}
+            onClear={settings.handleClear}
+          />
         )}
 
         <AiSettingsMessage message={message} saveStatus={saveStatus} />
