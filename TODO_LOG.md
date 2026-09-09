@@ -6,6 +6,63 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Ledger emptied, `complexity` and `no-duplicate-string`
+      cleared:** the 41 entries left after the `max-lines-per-function` pass
+      went in three commits without raising a threshold or adding a disable.
+      `ec9e587bd` split the thirteen branchy functions under `utils/` and
+      `validators/` (41 to 28 files): parseDmarcXml and recordToEvent read
+      metadata, date range, policy_evaluated and auth_results through helpers;
+      the MIME walkers share childPartPrefix, isDmarcCandidateLeaf and
+      leafPartId; installReducer dispatches on isInstallAccountAction to two
+      exhaustive reducers typed InstallAccountAction / InstallFieldAction
+      (`switch-exhaustiveness-check` rejects a partial switch even with a
+      default, so the split has to be by type, not by case list);
+      dateRangeQuerySchema uses parseLenientDate and fromDateForDaysParam;
+      validateDmarcTag folds adkim/aspf into one branch. `53c919834` split the
+      fifteen under services, lib, hooks, mappers and one test (28 to 13):
+      getReportStats reads fetchReportAlignmentCounts and
+      countSourcesRequiringReview and rates with percentOf, getSpfDkimBreakdown
+      resolves scope in spfDkimScopeConditions, getLatestReports and
+      getReportOrgOptions share needsEventsJoin, upsertUpdateState builds one
+      typed patch (UpdateStateColumns plus updatedAt) and spreads it over
+      explicit insert defaults, updateUser delegates to
+      assertNotLastAdminDowngrade, userUpdateValues and
+      revokeSessionsForPasswordChange, resolveMtaSts fetches through
+      fetchMtaStsPolicy and parses with parseMtaStsPolicyText, requireSameOrigin
+      asks hasApiCredentials and originMatchesRequest. `5cab8927b` named the
+      sixteen duplicated literals: three source constants in their own files
+      (REPORTS_READ_PERMISSION, REPORT_ID_REQUIRED_MESSAGE,
+      CREDENTIALS_REQUIRED_MESSAGE) and a top-level const in each of the ten
+      tests that repeated a fixture. Every batch: type-check clean, eslint clean
+      against an empty suppressions file, 568 tests, `check:ci` green. Whole
+      ledger: 384 findings in 235 files on 2026-09-08 to 0 on 2026-09-09, across
+      `max-params`, `max-lines`, `max-lines-per-function`,
+      `sonarjs/cognitive-complexity`, `complexity` and
+      `sonarjs/no-duplicate-string`. The file stays as `{}` so `lint:prune`
+      keeps its target. Placement rules that shaped every split, kept here for
+      the next refactor: a file named `format*` must sit in a `formatters/`
+      directory and `use*`, `map*`, `validate*`, `select*` are placement-checked
+      too, so a query helper is `fetch*`, never `select*`; an extracted helper
+      stays under four parameters;
+      `code-policy/no-hidden-top-level-declarations` rejects a module-scope
+      constant that is not the file's export (a shared literal needs its own
+      file; tests are exempt); `code-policy/view-logic-separation` rejects a
+      `const handler = () => ...` inside a component body;
+      `boundaries/dependencies` forbids a hook importing `components/` and a
+      component importing `services/` or `actions/` (column factories live
+      beside the component); `react-hooks/error-boundaries` rejects JSX built
+      inside a `try`; `no-inline-types-in-runtime-files` wants a named type for
+      a helper's object parameter. Traps outside the rules: the per-file
+      `security/detect-non-literal-fs-filename` exemptions in `eslint.config.ts`
+      are keyed by path, so an `fs` call that moves takes its entry with it or
+      lefthook's `--max-warnings 0` blocks the commit after `check:ci` passed;
+      APFS is case-insensitive, so a type `Foo.ts` and a helper `foo.ts` in one
+      directory overwrite each other (hit twice: `InstallErrorResponse` and
+      `UpdateStatePatch`, fixed by renaming the function); and ESLint's
+      `complexity` counts `??`, `?.`, default parameters and every `&&`/`||`, so
+      a function of plain field fallbacks trips it as readily as one of
+      branches.
+
 - [x] 2026-09-09 — **Ledger burn-down, `max-lines-per-function` cleared:** the
       116 functions over 50 lines were split across eleven commits
       (`98ecf6277..c314533b8`) without raising a threshold or adding a disable,

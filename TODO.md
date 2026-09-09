@@ -198,37 +198,11 @@ dead files, the 124 unused exports and the nine unused dependencies were deleted
 rather than ignored, so `knip.config.ts` carries no `ignore` list, no
 `ignoreDependencies` and no rule override. The dependency-cruiser exemptions
 followed: all 77 barrel-mediated cycles are gone, so `no-circular` runs
-unnarrowed and the two stale orphan exemptions are deleted. What remains below
-is what those passes did not reach.
-
-- [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
-      2026-09-08 at 384 findings in 235 files; the `max-lines` pass took it to
-      182 in 154 and the `max-lines-per-function` pass of 2026-09-09 (eleven
-      commits, `98ecf6277..c314533b8`) to 41 in 41: `complexity` 28,
-      `sonarjs/no-duplicate-string` 13. `max-params`, `max-lines`,
-      `max-lines-per-function` and both `sonarjs/cognitive-complexity` entries
-      are gone entirely, and every rule the factories brought that was not
-      structural was fixed at the source when they landed. The ledger is
-      monotonic: `pnpm lint` fails on a suppression that no longer matches,
-      `lint:prune` shrinks it, and a new violation of the same rule still fails.
-      Work it file by file, extracting the helper or the branch, never by
-      raising a threshold. What is left is one entry per file: a branchy
-      function past complexity 10, or a string literal repeated four times.
-      Placement rules that shape any split: a file named `format*` must sit in a
-      `formatters/` directory, an extracted helper still has to stay under four
-      parameters, `code-policy/no-hidden-top-level-declarations` rejects a
-      module-scope constant that is not the file's export (a shared literal
-      needs its own file), `code-policy/view-logic-separation` rejects a
-      `const handler = () => ...` declared inside a component body (it stays
-      inline in the JSX prop or moves into the hook), `boundaries/dependencies`
-      forbids a hook or a component importing from `components/` or `services/`
-      respectively (column factories live beside the component, not in
-      `hooks/`), and `react-hooks/error-boundaries` rejects JSX built inside a
-      `try` (parse in a util, branch in the component). Two traps outside the
-      rules: the per-file `security/detect-non-literal-fs-filename` exemptions
-      in `eslint.config.ts` are keyed by path, so an `fs` call that moves to a
-      new file takes its entry with it; and APFS is case-insensitive, so a type
-      file `Foo.ts` and a helper `foo.ts` in one directory overwrite each other.
+unnarrowed and the two stale orphan exemptions are deleted. The
+`eslint-suppressions.json` ledger opened on 2026-09-08 at 384 findings and was
+emptied on 2026-09-09 (see `TODO_LOG.md`); the file stays, empty, so
+`lint:prune` keeps a target and any new suppression shows up in review. What
+remains below is what those passes did not reach.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
