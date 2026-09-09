@@ -4,11 +4,6 @@
       "count": 1
     }
   },
-  "app/(app)/ingest/page.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/(app)/page.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -54,11 +49,6 @@
       "count": 1
     }
   },
-  "app/api/v1/admin/trigger-poll/route.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/api/v1/ai/diagnostics-insights/route.ts": {
     "complexity": {
       "count": 1
@@ -71,16 +61,6 @@
     "complexity": {
       "count": 1
     },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/imap/folders/create/route.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/imap/folders/route.ts": {
     "max-lines-per-function": {
       "count": 1
     }
@@ -162,49 +142,6 @@
     }
   },
   "src/components/filters/DateRangeFilterContent.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/CronsSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/EngineProgress.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/IngestTabs.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/JobRunHistoryTable.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/PollProgressList.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/TriggerPollForm.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/jobRunHistoryColumns.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ingest/processedEmailsColumns.tsx": {
     "max-lines-per-function": {
       "count": 1
     }
@@ -303,11 +240,6 @@
     }
   },
   "src/hooks/filters/useDateRangeFilterContent.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/ingest/usePollStatusFetcher.ts": {
     "max-lines-per-function": {
       "count": 1
     }
@@ -436,41 +368,12 @@
       "count": 1
     }
   },
-  "src/services/imap/processOneMessageUid.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/ip-hostname/isPrivateIp.ts": {
     "complexity": {
       "count": 1
     }
   },
   "src/services/ip-hostname/resolveAndPersist.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/job/applyEmailProgressToItem.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/job/getPollStatus.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/job/getPollStatusFromDb.ts": {
     "max-lines-per-function": {
       "count": 1
     }

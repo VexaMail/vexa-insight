@@ -9,6 +9,8 @@ import {
 import { PageContainer, PageHeader } from '@/components/shell'
 import { requirePageSession } from '@/services/auth'
 import { getIngestPageData } from '@/services/ingest'
+import type { IngestPageProps } from '@/types/ingest'
+import { adminOnlyApiKey, buildIngestInitialState } from '@/utils/ingest'
 
 export const metadata: Metadata = {
   title: 'Ingest | Vexa Insight',
@@ -17,11 +19,7 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function IngestPage({
-  searchParams,
-}: {
-  readonly searchParams: Promise<{ jobId?: string; hideEmpty?: string }>
-}) {
+export default async function IngestPage({ searchParams }: IngestPageProps) {
   const session = await requirePageSession()
   const params = await searchParams
   const jobId = params.jobId ? parseInt(params.jobId, 10) : undefined
@@ -43,26 +41,17 @@ export default async function IngestPage({
         description="Track ingestion jobs, processed emails, and scheduled crons."
       />
       <IngestStoreProvider
-        initialState={{
-          selectedJobId: effectiveJobId ?? null,
-          isRunning: displayPollStatus.isRunning,
-          lastCheck: displayPollStatus.lastCheck,
-          currentProcessed: displayPollStatus.currentProcessed,
-          totalEmails: displayPollStatus.totalEmails,
-          processingEmails: displayPollStatus.processingEmails,
-          etaMs: displayPollStatus.etaMs,
-          progressItems: displayPollStatus.progressItems.items,
-          progressTotal: displayPollStatus.progressItems.total,
-          pageSize: displayPollStatus.progressItems.pageSize,
-          page: displayPollStatus.progressItems.page,
-        }}
+        initialState={buildIngestInitialState(
+          displayPollStatus,
+          effectiveJobId,
+        )}
       >
         <CronsSection
           ingestionIntervalMinutes={settings?.ingestionIntervalMinutes ?? 60}
-          // The shared key drives admin-only actions; never ship it to viewers.
-          initialApiKey={
-            session.user.role === 'admin' ? (settings?.secretKey ?? '') : ''
-          }
+          initialApiKey={adminOnlyApiKey(
+            session.user.role,
+            settings?.secretKey,
+          )}
           isHistoricalJobContext={isHistoricalJobContext}
           jobId={effectiveJobId}
           jobRunsNode={

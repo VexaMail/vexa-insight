@@ -1,11 +1,7 @@
 'use client'
 
-import { useRefreshOnCronsStop } from '@/hooks/ingest'
 import type { CronsSectionProps } from '@/types/ingest'
-import { useRouter } from 'next/navigation'
-import { useAbortPoll } from '../../hooks/ingest/useAbortPoll'
-import { useCronsSectionViewModel } from '../../hooks/ingest/useCronsSectionViewModel'
-import { usePollStatusFetcher } from '../../hooks/ingest/usePollStatusFetcher'
+import { useCronsSection } from '../../hooks/ingest/useCronsSection'
 import { CronsEngineCard } from './CronsEngineCard'
 import { CronsTabsCard } from './CronsTabsCard'
 
@@ -17,31 +13,13 @@ export default function CronsSection({
   jobRunsNode,
   processedEmailsNode,
 }: Readonly<CronsSectionProps>) {
-  const router = useRouter()
-  const { abortStatus, handleAbort } = useAbortPoll(initialApiKey)
-  const viewModel = useCronsSectionViewModel(ingestionIntervalMinutes)
-  const {
-    isRunning,
-    runRequested,
-    page,
-    pageSize,
-    progressItems,
-    progressTotal,
-    applyPollStatusData,
-  } = viewModel
-
-  useRefreshOnCronsStop(isRunning, router)
-
-  usePollStatusFetcher({
+  const { viewModel, abortStatus, handleAbort } = useCronsSection({
+    ingestionIntervalMinutes,
+    initialApiKey,
     isHistoricalJobContext,
     jobId,
-    page,
-    pageSize,
-    isRunning,
-    runRequested,
-    abortStatus,
-    applyPollStatusData,
   })
+  const { isRunning, runRequested, progressItems, progressTotal } = viewModel
 
   return (
     <div className="space-y-6">

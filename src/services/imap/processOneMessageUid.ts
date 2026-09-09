@@ -1,11 +1,7 @@
 import type { AttachmentResult, ProcessOneMessageUidInput } from '@/types/imap'
-import {
-  envelopeDateToIso,
-  getDmarcCandidatePartIds,
-  tagAttachmentSourceMessageId,
-} from '@/utils/imap'
-import { downloadDmarcAttachments } from './downloadDmarcAttachments'
-import { finalizeProcessedMessage } from './finalizeProcessedMessage'
+import { getDmarcCandidatePartIds, summarizeEnvelope } from '@/utils/imap'
+import { collectMessageAttachments } from './collectMessageAttachments'
+import { fetchEnvelopeMessage } from './fetchEnvelopeMessage'
 import { getBodyStructure } from './getBodyStructure'
 import { notifyProgress } from './notifyProgress'
 import { reportMessageError } from './reportMessageError'
@@ -22,18 +18,11 @@ export async function processOneMessageUid(
   let emailDate: string | undefined
 
   try {
-    const envMsg =
-      providedEnvMsg ??
-      (await client.fetchOne(
-        uidStr,
-        { envelope: true, bodyStructure: true, uid: true },
-        { uid: true },
-      ))
+    const envMsg = await fetchEnvelopeMessage(client, uidStr, providedEnvMsg)
     if (!envMsg) return []
 
-    const subject = envMsg.envelope?.subject
-    emailDate = envelopeDateToIso(envMsg.envelope?.date)
-    const messageId = envMsg.envelope?.messageId ?? `uid:${uidStr}`
+    const summary = summarizeEnvelope(envMsg, uidStr)
+    emailDate = summary.emailDate
 
     const bodyStructure = await getBodyStructure(client, uidStr, envMsg)
     if (!bodyStructure) return []
@@ -44,33 +33,21 @@ export async function processOneMessageUid(
     await notifyProgress(options, {
       accountId: account.id,
       emailDate,
-      subject,
+      subject: summary.subject,
       uid: uidStr,
       step: 'downloading',
     })
 
-    const attachments = await downloadDmarcAttachments(
+    return await collectMessageAttachments({
+      account,
       client,
+      folder,
+      options,
       uidStr,
       partIds,
       bodyStructure,
-    )
-    if (attachments.length === 0) return []
-
-    tagAttachmentSourceMessageId(attachments, messageId)
-    await finalizeProcessedMessage({
-      account,
-      attachmentCount: attachments.length,
-      client,
-      emailDate,
-      folder,
-      messageId,
-      options,
-      subject,
-      uidStr,
+      summary,
     })
-
-    return attachments
   } catch (error: unknown) {
     await reportMessageError({
       accountId: account.id,

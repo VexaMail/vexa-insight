@@ -1,13 +1,8 @@
-import { getDb, jobPollEvents } from '@/lib/db'
-import type {
-  EmailProgressPayload,
-  PaginatedProgressItems,
-  PollStatus,
-  ProgressItem,
-} from '@/types/dashboard'
-import { asc, eq } from 'drizzle-orm'
-import { applyEmailProgressToItem } from './applyEmailProgressToItem'
+import type { PollStatus } from '@/types/dashboard'
+import { paginateProgressItems } from '@/utils/dashboard'
+import { buildPollStatus } from './buildPollStatus'
 import { getPollStatusFromDb } from './getPollStatusFromDb'
+import { loadJobRunProgressItems } from './loadJobRunProgressItems'
 
 export async function getPollStatus(
   page = 1,
@@ -16,66 +11,9 @@ export async function getPollStatus(
 ): Promise<PollStatus> {
   const status = jobRunId === undefined ? await getPollStatusFromDb() : null
   const targetJobRunId = jobRunId ?? status?.activeJobRunId
+  const ordered = targetJobRunId
+    ? await loadJobRunProgressItems(targetJobRunId)
+    : []
 
-  let total = 0
-  let items: ProgressItem[] = []
-
-  if (targetJobRunId) {
-    const db = getDb()
-    const dbEvents = await db
-      .select({
-        id: jobPollEvents.id,
-        accountId: jobPollEvents.imapAccountId,
-        messageUid: jobPollEvents.messageUid,
-        step: jobPollEvents.step,
-        error: jobPollEvents.error,
-        createdAt: jobPollEvents.createdAt,
-        messageLabel: jobPollEvents.messageLabel,
-      })
-      .from(jobPollEvents)
-      .where(eq(jobPollEvents.jobRunId, targetJobRunId))
-      .orderBy(asc(jobPollEvents.id))
-
-    const itemMap = new Map<string, ProgressItem>()
-    for (const e of dbEvents) {
-      if (!e.accountId || !e.messageUid) continue
-      const id = `${String(e.accountId)}:${e.messageUid}`
-      const current = itemMap.get(id)
-      const payload = {
-        accountId: e.accountId,
-        uid: e.messageUid,
-        step: e.step as EmailProgressPayload['step'],
-        error: e.error ?? undefined,
-        emailDate: e.createdAt.toISOString(),
-        subject: e.messageLabel ?? undefined,
-      }
-      const updated = applyEmailProgressToItem(current, payload)
-      itemMap.set(id, updated)
-    }
-
-    const allItems = Array.from(itemMap.values())
-    const ordered = allItems.toReversed()
-    total = ordered.length
-    const start = (page - 1) * pageSize
-    items = ordered.slice(start, start + pageSize)
-  }
-
-  const progressItems: PaginatedProgressItems = {
-    items,
-    total,
-    page,
-    pageSize,
-  }
-
-  return {
-    isRunning: status?.isRunning ?? false,
-    lastCheck: status?.lastCheck?.toISOString() ?? null,
-    currentProcessed: status?.currentProcessed ?? 0,
-    totalEmails: status?.totalEmails ?? 0,
-    processingEmails: status?.processingEmails ?? 0,
-    etaMs: status?.etaMs ?? 0,
-    progressItems,
-    activeJobRunId: status?.activeJobRunId ?? null,
-    statusText: status?.statusText ?? null,
-  }
+  return buildPollStatus(status, paginateProgressItems(ordered, page, pageSize))
 }

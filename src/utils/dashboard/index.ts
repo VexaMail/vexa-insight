@@ -1,3 +1,4 @@
+export { paginateProgressItems } from './paginateProgressItems'
 export { passRateBarClassName } from './passRateBarClassName'
 export { passRateTextClassName } from './passRateTextClassName'
 export { sharePercent } from './sharePercent'

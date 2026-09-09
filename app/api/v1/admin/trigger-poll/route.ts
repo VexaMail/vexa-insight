@@ -2,16 +2,16 @@ import { requireAdminAuth } from '@/services/api'
 import {
   checkAndRecoverStuckJob,
   getPollStatus,
-  runIngestJob,
+  runIngestJobDetached,
 } from '@/services/job'
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { parseFullRescanFlag } from './parseFullRescanFlag'
 import { TRIGGER_LIMIT } from './triggerLimit'
+import { TRIGGER_WINDOW_MS } from './triggerWindowMs'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const TRIGGER_WINDOW_MS = 60_000
   const auth = requireAdminAuth(request)
   if (auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -37,26 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 409 },
     )
   }
-  // Run the job in the background (fire and forget)
-  // This ensures the process is decoupled from the browser connection/HTTP request.
-  void (async () => {
-    try {
-      await runIngestJob({ fullRescan })
-    } catch (err) {
-      console.error('[ingest] Background job failed:', err)
-      // The finally block inside runIngestJob will still clear the flag,
-      // but if it fails completely outside that logic, we ensure it's recorded.
-      try {
-        const { setPollStatusInDb } = await import('@/services/job')
-        await setPollStatusInDb({
-          isRunning: false,
-          lastCheck: new Date(),
-        })
-      } catch (fallbackErr) {
-        console.error(fallbackErr)
-      }
-    }
-  })()
+  runIngestJobDetached(fullRescan)
 
   return NextResponse.json(
     {

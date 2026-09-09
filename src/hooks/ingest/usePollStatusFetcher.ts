@@ -1,8 +1,8 @@
 'use client'
 
 import { POLL_INTERVAL_MS } from '@/constants/ingest'
-import { doFetch } from '@/lib/fetch'
-import type { PollStatusResponseData } from '@/types/ingest'
+import type { UsePollStatusFetcherParams } from '@/types/ingest'
+import { buildPollStatusUrl, fetchPollStatusData } from '@/utils/ingest'
 import { useEffect } from 'react'
 
 export function usePollStatusFetcher({
@@ -14,31 +14,15 @@ export function usePollStatusFetcher({
   runRequested,
   abortStatus,
   applyPollStatusData,
-}: {
-  isHistoricalJobContext: boolean
-  jobId?: number | undefined
-  page: number
-  pageSize: number
-  isRunning: boolean
-  runRequested: boolean
-  abortStatus: string
-  applyPollStatusData: (data: PollStatusResponseData) => void
-}) {
+}: UsePollStatusFetcherParams) {
   useEffect(() => {
     let active = true
 
     async function fetchAction() {
-      try {
-        const url =
-          isHistoricalJobContext && jobId
-            ? `/api/v1/job-runs/${String(jobId)}/poll-status?page=${String(page)}&pageSize=${String(pageSize)}&_=${String(Date.now())}`
-            : `/api/v1/poll-status?page=${String(page)}&pageSize=${String(pageSize)}&_=${String(Date.now())}`
-        const res = await doFetch(url)
-        const json = (await res.json()) as { data?: PollStatusResponseData }
-        if (active && json.data) applyPollStatusData(json.data)
-      } catch {
-        // ignore
-      }
+      const data = await fetchPollStatusData(
+        buildPollStatusUrl({ isHistoricalJobContext, jobId, page, pageSize }),
+      )
+      if (active && data) applyPollStatusData(data)
     }
 
     const shouldPoll = isRunning || runRequested || abortStatus === 'loading'

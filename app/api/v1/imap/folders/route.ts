@@ -1,7 +1,6 @@
 import { requireAdminAuth } from '@/services/api'
-import { listFolders } from '@/services/imap'
-import { getImapAccountsRow } from '@/services/settings-store'
-import type { ImapAccountConfig } from '@/types/config'
+import { listFolders, serializeImapFolders } from '@/services/imap'
+import { findImapAccountConfig } from '@/services/settings-store'
 import { imapFoldersRequestSchema } from '@/validators/imap'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -32,37 +31,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 400 },
     )
   }
-  const rows = getImapAccountsRow()
-  const row = rows.find((r) => r.id === parsed.data.accountId)
-  if (!row) {
+  const account = findImapAccountConfig(parsed.data.accountId)
+  if (!account) {
     return NextResponse.json(
       { error: { code: 'NOT_FOUND', message: 'Account not found' } },
       { status: 404 },
     )
   }
-  const account: ImapAccountConfig = {
-    id: row.id,
-    server: row.server,
-    port: row.port,
-    username: row.username,
-    password: row.password,
-    fetchIncludeTrash: row.fetchIncludeTrash,
-    fetchIncludeAllFolders: row.fetchIncludeAllFolders,
-    postProcessAction: row.postProcessAction,
-    postProcessFolder: row.postProcessFolder,
-    moveToTrashAfterProcess: row.moveToTrashAfterProcess,
-    markAsReadAfterProcess: row.markAsReadAfterProcess,
-  }
   try {
     const folders = await listFolders(account)
-    return NextResponse.json({
-      data: folders.map((f) => ({
-        path: f.path,
-        name: f.name,
-        delimiter: f.delimiter,
-        specialUse: f.specialUse,
-      })),
-    })
+    return NextResponse.json({ data: serializeImapFolders(folders) })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
