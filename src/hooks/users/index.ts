@@ -1,1 +1,2 @@
-export { useUsersColumns } from './useUsersColumns'
+export { useUserModal } from './useUserModal'
+export { useUsersManagement } from './useUsersManagement'

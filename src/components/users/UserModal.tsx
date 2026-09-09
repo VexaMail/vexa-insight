@@ -1,31 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui'
-import { useUserModal } from '../../hooks/users/useUserModal'
-import { UserCredentialFields } from './UserCredentialFields'
-import { UserDomainAccessFields } from './UserDomainAccessFields'
+import { useUserModal } from '@/hooks/users'
+import { UserModalError } from './UserModalError'
+import { UserModalFields } from './UserModalFields'
 import type { UserModalProps } from './UserModalProps'
-import { UserRoleField } from './UserRoleField'
 
 export default function UserModal({
   user,
   onClose,
   onSuccess,
 }: Readonly<UserModalProps>) {
-  const {
-    username,
-    setUsername,
-    password,
-    setPassword,
-    role,
-    setRole,
-    domainMode,
-    setDomainMode,
-    domainsInput,
-    setDomainsInput,
-    error,
-    handleSubmit,
-  } = useUserModal(user, onSuccess)
+  const form = useUserModal(user, onSuccess)
 
   return (
     <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -33,32 +19,15 @@ export default function UserModal({
         <h2 className="mb-4 text-xl font-bold">
           {user ? 'Edit User' : 'Create User'}
         </h2>
-        {error !== '' && (
-          <div className="text-destructive bg-destructive/10 mb-4 rounded p-2 text-sm">
-            {error}
-          </div>
-        )}
+        <UserModalError message={form.error} />
 
         <form
           onSubmit={(e) => {
-            void handleSubmit(e)
+            void form.handleSubmit(e)
           }}
           className="space-y-4"
         >
-          <UserCredentialFields
-            username={username}
-            password={password}
-            isEdit={user !== undefined}
-            onUsernameChange={setUsername}
-            onPasswordChange={setPassword}
-          />
-          <UserRoleField role={role} onChange={setRole} />
-          <UserDomainAccessFields
-            domainMode={domainMode}
-            domainsInput={domainsInput}
-            onModeChange={setDomainMode}
-            onDomainsChange={setDomainsInput}
-          />
+          <UserModalFields form={form} isEdit={user !== undefined} />
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" onClick={onClose}>

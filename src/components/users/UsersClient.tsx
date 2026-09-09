@@ -1,20 +1,16 @@
 'use client'
 
-import { Button, DataTable } from '@/components/ui'
-import { Plus } from 'lucide-react'
-import UserModal from './UserModal'
-
-import { useUsersColumns } from '@/hooks/users'
-import type { User } from '@/types/users'
-import { useUsersManagement } from '../../hooks/users/useUsersManagement'
+import { DataTable } from '@/components/ui'
+import { useUsersManagement } from '@/hooks/users'
+import { CreateUserButton } from './CreateUserButton'
+import { UserDialogs } from './UserDialogs'
+import type { UsersClientProps } from './UsersClientProps'
+import { getUsersColumns } from './usersColumns'
 
 export default function UsersClient({
   initialUsers,
   currentUserId,
-}: Readonly<{
-  initialUsers: User[]
-  currentUserId: string
-}>) {
+}: Readonly<UsersClientProps>) {
   const {
     users,
     isCreateOpen,
@@ -29,7 +25,7 @@ export default function UsersClient({
     onSuccessEdit,
   } = useUsersManagement(initialUsers)
 
-  const columns = useUsersColumns({
+  const columns = getUsersColumns({
     currentUserId,
     onEdit: handleEditUser,
     onDelete: handleDelete,
@@ -37,30 +33,23 @@ export default function UsersClient({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            setIsCreateOpen(true)
-          }}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Create User
-        </Button>
-      </div>
+      <CreateUserButton
+        onClick={() => {
+          setIsCreateOpen(true)
+        }}
+      />
 
       <DataTable columns={columns} data={users} />
 
-      {isCreateOpen ? (
-        <UserModal onClose={closeCreate} onSuccess={onSuccessCreate} />
-      ) : null}
-      {isEditOpen && selectedUser != null ? (
-        <UserModal
-          user={selectedUser}
-          onClose={closeEdit}
-          onSuccess={onSuccessEdit}
-        />
-      ) : null}
+      <UserDialogs
+        isCreateOpen={isCreateOpen}
+        isEditOpen={isEditOpen}
+        selectedUser={selectedUser}
+        closeCreate={closeCreate}
+        closeEdit={closeEdit}
+        onSuccessCreate={onSuccessCreate}
+        onSuccessEdit={onSuccessEdit}
+      />
     </div>
   )
 }

@@ -1,31 +1,22 @@
 'use client'
 
-import { MIN_SECRET_LENGTH } from '@/constants/auth'
+import type { UseInstallFormReturn } from '@/types/install'
 import {
-  DEFAULT_DAYS_BACK,
-  DEFAULT_INTERVAL,
-  defaultAccount,
+  buildInstallRequestBody,
+  completeImapAccounts,
   generateSecretKey,
+  initialInstallState,
+  installErrorAction,
+  installFormError,
   installReducer,
+  postInstall,
 } from '@/utils/install'
 import { useReducer } from 'react'
-
-import type { UseInstallFormReturn } from '@/types/install'
 
 export function useInstallForm(
   isPartial: UseInstallFormReturn['isPartial'],
 ): UseInstallFormReturn {
-  const [state, dispatch] = useReducer(installReducer, {
-    adminEmail: '',
-    adminPassword: '',
-    installToken: '',
-    secretKey: '',
-    imapAccounts: [defaultAccount()],
-    ingestionIntervalMinutes: DEFAULT_INTERVAL,
-    ingestionDaysBack: DEFAULT_DAYS_BACK,
-    status: 'idle',
-    message: '',
-  })
+  const [state, dispatch] = useReducer(installReducer, initialInstallState())
 
   function handleGenerateKey() {
     dispatch({ type: 'SET_SECRET_KEY', payload: generateSecretKey() })
@@ -33,77 +24,23 @@ export function useInstallForm(
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
-    if (!isPartial && state.secretKey.length < MIN_SECRET_LENGTH) {
-      dispatch({
-        type: 'SET_SUBMIT_STATUS',
-        status: 'error',
-        message: `API key must be at least ${String(MIN_SECRET_LENGTH)} characters.`,
-      })
-      return
-    }
-
-    const valid = state.imapAccounts.filter(
-      (a) => a.server.trim() && a.username.trim() && a.password,
-    )
-    if (!isPartial && valid.length === 0) {
-      dispatch({
-        type: 'SET_SUBMIT_STATUS',
-        status: 'error',
-        message:
-          'At least one IMAP account with server, username, and password is required.',
-      })
+    const accounts = completeImapAccounts(state.imapAccounts)
+    const error = installFormError(state, isPartial, accounts)
+    if (error !== null) {
+      dispatch(installErrorAction(error))
       return
     }
 
     dispatch({ type: 'SET_SUBMIT_STATUS', status: 'loading', message: '' })
     try {
-      const res = await fetch('/api/install', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          installToken: state.installToken.trim(),
-          adminEmail: state.adminEmail.trim(),
-          adminPassword: state.adminPassword,
-          secretKey: state.secretKey.trim(),
-          imapAccounts: valid.map((a) => ({
-            label: a.label.trim() || 'Account',
-            server: a.server.trim(),
-            port: a.port,
-            username: a.username.trim(),
-            password: a.password,
-          })),
-          ingestionIntervalMinutes: state.ingestionIntervalMinutes,
-          ingestionDaysBack: state.ingestionDaysBack,
-        }),
-      })
-
-      const json = (await res.json()) as
-        | { data?: { redirect?: string } }
-        | { error?: { code?: string; message?: string } }
-
-      if (!res.ok) {
-        const err = json as { error?: { message?: string } }
-        dispatch({
-          type: 'SET_SUBMIT_STATUS',
-          status: 'error',
-          message: err.error?.message ?? `Error ${String(res.status)}`,
-        })
+      const result = await postInstall(buildInstallRequestBody(state, accounts))
+      if (!result.ok) {
+        dispatch(installErrorAction(result.message))
         return
       }
-
-      const data = (json as { data: { redirect: string } }).data
-      if (data.redirect) {
-        window.location.href = data.redirect
-        return
-      }
-
-      window.location.href = '/settings'
+      window.location.href = result.redirect
     } catch {
-      dispatch({
-        type: 'SET_SUBMIT_STATUS',
-        status: 'error',
-        message: 'Request failed.',
-      })
+      dispatch(installErrorAction('Request failed.'))
     }
   }
 

@@ -1,13 +1,15 @@
-import type { RecentUpload } from '@/types/upload'
+import type {
+  RecentUpload,
+  UploadStatus,
+  UseUploadFormReturn,
+} from '@/types/upload'
 import { newRecentUpload, uploadReportFile } from '@/utils/upload'
 import { useState } from 'react'
+import { useUploadDrag } from './useUploadDrag'
 
-export function useUploadForm() {
-  const [status, setStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle')
+export function useUploadForm(): UseUploadFormReturn {
+  const [status, setStatus] = useState<UploadStatus>('idle')
   const [message, setMessage] = useState('')
-  const [dragActive, setDragActive] = useState(false)
   const [recentUploads, setRecentUploads] = useState<RecentUpload[]>([])
 
   async function handleFile(file: File) {
@@ -36,21 +38,9 @@ export function useUploadForm() {
     form.reset()
   }
 
-  function handleDrag(e: React.DragEvent) {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(e.type === 'dragenter' || e.type === 'dragover')
-  }
-
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      void handleFile(file)
-    }
-  }
+  const { dragActive, handleDrag, handleDrop } = useUploadDrag((file) => {
+    void handleFile(file)
+  })
 
   return {
     status,
