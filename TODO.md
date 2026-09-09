@@ -203,26 +203,24 @@ is what those passes did not reach.
 
 - [ ] Keep burning down the `eslint-suppressions.json` ledger. It opened on
       2026-09-08 at 384 findings in 235 files and successive batches took it to
-      204 in 163: `max-lines-per-function` 125, `complexity` 50, `max-lines` 13,
-      `sonarjs/no-duplicate-string` 16. `max-params` is gone entirely. Both
-      `sonarjs/cognitive-complexity` entries are gone, and every rule the
-      factories brought that was not structural was fixed at the source when
-      they landed. The ledger is monotonic: `pnpm lint` fails on a suppression
-      that no longer matches, `lint:prune` shrinks it, and a new violation of
-      the same rule still fails. Work it file by file, splitting the component
-      or extracting the helper, never by raising a threshold. The remaining
-      `max-lines` files are the natural unit of work because splitting one also
-      clears the function-length entries inside it; `test/` no longer carries a
-      `max-lines` entry: the four oversized files were split by behaviour on
-      2026-09-08 and their fixtures moved to `test/setup/`. In `src/` the work
-      is a long tail of files carrying exactly three entries each; the five
-      largest were split on 2026-09-08 and the next ones are of the same shape,
-      a client component or hook of 120 to 160 lines. Three placement rules
-      shape any split: a file named `format*` must sit in a `formatters/`
-      directory, an extracted helper still has to stay under four parameters,
-      and `code-policy/no-hidden-top-level-declarations` rejects a module-scope
+      182 in 154: `max-lines-per-function` 116, `complexity` 50,
+      `sonarjs/no-duplicate-string` 16. `max-params` and `max-lines` are gone
+      entirely (the last ten `max-lines` files were split on 2026-09-09), as are
+      both `sonarjs/cognitive-complexity` entries, and every rule the factories
+      brought that was not structural was fixed at the source when they landed.
+      The ledger is monotonic: `pnpm lint` fails on a suppression that no longer
+      matches, `lint:prune` shrinks it, and a new violation of the same rule
+      still fails. Work it file by file, splitting the component or extracting
+      the helper, never by raising a threshold. What is left is one entry per
+      file: a component or hook whose single function runs past 50 lines, or a
+      branchy function past complexity 10. Three placement rules shape any
+      split: a file named `format*` must sit in a `formatters/` directory, an
+      extracted helper still has to stay under four parameters, and
+      `code-policy/no-hidden-top-level-declarations` rejects a module-scope
       constant that is not the file's export, so a shared literal needs its own
-      file.
+      file. A fourth surfaced on 2026-09-09: `code-policy/view-logic-separation`
+      rejects a `const handler = () => ...` declared inside a component body, so
+      a handler either stays inline in the JSX prop or moves into the hook.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which

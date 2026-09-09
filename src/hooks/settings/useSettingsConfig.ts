@@ -1,18 +1,16 @@
 import type {
-  ImapAccountFormEntry,
   SettingsConfigFormProps,
   SettingsFormState,
   SettingsSaveStatus,
 } from '@/types/settings'
 import {
-  generateApiKey,
   getSettingsFormState,
-  newImapAccountEntry,
   saveSettings,
-  testImapConnection,
   toSavedFormState,
 } from '@/utils/settings'
 import { useState } from 'react'
+import { useApiKeyActions } from './useApiKeyActions'
+import { useImapAccountsForm } from './useImapAccountsForm'
 
 export function useSettingsConfig(
   initialData: SettingsConfigFormProps['initialData'],
@@ -24,57 +22,13 @@ export function useSettingsConfig(
   const [saveStatus, setSaveStatus] = useState<SettingsSaveStatus>('idle')
   const [message, setMessage] = useState('')
 
-  function handleCopyApiKey() {
-    if (!apiKey.trim()) return
-    void navigator.clipboard.writeText(apiKey)
-    setMessage('API key copied to clipboard.')
-    setSaveStatus('success')
-    setTimeout(() => {
-      setMessage('')
-    }, 2000)
-  }
-
-  function handleGenerateNewApiKey() {
-    setForm((prev) => ({ ...prev, secretKeyNew: generateApiKey() }))
-  }
-
-  async function handleTestConnection(accountId: number) {
-    if (!apiKey.trim()) return
-    try {
-      const result = await testImapConnection(accountId, apiKey)
-      setMessage(result.message)
-      setSaveStatus(result.ok ? 'success' : 'error')
-    } catch {
-      setMessage('Test request failed.')
-      setSaveStatus('error')
-    }
-  }
-
-  function handleImapUpdate(
-    index: number,
-    updates: Partial<ImapAccountFormEntry>,
-  ) {
-    setForm((prev) => ({
-      ...prev,
-      imapAccounts: prev.imapAccounts.map((a, i) =>
-        i === index ? { ...a, ...updates } : a,
-      ),
-    }))
-  }
-
-  function handleImapAdd() {
-    setForm((prev) => ({
-      ...prev,
-      imapAccounts: [...prev.imapAccounts, newImapAccountEntry()],
-    }))
-  }
-
-  function handleImapRemove(index: number) {
-    setForm((prev) => ({
-      ...prev,
-      imapAccounts: prev.imapAccounts.filter((_, i) => i !== index),
-    }))
-  }
+  const apiKeyActions = useApiKeyActions({
+    apiKey,
+    setForm,
+    setMessage,
+    setSaveStatus,
+  })
+  const imapActions = useImapAccountsForm(setForm)
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
@@ -99,12 +53,8 @@ export function useSettingsConfig(
     setForm,
     saveStatus,
     message,
-    handleCopyApiKey,
-    handleGenerateNewApiKey,
-    handleTestConnection,
-    handleImapUpdate,
-    handleImapAdd,
-    handleImapRemove,
+    ...apiKeyActions,
+    ...imapActions,
     handleSubmit,
   }
 }

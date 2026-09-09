@@ -108,14 +108,6 @@
       "count": 1
     }
   },
-  "src/components/ai/AiReportInsightsPanel.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/ai/DiagnosticsAdminGuideCard.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -135,14 +127,6 @@
     }
   },
   "src/components/charts/_DispositionChart.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/charts/_SpfDkimChart.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -216,9 +200,6 @@
     }
   },
   "src/components/ingest/CronsSection.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -272,9 +253,6 @@
     }
   },
   "src/components/ips/FilterCombobox.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -304,14 +282,6 @@
       "count": 1
     }
   },
-  "src/components/reports/ReportTransportSecurityPrimer.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/reports/ReportsTable.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -332,18 +302,7 @@
       "count": 1
     }
   },
-  "src/components/settings/ApiKeySection.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/settings/FolderPicker.tsx": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -412,14 +371,6 @@
       "count": 1
     }
   },
-  "src/components/ui/calendar.tsx": {
-    "max-lines": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/users/UserModal.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -461,9 +412,6 @@
     }
   },
   "src/hooks/reports/useReportsTable.ts": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }
@@ -494,14 +442,6 @@
     }
   },
   "src/hooks/settings/useSelfUpdate.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/settings/useSettingsConfig.ts": {
-    "max-lines": {
-      "count": 1
-    },
     "max-lines-per-function": {
       "count": 1
     }

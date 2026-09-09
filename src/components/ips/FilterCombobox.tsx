@@ -6,16 +6,17 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui'
 import { useFilterCombobox } from '@/hooks/ips'
-import { cn } from '@/lib/utils'
-import { Check, ChevronsUpDown, Filter } from 'lucide-react'
+import { ChevronsUpDown } from 'lucide-react'
+import { FilterComboboxOption } from './FilterComboboxOption'
 import type { FilterComboboxProps } from './FilterComboboxProps'
+import { FilterComboboxTriggerLabel } from './FilterComboboxTriggerLabel'
+import { renderFilterItemIcon } from './renderFilterItemIcon'
 
 export function FilterCombobox({
   value,
@@ -37,20 +38,11 @@ export function FilterCombobox({
           aria-expanded={open}
           className="bg-card border-border/50 h-9 w-[240px] justify-between overflow-hidden shadow-sm transition-colors"
         >
-          <div className="flex items-center gap-2 truncate">
-            <Filter className="text-muted-foreground h-4 w-4 shrink-0" />
-            {selectedItem ? (
-              <>
-                {selectedItem.code !== undefined &&
-                  selectedItem.code !== '' &&
-                  renderIcon !== undefined &&
-                  renderIcon(selectedItem.code)}
-                <span className="truncate">{selectedItem.label}</span>
-              </>
-            ) : (
-              placeholder
-            )}
-          </div>
+          <FilterComboboxTriggerLabel
+            selectedItem={selectedItem}
+            placeholder={placeholder}
+            renderIcon={renderIcon}
+          />
           <ChevronsUpDown className="text-muted-foreground/70 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -62,42 +54,29 @@ export function FilterCombobox({
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              <CommandItem
-                value="All"
+              <FilterComboboxOption
+                commandValue="All"
+                selected={value === 'All'}
                 onSelect={() => {
                   onChange('All')
                   setOpen(false)
                 }}
               >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4 shrink-0',
-                    value === 'All' ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
                 All
-              </CommandItem>
+              </FilterComboboxOption>
               {items.map((item) => (
-                <CommandItem
+                <FilterComboboxOption
                   key={item.value}
-                  value={item.label}
+                  commandValue={item.label}
+                  selected={value === item.value}
                   onSelect={() => {
                     onChange(item.value)
                     setOpen(false)
                   }}
                 >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4 shrink-0',
-                      value === item.value ? 'opacity-100' : 'opacity-0',
-                    )}
-                  />
-                  {item.code !== undefined &&
-                    item.code !== '' &&
-                    renderIcon !== undefined &&
-                    renderIcon(item.code)}
+                  {renderFilterItemIcon(item, renderIcon)}
                   <span className="truncate pl-1">{item.label}</span>
-                </CommandItem>
+                </FilterComboboxOption>
               ))}
             </CommandGroup>
           </CommandList>

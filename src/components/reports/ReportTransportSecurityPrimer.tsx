@@ -1,12 +1,12 @@
 import { ChevronRight } from 'lucide-react'
 
 import type { ReportTransportSecurityPrimerProps } from './ReportTransportSecurityPrimerProps'
+import { TransportSecurityChecklist } from './TransportSecurityChecklist'
+import { TransportSecurityReferences } from './TransportSecurityReferences'
 
 export function ReportTransportSecurityPrimer({
   domainHints = [],
 }: Readonly<ReportTransportSecurityPrimerProps>) {
-  const rfcMtaStsHref = 'https://www.rfc-editor.org/rfc/rfc8461'
-  const rfcTlsRptHref = 'https://www.rfc-editor.org/rfc/rfc8460'
   const uniqueHints = [...new Set(domainHints.filter(Boolean))]
   const hintLine =
     uniqueHints.length > 0
@@ -44,69 +44,8 @@ export function ReportTransportSecurityPrimer({
             {hintLine}
           </p>
         ) : null}
-        <div>
-          <p className="text-foreground mb-2 font-medium">
-            Checklist (high level)
-          </p>
-          <ul className="text-muted-foreground list-inside list-disc space-y-1.5">
-            <li>
-              Publish a policy file at{' '}
-              <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
-                https://mta-sts.your-domain/.well-known/mta-sts.txt
-              </code>{' '}
-              over HTTPS with a publicly trusted certificate for{' '}
-              <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
-                mta-sts.your-domain
-              </code>{' '}
-              (replace <span className="font-mono">your-domain</span> with your
-              apex domain).
-            </li>
-            <li>
-              Add a <code className="font-mono text-xs">TXT</code> record at{' '}
-              <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
-                _mta-sts.your-domain
-              </code>{' '}
-              (e.g. <code className="font-mono text-xs">v=STSv1; id=…</code> —
-              bump <code className="font-mono text-xs">id</code> when the policy
-              changes).
-            </li>
-            <li>
-              Include every MX hostname from your DNS in the policy; keep them
-              consistent with live MX records.
-            </li>
-            <li>
-              Start with{' '}
-              <code className="font-mono text-xs">mode: testing</code>, monitor
-              delivery and TLS reports, then move to{' '}
-              <code className="font-mono text-xs">mode: enforce</code> when
-              confident.
-            </li>
-            <li>
-              Ensure inbound MX servers negotiate TLS 1.2 or higher for SMTP.
-            </li>
-          </ul>
-        </div>
-        <p className="text-muted-foreground">
-          Normative references:{' '}
-          <a
-            href={rfcMtaStsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground font-medium underline underline-offset-2 hover:no-underline"
-          >
-            RFC 8461 (MTA-STS)
-          </a>
-          ,{' '}
-          <a
-            href={rfcTlsRptHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground font-medium underline underline-offset-2 hover:no-underline"
-          >
-            RFC 8460 (TLS-RPT)
-          </a>
-          .
-        </p>
+        <TransportSecurityChecklist />
+        <TransportSecurityReferences />
       </div>
     </details>
   )

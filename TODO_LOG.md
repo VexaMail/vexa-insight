@@ -6,6 +6,24 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Ledger burn-down, `max-lines` cleared:** the last ten files
+      over 100 lines were split without raising a threshold.
+      `AiReportInsightsPanel` into heading, pending card and results;
+      `_SpfDkimChart` into gradient defs and a shared tooltip style;
+      `CronsSection` into engine and tabs cards; `FilterCombobox` into trigger
+      label, option and an icon helper; `ReportTransportSecurityPrimer` into
+      checklist and references; `ApiKeySection` into header and two fields;
+      `FolderPicker` into select and create form (its inline props type became
+      `FolderPickerProps`); `ui/calendar` into nav and grid class-name tables, a
+      component map and `CalendarProps`; `useReportsTable` into fetch, url-param
+      and filter-option hooks plus two pure utils; `useSettingsConfig` into
+      API-key and IMAP-account handler hooks. Markup and effect triggers
+      preserved (the reports fetch now keys on a memoised params object with the
+      same dependencies). Ledger: 198 findings in 160 files to 182 in 154,
+      `max-lines` gone. Evidence: `pnpm run check:ci` green (93 files, 568
+      tests), `pnpm run test:a11y` green (18 files, 50 tests), `pnpm run build`
+      green; recharts 3 renders chart children directly, so the extracted
+      `<defs>` component is safe.
 - [x] 2026-09-09 — **`@busirocket/quality-config` 0.11.0 gates wired.**
       `baseline-audit --level moderate` replaces the `continue-on-error` audit
       step in CI (`pnpm run audit:check`); the two advisories that have no fix

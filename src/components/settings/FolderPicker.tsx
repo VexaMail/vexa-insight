@@ -1,18 +1,16 @@
-import { Button, Input } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { useFolderPicker } from '@/hooks/settings'
 import { FolderPlus, RefreshCw } from 'lucide-react'
+import { FolderPickerCreateForm } from './FolderPickerCreateForm'
+import type { FolderPickerProps } from './FolderPickerProps'
+import { FolderPickerSelect } from './FolderPickerSelect'
 
 export function FolderPicker({
   accountId,
   apiKey,
   value,
   onChange,
-}: Readonly<{
-  accountId: number
-  apiKey: string
-  value: string | null
-  onChange: (path: string | null) => void
-}>) {
+}: Readonly<FolderPickerProps>) {
   const {
     state,
     newFolderPath,
@@ -30,26 +28,13 @@ export function FolderPicker({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <select
-          aria-label="Destination folder"
-          value={value ?? ''}
-          onChange={(e) => {
-            onChange(e.target.value || null)
-          }}
-          className="bg-card border-border/50 text-foreground min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          onFocus={() => {
-            if (!hasLoaded && !state.loading) {
-              void handleLoadFolders()
-            }
-          }}
-        >
-          <option value="">-- Select folder --</option>
-          {state.folders.map((f) => (
-            <option key={f.path} value={f.path}>
-              {f.path}
-            </option>
-          ))}
-        </select>
+        <FolderPickerSelect
+          value={value}
+          state={state}
+          hasLoaded={hasLoaded}
+          onChange={onChange}
+          onLoad={handleLoadFolders}
+        />
         <Button
           type="button"
           variant="ghost"
@@ -77,41 +62,14 @@ export function FolderPicker({
         <p className="text-danger text-xs">{state.error}</p>
       )}
       {showCreate ? (
-        <div className="space-y-1.5">
-          <Input
-            aria-label="New folder path"
-            type="text"
-            value={newFolderPath}
-            onChange={(e) => {
-              handleNewFolderPathChange(e.target.value)
-            }}
-            placeholder="e.g. Processed or INBOX/Processed"
-            className="bg-card border-border/50 text-xs"
-          />
-          {createError != null && createError !== '' && (
-            <p className="text-danger text-xs">{createError}</p>
-          )}
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => void handleCreate()}
-              disabled={creating || !newFolderPath.trim()}
-            >
-              {creating ? 'Creating…' : 'Create'}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={handleCancelCreate}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
+        <FolderPickerCreateForm
+          newFolderPath={newFolderPath}
+          creating={creating}
+          createError={createError}
+          onPathChange={handleNewFolderPathChange}
+          onCreate={handleCreate}
+          onCancel={handleCancelCreate}
+        />
       ) : null}
     </div>
   )

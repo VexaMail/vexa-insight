@@ -20,6 +20,7 @@ export type { SettingsIngestionSectionsProps } from './SettingsIngestionSections
 export * from './SettingsPublic'
 export * from './SettingsSaveStatus'
 export * from './SettingsUpdatePayload'
+export * from './UseApiKeyActionsParams'
 export * from './UseFolderPickerReturn'
 export type { UseGeoIpReturn } from './UseGeoIpReturn'
 export * from './UseImapAccountsSectionReturn'

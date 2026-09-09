@@ -11,7 +11,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { chartTooltipContentStyle } from './chartTooltipContentStyle'
 import { GradientBarShape } from './GradientBarShape'
+import { SpfDkimGradientDefs } from './SpfDkimGradientDefs'
 import { toChartData } from './toChartData'
 
 export default function SpfDkimChart({ data }: Readonly<SpfDkimChartProps>) {
@@ -27,56 +29,7 @@ export default function SpfDkimChart({ data }: Readonly<SpfDkimChartProps>) {
         className="focus:outline-none"
       >
         <BarChart data={chartData} barSize={36} style={{ outline: 'none' }}>
-          <defs>
-            <linearGradient id="gradSpfPass" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor="hsl(var(--success))"
-                stopOpacity={1}
-              />
-              <stop
-                offset="100%"
-                stopColor="hsl(var(--success))"
-                stopOpacity={0.5}
-              />
-            </linearGradient>
-            <linearGradient id="gradSpfFail" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor="hsl(var(--danger))"
-                stopOpacity={0.9}
-              />
-              <stop
-                offset="100%"
-                stopColor="hsl(var(--danger))"
-                stopOpacity={0.3}
-              />
-            </linearGradient>
-            <linearGradient id="gradDkimPass" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor="hsl(var(--success))"
-                stopOpacity={1}
-              />
-              <stop
-                offset="100%"
-                stopColor="hsl(var(--success))"
-                stopOpacity={0.5}
-              />
-            </linearGradient>
-            <linearGradient id="gradDkimFail" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor="hsl(var(--danger))"
-                stopOpacity={0.9}
-              />
-              <stop
-                offset="100%"
-                stopColor="hsl(var(--danger))"
-                stopOpacity={0.3}
-              />
-            </linearGradient>
-          </defs>
+          <SpfDkimGradientDefs />
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="hsl(var(--border))"
@@ -94,12 +47,7 @@ export default function SpfDkimChart({ data }: Readonly<SpfDkimChartProps>) {
             tickLine={false}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: 'hsl(var(--card))',
-              border: '1px solid hsl(var(--border))',
-              borderRadius: '0.75rem',
-              backdropFilter: 'blur(24px)',
-            }}
+            contentStyle={chartTooltipContentStyle}
             labelStyle={{ color: 'hsl(var(--foreground))', fontSize: 12 }}
             itemStyle={{ fontSize: 12 }}
           />
