@@ -43,7 +43,7 @@
     "test:a11y": "vitest run --config vitest.a11y.config.ts",
     "test:coverage": "vitest run --coverage --config vitest.config.mts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "tsx scripts/migrate.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "backfill:rollup": "tsx scripts/backfill-rollup.ts",
     "eval:ai": "tsx scripts/run-ai-eval.ts",

@@ -6,6 +6,17 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **`pnpm run db:migrate` works again:** `drizzle-kit migrate`
+      exited 1 with no message on every `DATABASE_URL` shape while the app's own
+      `runMigrations()` applied the same files at boot, and CONTRIBUTING named
+      the command as setup step 2. The script now runs `scripts/migrate.ts`, a
+      `tsx` entrypoint around `runMigrations()` shaped like
+      `scripts/seed-demo.ts`, so the CLI and the booting app share one
+      definition of "migrated" and `__app_migrations` stays the single ledger.
+      Evidence: against an empty scratch file the command creates 21 tables and
+      records 31 migrations, a second run is a no-op, `pnpm run check` green.
+      `drizzle-kit` stays for `db:generate`.
+
 - [x] 2026-09-09 — **Ledger emptied, `complexity` and `no-duplicate-string`
       cleared:** the 41 entries left after the `max-lines-per-function` pass
       went in three commits without raising a threshold or adding a disable.
