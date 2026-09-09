@@ -6,6 +6,45 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Open-source launch:** the four owner decisions and the
+      post-flip checklist, all done the same evening, in this order.
+  - Result: `SECRET_KEY` rotated on the production instance with the service
+    stopped for ten seconds: the key lives in `app_settings.secret_key` and also
+    derives the AES-GCM key for `imap_accounts.password`, and the app has no
+    re-encryption path, so a one-off script decrypted the one IMAP password with
+    the old key, wrote a fresh 64-hex key, re-encrypted, and inserted an
+    `imap.secret.rotated` audit row in one transaction; the pre-rotation
+    database copy sits beside the data directory, root-only. Evidence: old key
+    answers 401 on `/api/v1/admin/poll-status`, new key 200, triggered poll run
+    965 `success: true`.
+  - Result: history rewritten with `git filter-repo` before the flip: the seven
+    pre-demo screenshot blobs stripped by id, the two backlog lines naming the
+    hosting estate replaced, the 85 `Claude-Session:` trailers dropped; HEAD
+    tree hash identical before and after, gitleaks empty over the full history
+    before and after. `main` and `v0.2.0` force-pushed, the fifteen open
+    Dependabot PRs closed and their branches deleted (Dependabot re-opens
+    against the new main). A stale `.git/filter-repo/` from 2026-07-25 made
+    filter-repo prompt interactively; moved aside. Full pre-rewrite copy:
+    `~/vexa-insight-dashboard-pre-rewrite-2026-09-09.bundle`.
+  - Result: repository flipped public (`gh repo edit --visibility public`);
+    first public CodeQL run green on the rewritten head after eight straight
+    failures on the private repo. Secret scanning, push protection and
+    vulnerability alerts enabled; `main` protected (Quality gate, Build, Docker
+    smoke test and Dependency audit required, strict, linear history, no
+    force-push or deletion, admins exempt so the maintainer keeps pushing).
+  - Result: GHCR package flipped public. The package settings page greyed out
+    "Public" until the organization's Packages setting allowed public container
+    creation; neither has an API, both were done in the real Chrome. Evidence:
+    anonymous `GET /v2/.../manifests/latest` answers 200.
+  - Result: `v0.2.1` cut from the rewritten main (fix: `db:migrate`; the
+    Unreleased changelog folded in with the function-size gates and the
+    conditional attestation). Evidence: CI and CodeQL green on `5df279acf`,
+    release workflow green with the provenance attestation now running on the
+    public repo (`gh attestation verify` exit 0 on `0.2.0` from the rebuilt tag;
+    `0.2.1` exit 0 after its image job finished; GHCR tags `0.2.1`, `0.2`, `0`,
+    `latest`).
+  - Files: `TODO.md`, `CHANGELOG.md`, `package.json`, `scripts/migrate.ts`.
+
 - [x] 2026-09-09 — **`pnpm run db:migrate` works again:** `drizzle-kit migrate`
       exited 1 with no message on every `DATABASE_URL` shape while the app's own
       `runMigrations()` applied the same files at boot, and CONTRIBUTING named

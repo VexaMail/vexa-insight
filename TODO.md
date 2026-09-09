@@ -10,58 +10,20 @@
 
 ## Open-source launch
 
-Audited 2026-09-09 (this session plus an independent Codex audit). Fixed the
-same day, in main: forged-cookie key disclosure, unscoped report XML, redirect
-SSRF in `safeFetch`, non-atomic ingest, GeoIP hard dependency, install-token
-store per bundle, seed before migrations, real demo IPs, `next` advisory, CI
-pnpm pin, compose public bind, missing error pages, Code of Conduct contact.
-`v0.2.0` is released and the image is on GHCR.
+Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
+audit, the fixes and the launch steps are logged in `TODO_LOG.md` under
+2026-09-09. What is left is outside the repository's reach.
 
-### Owner decisions
-
-The owner said on 2026-09-09 they will take these four themselves; sessions do
-not act on them.
-
-- [!] Flip the repository from private to public. Unblocks CodeQL ("Advanced
-  Security must be enabled" on the private repo) and the build-provenance
-  attestation step in `release.yml`, both free on public repos. Re-check the
-  first public CI and release runs.
-- [!] Make the `vexa-insight-dashboard` container package public. `v0.2.0`
-  pushed `ghcr.io/vexamail/vexa-insight-dashboard` with tags `latest`, `0`,
-  `0.2`, `0.2.0`, but GHCR package visibility is separate from repo visibility
-  and the package is private today, so the README quick start only works for org
-  members until it is flipped in the package settings.
-- [!] Decide whether to rewrite history before the repo goes public. The old
-  `docs/screenshots/*.png` (real client domains, a real server IP and hostname,
-  a real-looking API key) entered history in `eba5d8d0e` and were replaced by
-  demo captures in `5e6f48838`, but stay reachable in older commits, as do the
-  internal host names removed from `TODO.md` and `TODO_LOG.md` on 2026-09-09.
-  Either accept that or rewrite and force-push before flipping the repo public.
-  Same decision covers the `Claude-Session:` trailers: 85 of the 198 commits
-  (2026-07-26 `999beccfb` to 2026-09-09 `0de8a6c16`) carry one, added by the
-  hosted session harness; no `Co-authored-by` or "Generated with" lines.
-  Re-checked 2026-09-09: `gitleaks` over all 213 commits and over a
-  `git archive HEAD` export both report zero findings, so the rewrite question
-  is about the screenshots, two backlog lines that named the hosting estate and
-  the trailers, not about secrets.
-- [!] Rotate `SECRET_KEY` on the production instance. The session fix has been
-  live there since 2026-09-09 (deployed from `aa9af4dc6`, forged cookies now
-  answer 307 to `/login`), but any forged-cookie request before that deploy
-  could have read the key, so the rotation is still due.
-
-### Remaining work
-
-- [ ] After the repository is public: enable branch protection on `main` (the
-      API answers 403 "Upgrade to GitHub Pro or make this repository public"
-      today, so it cannot be configured before the flip), turn on secret
-      scanning and push protection (`security_and_analysis` is null on the
-      repo), confirm the first public CodeQL run passes (every run on 2026-09-09
-      failed on the private repo, CI itself passed on `0de8a6c16`), and
-      re-enable the provenance attestation skipped in `30ae38199`.
-- [ ] Decide whether to cut `v0.2.1` before announcing: `main` is 24 commits
-      past `v0.2.0` (14 refactor, 4 docs, 2 build, 2 ci, 1 feat, 1 test), so the
-      GHCR `latest` image predates the branded 404/500 pages' follow-ups and the
-      collapsed diagnostics view in `19bf0a606`.
+- [!] Ask GitHub Support to purge the pre-rewrite commits. `refs/pull/1..66`
+  (all Dependabot PRs, every one closed) still keep the old history reachable by
+  SHA even though `main` and `v0.2.0` were force-pushed from the rewritten
+  history on 2026-09-09; nothing a push can delete. What those commits carry:
+  the eight original `docs/screenshots/*.png` (real client domains, a server
+  hostname and IP, an API key that has since been rotated) and two backlog lines
+  naming the hosting estate. Smallest next step: the owner opens a "remove
+  sensitive data" support request naming the repository and the old commit
+  `eba5d8d0e30b6613b84f8d30dd21c98754c4c3b3`; until then, accept that a
+  determined reader can fetch them.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
