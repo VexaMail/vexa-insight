@@ -2,6 +2,7 @@ import { getDb, normalizedEvents, rawReports } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import { and, eq, inArray } from 'drizzle-orm'
 import { getDateRangeConditions } from './formatters/dateRangeConditions'
+import { needsEventsJoin } from './needsEventsJoin'
 
 /**
  * Returns all distinct orgName values visible under the current scope,
@@ -20,10 +21,7 @@ export async function getReportOrgOptions(
     .selectDistinct({ orgName: rawReports.orgName })
     .from(rawReports)
 
-  const needsEventsJoin =
-    allowedIds !== null || domainId !== undefined || !!from || !!to
-
-  if (needsEventsJoin) {
+  if (needsEventsJoin({ allowedIds, domainId, from, to })) {
     query.innerJoin(
       normalizedEvents,
       eq(rawReports.id, normalizedEvents.rawReportId),

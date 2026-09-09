@@ -1,8 +1,11 @@
 import { getDb, normalizedEvents } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { SpfDkimBreakdown } from '@/types/reports'
-import { toUnixSeconds } from '@/utils/dates'
-import { and, eq, gte, inArray, lte, sql } from 'drizzle-orm'
+import { and, sql } from 'drizzle-orm'
+import { emptySpfDkimBreakdown } from './emptySpfDkimBreakdown'
+import { getDateRangeConditions } from './formatters/dateRangeConditions'
+import { rowToSpfDkimBreakdown } from './rowToSpfDkimBreakdown'
+import { spfDkimScopeConditions } from './spfDkimScopeConditions'
 
 /**
  * Returns SPF/DKIM pass/fail counts. Optionally for a single domain.
@@ -23,36 +26,14 @@ export async function getSpfDkimBreakdown(
     .from(normalizedEvents)
   const allowedIds = await getAllowedDomainIds()
 
-  if (allowedIds !== null && allowedIds.length === 0) {
-    return { spfPass: 0, spfFail: 0, dkimPass: 0, dkimFail: 0 }
-  }
+  const scope = spfDkimScopeConditions(allowedIds, domainId)
+  if (scope === null) return emptySpfDkimBreakdown()
 
-  const conditions = []
-  if (domainId != null) {
-    if (allowedIds !== null && !allowedIds.includes(domainId)) {
-      return { spfPass: 0, spfFail: 0, dkimPass: 0, dkimFail: 0 }
-    }
-    conditions.push(eq(normalizedEvents.domainId, domainId))
-  } else if (allowedIds !== null) {
-    conditions.push(inArray(normalizedEvents.domainId, allowedIds))
-  }
-
-  if (from) {
-    conditions.push(gte(normalizedEvents.reportEndDate, toUnixSeconds(from)))
-  }
-  if (to) {
-    conditions.push(lte(normalizedEvents.reportEndDate, toUnixSeconds(to)))
-  }
-
+  const conditions = [...scope, ...getDateRangeConditions(from, to)]
   if (conditions.length > 0) {
     base.where(and(...conditions))
   }
 
   const [row] = await base
-  return {
-    spfPass: row?.spfPass ?? 0,
-    spfFail: row?.spfFail ?? 0,
-    dkimPass: row?.dkimPass ?? 0,
-    dkimFail: row?.dkimFail ?? 0,
-  }
+  return rowToSpfDkimBreakdown(row)
 }

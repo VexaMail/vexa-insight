@@ -4,6 +4,7 @@ import type { GetLatestReportsParams, ReportRow } from '@/types/reports'
 import { and, desc, eq } from 'drizzle-orm'
 import { latestReportsConditions } from './latestReportsConditions'
 import { attachRelatedDomains } from './mappers/attachRelatedDomains'
+import { needsEventsJoin } from './needsEventsJoin'
 import { resolveDomainIdByName } from './resolveDomainIdByName'
 
 /**
@@ -38,22 +39,15 @@ export async function getLatestReports({
     })
     .from(rawReports)
 
-  // Every filter but `org` reads a column of normalizedEvents, so the join is
-  // needed exactly when one of them is present.
-  if (allowedIds !== null || from || to || domainId !== undefined) {
+  const filter = { allowedIds, from, to, org, domainId }
+  if (needsEventsJoin(filter)) {
     query.innerJoin(
       normalizedEvents,
       eq(rawReports.id, normalizedEvents.rawReportId),
     )
   }
 
-  const conditions = latestReportsConditions({
-    allowedIds,
-    from,
-    to,
-    org,
-    domainId,
-  })
+  const conditions = latestReportsConditions(filter)
   if (conditions.length > 0) {
     query.where(and(...conditions))
   }

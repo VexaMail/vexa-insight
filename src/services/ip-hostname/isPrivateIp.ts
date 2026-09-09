@@ -1,3 +1,5 @@
+import { isRfc1918Range } from './isRfc1918Range'
+
 /**
  * Determines whether an IPv4 address belongs to a private or local range.
  */
@@ -8,12 +10,7 @@ export function isPrivateIp(ip: string): boolean {
   const [firstPart, secondPart] = parts.map(Number)
 
   return (
-    firstPart === 10 ||
-    (firstPart === 172 &&
-      secondPart !== undefined &&
-      secondPart >= 16 &&
-      secondPart <= 31) ||
-    (firstPart === 192 && secondPart === 168) ||
+    isRfc1918Range(firstPart, secondPart) ||
     firstPart === 127 ||
     (firstPart === 169 && secondPart === 254)
   )

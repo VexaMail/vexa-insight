@@ -4,76 +4,6 @@
       "count": 1
     }
   },
-  "src/hooks/reports/reportsReducer.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/lib/db/applySqlFile.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/mappers/ai/mapDiagnosticsInsightToRenderable.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/resolveMtaSts.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/ip-hostname/isPrivateIp.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/job/setPollStatusInDb.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getLatestReports.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getReportOrgOptions.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getReportStats.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getSpfDkimBreakdown.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/security/requireSameOrigin.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/settings-store/seedSettingsFromEnv.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/updates/upsertUpdateState.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/users/updateUser.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
   "src/validators/ai/reportInsightsRequestSchema.ts": {
     "sonarjs/no-duplicate-string": {
       "count": 1
@@ -101,11 +31,6 @@
   },
   "test/getDomainDnsRecords.test.ts": {
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "test/getDomainsSummaryAll.test.ts": {
-    "complexity": {
       "count": 1
     }
   },

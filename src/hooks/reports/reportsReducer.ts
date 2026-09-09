@@ -1,4 +1,5 @@
 import type { ReportsTableAction, ReportsTableState } from '@/types/reports'
+import { toggledSortDir } from '@/utils/reports'
 
 export function reducer(
   state: ReportsTableState,
@@ -15,12 +16,12 @@ export function reducer(
       return { ...state, page: action.payload }
     case 'SET_PAGE_SIZE':
       return { ...state, pageSize: action.payload, page: 1 }
-    case 'SET_SORT': {
-      const key = action.payload.key
-      const dir =
-        state.sortKey === key && state.sortDir === 'desc' ? 'asc' : 'desc'
-      return { ...state, sortKey: key, sortDir: dir }
-    }
+    case 'SET_SORT':
+      return {
+        ...state,
+        sortKey: action.payload.key,
+        sortDir: toggledSortDir(state, action.payload.key),
+      }
     case 'FETCH_START':
       return { ...state, loading: true }
     case 'FETCH_SUCCESS':

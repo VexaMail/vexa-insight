@@ -1,5 +1,6 @@
 import { appSettings, getDb } from '@/lib/db'
 import { parseIngestionDaysBack } from '@/utils/install'
+import { parseEnvironmentName } from '@/utils/settings'
 import { eq } from 'drizzle-orm'
 import { getSettingsRow } from './getSettingsRow'
 import { SETTINGS_ID } from './settingsId'
@@ -15,11 +16,7 @@ function seedSettingsFromEnv(): void {
   if (!env['SECRET_KEY'] || env['SECRET_KEY'].length < 32) return
   const db = getDb()
   const environment =
-    env['ENVIRONMENT'] === 'development' ||
-    env['ENVIRONMENT'] === 'staging' ||
-    env['ENVIRONMENT'] === 'production'
-      ? env['ENVIRONMENT']
-      : row.environment
+    parseEnvironmentName(env['ENVIRONMENT']) ?? row.environment
   db.update(appSettings)
     .set({
       apiV1Str: env['API_V1_STR'] ?? row.apiV1Str,

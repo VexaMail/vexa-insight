@@ -2,6 +2,7 @@ import type {
   DiagnosticsInsight,
   DiagnosticsRenderableInsight,
 } from '@/types/ai'
+import { trimmedOrNull } from '@/utils/strings'
 
 import { deriveToneFromSeverity } from './deriveToneFromSeverity'
 
@@ -18,8 +19,8 @@ export function mapDiagnosticsInsightToRenderable(
     action: (raw.action ?? raw.recommendation ?? '').trim(),
     legacyExplanation: raw.explanation,
     legacyRecommendation: raw.recommendation,
-    verifyCommand: raw.verifyCommand?.trim() || null,
-    recordHost: raw.recordHost?.trim() || null,
-    recordValue: raw.recordValue?.trim() || null,
+    verifyCommand: trimmedOrNull(raw.verifyCommand),
+    recordHost: trimmedOrNull(raw.recordHost),
+    recordValue: trimmedOrNull(raw.recordValue),
   }
 }

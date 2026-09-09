@@ -1,4 +1,5 @@
 export { diagnosticsSectionDomId } from './diagnosticsSectionDomId'
+export { parseMtaStsPolicyText } from './parseMtaStsPolicyText'
 export { resolveDiagnosticsQueryWindow } from './resolveDiagnosticsQueryWindow'
 export { scrollToDiagnosticsSection } from './scrollToDiagnosticsSection'
 export { toggleSectionId } from './toggleSectionId'

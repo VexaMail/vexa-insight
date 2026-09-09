@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { expectDomainSummariesAgree } from './setup/expectDomainSummariesAgree'
 import { seedDomainsSummaryFixture } from './setup/seedDomainsSummaryFixture'
 import { setupTestDb } from './setup/setupTestDb'
 
@@ -45,14 +46,7 @@ describe('getDomainsSummaryAll (GROUP BY refactor)', () => {
     for (const domainId of domainIds) {
       const single = await getDomainSummary(domainId)
       const grouped = result.domains.find((s) => s.domainId === domainId)
-      expect(grouped).toBeDefined()
-      expect(grouped?.totalMessages).toBe(single?.totalMessages)
-      expect(grouped?.passedCount).toBe(single?.passedCount)
-      expect(grouped?.failedCount).toBe(single?.failedCount)
-      expect(grouped?.passRatePercent).toBeCloseTo(
-        single?.passRatePercent ?? 0,
-        6,
-      )
+      expectDomainSummariesAgree(grouped, single)
     }
   })
 

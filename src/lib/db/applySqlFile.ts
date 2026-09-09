@@ -2,6 +2,7 @@ import type Database from 'better-sqlite3'
 import fs from 'node:fs'
 import path from 'node:path'
 import { isApplied } from './isApplied'
+import { isTolerableSqlError } from './isTolerableSqlError'
 import { markApplied } from './markApplied'
 
 export function applySqlFile(
@@ -24,17 +25,7 @@ export function applySqlFile(
       db.prepare(stmt).run()
       applied = true
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err)
-      const isAlreadyExists =
-        msg.includes('already exists') ||
-        msg.includes('UNIQUE constraint') ||
-        msg.includes('duplicate column name')
-
-      const isDropMissingColumn =
-        stmt.toLowerCase().includes('drop column') &&
-        msg.includes('no such column')
-
-      if (isAlreadyExists || isDropMissingColumn) applied = true
+      if (isTolerableSqlError(stmt, err)) applied = true
       else throw err
     }
   }
