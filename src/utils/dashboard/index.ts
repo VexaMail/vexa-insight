@@ -1,5 +1,6 @@
 export { paginateProgressItems } from './paginateProgressItems'
 export { passRateBarClassName } from './passRateBarClassName'
 export { passRateTextClassName } from './passRateTextClassName'
+export { pollProgressPercent } from './pollProgressPercent'
 export { sharePercent } from './sharePercent'
 export * from './stepLabels'

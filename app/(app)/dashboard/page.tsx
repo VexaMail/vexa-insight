@@ -1,5 +1,6 @@
 import { DispositionChart, SpfDkimChart, TrendChart } from '@/components/charts'
 import {
+  DashboardDateRangeFilter,
   DashboardFilterInitializer,
   KpiCards,
   LatestReportsTable,
@@ -8,14 +9,13 @@ import {
   TopDomainsTable,
   VolumeByOrgTable,
 } from '@/components/dashboard'
-import { DateRangeFilter } from '@/components/filters'
 import { PageContainer, PageHeader } from '@/components/shell'
 
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 
 import { parseDateRangeParams } from '@/lib/utils'
 import { getPollStatusSafe } from '@/services/job'
+import type { DashboardPageProps } from '@/types/dashboard'
 
 export const metadata: Metadata = {
   title: 'Dashboard | Vexa Insight',
@@ -25,11 +25,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage({
   searchParams,
-}: {
-  readonly searchParams: Promise<{
-    [key: string]: string | string[] | undefined
-  }>
-}) {
+}: DashboardPageProps) {
   const sp = await searchParams
   const { days, fromDate, toDate } = parseDateRangeParams(sp)
   const pollStatus = await getPollStatusSafe()
@@ -41,18 +37,12 @@ export default async function DashboardPage({
       <PageHeader
         title="Dashboard"
         actions={
-          <Suspense
-            fallback={
-              <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
-            }
-          >
-            <DateRangeFilter
-              currentDays={days}
-              basePath="/dashboard"
-              from={fromDate}
-              to={toDate}
-            />
-          </Suspense>
+          <DashboardDateRangeFilter
+            currentDays={days}
+            basePath="/dashboard"
+            from={fromDate}
+            to={toDate}
+          />
         }
       />
 

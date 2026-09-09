@@ -1,3 +1,4 @@
+export { DashboardDateRangeFilter } from './DashboardDateRangeFilter'
 export * from './DashboardFilterInitializer'
 export { default as DashboardFilterInitializer } from './DashboardFilterInitializer'
 export * from './KpiCards'

@@ -1,14 +1,4 @@
 {
-  "app/(app)/dashboard/page.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/(app)/page.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/api/auth/oidc/callback/route.ts": {
     "complexity": {
       "count": 1
@@ -51,47 +41,7 @@
       "count": 1
     }
   },
-  "src/components/charts/_DispositionChart.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/charts/_TrendChart.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/KpiCards.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/LatestReportsTable.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/PassRateRingDisplay.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/PollStatusCard.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/dashboard/VolumeByOrgTable.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/domains/domainSourcesColumns.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/filters/DateRangeFilterContent.tsx": {
     "max-lines-per-function": {
       "count": 1
     }
@@ -181,16 +131,6 @@
   },
   "src/constants/auth/rolePermissions.ts": {
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/useTopIpSendersTable.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/hooks/filters/useDateRangeFilterContent.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },

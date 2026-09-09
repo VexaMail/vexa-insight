@@ -3,17 +3,21 @@ import type {
   DateRangeFilterProps,
   UseDateRangeFilterContentReturn,
 } from '@/types/filters'
-import { DATE_RANGE_DAYS } from '@/types/filters'
-import { format } from 'date-fns'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { startTransition, useEffect, useMemo, useState } from 'react'
+import {
+  buildCustomRangeParams,
+  buildQuickRangeParams,
+  parseQuickRangeDays,
+} from '@/utils/filters'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
+import { useReplaceQuery } from './useReplaceQuery'
 
 export function useDateRangeFilterContent(
   props: Readonly<DateRangeFilterProps>,
 ): UseDateRangeFilterContentReturn {
-  const router = useRouter()
   const searchParams = useSearchParams()
+  const replaceQuery = useReplaceQuery(props.basePath)
   const setFilter = useDashboardFilters((s) => s.setFilter)
 
   const [date, setDate] = useState<DateRange | undefined>({
@@ -36,53 +40,20 @@ export function useDateRangeFilterContent(
   }, [isCustom, props.currentDays])
 
   const handleQuickRangeChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    if (value === 'custom') {
-      params.set('days', 'custom')
-    } else {
-      const parsedDays = parseInt(value, 10)
-      const days = DATE_RANGE_DAYS.find((d) => d === parsedDays)
+    const params = buildQuickRangeParams(searchParams, value)
+    if (value !== 'custom') {
+      const days = parseQuickRangeDays(value)
       if (days == null) return
-
-      params.set('days', value)
-      params.delete('from')
-      params.delete('to')
       setDate(undefined)
       setFilter(days, undefined, undefined)
     }
-
-    startTransition(() => {
-      router.replace(`${props.basePath}?${params.toString()}`, {
-        scroll: false,
-      })
-    })
+    replaceQuery(params)
   }
 
   const handleApply = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('days', 'custom')
-
-    if (date?.from) {
-      params.set('from', format(date.from, 'yyyy-MM-dd'))
-    } else {
-      params.delete('from')
-    }
-
-    if (date?.to) {
-      params.set('to', format(date.to, 'yyyy-MM-dd'))
-    } else {
-      params.delete('to')
-    }
-
+    const params = buildCustomRangeParams(searchParams, date)
     setFilter(9999, date?.from, date?.to)
-
-    startTransition(() => {
-      router.replace(`${props.basePath}?${params.toString()}`, {
-        scroll: false,
-      })
-    })
-
+    replaceQuery(params)
     setIsOpen(false)
   }
 

@@ -1,26 +1,17 @@
-import { formatEta, formatPollStatusTime } from '@/utils/format'
-import { Activity, CheckCircle, Clock, Zap } from 'lucide-react'
+import { pollProgressPercent } from '@/utils/dashboard'
+import { formatPollStatusTime } from '@/utils/format'
+import { Activity } from 'lucide-react'
+import { PollStatusBadge } from './PollStatusBadge'
 import type { PollStatusCardProps } from './PollStatusCardProps'
+import { PollStatusProgress } from './PollStatusProgress'
 
 export default function PollStatusCard({
   status,
 }: Readonly<PollStatusCardProps>) {
-  const {
-    isRunning,
-    lastCheck,
-    currentProcessed,
-    totalEmails,
-    processingEmails,
-    etaMs,
-  } = status
-
+  const { isRunning, lastCheck, currentProcessed, totalEmails } = status
   const lastCheckFormatted = lastCheck
     ? formatPollStatusTime(lastCheck)
     : 'Never'
-
-  const percentRaw =
-    totalEmails > 0 ? (currentProcessed / totalEmails) * 100 : 0
-  const percent = Math.min(100, Math.max(0, Math.round(percentRaw)))
 
   return (
     <div className="glass-card-hover p-5">
@@ -31,14 +22,7 @@ export default function PollStatusCard({
             Ingestion Health
           </h3>
         </div>
-        <div
-          className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
-            isRunning ? 'bg-info/10 text-info' : 'bg-success/10 text-success'
-          }`}
-        >
-          <CheckCircle className="h-3 w-3" />
-          {isRunning ? 'Running' : 'Idle'}
-        </div>
+        <PollStatusBadge isRunning={isRunning} />
       </div>
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm">
@@ -55,34 +39,11 @@ export default function PollStatusCard({
         </div>
 
         {isRunning && totalEmails > 0 ? (
-          <>
-            <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
-              <div
-                className="bg-primary h-full rounded-full transition-all duration-500 ease-in-out"
-                style={{ width: `${String(percent)}%` }}
-              />
-            </div>
-            <div className="text-muted-foreground flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1">
-                <Zap className="h-3 w-3" />
-                <span>
-                  Concurrency:{' '}
-                  <strong className="text-foreground">
-                    {processingEmails}
-                  </strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                <span>
-                  ETA:{' '}
-                  <strong className="text-foreground">
-                    {formatEta(etaMs)}
-                  </strong>
-                </span>
-              </div>
-            </div>
-          </>
+          <PollStatusProgress
+            percent={pollProgressPercent(currentProcessed, totalEmails)}
+            processingEmails={status.processingEmails}
+            etaMs={status.etaMs}
+          />
         ) : null}
       </div>
     </div>
