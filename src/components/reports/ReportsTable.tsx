@@ -1,25 +1,18 @@
 'use client'
 
-import { DataTable, UnifiedPagination } from '@/components/ui'
-import { useListState } from '@/hooks/core'
-import type { ReportRow } from '@/types/reports'
-import { useRouter } from 'next/navigation'
+import { useOpenReport } from '../../hooks/reports/useOpenReport'
 import { useReportsTable } from '../../hooks/reports/useReportsTable'
+import { ReportsDataTable } from './ReportsDataTable'
 import { ReportsTableEmpty } from './ReportsTableEmpty'
 import { ReportsTableLoading } from './ReportsTableLoading'
+import { ReportsTablePagination } from './ReportsTablePagination'
+import type { ReportsTableProps } from './ReportsTableProps'
 import { ReportsTableToolbar } from './ReportsTableToolbar'
-import { getReportsColumns } from './reportsColumns'
 
 export default function ReportsTable({
   domainId,
   domainName,
-}: {
-  readonly domainId?: number
-  readonly domainName?: string
-} = {}) {
-  const router = useRouter()
-  const setScope = useListState((s) => s.setScope)
-
+}: ReportsTableProps = {}) {
   const {
     state,
     dispatch,
@@ -28,18 +21,10 @@ export default function ReportsTable({
     filtered,
     updateUrlParams,
   } = useReportsTable({ domainId: domainId })
+  const openReport = useOpenReport(filtered)
 
   const { data, loading, search, filterOrg, filterDomain, sortKey, sortDir } =
     state
-
-  const columns = getReportsColumns({
-    dispatch,
-    sortKey,
-    sortDir,
-    filtered,
-    domainName,
-    setScope,
-  })
 
   if (loading && data == null) return <ReportsTableLoading />
   if (data == null || data.items.length === 0) return <ReportsTableEmpty />
@@ -57,30 +42,17 @@ export default function ReportsTable({
         updateUrlParams={updateUrlParams}
       />
 
-      <div className={loading ? 'opacity-50' : ''}>
-        <DataTable
-          columns={columns}
-          data={filtered}
-          hideToolbar={true}
-          hidePagination={true}
-          onRowClick={(row) => {
-            setScope(filtered.map((r: ReportRow) => r.id.toString()))
-            router.push(`/reports/${String(row.original.id)}`)
-          }}
-        />
-      </div>
-
-      <UnifiedPagination
-        page={data.page}
-        pageSize={data.pageSize}
-        total={data.total}
-        onPageChange={(p) => {
-          dispatch({ type: 'SET_PAGE', payload: p })
-        }}
-        onPageSizeChange={(s) => {
-          dispatch({ type: 'SET_PAGE_SIZE', payload: s })
-        }}
+      <ReportsDataTable
+        dispatch={dispatch}
+        sortKey={sortKey}
+        sortDir={sortDir}
+        filtered={filtered}
+        domainName={domainName}
+        loading={loading}
+        onRowClick={openReport}
       />
+
+      <ReportsTablePagination data={data} dispatch={dispatch} />
     </div>
   )
 }

@@ -2,21 +2,15 @@
 
 import {
   Button,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandList,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui'
 import { useFilterCombobox } from '@/hooks/ips'
 import { ChevronsUpDown } from 'lucide-react'
-import { FilterComboboxOption } from './FilterComboboxOption'
+import { FilterComboboxList } from './FilterComboboxList'
 import type { FilterComboboxProps } from './FilterComboboxProps'
 import { FilterComboboxTriggerLabel } from './FilterComboboxTriggerLabel'
-import { renderFilterItemIcon } from './renderFilterItemIcon'
 
 export function FilterCombobox({
   value,
@@ -26,7 +20,7 @@ export function FilterCombobox({
   emptyText,
   renderIcon,
 }: FilterComboboxProps) {
-  const { open, setOpen } = useFilterCombobox()
+  const { open, setOpen, select } = useFilterCombobox(onChange)
   const selectedItem = items.find((item) => item.value === value)
 
   return (
@@ -47,40 +41,14 @@ export function FilterCombobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0" align="start">
-        <Command>
-          <CommandInput
-            placeholder={`Search ${placeholder.toLowerCase()}...`}
-          />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              <FilterComboboxOption
-                commandValue="All"
-                selected={value === 'All'}
-                onSelect={() => {
-                  onChange('All')
-                  setOpen(false)
-                }}
-              >
-                All
-              </FilterComboboxOption>
-              {items.map((item) => (
-                <FilterComboboxOption
-                  key={item.value}
-                  commandValue={item.label}
-                  selected={value === item.value}
-                  onSelect={() => {
-                    onChange(item.value)
-                    setOpen(false)
-                  }}
-                >
-                  {renderFilterItemIcon(item, renderIcon)}
-                  <span className="truncate pl-1">{item.label}</span>
-                </FilterComboboxOption>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        <FilterComboboxList
+          value={value}
+          items={items}
+          placeholder={placeholder}
+          emptyText={emptyText}
+          renderIcon={renderIcon}
+          onSelect={select}
+        />
       </PopoverContent>
     </Popover>
   )

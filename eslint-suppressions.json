@@ -41,57 +41,12 @@
       "count": 1
     }
   },
-  "src/components/domains/domainSourcesColumns.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/install/AdvancedSettingsFieldset.tsx": {
     "max-lines-per-function": {
       "count": 1
     }
   },
   "src/components/install/InstallForm.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/FilterCombobox.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/IpDetailSummary.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/IpHostname.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ips/IpsTableToolbar.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/reports/ReportHeader.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/reports/ReportKpiCards.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/reports/ReportsTable.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/reports/XmlViewerCollapsible.tsx": {
     "max-lines-per-function": {
       "count": 1
     }
@@ -141,11 +96,6 @@
   },
   "src/hooks/reports/reportsReducer.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/hooks/reports/useReportsTable.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },

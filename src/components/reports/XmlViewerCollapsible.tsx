@@ -1,9 +1,11 @@
 'use client'
 
-import { ChevronRight, ClipboardCopy, Download } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { useXmlViewerCollapsible } from '../../hooks/reports/useXmlViewerCollapsible'
 import { LazyXmlViewer } from './LazyXmlViewer'
+import { XmlViewerActions } from './XmlViewerActions'
 import type { XmlViewerCollapsibleProps } from './XmlViewerCollapsibleProps'
+import { XmlViewerEmpty } from './XmlViewerEmpty'
 
 export function XmlViewerCollapsible({
   rawXml,
@@ -11,15 +13,7 @@ export function XmlViewerCollapsible({
   const { isOpen, handleToggle, handleCopy, handleDownload } =
     useXmlViewerCollapsible(rawXml)
 
-  if (!rawXml) {
-    return (
-      <div className="rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-700 dark:bg-zinc-800">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          No XML data available for this report.
-        </p>
-      </div>
-    )
-  }
+  if (!rawXml) return <XmlViewerEmpty />
 
   return (
     <details
@@ -35,24 +29,7 @@ export function XmlViewerCollapsible({
           Raw XML
         </div>
         {isOpen ? (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="flex items-center gap-1 rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
-            >
-              <ClipboardCopy className="h-3.5 w-3.5" aria-hidden="true" />
-              Copy
-            </button>
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="flex items-center gap-1 rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
-            >
-              <Download className="h-3.5 w-3.5" aria-hidden="true" />
-              Download
-            </button>
-          </div>
+          <XmlViewerActions onCopy={handleCopy} onDownload={handleDownload} />
         ) : null}
       </summary>
       <div className="border-t border-zinc-200 p-4 dark:border-zinc-700">

@@ -1,8 +1,9 @@
 import { BackButton, PageEyebrow } from '@/components/shell'
 import { formatReportDateRange } from '@/utils/format'
-import { Building2, Calendar, ExternalLink, Hash } from 'lucide-react'
-import Link from 'next/link'
+import { ReportHeaderMeta } from './ReportHeaderMeta'
+import { ReportHeaderOtherDomains } from './ReportHeaderOtherDomains'
 import type { ReportHeaderProps } from './ReportHeaderProps'
+import { ReportHeaderTitle } from './ReportHeaderTitle'
 
 export function ReportHeader({
   report,
@@ -12,8 +13,6 @@ export function ReportHeader({
 }: Readonly<ReportHeaderProps>) {
   const dateRange = formatReportDateRange(report.beginDate, report.endDate)
   const domains = report.relatedDomains ?? []
-  const primaryDomain = domains[0]
-  const otherDomains = domains.slice(1)
 
   return (
     <header className="space-y-5">
@@ -25,66 +24,18 @@ export function ReportHeader({
       <div className="space-y-3">
         <PageEyebrow>DMARC aggregate report</PageEyebrow>
 
-        {primaryDomain ? (
-          <Link
-            href={`/domains/${encodeURIComponent(primaryDomain.domainName)}`}
-            className="group focus-visible:outline-primary inline-flex max-w-full items-baseline gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4"
-          >
-            <h1 className="text-foreground group-hover:text-primary font-display text-3xl font-semibold tracking-tight break-all transition-colors sm:text-4xl">
-              {primaryDomain.domainName}
-            </h1>
-            <ExternalLink
-              className="text-muted-foreground h-4 w-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-              aria-hidden="true"
-            />
-          </Link>
-        ) : (
-          <h1 className="text-foreground font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Report {report.reportId}
-          </h1>
-        )}
+        <ReportHeaderTitle
+          primaryDomain={domains[0]}
+          reportId={report.reportId}
+        />
 
-        <dl className="text-muted-foreground flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <div className="inline-flex items-center gap-1.5">
-            <Building2
-              className="h-4 w-4 shrink-0 opacity-70"
-              aria-hidden="true"
-            />
-            <dt className="sr-only">Reporting organization</dt>
-            <dd className="text-foreground font-medium">{report.orgName}</dd>
-          </div>
-          <div className="inline-flex items-center gap-1.5">
-            <Calendar
-              className="h-4 w-4 shrink-0 opacity-70"
-              aria-hidden="true"
-            />
-            <dt className="sr-only">Date range</dt>
-            <dd>{dateRange}</dd>
-          </div>
-          <div className="inline-flex items-center gap-1.5">
-            <Hash
-              className="h-3.5 w-3.5 shrink-0 opacity-70"
-              aria-hidden="true"
-            />
-            <dt className="sr-only">Report ID</dt>
-            <dd className="font-mono text-xs">{report.reportId}</dd>
-          </div>
-        </dl>
+        <ReportHeaderMeta
+          orgName={report.orgName}
+          dateRange={dateRange}
+          reportId={report.reportId}
+        />
 
-        {otherDomains.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="text-muted-foreground text-xs">Also covers</span>
-            {otherDomains.map((d) => (
-              <Link
-                key={d.domainId}
-                href={`/domains/${encodeURIComponent(d.domainName)}`}
-                className="border-border bg-card text-foreground hover:border-primary/40 hover:text-primary rounded-full border px-2.5 py-0.5 text-xs font-medium transition"
-              >
-                {d.domainName}
-              </Link>
-            ))}
-          </div>
-        ) : null}
+        <ReportHeaderOtherDomains domains={domains.slice(1)} />
       </div>
     </header>
   )

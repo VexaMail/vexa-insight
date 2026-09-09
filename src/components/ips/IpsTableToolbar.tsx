@@ -1,29 +1,19 @@
-import type { IpSummaryData } from '@/types/ips'
-import type { Table } from '@tanstack/react-table'
-import ReactCountryFlag from 'react-country-flag'
+import { readColumnStringFilter, setColumnStringFilter } from '@/utils/ips'
 import { useIpsTable } from '../../hooks/ips/useIpsTable'
 import { FilterCombobox } from './FilterCombobox'
+import type { IpsTableToolbarProps } from './IpsTableToolbarProps'
+import { renderCountryFlagIcon } from './renderCountryFlagIcon'
 
-export function IpsTableToolbar({
-  table,
-}: Readonly<{ table: Table<IpSummaryData> }>) {
+export function IpsTableToolbar({ table }: Readonly<IpsTableToolbarProps>) {
   const { uniqueCountries, uniqueMainDomains } = useIpsTable(table.options.data)
-  const countryFilterValue = table.getColumn('countryCode')?.getFilterValue()
-  const countryFilter =
-    typeof countryFilterValue === 'string' ? countryFilterValue : 'All'
-  const domainFilterValue = table.getColumn('hostname')?.getFilterValue()
-  const domainFilter =
-    typeof domainFilterValue === 'string' ? domainFilterValue : 'All'
 
   return (
     <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
       <FilterCombobox
-        value={countryFilter}
-        onChange={(value) =>
-          table
-            .getColumn('countryCode')
-            ?.setFilterValue(value === 'All' ? undefined : value)
-        }
+        value={readColumnStringFilter(table, 'countryCode')}
+        onChange={(value) => {
+          setColumnStringFilter(table, 'countryCode', value)
+        }}
         items={uniqueCountries.map((country) => ({
           value: country.code,
           label: country.label,
@@ -31,22 +21,14 @@ export function IpsTableToolbar({
         }))}
         placeholder="All Countries"
         emptyText="No country found."
-        renderIcon={(code) => (
-          <ReactCountryFlag
-            countryCode={code}
-            svg
-            style={{ width: '1.2em', height: '1.2em', flexShrink: 0 }}
-          />
-        )}
+        renderIcon={renderCountryFlagIcon}
       />
 
       <FilterCombobox
-        value={domainFilter}
-        onChange={(value) =>
-          table
-            .getColumn('hostname')
-            ?.setFilterValue(value === 'All' ? undefined : value)
-        }
+        value={readColumnStringFilter(table, 'hostname')}
+        onChange={(value) => {
+          setColumnStringFilter(table, 'hostname', value)
+        }}
         items={uniqueMainDomains.map((domain) => ({
           value: domain,
           label: domain,

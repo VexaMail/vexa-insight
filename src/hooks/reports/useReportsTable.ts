@@ -2,15 +2,16 @@
 
 import { useDateFilterParams } from '@/hooks/useDateFilterParams'
 import type {
-  FetchReportsParams,
   UseReportsTableParams,
   UseReportsTableReturn,
 } from '@/types/reports'
-import { filterAndSortReports, initialReportsTableState } from '@/utils/reports'
+import { initialReportsTableState } from '@/utils/reports'
 import { useSearchParams } from 'next/navigation'
-import { useMemo, useReducer } from 'react'
+import { useReducer } from 'react'
 import { reducer } from './reportsReducer'
+import { useFilteredReports } from './useFilteredReports'
 import { useReportsFetch } from './useReportsFetch'
+import { useReportsFetchParams } from './useReportsFetchParams'
 import { useReportsFilterOptions } from './useReportsFilterOptions'
 import { useUrlParamUpdater } from './useUrlParamUpdater'
 
@@ -23,30 +24,10 @@ export function useReportsTable({
     searchParams,
     initialReportsTableState,
   )
-  const {
-    page,
-    pageSize,
-    data,
-    search,
-    filterOrg,
-    filterDomain,
-    sortKey,
-    sortDir,
-  } = state
   const dateFilterParams = useDateFilterParams()
   const updateUrlParams = useUrlParamUpdater()
 
-  const fetchParams = useMemo<FetchReportsParams>(
-    () => ({
-      page,
-      pageSize,
-      dateFilterParams,
-      org: filterOrg,
-      domain: filterDomain,
-      domainId,
-    }),
-    [page, pageSize, dateFilterParams, filterOrg, filterDomain, domainId],
-  )
+  const fetchParams = useReportsFetchParams(state, dateFilterParams, domainId)
   useReportsFetch(dispatch, fetchParams)
 
   const { orgOptions, domainOptions } = useReportsFilterOptions(
@@ -54,11 +35,7 @@ export function useReportsTable({
     domainId,
   )
 
-  const filtered = useMemo(
-    () =>
-      data ? filterAndSortReports(data.items, search, sortKey, sortDir) : [],
-    [data, search, sortKey, sortDir],
-  )
+  const filtered = useFilteredReports(state)
 
   return {
     state,
