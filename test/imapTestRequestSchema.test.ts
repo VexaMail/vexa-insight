@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { imapTestRequestSchema } from '../src/validators/imap'
 
+const SERVER = 'imap.example.com'
+
 describe('imapTestRequestSchema', () => {
   const credentials = () => ({
-    server: 'imap.example.com',
+    server: SERVER,
     username: 'user',
     password: 'secret',
   })
@@ -29,7 +31,7 @@ describe('imapTestRequestSchema', () => {
     expect(parsed.data).toEqual({
       account: {
         id: 0,
-        server: 'imap.example.com',
+        server: SERVER,
         port: 993,
         username: 'user',
         password: 'secret',
@@ -70,7 +72,7 @@ describe('imapTestRequestSchema', () => {
       ...credentials(),
     })
     expect(parsed.data).toMatchObject({
-      account: { server: 'imap.example.com' },
+      account: { server: SERVER },
     })
   })
 
@@ -82,9 +84,9 @@ describe('imapTestRequestSchema', () => {
   })
 
   it('rejects incomplete or empty credentials', () => {
-    expect(
-      imapTestRequestSchema.safeParse({ server: 'imap.example.com' }).success,
-    ).toBe(false)
+    expect(imapTestRequestSchema.safeParse({ server: SERVER }).success).toBe(
+      false,
+    )
     expect(
       imapTestRequestSchema.safeParse({ ...credentials(), password: '' })
         .success,

@@ -5,6 +5,8 @@ import { normalizePolicyOverrides } from '../src/utils/dmarc/normalizePolicyOver
 import { normalizePolicyOverrideType } from '../src/utils/dmarc/normalizePolicyOverrideType'
 import { normalizeSpfAuthResult } from '../src/utils/dmarc/normalizeSpfAuthResult'
 
+const HEADER_FROM = 'example.com'
+
 describe('normalizeSpfAuthResult', () => {
   it('maps standard values', () => {
     expect(normalizeSpfAuthResult('pass')).toBe('pass')
@@ -47,16 +49,16 @@ describe('normalizePolicyOverrideType', () => {
 
 describe('normalizeDkimResults', () => {
   it('handles empty results', () => {
-    expect(normalizeDkimResults(null, 'example.com')).toEqual([])
+    expect(normalizeDkimResults(null, HEADER_FROM)).toEqual([])
   })
   it('handles object correctly (single DKIM signature)', () => {
-    const raw = { domain: 'example.com', selector: 's1', result: 'pass' }
-    const res = normalizeDkimResults(raw, 'example.com')
+    const raw = { domain: HEADER_FROM, selector: 's1', result: 'pass' }
+    const res = normalizeDkimResults(raw, HEADER_FROM)
     expect(res).toBeInstanceOf(Array)
     expect(res).toHaveLength(1)
     expect(res).toEqual([
       {
-        domain: 'example.com',
+        domain: HEADER_FROM,
         selector: 's1',
         result: 'pass',
         isAligned: true,
@@ -65,10 +67,10 @@ describe('normalizeDkimResults', () => {
   })
   it('handles arrays correctly (multiple DKIM signatures)', () => {
     const raw = [
-      { domain: 'example.com', selector: 's1', result: 'pass' },
+      { domain: HEADER_FROM, selector: 's1', result: 'pass' },
       { domain: 'other.com', selector: 's2', result: 'fail' },
     ]
-    const res = normalizeDkimResults(raw, 'example.com')
+    const res = normalizeDkimResults(raw, HEADER_FROM)
     expect(res).toHaveLength(2)
     expect(res.map((r) => r.isAligned)).toEqual([true, false])
   })

@@ -6,6 +6,8 @@ import { DiagnosticsView, ExportPdfButton } from '@/components/diagnostics'
 import { AppShell } from '@/components/shell'
 import type { DnsDiagnostics, DomainScore } from '@/types/diagnostics'
 
+const PRINT_HIDDEN = 'print:hidden'
+
 vi.mock('next/navigation', () => ({
   usePathname: () => '/diagnostics/example.com',
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
@@ -68,7 +70,7 @@ describe('diagnostics PDF export', () => {
     const markup = renderToStaticMarkup(React.createElement(ExportPdfButton))
 
     expect(markup).toContain('Download PDF')
-    expect(findTag(markup, /<button[^>]*>/)).toContain('print:hidden')
+    expect(findTag(markup, /<button[^>]*>/)).toContain(PRINT_HIDDEN)
   })
 
   it('places the export action in the diagnostics report header', () => {
@@ -90,11 +92,11 @@ describe('diagnostics PDF export', () => {
       React.createElement(AppShell, null, 'report-body'),
     )
 
-    expect(findTag(markup, /<aside[^>]*>/)).toContain('print:hidden')
-    expect(findTag(markup, /<header[^>]*>/)).toContain('print:hidden')
+    expect(findTag(markup, /<aside[^>]*>/)).toContain(PRINT_HIDDEN)
+    expect(findTag(markup, /<header[^>]*>/)).toContain(PRINT_HIDDEN)
     expect(
       findTag(markup, /<button[^>]*aria-label="Switch to [^"]*"[^>]*>/),
-    ).toContain('print:hidden')
+    ).toContain(PRINT_HIDDEN)
   })
 
   it('releases the inner scroll container so the report can paginate', () => {

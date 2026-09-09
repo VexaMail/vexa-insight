@@ -1,3 +1,4 @@
+import { REPORT_ID_REQUIRED_MESSAGE } from '@/constants/ai'
 import { z } from 'zod'
 
 /**
@@ -6,9 +7,9 @@ import { z } from 'zod'
 export const reportInsightsRequestSchema = z.object(
   {
     reportId: z
-      .number({ error: 'Valid reportId is required.' })
-      .int({ error: 'Valid reportId is required.' })
-      .min(1, { error: 'Valid reportId is required.' }),
+      .number({ error: REPORT_ID_REQUIRED_MESSAGE })
+      .int({ error: REPORT_ID_REQUIRED_MESSAGE })
+      .min(1, { error: REPORT_ID_REQUIRED_MESSAGE }),
   },
-  { error: 'Valid reportId is required.' },
+  { error: REPORT_ID_REQUIRED_MESSAGE },
 )

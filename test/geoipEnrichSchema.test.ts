@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { geoipEnrichSchema } from '../src/validators/geoip'
 
+const SAMPLE_IP = '203.0.113.5'
+
 describe('geoipEnrichSchema', () => {
   it('accepts a non-empty ip and forwards it untrimmed', () => {
-    expect(geoipEnrichSchema.safeParse({ ip: '203.0.113.5' }).data).toEqual({
-      ip: '203.0.113.5',
+    expect(geoipEnrichSchema.safeParse({ ip: SAMPLE_IP }).data).toEqual({
+      ip: SAMPLE_IP,
     })
     expect(geoipEnrichSchema.safeParse({ ip: ' 203.0.113.5 ' }).data).toEqual({
       ip: ' 203.0.113.5 ',

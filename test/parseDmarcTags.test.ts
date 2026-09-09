@@ -2,6 +2,8 @@ import type { DmarcTagInfo } from '@/types/diagnostics'
 import { describe, expect, it } from 'vitest'
 import { parseDmarcTags } from '../src/services/diagnostics/parseDmarcTags'
 
+const DEFAULT_MARK = '(default value)'
+
 describe('parseDmarcTags', () => {
   function findTag(
     tags: DmarcTagInfo[],
@@ -31,9 +33,7 @@ describe('parseDmarcTags', () => {
       'rf=afrf',
       'ri=3600',
     ])
-    expect(tags.every((t) => !t.description.includes('(default value)'))).toBe(
-      true,
-    )
+    expect(tags.every((t) => !t.description.includes(DEFAULT_MARK))).toBe(true)
   })
 
   it('adds defaults for optional tags in a minimal record', () => {
@@ -46,8 +46,8 @@ describe('parseDmarcTags', () => {
     expect(findTag(tags, 'fo')?.value).toBe('0')
     expect(findTag(tags, 'rf')?.value).toBe('afrf')
     expect(findTag(tags, 'ri')?.value).toBe('86400')
-    expect(findTag(tags, 'adkim')?.description).toContain('(default value)')
-    expect(findTag(tags, 'v')?.description).not.toContain('(default value)')
+    expect(findTag(tags, 'adkim')?.description).toContain(DEFAULT_MARK)
+    expect(findTag(tags, 'v')?.description).not.toContain(DEFAULT_MARK)
   })
 
   it('describes each policy value distinctly', () => {
@@ -118,9 +118,7 @@ describe('parseDmarcTags', () => {
     const tags = parseDmarcTags('')
 
     expect(tags).toHaveLength(6)
-    expect(tags.every((t) => t.description.includes('(default value)'))).toBe(
-      true,
-    )
+    expect(tags.every((t) => t.description.includes(DEFAULT_MARK))).toBe(true)
   })
 
   it('keeps both entries when a tag is duplicated', () => {

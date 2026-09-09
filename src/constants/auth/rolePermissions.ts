@@ -1,4 +1,5 @@
 import type { Permission, Role } from '@/types/auth'
+import { REPORTS_READ_PERMISSION } from './reportsReadPermission'
 
 /**
  * Maps a role to the permissions it grants. The legacy `user` role is
@@ -24,7 +25,7 @@ export const ROLE_PERMISSIONS: Readonly<
     'imap:read',
     'imap:write',
     'imap:rotate',
-    'reports:read',
+    REPORTS_READ_PERMISSION,
     'reports:write',
     'audit:read',
     'install:write',
@@ -35,15 +36,15 @@ export const ROLE_PERMISSIONS: Readonly<
     'imap:read',
     'imap:write',
     'imap:rotate',
-    'reports:read',
+    REPORTS_READ_PERMISSION,
     'reports:write',
     'ai:invoke',
   ],
-  viewer: ['reports:read', 'ai:invoke'],
+  viewer: [REPORTS_READ_PERMISSION, 'ai:invoke'],
   // `user` is the DB default and the only non-admin role the app assigns,
   // so it must keep the abilities pre-RBAC accounts had. Report upload is
   // reachable from the ungated /upload page for every signed-in user, hence
   // `reports:write`. `viewer` stays strictly read-only: it is opt-in and was
   // never auto-assigned.
-  user: ['reports:read', 'reports:write', 'ai:invoke'],
+  user: [REPORTS_READ_PERMISSION, 'reports:write', 'ai:invoke'],
 })

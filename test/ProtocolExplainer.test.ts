@@ -9,6 +9,9 @@ import {
 } from '@/components/diagnostics'
 import { makeDnsDiagnostics } from './setup/makeDnsDiagnostics'
 
+const EXAMPLE_HOST = 'Example Host'
+const EXAMPLE_VALUE = 'Example Value'
+
 describe('ProtocolExplainer', () => {
   it('renders title, summary, and both example blocks when provided', () => {
     const markup = renderToStaticMarkup(
@@ -24,9 +27,9 @@ describe('ProtocolExplainer', () => {
     expect(markup).toContain(
       'A healthy SPF record authorizes all legitimate senders.',
     )
-    expect(markup).toContain('Example Host')
+    expect(markup).toContain(EXAMPLE_HOST)
     expect(markup).toContain('example.com')
-    expect(markup).toContain('Example Value')
+    expect(markup).toContain(EXAMPLE_VALUE)
     expect(markup).toContain('v=spf1 include:mail.example.net -all')
   })
 
@@ -39,8 +42,8 @@ describe('ProtocolExplainer', () => {
     )
 
     expect(markup).toContain('DKIM basics')
-    expect(markup).not.toContain('Example Host')
-    expect(markup).not.toContain('Example Value')
+    expect(markup).not.toContain(EXAMPLE_HOST)
+    expect(markup).not.toContain(EXAMPLE_VALUE)
   })
 
   it('renders only the value block when just an example value is provided', () => {
@@ -52,8 +55,8 @@ describe('ProtocolExplainer', () => {
       }),
     )
 
-    expect(markup).not.toContain('Example Host')
-    expect(markup).toContain('Example Value')
+    expect(markup).not.toContain(EXAMPLE_HOST)
+    expect(markup).toContain(EXAMPLE_VALUE)
     expect(markup).toContain('v=TLSRPTv1; rua=mailto:tlsrpt@example.com')
   })
 
@@ -66,9 +69,9 @@ describe('ProtocolExplainer', () => {
       }),
     )
 
-    expect(markup).toContain('Example Host')
+    expect(markup).toContain(EXAMPLE_HOST)
     expect(markup).toContain('_mta-sts.example.com')
-    expect(markup).not.toContain('Example Value')
+    expect(markup).not.toContain(EXAMPLE_VALUE)
   })
 })
 
@@ -83,7 +86,7 @@ describe('protocol explainer content in detail sections', () => {
     )
 
     expect(markup).toContain('How to read SPF')
-    expect(markup).toContain('Example Host')
+    expect(markup).toContain(EXAMPLE_HOST)
     expect(markup).toContain('example.com')
     expect(markup).toContain(
       'v=spf1 include:mail.example.net ip4:203.0.113.10 -all',

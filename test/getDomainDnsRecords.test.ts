@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mockResolveMx } from './mockResolveMx'
 import { mockResolveTxt } from './mockResolveTxt'
 
+const DOMAIN = 'example.com'
+
 vi.mock('node:dns/promises', () => ({
   default: {
     resolveTxt: mockResolveTxt,
@@ -18,13 +20,13 @@ describe('getDomainDnsRecords — SPF', () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
-      if (host === 'example.com')
+      if (host === DOMAIN)
         return Promise.resolve([['v=spf1 include:_spf.google.com -all']])
       return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.spf).toBe('v=spf1 include:_spf.google.com -all')
     expect(result.spfValid).toBe(true)
@@ -37,7 +39,7 @@ describe('getDomainDnsRecords — SPF', () => {
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.spf).toBeNull()
     expect(result.spfValid).toBe(false)
@@ -47,7 +49,7 @@ describe('getDomainDnsRecords — SPF', () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
-      if (host === 'example.com')
+      if (host === DOMAIN)
         return Promise.resolve([
           ['v=spf1 include:a.com ~all'],
           ['v=spf1 include:b.com ~all'],
@@ -56,7 +58,7 @@ describe('getDomainDnsRecords — SPF', () => {
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.spfWarning).not.toBeNull()
     expect(result.spfWarning).toContain('Multiple SPF records')
@@ -66,13 +68,13 @@ describe('getDomainDnsRecords — SPF', () => {
     const { getDomainDnsRecords } =
       await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
-      if (host === 'example.com')
+      if (host === DOMAIN)
         return Promise.resolve([['v=spf1 include:_spf.google.com ~all']])
       return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.spf).toBeTruthy()
     expect(result.spfWarning).not.toBeNull()
@@ -93,7 +95,7 @@ describe('getDomainDnsRecords — DMARC', () => {
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.dmarc).toContain('v=DMARC1')
     expect(result.dmarcPolicy).toBe('quarantine')
@@ -112,7 +114,7 @@ describe('getDomainDnsRecords — DMARC', () => {
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.dmarcPolicy).toBe('none')
     expect(result.dmarcValid).toBe(true)
@@ -124,7 +126,7 @@ describe('getDomainDnsRecords — DMARC', () => {
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.dmarc).toBeNull()
     expect(result.dmarcPolicy).toBeNull()
@@ -142,7 +144,7 @@ describe('getDomainDnsRecords — MX', () => {
       { priority: 10, exchange: 'aspmx.l.google.com' },
     ])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.mx).toHaveLength(2)
     expect(result.mx[0]?.priority).toBe(10)
@@ -156,7 +158,7 @@ describe('getDomainDnsRecords — MX', () => {
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockRejectedValue(new Error('NXDOMAIN'))
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     expect(result.mx).toEqual([])
   })
@@ -173,7 +175,7 @@ describe('getDomainDnsRecords — DKIM', () => {
     })
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     const googleSelector = result.dkim.find(
       (d: { selector: string }) => d.selector === 'google',
@@ -189,7 +191,7 @@ describe('getDomainDnsRecords — DKIM', () => {
     mockResolveTxt.mockResolvedValue([])
     mockResolveMx.mockResolvedValue([])
 
-    const result = await getDomainDnsRecords('example.com')
+    const result = await getDomainDnsRecords(DOMAIN)
 
     for (const d of result.dkim) {
       expect(d.valid).toBe(false)
