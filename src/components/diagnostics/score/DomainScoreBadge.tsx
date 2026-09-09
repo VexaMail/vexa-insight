@@ -1,37 +1,16 @@
 import type { DomainScoreBadgeProps } from './DomainScoreBadgeProps'
+import { gradeGradientClasses } from './gradeGradientClasses'
+import { gradePrintClasses } from './gradePrintClasses'
+import { gradeTextClasses } from './gradeTextClasses'
 
 export function DomainScoreBadge({
   score,
   domain,
 }: Readonly<DomainScoreBadgeProps>) {
-  const gradeColors: Record<string, string> = {
-    A: 'from-emerald-500 to-emerald-600 shadow-emerald-500/25',
-    B: 'from-blue-500 to-blue-600 shadow-blue-500/25',
-    C: 'from-amber-500 to-amber-600 shadow-amber-500/25',
-    D: 'from-orange-500 to-orange-600 shadow-orange-500/25',
-    F: 'from-red-500 to-red-600 shadow-red-500/25',
-  }
-  const gradeTextColors: Record<string, string> = {
-    A: 'text-emerald-500',
-    B: 'text-blue-500',
-    C: 'text-amber-500',
-    D: 'text-orange-500',
-    F: 'text-red-500',
-  }
-  // Printers drop backgrounds when "Background graphics" is off, which would
-  // leave the white grade letter invisible on the gradient circle. In print
-  // the circle falls back to a colored ring plus colored text, both of which
-  // print as foreground regardless of that setting.
-  const gradePrintColors: Record<string, string> = {
-    A: 'print:border-emerald-600 print:text-emerald-700',
-    B: 'print:border-blue-600 print:text-blue-700',
-    C: 'print:border-amber-600 print:text-amber-700',
-    D: 'print:border-orange-600 print:text-orange-700',
-    F: 'print:border-red-600 print:text-red-700',
-  }
-  const gradientClass = gradeColors[score.grade] ?? gradeColors['F']
-  const textColor = gradeTextColors[score.grade] ?? gradeTextColors['F']
-  const printClass = gradePrintColors[score.grade] ?? gradePrintColors['F']
+  const gradientClass =
+    gradeGradientClasses[score.grade] ?? gradeGradientClasses['F']
+  const textColor = gradeTextClasses[score.grade] ?? gradeTextClasses['F']
+  const printClass = gradePrintClasses[score.grade] ?? gradePrintClasses['F']
 
   return (
     <div className="bg-card flex flex-col items-center gap-4 rounded-xl border p-6 shadow-sm sm:flex-row sm:gap-8">

@@ -161,34 +161,6 @@
       "count": 1
     }
   },
-  "src/components/diagnostics/DiagnosticsView.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/diagnostics/overview/ProtocolOverviewPanel.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/diagnostics/score/DomainScoreBadge.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/diagnostics/spf/SpfLookupTreeNodeItem.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/diagnostics/tlsrpt/TlsRptDetailSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/domains/domainSourcesColumns.tsx": {
     "max-lines-per-function": {
       "count": 1

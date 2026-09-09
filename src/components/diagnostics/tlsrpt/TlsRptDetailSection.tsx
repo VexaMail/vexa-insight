@@ -1,13 +1,6 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui'
 import { ShieldCheck } from 'lucide-react'
 import { CollapsibleSection, ProtocolExplainer, RecordDisplay } from '../shared'
+import { TlsRptChecksTable } from './TlsRptChecksTable'
 import type { TlsRptDetailSectionProps } from './TlsRptDetailSectionProps'
 
 export function TlsRptDetailSection({
@@ -35,50 +28,7 @@ export function TlsRptDetailSection({
         exampleValue={`v=TLSRPTv1; rua=mailto:tlsrpt@${dns.domain}`}
       />
 
-      {tls.raw !== null && (
-        <div className="overflow-hidden rounded-md border">
-          <Table>
-            <TableHeader className="bg-muted/30">
-              <TableRow>
-                <TableHead className="text-foreground w-[180px] font-semibold">
-                  Check
-                </TableHead>
-                <TableHead className="text-foreground font-semibold">
-                  Result
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="text-xs font-medium">
-                  Valid Record
-                </TableCell>
-                <TableCell className="text-xs">
-                  {tls.valid ? 'Yes' : 'No'}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="align-top text-xs font-medium">
-                  Reporting Addresses (rua=)
-                </TableCell>
-                <TableCell className="text-xs">
-                  {tls.ruaAddresses.length > 0 ? (
-                    <ul className="flex flex-col gap-1">
-                      {tls.ruaAddresses.map((rua) => (
-                        <li key={rua} className="font-mono">
-                          {rua}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    'None found'
-                  )}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      {tls.raw !== null && <TlsRptChecksTable tls={tls} />}
     </CollapsibleSection>
   )
 }
