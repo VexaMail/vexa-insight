@@ -1,7 +1,7 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-09-08. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-09-09. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
@@ -37,6 +37,13 @@ not act on them.
   demo captures in `5e6f48838`, but stay reachable in older commits, as do the
   internal host names removed from `TODO.md` and `TODO_LOG.md` on 2026-09-09.
   Either accept that or rewrite and force-push before flipping the repo public.
+  Same decision covers the `Claude-Session:` trailers: 85 of the 198 commits
+  (2026-07-26 `999beccfb` to 2026-09-09 `0de8a6c16`) carry one, added by the
+  hosted session harness; no `Co-authored-by` or "Generated with" lines.
+  Re-checked 2026-09-09: `gitleaks` over all 213 commits and over a
+  `git archive HEAD` export both report zero findings, so the rewrite question
+  is about the screenshots, two backlog lines that named the hosting estate and
+  the trailers, not about secrets.
 - [!] Rotate `SECRET_KEY` on the production instance. The session fix has been
   live there since 2026-09-09 (deployed from `aa9af4dc6`, forged cookies now
   answer 307 to `/login`), but any forged-cookie request before that deploy
@@ -44,12 +51,17 @@ not act on them.
 
 ### Remaining work
 
-- [ ] `pnpm run db:migrate` (drizzle-kit) exits 1 with no message on both
-      absolute and relative `DATABASE_URL`, before and after the config fix,
-      while the app's own `runMigrations()` works. CONTRIBUTING documents the
-      command. Smallest next step: run drizzle-kit with `--verbose` against an
-      empty file and decide whether to keep the script or point the docs at
-      `runMigrations` (`scripts/check-migrations.sh` already covers CI).
+- [ ] After the repository is public: enable branch protection on `main` (the
+      API answers 403 "Upgrade to GitHub Pro or make this repository public"
+      today, so it cannot be configured before the flip), turn on secret
+      scanning and push protection (`security_and_analysis` is null on the
+      repo), confirm the first public CodeQL run passes (every run on 2026-09-09
+      failed on the private repo, CI itself passed on `0de8a6c16`), and
+      re-enable the provenance attestation skipped in `30ae38199`.
+- [ ] Decide whether to cut `v0.2.1` before announcing: `main` is 24 commits
+      past `v0.2.0` (14 refactor, 4 docs, 2 build, 2 ci, 1 feat, 1 test), so the
+      GHCR `latest` image predates the branded 404/500 pages' follow-ups and the
+      collapsed diagnostics view in `19bf0a606`.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
