@@ -12,25 +12,25 @@ function seedSettingsFromEnv(): void {
   const row = getSettingsRow()
   if (!row || row.secretKey !== 'CHANGE_ME') return
   const env = process.env
-  if (!env.SECRET_KEY || env.SECRET_KEY.length < 32) return
+  if (!env['SECRET_KEY'] || env['SECRET_KEY'].length < 32) return
   const db = getDb()
   const environment =
-    env.ENVIRONMENT === 'development' ||
-    env.ENVIRONMENT === 'staging' ||
-    env.ENVIRONMENT === 'production'
-      ? env.ENVIRONMENT
+    env['ENVIRONMENT'] === 'development' ||
+    env['ENVIRONMENT'] === 'staging' ||
+    env['ENVIRONMENT'] === 'production'
+      ? env['ENVIRONMENT']
       : row.environment
   db.update(appSettings)
     .set({
-      apiV1Str: env.API_V1_STR ?? row.apiV1Str,
-      ingestionIntervalMinutes: env.INGESTION_INTERVAL_MINUTES
-        ? parseInt(env.INGESTION_INTERVAL_MINUTES, 10)
+      apiV1Str: env['API_V1_STR'] ?? row.apiV1Str,
+      ingestionIntervalMinutes: env['INGESTION_INTERVAL_MINUTES']
+        ? parseInt(env['INGESTION_INTERVAL_MINUTES'], 10)
         : row.ingestionIntervalMinutes,
-      ingestionDaysBack: env.INGESTION_DAYS_BACK
-        ? parseIngestionDaysBack(env.INGESTION_DAYS_BACK)
+      ingestionDaysBack: env['INGESTION_DAYS_BACK']
+        ? parseIngestionDaysBack(env['INGESTION_DAYS_BACK'])
         : row.ingestionDaysBack,
-      secretKey: env.SECRET_KEY,
-      backendCorsOrigins: env.BACKEND_CORS_ORIGINS ?? row.backendCorsOrigins,
+      secretKey: env['SECRET_KEY'],
+      backendCorsOrigins: env['BACKEND_CORS_ORIGINS'] ?? row.backendCorsOrigins,
       environment,
       updatedAt: new Date(),
     })

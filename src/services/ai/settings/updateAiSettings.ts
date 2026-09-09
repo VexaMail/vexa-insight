@@ -38,8 +38,8 @@ export function updateAiSettings(
 
   if (apiKey && apiKey.trim() !== '') {
     const { encrypted, iv } = encryptApiKey(apiKey, secretKey)
-    updates.aiApiKeyEncrypted = encrypted
-    updates.aiApiKeyIv = iv
+    updates['aiApiKeyEncrypted'] = encrypted
+    updates['aiApiKeyIv'] = iv
   }
 
   db.update(appSettings).set(updates).where(eq(appSettings.id, 1)).run()

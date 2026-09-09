@@ -13,20 +13,20 @@ export function validateSettings(o: Record<string, unknown>):
       ingestionDaysBack: number
     }
   | { error: string } {
-  const rawSecret = o.secretKey
+  const rawSecret = o['secretKey']
   if (!isString(rawSecret) || rawSecret.trim().length < MIN_SECRET_LENGTH) {
     return {
       error: `secretKey must be at least ${String(MIN_SECRET_LENGTH)} characters`,
     }
   }
 
-  const accountsResult = parseAccountsList(o.imapAccounts)
+  const accountsResult = parseAccountsList(o['imapAccounts'])
   if ('error' in accountsResult) return accountsResult
 
   const ingestionIntervalMinutes = parseIngestionInterval(
-    o.ingestionIntervalMinutes,
+    o['ingestionIntervalMinutes'],
   )
-  const ingestionDaysBack = parseIngestionDaysBack(o.ingestionDaysBack)
+  const ingestionDaysBack = parseIngestionDaysBack(o['ingestionDaysBack'])
 
   return {
     secretKey: rawSecret.trim(),

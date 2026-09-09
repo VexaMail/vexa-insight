@@ -19,23 +19,24 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
     throw new Error('DMARC XML must not contain DOCTYPE or ENTITY declarations')
   }
   const obj = parser.parse(rawXml) as Record<string, unknown>
-  const feedback = obj.feedback as Record<string, unknown> | undefined
+  const feedback = obj['feedback'] as Record<string, unknown> | undefined
   if (!feedback) {
     throw new Error('Invalid DMARC XML: missing feedback root')
   }
 
-  const metadata = feedback.report_metadata as
+  const metadata = feedback['report_metadata'] as
     Record<string, unknown> | undefined
-  const reportId = str(metadata?.report_id ?? '')
-  const orgName = str(metadata?.org_name ?? '')
-  const email = str(metadata?.email ?? '')
-  const dateRange = metadata?.date_range as Record<string, unknown> | undefined
-  const beginTs = num(dateRange?.begin ?? 0)
-  const endTs = num(dateRange?.end ?? 0)
+  const reportId = str(metadata?.['report_id'] ?? '')
+  const orgName = str(metadata?.['org_name'] ?? '')
+  const email = str(metadata?.['email'] ?? '')
+  const dateRange = metadata?.['date_range'] as
+    Record<string, unknown> | undefined
+  const beginTs = num(dateRange?.['begin'] ?? 0)
+  const endTs = num(dateRange?.['end'] ?? 0)
 
-  const policy = feedback.policy_published as
+  const policy = feedback['policy_published'] as
     Record<string, unknown> | undefined
-  const domain = str(policy?.domain ?? '')
+  const domain = str(policy?.['domain'] ?? '')
 
   const rawReport: RawReportPayload = {
     reportId,
@@ -46,7 +47,7 @@ export function parseDmarcXml(xmlBuffer: Buffer): ParseResult {
     sourceEmail: email || null,
   }
 
-  const recordList = feedback.record
+  const recordList = feedback['record']
   const records: Record<string, unknown>[] = []
   if (Array.isArray(recordList)) {
     records.push(...(recordList as Record<string, unknown>[]))

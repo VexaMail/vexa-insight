@@ -14,7 +14,7 @@ export function buildAppSettingsUpdates(
   }
 
   if (payload.secretKey !== undefined && payload.secretKey.trim() !== '') {
-    updates.secretKey = payload.secretKey
+    updates['secretKey'] = payload.secretKey
   }
 
   return updates

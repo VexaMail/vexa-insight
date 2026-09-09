@@ -7,10 +7,10 @@ export function extractRolloutPlanFromJson(parsed: unknown): string[] {
     return []
   }
   const obj = parsed as Record<string, unknown>
-  if (!Array.isArray(obj.rolloutPlan)) {
+  if (!Array.isArray(obj['rolloutPlan'])) {
     return []
   }
-  return obj.rolloutPlan.filter(
+  return obj['rolloutPlan'].filter(
     (step): step is string => typeof step === 'string' && step.trim() !== '',
   )
 }

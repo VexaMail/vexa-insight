@@ -138,11 +138,11 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(prettier-plugin-css-order@2.2.0(postcss@8.5.26)(prettier@3.9.6))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.6))(prettier-plugin-tailwindcss@0.8.1(prettier-plugin-css-order@2.2.0(postcss@8.5.26)(prettier@3.9.6))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.6))(prettier@3.9.6))(prettier@3.9.6)
       '@busirocket/quality-config':
-        specifier: ^0.10.0
-        version: 0.10.0(@typescript/typescript6@6.0.2)(dependency-cruiser@18.2.0)(knip@6.32.2)
+        specifier: ^0.11.0
+        version: 0.11.0(@typescript/typescript6@6.0.2)(dependency-cruiser@18.2.0)(knip@6.32.2)
       '@busirocket/tsconfig':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.3.0
+        version: 0.3.0
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.7.0(jiti@2.7.0)(supports-color@7.2.0))
@@ -506,22 +506,28 @@ packages:
       prettier-plugin-tailwindcss:
         optional: true
 
-  '@busirocket/quality-config@0.10.0':
-    resolution: {integrity: sha512-gA47Y3HF9F21g3S7Azd1c/YPGlrs2yDm05JDMCIbioJVduRR/OB55kp1KBV8nJaVd7iX8VAHI7TbY+8e3zX64A==}
+  '@busirocket/quality-config@0.11.0':
+    resolution: {integrity: sha512-HdXA4L0L7aheOkGN1cXigCPRBGzOM6rWLVFYLjc51rxmzd2miwr2wqEiRKY5rh837MnUKi31VEu8B2TeEyQFpw==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
+      '@commitlint/config-conventional': '>=21.0.0'
       dependency-cruiser: '>=18.0.0'
       knip: '>=6.0.0'
+      oxlint: '>=1.0.0'
       typescript: '>=5.4.0'
     peerDependenciesMeta:
+      '@commitlint/config-conventional':
+        optional: true
       dependency-cruiser:
         optional: true
       knip:
         optional: true
+      oxlint:
+        optional: true
 
-  '@busirocket/tsconfig@0.2.1':
-    resolution: {integrity: sha512-HYFnVC8ay0+NujmyuFqdpNu6yplGz845x9IT4bLyJYURY8ckHccj5tAuOmvopp71vIyC2bMn/xPUueihQLZ3bQ==}
+  '@busirocket/tsconfig@0.3.0':
+    resolution: {integrity: sha512-sBk+/ET1BBxW+a3T7Ox280x/qpm2Bn5pMO99UFkz68a8b2IwBuy7ecTaG7FoBQ1UhIo2aoltgdF5HFXPMTcwRg==}
     engines: {node: '>=20'}
 
   '@csstools/color-helpers@6.0.2':
@@ -6285,14 +6291,14 @@ snapshots:
     optionalDependencies:
       prettier-plugin-tailwindcss: 0.8.1(prettier-plugin-css-order@2.2.0(postcss@8.5.26)(prettier@3.9.6))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.6))(prettier@3.9.6)
 
-  '@busirocket/quality-config@0.10.0(@typescript/typescript6@6.0.2)(dependency-cruiser@18.2.0)(knip@6.32.2)':
+  '@busirocket/quality-config@0.11.0(@typescript/typescript6@6.0.2)(dependency-cruiser@18.2.0)(knip@6.32.2)':
     dependencies:
       typescript: '@typescript/typescript6@6.0.2'
     optionalDependencies:
       dependency-cruiser: 18.2.0
       knip: 6.32.2
 
-  '@busirocket/tsconfig@0.2.1': {}
+  '@busirocket/tsconfig@0.3.0': {}
 
   '@csstools/color-helpers@6.0.2': {}
 

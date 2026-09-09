@@ -7,8 +7,8 @@ import type { BaseInsight } from './BaseInsight'
 export function extractInsightsFromJson(parsed: unknown): BaseInsight[] | null {
   if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
     const obj = parsed as Record<string, unknown>
-    if (Array.isArray(obj.insights)) {
-      return obj.insights as BaseInsight[]
+    if (Array.isArray(obj['insights'])) {
+      return obj['insights'] as BaseInsight[]
     }
     return []
   }

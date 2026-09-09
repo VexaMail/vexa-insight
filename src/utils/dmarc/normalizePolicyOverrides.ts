@@ -14,8 +14,9 @@ export function normalizePolicyOverrides(
       typeof item === 'object' && item !== null
         ? (item as Record<string, unknown>)
         : undefined
-    const type = normalizePolicyOverrideType(record?.type)
-    const comment = typeof record?.comment === 'string' ? record.comment : null
+    const type = normalizePolicyOverrideType(record?.['type'])
+    const comment =
+      typeof record?.['comment'] === 'string' ? record['comment'] : null
     return { type, comment }
   })
 }

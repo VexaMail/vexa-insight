@@ -29,9 +29,9 @@ export function DomainScoreBadge({
     D: 'print:border-orange-600 print:text-orange-700',
     F: 'print:border-red-600 print:text-red-700',
   }
-  const gradientClass = gradeColors[score.grade] ?? gradeColors.F
-  const textColor = gradeTextColors[score.grade] ?? gradeTextColors.F
-  const printClass = gradePrintColors[score.grade] ?? gradePrintColors.F
+  const gradientClass = gradeColors[score.grade] ?? gradeColors['F']
+  const textColor = gradeTextColors[score.grade] ?? gradeTextColors['F']
+  const printClass = gradePrintColors[score.grade] ?? gradePrintColors['F']
 
   return (
     <div className="bg-card flex flex-col items-center gap-4 rounded-xl border p-6 shadow-sm sm:flex-row sm:gap-8">

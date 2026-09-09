@@ -37,20 +37,20 @@ export function upsertUpdateState(input: UpsertUpdateStateInput): void {
     return
   }
   const patch: Record<string, unknown> = { updatedAt: now }
-  if (input.enabled !== undefined) patch.enabled = input.enabled
-  if (input.channel !== undefined) patch.channel = input.channel
+  if (input.enabled !== undefined) patch['enabled'] = input.enabled
+  if (input.channel !== undefined) patch['channel'] = input.channel
   if (input.currentVersion !== undefined)
-    patch.currentVersion = input.currentVersion
+    patch['currentVersion'] = input.currentVersion
   if (input.latestVersion !== undefined)
-    patch.latestVersion = input.latestVersion
-  if (input.latestUrl !== undefined) patch.latestUrl = input.latestUrl
+    patch['latestVersion'] = input.latestVersion
+  if (input.latestUrl !== undefined) patch['latestUrl'] = input.latestUrl
   if (input.latestPublishedAt !== undefined)
-    patch.latestPublishedAt = input.latestPublishedAt
-  if (input.latestNotes !== undefined) patch.latestNotes = input.latestNotes
+    patch['latestPublishedAt'] = input.latestPublishedAt
+  if (input.latestNotes !== undefined) patch['latestNotes'] = input.latestNotes
   if (input.lastCheckedAt !== undefined)
-    patch.lastCheckedAt = input.lastCheckedAt
-  if (input.lastErrorAt !== undefined) patch.lastErrorAt = input.lastErrorAt
-  if (input.lastError !== undefined) patch.lastError = input.lastError
+    patch['lastCheckedAt'] = input.lastCheckedAt
+  if (input.lastErrorAt !== undefined) patch['lastErrorAt'] = input.lastErrorAt
+  if (input.lastError !== undefined) patch['lastError'] = input.lastError
   db.update(updateState)
     .set(patch)
     .where(eq(updateState.id, UPDATE_STATE_ID))

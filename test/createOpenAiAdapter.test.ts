@@ -26,9 +26,9 @@ describe('createOpenAiAdapter', () => {
 
     const [, init] = fetchMock.mock.calls[0] as [string, { body: string }]
     const request = JSON.parse(init.body) as Record<string, unknown>
-    expect(request.max_tokens).toBe(256)
-    expect(request.temperature).toBeCloseTo(0.2)
-    expect(request.response_format).toEqual({ type: 'json_object' })
+    expect(request['max_tokens']).toBe(256)
+    expect(request['temperature']).toBeCloseTo(0.2)
+    expect(request['response_format']).toEqual({ type: 'json_object' })
     expect('max_completion_tokens' in request).toBe(false)
   })
 
@@ -55,7 +55,7 @@ describe('createOpenAiAdapter', () => {
 
     const [, init] = fetchMock.mock.calls[0] as [string, { body: string }]
     const request = JSON.parse(init.body) as Record<string, unknown>
-    expect(request.max_completion_tokens).toBe(256)
+    expect(request['max_completion_tokens']).toBe(256)
     expect('max_tokens' in request).toBe(false)
     expect('temperature' in request).toBe(false)
     expect('response_format' in request).toBe(false)

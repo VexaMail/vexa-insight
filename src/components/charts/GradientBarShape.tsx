@@ -1,11 +1,11 @@
 export function GradientBarShape(props: unknown) {
   const shape = props as Record<string, unknown>
-  const x = Number(shape.x)
-  const y = Number(shape.y)
-  const width = Number(shape.width)
-  const height = Number(shape.height)
-  const fill = shape.fill as string | undefined
-  const payload = shape.payload as { gradient?: string } | undefined
+  const x = Number(shape['x'])
+  const y = Number(shape['y'])
+  const width = Number(shape['width'])
+  const height = Number(shape['height'])
+  const fill = shape['fill'] as string | undefined
+  const payload = shape['payload'] as { gradient?: string } | undefined
 
   if (
     Number.isNaN(x) ||

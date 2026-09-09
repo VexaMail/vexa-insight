@@ -26,7 +26,8 @@ export function applyEmailProgressToItem(
         {
           key: 'already_processed',
           label:
-            EMAIL_PROGRESS_STEP_LABELS.already_processed ?? 'Already processed',
+            EMAIL_PROGRESS_STEP_LABELS['already_processed'] ??
+            'Already processed',
           status: 'done',
         },
       ],
@@ -42,7 +43,7 @@ export function applyEmailProgressToItem(
       ),
       {
         key: 'error',
-        label: EMAIL_PROGRESS_STEP_LABELS.error ?? 'Error',
+        label: EMAIL_PROGRESS_STEP_LABELS['error'] ?? 'Error',
         status: 'error',
       },
     ]

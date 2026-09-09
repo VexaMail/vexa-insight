@@ -27,7 +27,7 @@ describe('createGeminiAdapter', () => {
     const request = JSON.parse(init.body) as {
       generationConfig: Record<string, unknown>
     }
-    expect(request.generationConfig.temperature).toBeCloseTo(0.2)
+    expect(request.generationConfig['temperature']).toBeCloseTo(0.2)
   })
 
   // Gemini 3 accepts the field but documents that overriding the default 1.0
@@ -55,6 +55,6 @@ describe('createGeminiAdapter', () => {
       generationConfig: Record<string, unknown>
     }
     expect('temperature' in request.generationConfig).toBe(false)
-    expect(request.generationConfig.maxOutputTokens).toBe(256)
+    expect(request.generationConfig['maxOutputTokens']).toBe(256)
   })
 })

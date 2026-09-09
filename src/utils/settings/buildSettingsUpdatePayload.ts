@@ -23,7 +23,7 @@ export function buildSettingsUpdatePayload(
     ipHostnameAllowPrivateIps: form.ipHostnameAllowPrivateIps,
     ipHostnameNegativeCacheHours: form.ipHostnameNegativeCacheHours,
   }
-  if (form.secretKeyNew.trim()) payload.secretKey = form.secretKeyNew
+  if (form.secretKeyNew.trim()) payload['secretKey'] = form.secretKeyNew
 
   return payload
 }

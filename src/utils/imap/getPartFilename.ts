@@ -6,6 +6,7 @@ import type { BodyStructurePart } from '@/types/imap'
 export function getPartFilename(part: BodyStructurePart): string | null {
   const params = part.parameters ?? {}
   const disp = part.dispositionParameters ?? {}
-  const name = params.filename ?? params.name ?? disp.filename ?? disp.name
+  const name =
+    params['filename'] ?? params['name'] ?? disp['filename'] ?? disp['name']
   return typeof name === 'string' ? name : null
 }

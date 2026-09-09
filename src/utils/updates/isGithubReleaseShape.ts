@@ -10,10 +10,12 @@ export function isGithubReleaseShape(
   const release = json as Record<string, unknown>
 
   return (
-    typeof release.tag_name === 'string' &&
-    typeof release.html_url === 'string' &&
-    typeof release.draft === 'boolean' &&
-    typeof release.prerelease === 'boolean' &&
-    [release.name, release.body, release.published_at].every(isNullableString)
+    typeof release['tag_name'] === 'string' &&
+    typeof release['html_url'] === 'string' &&
+    typeof release['draft'] === 'boolean' &&
+    typeof release['prerelease'] === 'boolean' &&
+    [release['name'], release['body'], release['published_at']].every(
+      isNullableString,
+    )
   )
 }

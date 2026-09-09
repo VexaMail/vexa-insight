@@ -12,11 +12,11 @@ export function updateWebhookEndpoint(
 ): void {
   const db = getDb()
   const updates: Record<string, unknown> = { updatedAt: new Date() }
-  if (input.name !== undefined) updates.name = input.name
-  if (input.url !== undefined) updates.url = input.url
-  if (input.enabled !== undefined) updates.enabled = input.enabled
-  if (input.events !== undefined) updates.events = input.events.join(',')
-  if (input.secret !== undefined) updates.secret = input.secret
+  if (input.name !== undefined) updates['name'] = input.name
+  if (input.url !== undefined) updates['url'] = input.url
+  if (input.enabled !== undefined) updates['enabled'] = input.enabled
+  if (input.events !== undefined) updates['events'] = input.events.join(',')
+  if (input.secret !== undefined) updates['secret'] = input.secret
   db.update(webhookEndpoints)
     .set(updates)
     .where(eq(webhookEndpoints.id, id))

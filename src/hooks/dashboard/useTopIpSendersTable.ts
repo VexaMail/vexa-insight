@@ -59,7 +59,7 @@ export function useTopIpSendersTable(): UseTopIpSendersTableReturn {
     event.preventDefault()
     event.stopPropagation()
 
-    const senderIp = event.currentTarget.dataset.senderIp
+    const senderIp = event.currentTarget.dataset['senderIp']
     if (!senderIp) return
 
     void refreshHostname(senderIp)

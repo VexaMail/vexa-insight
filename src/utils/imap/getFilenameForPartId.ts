@@ -9,8 +9,8 @@ export function getFilenameForPartId(
   if (bodyStructure === null || bodyStructure === undefined) return null
   if (typeof bodyStructure !== 'object') return null
   const node = bodyStructure as Record<string, unknown>
-  const type = node.type
-  const childNodes = node.childNodes as unknown[] | undefined
+  const type = node['type']
+  const childNodes = node['childNodes'] as unknown[] | undefined
   if (typeof type !== 'string') return null
 
   if (childNodes && Array.isArray(childNodes) && childNodes.length > 0) {

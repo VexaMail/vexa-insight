@@ -23,7 +23,7 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
 
     const url = user ? `/api/v1/users/${user.id}` : '/api/v1/users'
     const payload: Record<string, string | string[] | null> = { username, role }
-    if (password) payload.password = password
+    if (password) payload['password'] = password
     else if (!user) {
       setError('Password is required')
       return
@@ -38,9 +38,9 @@ export function useUserModal(user?: User, onSuccess?: () => void) {
         setError('Please specify at least one domain or choose "All domains"')
         return
       }
-      payload.allowedDomains = arr
+      payload['allowedDomains'] = arr
     } else {
-      payload.allowedDomains = null
+      payload['allowedDomains'] = null
     }
 
     const res = await fetch(url, {

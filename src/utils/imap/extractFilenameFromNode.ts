@@ -5,8 +5,8 @@
 export function extractFilenameFromNode(
   node: Record<string, unknown>,
 ): string | null {
-  const params = node.parameters
-  const dispositionParameters = node.dispositionParameters
+  const params = node['parameters']
+  const dispositionParameters = node['dispositionParameters']
   let filename: unknown
   let parameterName: unknown
   let dispositionFilename: unknown

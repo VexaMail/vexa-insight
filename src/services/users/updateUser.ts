@@ -34,12 +34,12 @@ export async function updateUser(
     updatedAt: new Date(),
   }
 
-  if (data.username) updateData.username = data.username
-  if (data.role) updateData.role = data.role
+  if (data.username) updateData['username'] = data.username
+  if (data.role) updateData['role'] = data.role
   if (data.allowedDomains !== undefined) {
-    updateData.allowedDomains = JSON.stringify(data.allowedDomains)
+    updateData['allowedDomains'] = JSON.stringify(data.allowedDomains)
   }
-  if (data.password) updateData.passwordHash = hashPassword(data.password)
+  if (data.password) updateData['passwordHash'] = hashPassword(data.password)
 
   await db.update(users).set(updateData).where(eq(users.id, id))
 
