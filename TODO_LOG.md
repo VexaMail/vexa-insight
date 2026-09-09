@@ -17,8 +17,14 @@
       vulnerability alerts and the `main` protection re-applied. The tag push on
       the fresh repository started no release run; deleting and re-pushing the
       same tag objects did, and the two release runs rebuilt both images into a
-      fresh package. Evidence: `git ls-remote` shows only `main` and the two
-      tags; the old commit answers 404 on the commits API.
+      fresh package that inherited the repository's public visibility with no
+      manual flip. Evidence: the old commit and the old tag object both answer
+      404 on the API; anonymous manifest pulls of `latest`, `0.2.1` and `0.2.0`
+      answer 200 across the five tags; `gh attestation verify` exits 0 on both
+      images. A tree-wide grep of the published checkout finds no internal
+      hostname, no public IP outside the documentation ranges and no third-party
+      address, and the eight published screenshots show only documentation IPs
+      and a placeholder API key.
   - Result: compromised copies removed. The pre-rotation database copy on the
     production host (old key plus old IMAP ciphertext) and the local pre-rewrite
     bundle are deleted; the macmini clone was reset onto the new history, pruned
