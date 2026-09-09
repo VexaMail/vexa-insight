@@ -1,3 +1,5 @@
+import { hasSecondLevelTld } from './hasSecondLevelTld'
+
 export function extractMainDomain(
   hostname: string | null | undefined,
 ): string | null {
@@ -24,13 +26,7 @@ export function extractMainDomain(
     return cleanHostname
   }
 
-  if (
-    (lastPart.length === 2 && secondLastPart.length <= 3) || // .co.uk, .com.au
-    secondLastPart === 'co' ||
-    secondLastPart === 'com' ||
-    secondLastPart === 'org' ||
-    secondLastPart === 'net'
-  ) {
+  if (hasSecondLevelTld(lastPart, secondLastPart)) {
     if (parts.length >= 3) {
       return parts.slice(-3).join('.')
     }

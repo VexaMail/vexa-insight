@@ -1,4 +1,4 @@
-import { getFromDateFromDays } from '@/utils/dates'
+import { fromDateForDaysParam, parseLenientDate } from '@/utils/dates'
 import { z } from 'zod'
 
 /**
@@ -15,19 +15,9 @@ export const dateRangeQuerySchema = z
     days: z.string().nullish(),
   })
   .transform((params) => {
-    const rawFrom = params.from ? new Date(params.from) : undefined
-    const rawTo = params.to ? new Date(params.to) : undefined
-    let from = rawFrom && !Number.isNaN(rawFrom.getTime()) ? rawFrom : undefined
-
-    if (!from && !rawTo && params.days && params.days !== 'custom') {
-      const days = Number.parseInt(params.days, 10)
-      if (!Number.isNaN(days) && days > 0 && days < 9999) {
-        from = getFromDateFromDays(new Date(), days)
-      }
-    }
-
+    const from = parseLenientDate(params.from)
     return {
-      from,
-      to: rawTo && !Number.isNaN(rawTo.getTime()) ? rawTo : undefined,
+      from: from ?? (params.to ? undefined : fromDateForDaysParam(params.days)),
+      to: parseLenientDate(params.to),
     }
   })

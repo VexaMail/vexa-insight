@@ -74,73 +74,8 @@
       "count": 1
     }
   },
-  "src/utils/dmarc/normalizeDkimResults.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/dmarc/parseDmarcXml.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/dmarc/recordToEvent.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/domains/extractMainDomain.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/imap/extractFilenameFromNode.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/imap/getDmarcCandidatePartIds.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/imap/getFilenameForPartId.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/ingest/computeNextStoreState.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/install/installReducer.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/install/parseImapAccount.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/utils/updates/parseRepoSlug.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
   "src/validators/ai/reportInsightsRequestSchema.ts": {
     "sonarjs/no-duplicate-string": {
-      "count": 1
-    }
-  },
-  "src/validators/diagnostics/validateDmarcTag.ts": {
-    "complexity": {
-      "count": 1
-    }
-  },
-  "src/validators/query/dateRangeQuerySchema.ts": {
-    "complexity": {
       "count": 1
     }
   },

@@ -1,6 +1,9 @@
 import type { DkimAuthResultPayload } from '@/types/dmarc'
 
+import { isDkimDomainAligned } from './isDkimDomainAligned'
 import { normalizeDkimAuthResult } from './normalizeDkimAuthResult'
+import { readStringField } from './readStringField'
+import { readUnknownField } from './readUnknownField'
 
 export function normalizeDkimResults(
   rawDkimList: unknown,
@@ -11,29 +14,14 @@ export function normalizeDkimResults(
     ? rawDkimList
     : [rawDkimList]
   return list.map((item) => {
-    const domain =
-      typeof item === 'object' &&
-      item !== null &&
-      'domain' in item &&
-      typeof item.domain === 'string'
-        ? item.domain
-        : ''
-    const selector =
-      typeof item === 'object' &&
-      item !== null &&
-      'selector' in item &&
-      typeof item.selector === 'string'
-        ? item.selector
-        : ''
-    const result = normalizeDkimAuthResult(
-      typeof item === 'object' && item !== null && 'result' in item
-        ? item.result
-        : undefined,
-    )
-    const isAligned =
-      domain.length > 0 &&
-      headerFrom.length > 0 &&
-      (domain === headerFrom || headerFrom.endsWith(`.${domain}`))
-    return { domain, selector, result, isAligned }
+    const domain = readStringField(item, 'domain')
+    const selector = readStringField(item, 'selector')
+    const result = normalizeDkimAuthResult(readUnknownField(item, 'result'))
+    return {
+      domain,
+      selector,
+      result,
+      isAligned: isDkimDomainAligned(domain, headerFrom),
+    }
   })
 }

@@ -1,8 +1,8 @@
-import { filenameLooksLikeDmarc } from './filenameLooksLikeDmarc'
+import { childPartPrefix } from './childPartPrefix'
 import { getPartFilename } from './getPartFilename'
-import { isAcceptedDmarcContentType } from './isAcceptedDmarcContentType'
-import { isExcludedDmarcType } from './isExcludedDmarcType'
+import { isDmarcCandidateLeaf } from './isDmarcCandidateLeaf'
 import { isWalkableBodyPart } from './isWalkableBodyPart'
+import { leafPartId } from './leafPartId'
 
 /**
  * Recursively walks the MIME tree and returns part IDs of leaf parts
@@ -14,40 +14,16 @@ export function getDmarcCandidatePartIds(
 ): string[] {
   if (!isWalkableBodyPart(bodyStructure)) return []
 
-  const parts: string[] = []
   const node = bodyStructure
   const children = node.childNodes
 
   if (children && children.length > 0) {
-    children.forEach((child, i) => {
-      const partIndex = i + 1
-      const nextPrefix = prefix
-        ? `${prefix}${String(partIndex)}.`
-        : `${String(partIndex)}.`
-      parts.push(...getDmarcCandidatePartIds(child, nextPrefix))
-    })
-    return parts
+    return children.flatMap((child, i) =>
+      getDmarcCandidatePartIds(child, childPartPrefix(prefix, i + 1)),
+    )
   }
 
-  const contentType = node.type
-  const filename = getPartFilename(node)
+  if (!isDmarcCandidateLeaf(node.type, getPartFilename(node))) return []
 
-  if (isExcludedDmarcType(contentType) && filename !== null) {
-    if (!filenameLooksLikeDmarc(filename)) return []
-  }
-  if (isExcludedDmarcType(contentType) && filename === null) return []
-
-  if (!isAcceptedDmarcContentType(contentType)) return []
-
-  if (filename !== null && !filenameLooksLikeDmarc(filename)) return []
-
-  let partIdStr = '1'
-  if (node.partId != null && node.partId !== '') {
-    partIdStr = node.partId
-  } else if (prefix) {
-    partIdStr = prefix.replace(/\.$/, '')
-  }
-  const partId = partIdStr
-  parts.push(partId)
-  return parts
+  return [leafPartId(node, prefix)]
 }
