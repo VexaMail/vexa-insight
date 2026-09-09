@@ -1,46 +1,4 @@
 {
-  "app/api/auth/oidc/callback/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/install/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/admin/apply-update/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/api/v1/reports/upload/route.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "app/login/page.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/actions/login.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/constants/auth/rolePermissions.ts": {
     "sonarjs/no-duplicate-string": {
       "count": 1

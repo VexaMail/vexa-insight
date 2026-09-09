@@ -6,14 +6,15 @@ import { ingestParsedReport } from '@/services/reports'
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { reportUploadSchema } from './reportUploadSchema'
+import { readUploadedReportFile } from './readUploadedReportFile'
+import { uploadBadRequest } from './uploadBadRequest'
 import { UPLOAD_LIMIT } from './uploadLimit'
+import { UPLOAD_WINDOW_MS } from './uploadWindowMs'
 
 export const POST = withApiAuth(
   async (request: NextRequest): Promise<NextResponse> => {
     const denied = await requirePermission('reports:write')
     if (denied) return denied
-    const UPLOAD_WINDOW_MS = 60_000
     const key = getRateLimitKey(request)
     if (!checkRateLimit(key, UPLOAD_LIMIT, UPLOAD_WINDOW_MS)) {
       return NextResponse.json(
@@ -23,47 +24,14 @@ export const POST = withApiAuth(
         { status: 429 },
       )
     }
-    let formData: FormData
-    try {
-      formData = await request.formData()
-    } catch {
-      return NextResponse.json(
-        { error: { code: 'BAD_REQUEST', message: 'Invalid form data' } },
-        { status: 400 },
-      )
-    }
-    const parsed = reportUploadSchema.safeParse({ file: formData.get('file') })
-    if (!parsed.success) {
-      return NextResponse.json(
-        {
-          error: {
-            code: 'BAD_REQUEST',
-            message:
-              parsed.error.issues[0]?.message ?? 'Missing or invalid file',
-          },
-        },
-        { status: 400 },
-      )
-    }
-    const { file } = parsed.data
-    let buffer: Buffer
-    try {
-      buffer = Buffer.from(await file.arrayBuffer())
-    } catch {
-      return NextResponse.json(
-        { error: { code: 'BAD_REQUEST', message: 'Failed to read file' } },
-        { status: 400 },
-      )
-    }
+    const upload = await readUploadedReportFile(request)
+    if (!upload.ok) return upload.response
     let parseResult
     try {
-      parseResult = await parseDmarcFile(buffer, file.name)
+      parseResult = await parseDmarcFile(upload.buffer, upload.name)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err)
-      return NextResponse.json(
-        { error: { code: 'BAD_REQUEST', message: `Parse failed: ${message}` } },
-        { status: 400 },
-      )
+      return uploadBadRequest(`Parse failed: ${message}`)
     }
     const ingestResult = await ingestParsedReport(parseResult)
     if (!ingestResult.ingested) {

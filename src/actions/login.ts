@@ -1,10 +1,14 @@
 'use server'
 
-import { getDb, users } from '@/lib/db'
 import { recordAuditEvent } from '@/services/audit'
-import { createSession, verifyPassword } from '@/services/auth'
+import {
+  createSession,
+  findUserByUsername,
+  recordLoginFailure,
+  verifyPassword,
+} from '@/services/auth'
+import { requestClientMeta } from '@/utils/auth'
 import { checkRateLimit, getRateLimitKeyFromHeaders } from '@/utils/rateLimit'
-import { eq } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import type { ActionState } from './ActionState'
@@ -28,37 +32,25 @@ export async function loginAction(
     return { error: 'Username and password are required' }
   }
 
-  const db = getDb()
-
-  const existingUser = db
-    .select()
-    .from(users)
-    .where(eq(users.username, username))
-    .get()
-
-  const ip = reqHeaders.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
-  const userAgent = reqHeaders.get('user-agent') ?? null
+  const existingUser = findUserByUsername(username)
+  const meta = requestClientMeta(reqHeaders)
 
   if (!existingUser) {
-    await recordAuditEvent({
-      action: 'auth.login.failure',
+    await recordLoginFailure({
+      ...meta,
       actorEmail: username,
-      ip,
-      userAgent,
-      metadata: { reason: 'unknown_user' },
+      reason: 'unknown_user',
     })
     return { error: 'Invalid username or password' }
   }
 
   const validPassword = verifyPassword(password, existingUser.passwordHash)
   if (!validPassword) {
-    await recordAuditEvent({
-      action: 'auth.login.failure',
+    await recordLoginFailure({
+      ...meta,
       actorId: existingUser.id,
       actorEmail: existingUser.username,
-      ip,
-      userAgent,
-      metadata: { reason: 'bad_password' },
+      reason: 'bad_password',
     })
     return { error: 'Invalid username or password' }
   }
@@ -68,8 +60,7 @@ export async function loginAction(
     action: 'auth.login.success',
     actorId: existingUser.id,
     actorEmail: existingUser.username,
-    ip,
-    userAgent,
+    ...meta,
   })
 
   redirect('/')

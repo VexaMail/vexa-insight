@@ -1,18 +1,11 @@
 import { env } from '@/lib/env'
 import { recordAuditEvent } from '@/services/audit'
-import {
-  OIDC_STATE_COOKIE,
-  OIDC_VERIFIER_COOKIE,
-  createSession,
-  discoverIssuer,
-  exchangeCodeForTokens,
-  fetchUserInfo,
-  provisionUserFromUserInfo,
-} from '@/services/auth'
+import { completeOidcLogin, takeOidcCallbackCookies } from '@/services/auth'
 import { isOidcEnabled } from '@/utils/auth'
 import { oidcCallbackQuerySchema } from '@/validators/query'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { oidcNotConfiguredResponse } from './oidcNotConfiguredResponse'
+import { oidcUnauthorizedResponse } from './oidcUnauthorizedResponse'
 
 /**
  * GET /api/auth/oidc/callback — completes the SSO flow.
@@ -22,19 +15,9 @@ import { NextResponse } from 'next/server'
  * the local user, records an audit event, and starts a session.
  */
 export async function GET(request: Request): Promise<NextResponse> {
-  if (!isOidcEnabled()) {
-    return NextResponse.json(
-      { error: { code: 'NOT_FOUND', message: 'OIDC not configured' } },
-      { status: 404 },
-    )
-  }
+  if (!isOidcEnabled()) return oidcNotConfiguredResponse()
   const issuer = env.OIDC_ISSUER_URL
-  if (!issuer) {
-    return NextResponse.json(
-      { error: { code: 'NOT_FOUND', message: 'OIDC not configured' } },
-      { status: 404 },
-    )
-  }
+  if (!issuer) return oidcNotConfiguredResponse()
 
   const url = new URL(request.url)
   const query = oidcCallbackQuerySchema.safeParse({
@@ -49,34 +32,13 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
   const { code, state } = query.data
 
-  const cookieStore = await cookies()
-  const expectedState = cookieStore.get(OIDC_STATE_COOKIE)?.value
-  const verifier = cookieStore.get(OIDC_VERIFIER_COOKIE)?.value
-  cookieStore.delete(OIDC_STATE_COOKIE)
-  cookieStore.delete(OIDC_VERIFIER_COOKIE)
+  const { expectedState, verifier } = await takeOidcCallbackCookies()
   if (!expectedState || expectedState !== state || !verifier) {
-    return NextResponse.json(
-      { error: { code: 'UNAUTHORIZED', message: 'Invalid state' } },
-      { status: 401 },
-    )
+    return oidcUnauthorizedResponse('Invalid state')
   }
 
   try {
-    const discovery = await discoverIssuer(issuer)
-    const tokens = await exchangeCodeForTokens({
-      discovery,
-      code,
-      codeVerifier: verifier,
-    })
-    const info = await fetchUserInfo(discovery, tokens.access_token)
-    const userId = provisionUserFromUserInfo(info)
-    await createSession(userId)
-    await recordAuditEvent({
-      action: 'auth.login.success',
-      actorId: userId,
-      actorEmail: info.email ?? info.preferred_username ?? info.sub,
-      metadata: { provider: 'oidc' },
-    })
+    await completeOidcLogin({ issuer, code, codeVerifier: verifier })
     return NextResponse.redirect(new URL('/', request.url))
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
@@ -84,9 +46,6 @@ export async function GET(request: Request): Promise<NextResponse> {
       action: 'auth.login.failure',
       metadata: { provider: 'oidc', reason: message },
     })
-    return NextResponse.json(
-      { error: { code: 'UNAUTHORIZED', message: 'OIDC callback failed' } },
-      { status: 401 },
-    )
+    return oidcUnauthorizedResponse('OIDC callback failed')
   }
 }
