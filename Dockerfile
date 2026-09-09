@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22-alpine AS builder
+FROM node:26-alpine AS builder
 
 # better-sqlite3 ships no musl/arm64 prebuilt binary, so pnpm install falls
 # back to node-gyp, which needs a Python and a C++ toolchain.
@@ -17,7 +17,7 @@ COPY . .
 RUN pnpm run build
 
 # Run stage
-FROM node:22-alpine AS runner
+FROM node:26-alpine AS runner
 
 WORKDIR /app
 
