@@ -1,4 +1,5 @@
 import type { SpfTreeBuildState, SpfTreeNode } from '@/types/diagnostics'
+import { createSpfTreeLeaf } from './createSpfTreeLeaf'
 import { extractSpfChildDomains } from './extractSpfChildDomains'
 import { extractSpfEffectiveLookupMechanisms } from './extractSpfEffectiveLookupMechanisms'
 import { extractSpfIgnoredRedirect } from './extractSpfIgnoredRedirect'
@@ -23,42 +24,17 @@ export async function buildSpfTreeNode(
   state.nodeCount += 1
 
   const normalized = domain.toLowerCase()
-
   if (state.visited.has(normalized)) {
-    return {
-      domain: normalized,
-      record: null,
-      mechanisms: [],
-      children: [],
-      lookupCount: 0,
-      missingRecord: false,
-      cycleDetected: true,
-      exceedsLookupLimit: false,
-      ignoredRedirect: null,
-      macroMechanisms: [],
-    }
+    return createSpfTreeLeaf(normalized, 'cycle')
   }
   state.visited.add(normalized)
 
   const record = extractSpfRecordFromTxt(await resolveTxtSafe(normalized))
-
   if (record === null) {
-    return {
-      domain: normalized,
-      record: null,
-      mechanisms: [],
-      children: [],
-      lookupCount: 0,
-      missingRecord: true,
-      cycleDetected: false,
-      exceedsLookupLimit: false,
-      ignoredRedirect: null,
-      macroMechanisms: [],
-    }
+    return createSpfTreeLeaf(normalized, 'missing')
   }
 
   const mechanisms = extractSpfEffectiveLookupMechanisms(record)
-
   const children: SpfTreeNode[] = []
   if (depth < SPF_TREE_MAX_DEPTH) {
     for (const childDomain of extractSpfChildDomains(record)) {
@@ -66,7 +42,6 @@ export async function buildSpfTreeNode(
       if (child) children.push(child)
     }
   }
-
   const lookupCount = mechanisms.length + sumSpfLookupCounts(children)
 
   return {

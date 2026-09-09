@@ -4,11 +4,6 @@
       "count": 1
     }
   },
-  "app/(app)/diagnostics/[domain]/page.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "app/(app)/ingest/page.tsx": {
     "max-lines-per-function": {
       "count": 1
@@ -505,42 +500,6 @@
     }
   },
   "src/services/config/getConfig.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/buildSpfTreeNode.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/createTrafficAdminGuides.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/getDiagnosticStats.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/getDomainDnsRecords.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/parseDkimRecord.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/parseDmarcTags.ts": {
     "max-lines-per-function": {
       "count": 1
     }
