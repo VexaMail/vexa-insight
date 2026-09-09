@@ -188,7 +188,7 @@ const config = defineConfig([
       'src/lib/db/applySqlFile.ts',
       'src/lib/db/runMigrations.ts',
       'src/services/ai/evals/writeEvalArtifact.ts',
-      'src/services/geoip/updateDb.ts',
+      'src/services/geoip/ensureGeoipDataDir.ts',
       'src/services/updates/internals/isGitCheckout.ts',
       'src/services/updates/readSelfUpdateLog.ts',
       'src/services/updates/writeSelfUpdateAuditEntry.ts',

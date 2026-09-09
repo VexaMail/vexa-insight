@@ -8,7 +8,8 @@ import {
 import { getAllowedDomainIds } from '@/services/auth'
 import type { IpLogRow } from '@/types/IpLogRow'
 import type { IpDateRange } from '@/types/filters'
-import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
+import { ipEventConditions } from './ipEventConditions'
 
 export async function getIpLogs(
   ip: string,
@@ -39,32 +40,16 @@ export async function getIpLogs(
     .innerJoin(domains, eq(normalizedEvents.domainId, domains.id))
     .innerJoin(rawReports, eq(normalizedEvents.rawReportId, rawReports.id))
     .where(
-      and(
-        eq(ipAddresses.ip, ip),
-        allowedIds !== null
-          ? inArray(normalizedEvents.domainId, allowedIds)
-          : undefined,
-        dateRange?.fromTs
-          ? gte(normalizedEvents.reportBeginDate, dateRange.fromTs)
-          : undefined,
-        dateRange?.toTs
-          ? lte(normalizedEvents.reportBeginDate, dateRange.toTs)
-          : undefined,
-      ),
+      ipEventConditions({
+        ip,
+        allowedIds,
+        dateRange,
+        dateColumn: normalizedEvents.reportBeginDate,
+      }),
     )
     .orderBy(desc(normalizedEvents.reportBeginDate))
     .limit(limit)
     .offset(offset)
 
-  return rows.map((r) => ({
-    eventId: r.eventId,
-    headerFrom: r.headerFrom,
-    envelopeFrom: null,
-    disposition: r.disposition,
-    spfResult: r.spfResult,
-    dkimResult: r.dkimResult,
-    count: r.count,
-    reportId: r.reportId,
-    observedAt: r.observedAt,
-  }))
+  return rows.map((r) => ({ ...r, envelopeFrom: null }))
 }

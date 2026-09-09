@@ -2,7 +2,8 @@ import { domains, getDb, ipAddresses, normalizedEvents } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { IpRelatedDomainRow } from '@/types/IpRelatedDomainRow'
 import type { IpDateRange } from '@/types/filters'
-import { and, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
+import { ipEventConditions } from './ipEventConditions'
 
 export async function getIpDomains(
   ip: string,
@@ -33,18 +34,12 @@ export async function getIpDomains(
     )
     .innerJoin(domains, eq(normalizedEvents.domainId, domains.id))
     .where(
-      and(
-        eq(ipAddresses.ip, ip),
-        allowedIds !== null
-          ? inArray(normalizedEvents.domainId, allowedIds)
-          : undefined,
-        dateRange?.fromTs
-          ? gte(normalizedEvents.reportEndDate, dateRange.fromTs)
-          : undefined,
-        dateRange?.toTs
-          ? lte(normalizedEvents.reportEndDate, dateRange.toTs)
-          : undefined,
-      ),
+      ipEventConditions({
+        ip,
+        allowedIds,
+        dateRange,
+        dateColumn: normalizedEvents.reportEndDate,
+      }),
     )
     .groupBy(domains.id)
     .orderBy(desc(sql`msg_count`), desc(sql`last_seen`))

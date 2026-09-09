@@ -2,7 +2,11 @@ import { getDb, ipAddresses } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 import { scheduleLookup } from '../ip-hostname/scheduleLookup'
 import { getGeoip } from './getGeoip'
-import { THIRTY_DAYS_MS } from './thirtyDaysMs'
+import { isLocationStale } from './isLocationStale'
+import { lookupCountryCode } from './lookupCountryCode'
+import { newIpRow } from './newIpRow'
+import { touchIpsLastSeen } from './touchIpsLastSeen'
+import { updateIpLocation } from './updateIpLocation'
 
 export async function upsertIp(ipStr: string): Promise<number> {
   const db = getDb()
@@ -32,56 +36,26 @@ export async function upsertIp(ipStr: string): Promise<number> {
 
   if (!existing) {
     // Missing: create and lookup
-    const lookupResult = geoip.lookup(normalizedIp)
-    const countryCode = lookupResult?.country || null
-
     const inserted = await db
       .insert(ipAddresses)
-      .values({
-        ip: normalizedIp,
-        countryCode,
-        emailsSentCount: 0,
-        firstSeenAt: now,
-        lastSeenAt: now,
-        locationLastUpdate: now,
-        createdAt: now,
-        updatedAt: now,
-      })
+      .values(
+        newIpRow(normalizedIp, lookupCountryCode(geoip, normalizedIp), now),
+      )
       .returning({ id: ipAddresses.id })
     if (!inserted[0]) throw new Error('Failed to insert IP')
     return inserted[0].id
   }
 
-  // Exists: check if stale
-  const isStale =
-    !existing.locationLastUpdate ||
-    now.getTime() - existing.locationLastUpdate.getTime() > THIRTY_DAYS_MS
-
-  if (isStale) {
-    const lookupResult = geoip.lookup(normalizedIp)
-    const countryCode = lookupResult?.country || null
-
-    await db
-      .update(ipAddresses)
-      .set({
-        countryCode,
-        locationLastUpdate: now,
-        lastSeenAt: now,
-        updatedAt: now,
-      })
-      .where(eq(ipAddresses.id, existing.id))
-
-    return existing.id
+  if (isLocationStale(existing.locationLastUpdate, now)) {
+    await updateIpLocation(
+      existing.id,
+      lookupCountryCode(geoip, normalizedIp),
+      now,
+    )
+  } else {
+    // Exists and fresh enough, just update last seen
+    await touchIpsLastSeen([existing.id], now)
   }
-
-  // Exists and fresh enough, just update last seen
-  await db
-    .update(ipAddresses)
-    .set({
-      lastSeenAt: now,
-      updatedAt: now,
-    })
-    .where(eq(ipAddresses.id, existing.id))
 
   return existing.id
 }

@@ -41,29 +41,6 @@
       "count": 1
     }
   },
-  "src/components/shell/TopBar.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ui/DataTable.tsx": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ui/Navigator.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/ui/UnifiedPagination.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/constants/auth/rolePermissions.ts": {
     "sonarjs/no-duplicate-string": {
       "count": 1
@@ -71,11 +48,6 @@
   },
   "src/hooks/reports/reportsReducer.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/hooks/ui/useNavigator.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -89,31 +61,8 @@
       "count": 1
     }
   },
-  "src/services/config/getConfig.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/diagnostics/resolveMtaSts.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/geoip/updateDb.ts": {
-    "max-lines-per-function": {
-      "count": 2
-    }
-  },
-  "src/services/geoip/upsertIp.ts": {
-    "complexity": {
-      "count": 1
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/geoip/upsertIpsBatch.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -122,28 +71,8 @@
       "count": 1
     }
   },
-  "src/services/ip-hostname/resolveAndPersist.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/job/setPollStatusInDb.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/reports/backfillDiagnosticFields.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getIpDomains.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/services/reports/getIpLogs.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -167,18 +96,8 @@
       "count": 1
     }
   },
-  "src/services/security/checkSafeFetchTarget.ts": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/services/security/requireSameOrigin.ts": {
     "complexity": {
-      "count": 1
-    }
-  },
-  "src/services/seed/seedDemoDay.ts": {
-    "max-lines-per-function": {
       "count": 1
     }
   },

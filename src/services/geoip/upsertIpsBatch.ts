@@ -1,8 +1,13 @@
-import { getDb, ipAddresses, ipHostnameEnrichments } from '@/lib/db'
+import { getDb, ipAddresses } from '@/lib/db'
 import { normalizeIp } from '@/utils/geoip'
-import { eq, inArray } from 'drizzle-orm'
+import { inArray } from 'drizzle-orm'
 import { getGeoip } from './getGeoip'
-import { THIRTY_DAYS_MS } from './thirtyDaysMs'
+import { insertNewIpRows } from './insertNewIpRows'
+import { insertPendingLookups } from './insertPendingLookups'
+import { isLocationStale } from './isLocationStale'
+import { lookupCountryCode } from './lookupCountryCode'
+import { touchIpsLastSeen } from './touchIpsLastSeen'
+import { updateIpLocation } from './updateIpLocation'
 
 /**
  * Upserts many IPs in a handful of set-based statements and returns a
@@ -21,71 +26,36 @@ import { THIRTY_DAYS_MS } from './thirtyDaysMs'
 export async function upsertIpsBatch(
   ips: readonly string[],
 ): Promise<Map<string, number>> {
-  const db = getDb()
   const geoip = await getGeoip()
   const normalized = [...new Set(ips.map(normalizeIp).filter(Boolean))]
   const result = new Map<string, number>()
   if (normalized.length === 0) return result
 
-  await db
-    .insert(ipHostnameEnrichments)
-    .values(normalized.map((ip) => ({ ip, lookupStatus: 'pending' as const })))
-    .onConflictDoNothing({ target: ipHostnameEnrichments.ip })
+  await insertPendingLookups(normalized)
 
   const now = new Date()
-  const existingRows = await db
+  const existingRows = await getDb()
     .select()
     .from(ipAddresses)
     .where(inArray(ipAddresses.ip, normalized))
   const existingIps = new Set(existingRows.map((row) => row.ip))
 
   const newIps = normalized.filter((ip) => !existingIps.has(ip))
-  if (newIps.length > 0) {
-    const inserted = await db
-      .insert(ipAddresses)
-      .values(
-        newIps.map((ip) => ({
-          ip,
-          countryCode: geoip.lookup(ip)?.country || null,
-          emailsSentCount: 0,
-          firstSeenAt: now,
-          lastSeenAt: now,
-          locationLastUpdate: now,
-          createdAt: now,
-          updatedAt: now,
-        })),
-      )
-      .returning({ id: ipAddresses.id, ip: ipAddresses.ip })
-    for (const row of inserted) result.set(row.ip, row.id)
+  for (const row of await insertNewIpRows(geoip, newIps, now)) {
+    result.set(row.ip, row.id)
   }
 
   const freshIds: number[] = []
   for (const row of existingRows) {
     result.set(row.ip, row.id)
-    const isStale =
-      !row.locationLastUpdate ||
-      now.getTime() - row.locationLastUpdate.getTime() > THIRTY_DAYS_MS
-    if (!isStale) {
+    if (!isLocationStale(row.locationLastUpdate, now)) {
       freshIds.push(row.id)
       continue
     }
-    await db
-      .update(ipAddresses)
-      .set({
-        countryCode: geoip.lookup(row.ip)?.country || null,
-        locationLastUpdate: now,
-        lastSeenAt: now,
-        updatedAt: now,
-      })
-      .where(eq(ipAddresses.id, row.id))
+    await updateIpLocation(row.id, lookupCountryCode(geoip, row.ip), now)
   }
 
-  if (freshIds.length > 0) {
-    await db
-      .update(ipAddresses)
-      .set({ lastSeenAt: now, updatedAt: now })
-      .where(inArray(ipAddresses.id, freshIds))
-  }
+  await touchIpsLastSeen(freshIds, now)
 
   return result
 }

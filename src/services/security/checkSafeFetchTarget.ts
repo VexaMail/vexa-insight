@@ -1,7 +1,6 @@
-import { isPrivateIp } from './isPrivateIp'
-import { resolveHostAddresses } from './resolveHostAddresses'
-import { safeFetchErrorResult } from './safeFetchErrorResult'
-import type { SafeFetchResult } from './SafeFetchResult'
+import { parseSafeFetchUrl } from './parseSafeFetchUrl'
+import { resolvePublicAddresses } from './resolvePublicAddresses'
+import type { SafeFetchTargetCheck } from './SafeFetchTargetCheck'
 
 /**
  * Inspect a URL for SSRF safety. Returns either:
@@ -12,60 +11,12 @@ import type { SafeFetchResult } from './SafeFetchResult'
  */
 export async function checkSafeFetchTarget(
   rawUrl: string,
-): Promise<
-  | { ok: true; url: URL; addresses: string[] }
-  | { ok: false; failure: SafeFetchResult }
-> {
-  let url: URL
-  try {
-    url = new URL(rawUrl)
-  } catch {
-    return {
-      ok: false,
-      failure: safeFetchErrorResult('URL_INVALID', `Invalid URL: ${rawUrl}`),
-    }
-  }
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    return {
-      ok: false,
-      failure: safeFetchErrorResult(
-        'SCHEME_NOT_ALLOWED',
-        `Scheme ${url.protocol} not allowed`,
-      ),
-    }
-  }
-  const host = url.hostname
-  if (!host) {
-    return {
-      ok: false,
-      failure: safeFetchErrorResult('HOSTNAME_INVALID', 'Empty hostname'),
-    }
-  }
+): Promise<SafeFetchTargetCheck> {
+  const parsed = parseSafeFetchUrl(rawUrl)
+  if (!parsed.ok) return parsed
 
-  let addresses: string[]
-  try {
-    addresses = await resolveHostAddresses(host)
-  } catch (err) {
-    return {
-      ok: false,
-      failure: safeFetchErrorResult(
-        'DNS_FAILED',
-        err instanceof Error ? err.message : 'DNS lookup failed',
-      ),
-    }
-  }
+  const resolved = await resolvePublicAddresses(parsed.url.hostname)
+  if (!resolved.ok) return resolved
 
-  for (const addr of addresses) {
-    if (isPrivateIp(addr)) {
-      return {
-        ok: false,
-        failure: safeFetchErrorResult(
-          'PRIVATE_HOST_NOT_ALLOWED',
-          `Host ${host} resolves to private/reserved address ${addr}`,
-        ),
-      }
-    }
-  }
-
-  return { ok: true, url, addresses }
+  return { ok: true, url: parsed.url, addresses: resolved.addresses }
 }

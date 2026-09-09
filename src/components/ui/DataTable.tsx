@@ -4,34 +4,22 @@ import { useDataTable } from '@/hooks/ui'
 import type { DataTableProps } from '@/types/ui'
 import { DataTableBodyRows } from './DataTableBodyRows'
 import { DataTableHeaderRows } from './DataTableHeaderRows'
+import { DataTablePagination } from './DataTablePagination'
 import { DataTableToolbar } from './DataTableToolbar'
 import { Table } from './table'
-import { UnifiedPagination } from './UnifiedPagination'
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  hideToolbar = false,
-  hidePagination = false,
-  onRowClick,
-  selectedRowId,
-  toolbarActions,
-  initialSorting,
-  defaultPageSize,
-  pageSizeOptions,
-}: Readonly<DataTableProps<TData, TValue>>) {
-  const props: Readonly<DataTableProps<TData, TValue>> = {
+export function DataTable<TData, TValue>(
+  props: Readonly<DataTableProps<TData, TValue>>,
+) {
+  const {
     columns,
-    data,
-    ...(hideToolbar ? { hideToolbar } : {}),
-    ...(hidePagination ? { hidePagination } : {}),
-    ...(onRowClick ? { onRowClick } : {}),
-    ...(selectedRowId !== undefined ? { selectedRowId } : {}),
-    ...(toolbarActions ? { toolbarActions } : {}),
-    ...(initialSorting ? { initialSorting } : {}),
-    ...(defaultPageSize ? { defaultPageSize } : {}),
-    ...(pageSizeOptions ? { pageSizeOptions } : {}),
-  }
+    hideToolbar = false,
+    hidePagination = false,
+    onRowClick,
+    selectedRowId,
+    toolbarActions,
+    pageSizeOptions,
+  } = props
 
   const { globalFilter, setGlobalFilter, table } = useDataTable<TData, TValue>(
     props,
@@ -61,18 +49,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {!hidePagination && (
-        <UnifiedPagination
-          page={table.getState().pagination.pageIndex + 1}
-          pageSize={table.getState().pagination.pageSize}
-          total={table.getFilteredRowModel().rows.length}
-          onPageChange={(p) => {
-            table.setPageIndex(p - 1)
-          }}
-          onPageSizeChange={(s) => {
-            table.setPageSize(s)
-          }}
-          pageSizeOptions={pageSizeOptions}
-        />
+        <DataTablePagination table={table} pageSizeOptions={pageSizeOptions} />
       )}
     </div>
   )
