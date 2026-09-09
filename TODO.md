@@ -37,8 +37,10 @@ not act on them.
   demo captures in `5e6f48838`, but stay reachable in older commits, as do the
   internal host names removed from `TODO.md` and `TODO_LOG.md` on 2026-09-09.
   Either accept that or rewrite and force-push before flipping the repo public.
-- [!] Rotate `SECRET_KEY` on the production instance once the session fix is
-  deployed: any forged-cookie request before it could read the key.
+- [!] Rotate `SECRET_KEY` on the production instance. The session fix has been
+  live there since 2026-09-09 (deployed from `aa9af4dc6`, forged cookies now
+  answer 307 to `/login`), but any forged-cookie request before that deploy
+  could have read the key, so the rotation is still due.
 
 ### Remaining work
 

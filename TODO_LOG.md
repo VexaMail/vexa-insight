@@ -6,6 +6,15 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Production redeployed** from `aa9af4dc6` with the
+      out-of-repo deploy script (rsync, install and build on the host,
+      standalone assembly, restart). Verified on the live host: `package.json`
+      0.2.0, the session-validation, install-token and font changes present,
+      service active, no journal errors in the first ten minutes. From outside:
+      `/`, `/settings` and `/ingest` with a forged `session` cookie answer 307
+      to `/login`, `/login` serves the two self-hosted woff2 files and
+      references no Google Fonts host. The previous build there dated from
+      2026-08-27.
 - [x] 2026-09-09 — **Diagnostics page split, first step:** the eight detail
       sections (DNS, DMARC, SPF, SPF tree, DKIM, BIMI, MTA-STS, TLS-RPT) now
       render through `CollapsibleSection` and start collapsed; the score hero
