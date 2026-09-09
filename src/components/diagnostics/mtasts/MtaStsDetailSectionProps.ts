@@ -1,5 +1,8 @@
-import type { DnsDiagnostics } from '@/types/diagnostics'
+import type {
+  DiagnosticsSectionToggleProps,
+  DnsDiagnostics,
+} from '@/types/diagnostics'
 
-export type MtaStsDetailSectionProps = {
+export type MtaStsDetailSectionProps = DiagnosticsSectionToggleProps & {
   dns: DnsDiagnostics
 }

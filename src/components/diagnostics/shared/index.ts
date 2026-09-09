@@ -1,3 +1,7 @@
+export * from './CheckRow'
+export type * from './CheckRowProps'
+export * from './CollapsibleSection'
+export type * from './CollapsibleSectionProps'
 export * from './CopyButton'
 export type * from './CopyButtonProps'
 export * from './InfoTooltip'

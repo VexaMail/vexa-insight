@@ -70,6 +70,8 @@ describe('SpfLookupTreeSection', () => {
 
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(tree),
       }),
     )
@@ -107,6 +109,8 @@ describe('SpfLookupTreeSection', () => {
 
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(tree),
       }),
     )
@@ -123,6 +127,8 @@ describe('SpfLookupTreeSection', () => {
 
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(tree),
       }),
     )
@@ -135,6 +141,8 @@ describe('SpfLookupTreeSection', () => {
   it('explains a redirect that is ignored because the record has an all', () => {
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(
           makeTreeNode({
             record:
@@ -153,6 +161,8 @@ describe('SpfLookupTreeSection', () => {
   it('flags macro targets as not expanded', () => {
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(
           makeTreeNode({
             record: 'v=spf1 exists:%{ir}.%{v}._spf.example.com -all',
@@ -171,6 +181,8 @@ describe('SpfLookupTreeSection', () => {
   it('renders a fallback when no tree data is available', () => {
     const markup = renderToStaticMarkup(
       React.createElement(SpfLookupTreeSection, {
+        open: true,
+        onToggle: () => undefined,
         dns: makeDnsWithTree(null),
       }),
     )

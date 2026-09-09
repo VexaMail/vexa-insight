@@ -1,5 +1,8 @@
-import type { DnsDiagnostics } from '@/types/diagnostics'
+import type {
+  DiagnosticsSectionToggleProps,
+  DnsDiagnostics,
+} from '@/types/diagnostics'
 
-export type SpfLookupTreeSectionProps = {
+export type SpfLookupTreeSectionProps = DiagnosticsSectionToggleProps & {
   dns: DnsDiagnostics
 }

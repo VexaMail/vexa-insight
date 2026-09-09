@@ -1,22 +1,25 @@
 import { Network } from 'lucide-react'
-import { SectionHeader } from '../shared'
+import { CollapsibleSection } from '../shared'
 import { SpfLookupTreeNodeItem } from './SpfLookupTreeNodeItem'
 import type { SpfLookupTreeSectionProps } from './SpfLookupTreeSectionProps'
 
 export function SpfLookupTreeSection({
   dns,
+  open,
+  onToggle,
 }: Readonly<SpfLookupTreeSectionProps>) {
   const tree = dns.spfTree
 
   return (
-    <section className="bg-card flex flex-col gap-5 rounded-xl border p-5 shadow-sm">
-      <SectionHeader
-        title="SPF Lookup Tree"
-        found={tree !== null && !tree.missingRecord}
-        icon={<Network className="text-primary h-6 w-6" />}
-        helpText="Receivers follow include and redirect references recursively. RFC 7208 allows at most 10 DNS lookups per SPF check; each include, redirect, a, mx, and exists mechanism consumes one."
-      />
-
+    <CollapsibleSection
+      id="spf-tree"
+      open={open}
+      onToggle={onToggle}
+      title="SPF Lookup Tree"
+      found={tree !== null && !tree.missingRecord}
+      icon={<Network className="text-primary h-6 w-6" />}
+      helpText="Receivers follow include and redirect references recursively. RFC 7208 allows at most 10 DNS lookups per SPF check; each include, redirect, a, mx, and exists mechanism consumes one."
+    >
       {tree ? (
         <>
           {tree.exceedsLookupLimit ? (
@@ -40,6 +43,6 @@ export function SpfLookupTreeSection({
           No SPF lookup data available.
         </p>
       )}
-    </section>
+    </CollapsibleSection>
   )
 }

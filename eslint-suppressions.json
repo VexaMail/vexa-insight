@@ -182,16 +182,6 @@
       "count": 1
     }
   },
-  "src/components/diagnostics/bimi/BimiDetailSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
-  "src/components/diagnostics/mtasts/MtaStsDetailSection.tsx": {
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/components/diagnostics/overview/ProtocolOverviewPanel.tsx": {
     "max-lines-per-function": {
       "count": 1

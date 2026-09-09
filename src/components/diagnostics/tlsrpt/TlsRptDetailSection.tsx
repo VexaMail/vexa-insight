@@ -7,23 +7,26 @@ import {
   TableRow,
 } from '@/components/ui'
 import { ShieldCheck } from 'lucide-react'
-import { ProtocolExplainer, RecordDisplay, SectionHeader } from '../shared'
+import { CollapsibleSection, ProtocolExplainer, RecordDisplay } from '../shared'
 import type { TlsRptDetailSectionProps } from './TlsRptDetailSectionProps'
 
 export function TlsRptDetailSection({
   dns,
+  open,
+  onToggle,
 }: Readonly<TlsRptDetailSectionProps>) {
   const tls = dns.tlsRpt
 
   return (
-    <section className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-sm">
-      <SectionHeader
-        title="TLS-RPT Configuration"
-        found={tls.raw !== null}
-        icon={<ShieldCheck className="text-primary h-6 w-6" />}
-        helpText="TLS-RPT provides reporting for failed TLS delivery attempts and complements MTA-STS with operational visibility."
-      />
-
+    <CollapsibleSection
+      id="tls-rpt"
+      open={open}
+      onToggle={onToggle}
+      title="TLS-RPT Configuration"
+      found={tls.raw !== null}
+      icon={<ShieldCheck className="text-primary h-6 w-6" />}
+      helpText="TLS-RPT provides reporting for failed TLS delivery attempts and complements MTA-STS with operational visibility."
+    >
       <RecordDisplay label="TLS-RPT" record={tls.raw} />
       <ProtocolExplainer
         title="Why TLS-RPT matters"
@@ -76,6 +79,6 @@ export function TlsRptDetailSection({
           </Table>
         </div>
       )}
-    </section>
+    </CollapsibleSection>
   )
 }

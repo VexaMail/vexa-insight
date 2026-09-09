@@ -10,6 +10,7 @@ export * from './score/DomainScoreBadge'
 // Shared primitives, re-exported so consumers outside the slice (tests, other
 // features) have a lint-sanctioned import path instead of reaching into
 // './shared/*', which 'import/no-internal-modules' forbids.
+export { CollapsibleSection } from './shared/CollapsibleSection'
 export { ProtocolExplainer } from './shared/ProtocolExplainer'
 export { RecordDisplay } from './shared/RecordDisplay'
 export { SectionHeader } from './shared/SectionHeader'

@@ -75,7 +75,11 @@ describe('ProtocolExplainer', () => {
 describe('protocol explainer content in detail sections', () => {
   it('SpfDetailSection embeds the SPF explainer with a domain-based example', () => {
     const markup = renderToStaticMarkup(
-      React.createElement(SpfDetailSection, { dns: makeDnsDiagnostics() }),
+      React.createElement(SpfDetailSection, {
+        dns: makeDnsDiagnostics(),
+        open: true,
+        onToggle: () => undefined,
+      }),
     )
 
     expect(markup).toContain('How to read SPF')
@@ -88,7 +92,11 @@ describe('protocol explainer content in detail sections', () => {
 
   it('DmarcDetailSection embeds the DMARC explainer with _dmarc host and policy example', () => {
     const markup = renderToStaticMarkup(
-      React.createElement(DmarcDetailSection, { dns: makeDnsDiagnostics() }),
+      React.createElement(DmarcDetailSection, {
+        dns: makeDnsDiagnostics(),
+        open: true,
+        onToggle: () => undefined,
+      }),
     )
 
     expect(markup).toContain('What this record is for')

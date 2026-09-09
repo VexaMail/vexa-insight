@@ -10,7 +10,11 @@ describe('diagnostics detail section accessibility', () => {
       <main>
         <h1>example.com</h1>
         <h2>SPF</h2>
-        <SpfDetailSection dns={makeDnsDiagnostics()} />
+        <SpfDetailSection
+          dns={makeDnsDiagnostics()}
+          open
+          onToggle={() => undefined}
+        />
       </main>,
     )
 
@@ -24,6 +28,8 @@ describe('diagnostics detail section accessibility', () => {
         <h1>example.com</h1>
         <h2>SPF</h2>
         <SpfDetailSection
+          open
+          onToggle={() => undefined}
           dns={makeDnsDiagnostics({
             spf: null,
             spfValid: false,
@@ -42,7 +48,11 @@ describe('diagnostics detail section accessibility', () => {
       <main>
         <h1>example.com</h1>
         <h2>DMARC</h2>
-        <DmarcDetailSection dns={makeDnsDiagnostics()} />
+        <DmarcDetailSection
+          dns={makeDnsDiagnostics()}
+          open
+          onToggle={() => undefined}
+        />
       </main>,
     )
 
@@ -56,6 +66,8 @@ describe('diagnostics detail section accessibility', () => {
         <h1>example.com</h1>
         <h2>DMARC</h2>
         <DmarcDetailSection
+          open
+          onToggle={() => undefined}
           dns={makeDnsDiagnostics({
             dmarc: null,
             dmarcPolicy: null,

@@ -1,26 +1,13 @@
 import { Mail, ShieldCheck } from 'lucide-react'
 import type { ProtocolOverviewPanelProps } from './ProtocolOverviewPanelProps'
 import { ProtocolStatusRow } from './ProtocolStatusRow'
-import { deriveProtocolStatus } from './deriveProtocolStatus'
+import { deriveProtocolStatuses } from './deriveProtocolStatuses'
 
 export function ProtocolOverviewPanel({
   dns,
+  onOpenSection,
 }: Readonly<ProtocolOverviewPanelProps>) {
-  const spfStatus = deriveProtocolStatus(dns.spf !== null, dns.spfValid)
-  const dkimStatus = deriveProtocolStatus(
-    dns.dkim.some((d) => d.record !== null),
-    dns.dkim.some((d) => d.valid),
-  )
-  const dmarcStatus = deriveProtocolStatus(dns.dmarc !== null, dns.dmarcValid)
-  const bimiStatus = deriveProtocolStatus(dns.bimi.raw !== null, dns.bimi.valid)
-  const mtaStsStatus = deriveProtocolStatus(
-    dns.mtaSts.raw !== null,
-    dns.mtaSts.valid,
-  )
-  const tlsRptStatus = deriveProtocolStatus(
-    dns.tlsRpt.raw !== null,
-    dns.tlsRpt.valid,
-  )
+  const status = deriveProtocolStatuses(dns)
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -35,12 +22,16 @@ export function ProtocolOverviewPanel({
         <div className="flex flex-col divide-y">
           <ProtocolStatusRow
             protocol="SPF"
-            status={spfStatus}
+            sectionId="spf"
+            onOpenDetails={onOpenSection}
+            status={status.spf}
             {...(dns.spf ? { detail: 'Record found' } : {})}
           />
           <ProtocolStatusRow
             protocol="DKIM"
-            status={dkimStatus}
+            sectionId="dkim"
+            onOpenDetails={onOpenSection}
+            status={status.dkim}
             {...(dns.dkim.filter((d) => d.valid).length > 0
               ? {
                   detail: `${String(dns.dkim.filter((d) => d.valid).length)} selector(s)`,
@@ -49,14 +40,18 @@ export function ProtocolOverviewPanel({
           />
           <ProtocolStatusRow
             protocol="DMARC"
-            status={dmarcStatus}
+            sectionId="dmarc"
+            onOpenDetails={onOpenSection}
+            status={status.dmarc}
             {...(dns.dmarcPolicy
               ? { detail: `Policy: ${dns.dmarcPolicy}` }
               : {})}
           />
           <ProtocolStatusRow
             protocol="BIMI"
-            status={bimiStatus}
+            sectionId="bimi"
+            onOpenDetails={onOpenSection}
+            status={status.bimi}
             {...(dns.bimi.logoUrl ? { detail: 'Logo found' } : {})}
           />
         </div>
@@ -73,12 +68,16 @@ export function ProtocolOverviewPanel({
         <div className="flex flex-col divide-y">
           <ProtocolStatusRow
             protocol="MTA-STS"
-            status={mtaStsStatus}
+            sectionId="mta-sts"
+            onOpenDetails={onOpenSection}
+            status={status.mtaSts}
             {...(dns.mtaSts.mode ? { detail: `Mode: ${dns.mtaSts.mode}` } : {})}
           />
           <ProtocolStatusRow
             protocol="TLS-RPT"
-            status={tlsRptStatus}
+            sectionId="tls-rpt"
+            onOpenDetails={onOpenSection}
+            status={status.tlsRpt}
             {...(dns.tlsRpt.ruaAddresses.length > 0
               ? {
                   detail: `${String(dns.tlsRpt.ruaAddresses.length)} RUA address(es)`,

@@ -1,18 +1,23 @@
 import { ShieldCheck } from 'lucide-react'
-import { ProtocolExplainer, RecordDisplay, SectionHeader } from '../shared'
+import { CollapsibleSection, ProtocolExplainer, RecordDisplay } from '../shared'
 import { SpfCheckCard } from './SpfCheckCard'
 import type { SpfDetailSectionProps } from './SpfDetailSectionProps'
 
-export function SpfDetailSection({ dns }: Readonly<SpfDetailSectionProps>) {
+export function SpfDetailSection({
+  dns,
+  open,
+  onToggle,
+}: Readonly<SpfDetailSectionProps>) {
   return (
-    <section className="bg-card flex flex-col gap-5 rounded-xl border p-5 shadow-sm">
-      <SectionHeader
-        title="SPF Configuration"
-        found={dns.spf !== null}
-        icon={<ShieldCheck className="text-primary h-6 w-6" />}
-        helpText="SPF defines which servers are allowed to send mail for the domain in the SMTP envelope."
-      />
-
+    <CollapsibleSection
+      id="spf"
+      open={open}
+      onToggle={onToggle}
+      title="SPF Configuration"
+      found={dns.spf !== null}
+      icon={<ShieldCheck className="text-primary h-6 w-6" />}
+      helpText="SPF defines which servers are allowed to send mail for the domain in the SMTP envelope."
+    >
       <RecordDisplay label="SPF" record={dns.spf} />
       <ProtocolExplainer
         title="How to read SPF"
@@ -39,6 +44,6 @@ export function SpfDetailSection({ dns }: Readonly<SpfDetailSectionProps>) {
           />
         ))}
       </div>
-    </section>
+    </CollapsibleSection>
   )
 }

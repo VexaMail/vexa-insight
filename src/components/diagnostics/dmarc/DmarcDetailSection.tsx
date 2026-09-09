@@ -1,18 +1,23 @@
 import { ShieldCheck } from 'lucide-react'
-import { ProtocolExplainer, RecordDisplay, SectionHeader } from '../shared'
+import { CollapsibleSection, ProtocolExplainer, RecordDisplay } from '../shared'
 import type { DmarcDetailSectionProps } from './DmarcDetailSectionProps'
 import { DmarcExplainedTable } from './DmarcExplainedTable'
 
-export function DmarcDetailSection({ dns }: Readonly<DmarcDetailSectionProps>) {
+export function DmarcDetailSection({
+  dns,
+  open,
+  onToggle,
+}: Readonly<DmarcDetailSectionProps>) {
   return (
-    <section className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-sm">
-      <SectionHeader
-        title="DMARC Configuration"
-        found={dns.dmarc !== null}
-        icon={<ShieldCheck className="text-primary h-6 w-6" />}
-        helpText="DMARC tells receiving mail servers what to do when messages fail SPF and DKIM alignment checks."
-      />
-
+    <CollapsibleSection
+      id="dmarc"
+      open={open}
+      onToggle={onToggle}
+      title="DMARC Configuration"
+      found={dns.dmarc !== null}
+      icon={<ShieldCheck className="text-primary h-6 w-6" />}
+      helpText="DMARC tells receiving mail servers what to do when messages fail SPF and DKIM alignment checks."
+    >
       <RecordDisplay label="DMARC" record={dns.dmarc} />
       <ProtocolExplainer
         title="What this record is for"
@@ -35,6 +40,6 @@ export function DmarcDetailSection({ dns }: Readonly<DmarcDetailSectionProps>) {
       )}
 
       {dns.dmarc !== null && <DmarcExplainedTable tags={dns.dmarcTags} />}
-    </section>
+    </CollapsibleSection>
   )
 }

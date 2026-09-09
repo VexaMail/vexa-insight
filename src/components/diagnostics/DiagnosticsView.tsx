@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui'
 
-import { useDiagnosticsView } from '@/hooks/diagnostics'
+import { useDiagnosticsSections, useDiagnosticsView } from '@/hooks/diagnostics'
 import type { DiagnosticsViewProps } from './DiagnosticsViewProps'
 import { ExportPdfButton } from './ExportPdfButton'
 import { BimiDetailSection } from './bimi/BimiDetailSection'
@@ -33,6 +33,7 @@ export function DiagnosticsView({
   score,
 }: Readonly<DiagnosticsViewProps>) {
   const { handleDomainChange } = useDiagnosticsView()
+  const { getSectionProps, openSection } = useDiagnosticsSections()
 
   return (
     <div className="flex flex-col space-y-6">
@@ -70,19 +71,19 @@ export function DiagnosticsView({
       {/* Hero: Score & Protocol Overview */}
       <div className="flex flex-col gap-6">
         <DomainScoreBadge score={score} domain={currentDomainName} />
-        <ProtocolOverviewPanel dns={dns} />
+        <ProtocolOverviewPanel dns={dns} onOpenSection={openSection} />
       </div>
 
-      {/* Detailed Protocol Sections */}
+      {/* Detailed protocol sections, collapsed until opened here or from an overview row */}
       <div className="flex flex-col gap-6">
-        <DnsRecordsSection dns={dns} />
-        <DmarcDetailSection dns={dns} />
-        <SpfDetailSection dns={dns} />
-        <SpfLookupTreeSection dns={dns} />
-        <DkimDetailSection dns={dns} />
-        <BimiDetailSection dns={dns} />
-        <MtaStsDetailSection dns={dns} />
-        <TlsRptDetailSection dns={dns} />
+        <DnsRecordsSection dns={dns} {...getSectionProps('dns')} />
+        <DmarcDetailSection dns={dns} {...getSectionProps('dmarc')} />
+        <SpfDetailSection dns={dns} {...getSectionProps('spf')} />
+        <SpfLookupTreeSection dns={dns} {...getSectionProps('spf-tree')} />
+        <DkimDetailSection dns={dns} {...getSectionProps('dkim')} />
+        <BimiDetailSection dns={dns} {...getSectionProps('bimi')} />
+        <MtaStsDetailSection dns={dns} {...getSectionProps('mta-sts')} />
+        <TlsRptDetailSection dns={dns} {...getSectionProps('tls-rpt')} />
       </div>
     </div>
   )

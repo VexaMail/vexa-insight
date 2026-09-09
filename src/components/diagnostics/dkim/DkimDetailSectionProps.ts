@@ -1,5 +1,8 @@
-import type { DnsDiagnostics } from '@/types/diagnostics'
+import type {
+  DiagnosticsSectionToggleProps,
+  DnsDiagnostics,
+} from '@/types/diagnostics'
 
-export type DkimDetailSectionProps = {
+export type DkimDetailSectionProps = DiagnosticsSectionToggleProps & {
   dns: DnsDiagnostics
 }
