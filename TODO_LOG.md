@@ -6,6 +6,32 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Pre-rewrite history purged from GitHub, old copies
+      deleted:** the force-push had left `refs/pull/1..66` on the server, so the
+      original screenshots stayed fetchable by SHA. The repository held nothing
+      worth a support ticket (0 stars, forks, issues, discussions, secrets,
+      webhooks, deploy keys; 66 closed Dependabot PRs), so the GHCR package and
+      the repository were deleted and recreated under the same name from the
+      rewritten local history: `main`, `v0.2.0` and `v0.2.1` pushed, topics,
+      description, homepage, Discussions, secret scanning, push protection,
+      vulnerability alerts and the `main` protection re-applied. The tag push on
+      the fresh repository started no release run; deleting and re-pushing the
+      same tag objects did, and the two release runs rebuilt both images into a
+      fresh package. Evidence: `git ls-remote` shows only `main` and the two
+      tags; the old commit answers 404 on the commits API.
+  - Result: compromised copies removed. The pre-rotation database copy on the
+    production host (old key plus old IMAP ciphertext) and the local pre-rewrite
+    bundle are deleted; the macmini clone was reset onto the new history, pruned
+    of the stale Dependabot refs and the old tag, and `git gc --prune=now`
+    leaves the old commit unresolvable there. The portable Mac was unreachable
+    and keeps its clone until it next syncs; a plain
+    `git fetch --prune --prune-tags --force` plus `reset --hard origin/main`
+    cleans it.
+  - Result: three local `bot/*` branches deleted (two at `main`, one a
+    superseded `db:migrate` fix); `bot/f4d82a7f` kept, it holds the fenced-JSON
+    parsing test tied to the open diagnostics-prompt decision.
+  - Files: `TODO.md`.
+
 - [x] 2026-09-09 — **Open-source launch:** the four owner decisions and the
       post-flip checklist, all done the same evening, in this order.
   - Result: `SECRET_KEY` rotated on the production instance with the service

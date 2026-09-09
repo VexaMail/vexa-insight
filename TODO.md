@@ -11,19 +11,9 @@
 ## Open-source launch
 
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
-audit, the fixes and the launch steps are logged in `TODO_LOG.md` under
-2026-09-09. What is left is outside the repository's reach.
+audit, the fixes, the launch steps and the 2026-09-10 purge of the pre-rewrite
+history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
 
-- [!] Ask GitHub Support to purge the pre-rewrite commits. `refs/pull/1..66`
-  (all Dependabot PRs, every one closed) still keep the old history reachable by
-  SHA even though `main` and `v0.2.0` were force-pushed from the rewritten
-  history on 2026-09-09; nothing a push can delete. What those commits carry:
-  the eight original `docs/screenshots/*.png` (real client domains, a server
-  hostname and IP, an API key that has since been rotated) and two backlog lines
-  naming the hosting estate. Smallest next step: the owner opens a "remove
-  sensitive data" support request naming the repository and the old commit
-  `eba5d8d0e30b6613b84f8d30dd21c98754c4c3b3`; until then, accept that a
-  determined reader can fetch them.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
