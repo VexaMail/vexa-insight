@@ -19,6 +19,21 @@ and this project adheres to
   through `next/font/local`, so a source build no longer needs network access to
   Google Fonts.
 
+### Tooling
+
+- **Dependency audit gates CI.** `pnpm run audit:check` runs `baseline-audit` at
+  moderate severity and above; the job no longer carries `continue-on-error`.
+  Advisories that cannot be fixed yet are waived in `.baseline-advisories.json`
+  with a reason and an expiry date, and an expired waiver fails the run.
+- **oxlint pre-filter and commitlint hook.** `pnpm run lint:fast` (oxlint,
+  correctness rules) runs first in `check:ci` and on staged files at pre-commit;
+  a `commit-msg` hook enforces Conventional Commits through commitlint.
+- **`@busirocket/tsconfig` 0.3.0.** Adds `noImplicitReturns`,
+  `noFallthroughCasesInSwitch`, `allowUnreachableCode: false`,
+  `verbatimModuleSyntax`, `noPropertyAccessFromIndexSignature` and
+  `erasableSyntaxOnly`; `process.env` keys are declared in
+  `src/processEnv.d.ts`.
+
 ## [0.2.0] - 2026-09-09
 
 ### Added

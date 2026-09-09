@@ -97,6 +97,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Audit (high severity and above)
-        continue-on-error: true
-        run: pnpm audit --audit-level=high
+      # baseline-audit gates at moderate and reads .baseline-advisories.json,
+      # where every waiver carries a reason and an expiry date, so a judged
+      # finding no longer needs the whole job to be advisory.
+      - name: Audit (moderate severity and above, expiring waivers)
+        run: pnpm run audit:check

@@ -50,9 +50,6 @@ not act on them.
       command. Smallest next step: run drizzle-kit with `--verbose` against an
       empty file and decide whether to keep the script or point the docs at
       `runMigrations` (`scripts/check-migrations.sh` already covers CI).
-- [ ] The CI "Dependency audit" job carries `continue-on-error: true`, so a
-      high-severity advisory does not fail the run. Audit is clean today; decide
-      whether it should gate.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the

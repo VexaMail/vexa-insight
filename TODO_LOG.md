@@ -6,6 +6,30 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **`@busirocket/quality-config` 0.11.0 gates wired.**
+      `baseline-audit --level moderate` replaces the `continue-on-error` audit
+      step in CI (`pnpm run audit:check`); the two advisories that have no fix
+      today (qs via `@lhci/cli`) are waived in `.baseline-advisories.json` with
+      reasons and a 2026-12-31 expiry, after which the gate fails. oxlint runs
+      as `lint:fast` (correctness rules, `--deny-warnings`, `no-unused-vars`
+      mirroring the ESLint `ignoreRestSiblings` and `^_` options so both agree
+      on `const { omitted, ...rest }`), first in `check:ci` and on staged files
+      at pre-commit. commitlint enforces Conventional Commits from a new
+      `commit-msg` hook (`commitlint.config.mjs`, shared preset). vitest bumped
+      to 4.1.11 for GHSA-82fw-gwwq-j7x9. Evidence: `pnpm run audit:check`
+      reports 0 unwaived, 0 expired, 2 waived; commitlint rejects `feature:` and
+      passes the last 12 commits; `lefthook install` lists pre-commit,
+      commit-msg and pre-push; `pnpm run check:ci` green (93 files, 568 tests);
+      `pnpm run test:a11y` green (18 files, 50 tests). The knip hint about
+      `dependency-cruiser` in `ignoreDependencies` predates this change.
+- [x] 2026-09-09 — **`@busirocket/tsconfig` 0.3.0 adopted** (commit
+      `1f987ec7b`): the six new correctness flags are on, the two the repo set
+      by hand moved to the base, `process.env` reads go through the declared
+      contract in `src/processEnv.d.ts`, and the 141 index-signature accesses
+      `noPropertyAccessFromIndexSignature` rejected were rewritten to bracket
+      form across 31 files with a one-off ts codemod. Evidence:
+      `pnpm run     type-check` clean after deleting the stale
+      `tsconfig.tsbuildinfo`, `pnpm run check:ci` green.
 - [x] 2026-09-09 — **Production redeployed** from `aa9af4dc6` with the
       out-of-repo deploy script (rsync, install and build on the host,
       standalone assembly, restart). Verified on the live host: `package.json`

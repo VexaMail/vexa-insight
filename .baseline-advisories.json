@@ -1,0 +1,10 @@
+{
+  "GHSA-x5fp-wj9c-mxmx": {
+    "reason": "qs via @lhci/cli > express > body-parser, a dev-only Lighthouse runner that never serves traffic; @lhci/cli 0.15.1 is its latest release and pins the vulnerable range",
+    "expires": "2026-12-31"
+  },
+  "GHSA-4mjr-xmp4-gh2g": {
+    "reason": "qs via @lhci/cli > express > body-parser, a dev-only Lighthouse runner that never serves traffic; @lhci/cli 0.15.1 is its latest release and pins the vulnerable range",
+    "expires": "2026-12-31"
+  }
+}
