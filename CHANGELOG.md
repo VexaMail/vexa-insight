@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-09
+
+### Fixed
+
+- **`pnpm run db:migrate` works again.** The script now runs
+  `scripts/migrate.ts`, a `tsx` entrypoint around the same `runMigrations()` the
+  app calls at boot, instead of `drizzle-kit migrate`, which exited 1 without a
+  message on every `DATABASE_URL` shape. `drizzle-kit` stays for `db:generate`.
+
 ### Changed
 
 - **Diagnostics detail sections start collapsed.** The score and the protocol
@@ -33,6 +42,14 @@ and this project adheres to
   `verbatimModuleSyntax`, `noPropertyAccessFromIndexSignature` and
   `erasableSyntaxOnly`; `process.env` keys are declared in
   `src/processEnv.d.ts`.
+- **Function-size and complexity gates enforced.** `@busirocket/quality-config`
+  0.11.0 wires `max-lines`, `max-lines-per-function`, `max-params`,
+  `complexity`, `sonarjs/cognitive-complexity` and `no-duplicate-string`; the
+  384 findings the ledger opened with are gone through file splits, not
+  suppressions, and `eslint-suppressions.json` is kept empty so any new one
+  shows in review.
+- **Release provenance attestation is conditional on a public repository**, so a
+  private fork's release does not fail on the attestation step.
 
 ## [0.2.0] - 2026-09-09
 
@@ -382,5 +399,6 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
 - `/install` permanently locked after the first user exists.
 
 [Unreleased]:
-  https://github.com/VexaMail/vexa-insight-dashboard/compare/v0.2.0...HEAD
+  https://github.com/VexaMail/vexa-insight-dashboard/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.2.1
 [0.2.0]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.2.0
