@@ -6,6 +6,29 @@
 
 ### 2026-09
 
+- [x] 2026-09-09 — **Diagnostics page split, first step:** the eight detail
+      sections (DNS, DMARC, SPF, SPF tree, DKIM, BIMI, MTA-STS, TLS-RPT) now
+      render through `CollapsibleSection` and start collapsed; the score hero
+      and the protocol overview stay. Each overview row is a button that opens
+      its section, focuses it and scrolls it into view
+      (`useDiagnosticsSections`, `scrollToDiagnosticsSection`). Bodies stay in
+      the DOM under `hidden     print:flex`, so "Download PDF" still prints
+      every section. Along the way the BIMI and MTA-STS check tables, the
+      overview status config and the toggle button became their own files, and
+      four suppressions left the ledger. Verified on the demo dataset at
+      1440x900: collapsed page, DMARC row click opens and focuses the section;
+      `docs/screenshots/diagnostics.png` regenerated. Evidence:
+      `pnpm run check:ci` green (93 files, 568 tests), `pnpm run test:a11y`
+      green (18 files, 49 tests, new `CollapsibleSection` axe test),
+      `pnpm run build` green. The remaining "Future Ideas" about the page (tabs,
+      per-protocol routes) stay open.
+- [x] 2026-09-09 — **Fonts for offline builds:** `app/inter.tsx` and
+      `app/spaceGrotesk.tsx` load the two variable fonts through
+      `next/font/local` from `app/fonts/` (latin `woff2` from
+      `@fontsource-variable` 5.3.0, OFL licence files alongside, provenance in
+      `app/fonts/README.md`), so `next build` no longer reaches Google Fonts.
+      Evidence: `pnpm run build` green with both files emitted under
+      `.next/static/media`; CSP `font-src 'self'` unchanged.
 - [x] 2026-09-09 — **Open-source launch, first release:** `v0.2.0` tagged on
       `610cb8c7a` (minor bump: the Unreleased changelog was all features and
       fixes on top of a `0.1.0` that was never tagged). `release.yml` run

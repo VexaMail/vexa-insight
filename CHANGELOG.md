@@ -8,6 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- **Diagnostics detail sections start collapsed.** The score and the protocol
+  overview stay on screen; DNS, DMARC, SPF, SPF lookup tree, DKIM, BIMI, MTA-STS
+  and TLS-RPT each expand from a "Show details" toggle or by clicking their row
+  in the overview, which also scrolls to the section. The PDF export still
+  prints every section.
+- **Fonts are self-hosted.** Inter and Space Grotesk load from `app/fonts/`
+  through `next/font/local`, so a source build no longer needs network access to
+  Google Fonts.
+
 ## [0.2.0] - 2026-09-09
 
 ### Added

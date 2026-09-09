@@ -15,26 +15,33 @@ same day, in main: forged-cookie key disclosure, unscoped report XML, redirect
 SSRF in `safeFetch`, non-atomic ingest, GeoIP hard dependency, install-token
 store per bundle, seed before migrations, real demo IPs, `next` advisory, CI
 pnpm pin, compose public bind, missing error pages, Code of Conduct contact.
-What remains:
+`v0.2.0` is released and the image is on GHCR.
 
-- [ ] Decide whether to rewrite history before the repo goes public. The old
-      `docs/screenshots/*.png` (real client domains, a real server IP and
-      hostname, a real-looking API key) entered history in `eba5d8d0e` and were
-      replaced by demo captures in `5e6f48838`, but stay reachable in older
-      commits, as do the internal host names removed from `TODO.md` and
-      `TODO_LOG.md` on 2026-09-09. Either accept that or rewrite and force-push
-      before flipping the repo public; the owner's call.
-- [ ] Make the `vexa-insight-dashboard` container package public when the repo
-      goes public. `v0.2.0` pushed `ghcr.io/vexamail/vexa-insight-dashboard`
-      with tags `latest`, `0`, `0.2`, `0.2.0`, but GHCR package visibility is
-      separate from repo visibility and the package is private today, so the
-      README quick start only works for org members until it is flipped in the
-      package settings. The build-provenance attestation step is skipped on the
-      private repo; re-check it on the first public release.
-- [ ] Rotate `SECRET_KEY` on the production instance once the session fix is
-      deployed: any forged-cookie request before it could read the key.
-- [ ] CodeQL fails on the private repo ("Advanced Security must be enabled"). It
-      becomes free once the repo is public; re-check the first public run.
+### Owner decisions
+
+The owner said on 2026-09-09 they will take these four themselves; sessions do
+not act on them.
+
+- [!] Flip the repository from private to public. Unblocks CodeQL ("Advanced
+  Security must be enabled" on the private repo) and the build-provenance
+  attestation step in `release.yml`, both free on public repos. Re-check the
+  first public CI and release runs.
+- [!] Make the `vexa-insight-dashboard` container package public. `v0.2.0`
+  pushed `ghcr.io/vexamail/vexa-insight-dashboard` with tags `latest`, `0`,
+  `0.2`, `0.2.0`, but GHCR package visibility is separate from repo visibility
+  and the package is private today, so the README quick start only works for org
+  members until it is flipped in the package settings.
+- [!] Decide whether to rewrite history before the repo goes public. The old
+  `docs/screenshots/*.png` (real client domains, a real server IP and hostname,
+  a real-looking API key) entered history in `eba5d8d0e` and were replaced by
+  demo captures in `5e6f48838`, but stay reachable in older commits, as do the
+  internal host names removed from `TODO.md` and `TODO_LOG.md` on 2026-09-09.
+  Either accept that or rewrite and force-push before flipping the repo public.
+- [!] Rotate `SECRET_KEY` on the production instance once the session fix is
+  deployed: any forged-cookie request before it could read the key.
+
+### Remaining work
+
 - [ ] `pnpm run db:migrate` (drizzle-kit) exits 1 with no message on both
       absolute and relative `DATABASE_URL`, before and after the config fix,
       while the app's own `runMigrations()` works. CONTRIBUTING documents the
@@ -44,9 +51,6 @@ What remains:
 - [ ] The CI "Dependency audit" job carries `continue-on-error: true`, so a
       high-severity advisory does not fail the run. Audit is clean today; decide
       whether it should gate.
-- [ ] `next build` downloads Google Fonts (`app/inter.tsx`,
-      `app/spaceGrotesk.tsx`), so an offline or air-gapped source build fails.
-      Self-host the two fonts or document the requirement.
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the
@@ -57,12 +61,6 @@ What remains:
       parity decision under Pending Decisions: either supply the reference
       scores or drop parity and design our own rubric. Either way pin the rubric
       in `test/computeDomainScore.test.ts`.
-- [ ] Split the diagnostics page. `DiagnosticsView` stacks the score hero, the
-      overview panel and eight full detail sections (DNS, DMARC, SPF, SPF tree,
-      DKIM, BIMI, MTA-STS, TLS-RPT) plus the AI panel on one scroll, each with
-      its explainer text. Overlaps the two Future Ideas below; the smallest
-      shippable step is the overview panel staying and each detail section
-      collapsing by default, opened from its overview row.
 
 ## Security
 
