@@ -12,7 +12,9 @@
 
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
 audit, the fixes, the launch steps and the 2026-09-10 purge of the pre-rewrite
-history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
+history are logged in `TODO_LOG.md`, along with the 2026-09-10 readiness audit
+that closed seven pull requests. Nothing launch-related is pending; the
+follow-ups it produced live as GitHub issues #25 to #29.
 
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
