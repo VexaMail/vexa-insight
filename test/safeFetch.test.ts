@@ -165,3 +165,28 @@ describe('deliverWebhook (SSRF guard)', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 })
+
+describe('safeFetch address pinning', () => {
+  it('dispatches through a dispatcher pinned to the validated address', async () => {
+    fetchMock.mockResolvedValueOnce(new Response('ok', { status: 200 }))
+
+    await safeFetch(ORIGIN, { method: 'GET' })
+
+    const init = fetchMock.mock.calls[0]?.[1] as { dispatcher?: unknown }
+    expect(init.dispatcher).toBeDefined()
+  })
+
+  it('answers the connection lookup with the checked address, whatever DNS now says', async () => {
+    const { pinnedAddressLookup } =
+      await import('../src/services/security/pinnedAddressLookup')
+    const lookup = pinnedAddressLookup(['192.0.3.1'])
+
+    const answered = await new Promise((resolve) => {
+      lookup('rebound.example.com', {}, (_error, result) => {
+        resolve(result)
+      })
+    })
+
+    expect(answered).toEqual([{ address: '192.0.3.1', family: 4 }])
+  })
+})
