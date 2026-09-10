@@ -218,6 +218,13 @@
       "when": 1787680000000,
       "tag": "0030_ingestion_days_back_floor",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1789055990951,
+      "tag": "0031_narrow_rawhide_kid",
+      "breakpoints": true
     }
   ]
 }

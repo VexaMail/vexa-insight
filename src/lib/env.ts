@@ -46,5 +46,13 @@ export const env = z
     OIDC_CLIENT_SECRET: z.string().optional(),
     OIDC_REDIRECT_URI: z.string().optional(),
     OIDC_SCOPES: z.string().default('openid profile email'),
+    // Opt-in: let a first SSO login adopt an existing local account whose
+    // username equals the IdP's verified email. Off by default because it
+    // lets anyone who controls that address at the IdP inherit the local
+    // account, including an administrator one.
+    OIDC_ALLOW_EMAIL_LINKING: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((value) => value === 'true'),
   })
   .parse(process.env)
