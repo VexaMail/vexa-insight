@@ -40,7 +40,7 @@ services:
       - VEXA_UPDATE_REPO=${VEXA_UPDATE_REPO:-}
       # First-run installer is loopback-only unless this is set; behind a proxy
       # you also need the public origin(s) allow-listed for Server Actions.
-      - VEXA_ALLOW_REMOTE_INSTALL=${VEXA_ALLOW_REMOTE_INSTALL:-}
+      - VEXA_ALLOW_REMOTE_INSTALL=${VEXA_ALLOW_REMOTE_INSTALL:-0}
       - VEXA_ALLOWED_ORIGINS=${VEXA_ALLOWED_ORIGINS:-}
     volumes:
       - vexa-data:/app/data

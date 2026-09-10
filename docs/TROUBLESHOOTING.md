@@ -119,9 +119,10 @@ The dashboard shows zero reports even though IMAP credentials are valid.
 
 Checklist, in order:
 
-1. **Cron timing.** The poller runs every 5 minutes by default. Wait one tick
-   after saving credentials, then check `Settings > Polling status` for the last
-   run timestamp.
+1. **Cron timing.** The poller runs every 60 minutes by default, and
+   `Settings > Ingestion interval` changes that. Wait one tick after saving
+   credentials, then check `Settings > Polling status` for the last run
+   timestamp.
 
 2. **Mailbox path.** Most ESPs deliver DMARC reports to the `INBOX` folder; some
    users have a filter routing them to a sub-folder. Confirm by logging into the

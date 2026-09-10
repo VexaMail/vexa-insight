@@ -209,7 +209,8 @@ must provide an admin email and password. Once at least one user exists,
 ### Password recovery
 
 OSS deployments may not have SMTP configured, so recovery is performed via CLI
-on the server:
+on the server. Run it from the install directory, where `DATABASE_URL` points at
+the database you want to repair:
 
 ```bash
 # create new admin
@@ -340,8 +341,9 @@ migrations for schema changes).
 - Login is rate-limited (5 attempts / minute / IP).
 - HTTP security headers (CSP, X-Frame-Options, HSTS, Referrer-Policy,
   Permissions-Policy) enabled by default.
-- SQLite is fine for development. For production, consider PostgreSQL/MySQL plus
-  appropriate file/network controls.
+- SQLite is the only supported database. There is no PostgreSQL or MySQL driver
+  in the application; production hardening means file permissions, backups and
+  network controls around that database file.
 
 Report security issues privately as described in [SECURITY.md](SECURITY.md).
 
