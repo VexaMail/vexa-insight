@@ -19,7 +19,7 @@ export async function completeOidcLogin({
   const discovery = await discoverIssuer(issuer)
   const tokens = await exchangeCodeForTokens({ discovery, code, codeVerifier })
   const info = await fetchUserInfo(discovery, tokens.access_token)
-  const userId = provisionUserFromUserInfo(info)
+  const userId = provisionUserFromUserInfo({ info, issuer })
   await createSession(userId)
   await recordAuditEvent({
     action: 'auth.login.success',

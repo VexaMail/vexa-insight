@@ -19,6 +19,8 @@ export OIDC_CLIENT_SECRET=...
 export OIDC_REDIRECT_URI=https://vexa.example.com/api/auth/oidc/callback
 # Optional. Default: "openid profile email".
 export OIDC_SCOPES="openid profile email"
+# Optional. Default: false. See "Account linking" below before enabling.
+export OIDC_ALLOW_EMAIL_LINKING=false
 ```
 
 `src/lib/env.ts` validates these at boot via Zod; a missing variable does not
@@ -36,8 +38,9 @@ source of truth.
 3. The IdP redirects back to `OIDC_REDIRECT_URI` with `code` and `state`.
 4. `/callback` validates the state cookie, exchanges the code for tokens using
    the stored PKCE verifier (client auth via `client_secret_basic`), fetches
-   userinfo, and either finds the local user by
-   `email`/`preferred_username`/`sub` or creates a fresh row with role `viewer`.
+   userinfo, and resolves the local user from the `(issuer, sub)` pair, creating
+   a fresh row with role `viewer` when no account is bound yet. See "Account
+   linking".
 5. A normal session cookie is issued; an `auth.login.success` row is appended to
    `audit_log` with `metadata = { provider: 'oidc' }`.
 
@@ -51,6 +54,31 @@ source of truth.
 - Provisioned users hold an unguessable placeholder password hash so password
   login cannot succeed against them. Removing the local user row is the way to
   revoke access for an SSO account.
+
+## Account linking
+
+The local row an SSO session belongs to is decided by the `(issuer, sub)` pair
+stored in `users.oidc_issuer` / `users.oidc_subject`. The subject is the only
+identifier an OpenID provider guarantees to be stable and unique; an email claim
+is not, and many providers will happily assert an address the account never
+proved it controls.
+
+Two rules follow, and both are enforced in
+`src/services/auth/oidc/provisionUserFromUserInfo.ts`:
+
+- An email claim is used for the display username only when the provider marks
+  it `email_verified`. An unverified address is ignored and the subject becomes
+  the username.
+- A login never adopts a pre-existing local account. If a row already exists
+  with that username and no binding to this subject, the login fails rather than
+  handing over the account. Without this an attacker who can get any IdP to
+  assert the administrator's address would inherit the administrator's session.
+
+Set `OIDC_ALLOW_EMAIL_LINKING=true` to allow that adoption for the one login
+that first matches a verified email to an existing username. The binding is
+written at that moment, so later logins match on the subject. Turn it on only
+when you control the IdP and trust its email verification, and turn it off again
+once the accounts you wanted are linked.
 
 ## Known gaps (do not ship without addressing)
 
