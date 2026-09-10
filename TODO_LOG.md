@@ -6,6 +6,23 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Production redeployed to 0.2.2 on nova:** the live instance
+      was still running 0.2.0, with the pre-rename repository slug compiled into
+      its update checker. It kept working only because GitHub redirects the old
+      path.
+  - Result: `vexa-deploy` ran from a clean worktree (the script rsyncs the
+    working tree) after a backup at
+    `/opt/vexa/backups/vexa.db.pre-0.2.2-20260910` (mode 600, root, integrity
+    check OK). No schema change: 31 migration files and 31 applied migrations on
+    both sides before and after. A forced `POST /api/v1/admin/update-check`
+    replaced the cached row, which had been written before the rename.
+  - Evidence: deploy exit 0, with the script's own checks printing
+    `bind: loopback only`, `health: ok` and `public /login: 200`;
+    `systemctl is-active vexa` reports `active` with no errors in the journal
+    since the restart; the app reports version `0.2.2`; the update state now
+    reads `latestUrl` under `VexaMail/vexa-insight` with
+    `updateAvailable: false`; 3609 raw reports intact.
+
 - [x] 2026-09-10 — **Helm chart version pinned to the app, and the drift
       guarded:** `Chart.yaml` carried `version: 0.1.0` and `appVersion: '0.1.0'`
       while the app was on `0.2.2`. That was not cosmetic:
