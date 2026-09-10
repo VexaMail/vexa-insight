@@ -1,6 +1,7 @@
 'use client'
 
 import { SortHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import { formatReportDateRange } from '@/utils/format'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetReportsColumnsParams } from '../GetReportsColumnsParams'
@@ -10,7 +11,7 @@ export function createDateRangeColumn({
   dispatch,
   sortKey,
   sortDir,
-}: GetReportsColumnsParams): ColumnDef<ReportRow> {
+}: GetReportsColumnsParams): ColumnDef<typeof dataTableFeatures, ReportRow> {
   return {
     accessorKey: 'beginDate',
     header: () => (

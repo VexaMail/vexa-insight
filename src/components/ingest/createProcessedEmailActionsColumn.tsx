@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ProcessedEmail } from '@/types/ingest'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Eye } from 'lucide-react'
 
 export function createProcessedEmailActionsColumn(
   onViewEmail: (email: ProcessedEmail) => void,
-): ColumnDef<ProcessedEmail> {
+): ColumnDef<typeof dataTableFeatures, ProcessedEmail> {
   return {
     id: 'actions',
     cell: ({ row }) => (

@@ -1,8 +1,9 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Shield, ShieldAlert } from 'lucide-react'
 
-export const roleColumn: ColumnDef<User> = {
+export const roleColumn: ColumnDef<typeof dataTableFeatures, User> = {
   accessorKey: 'role',
   header: 'Role',
   cell: ({ row }) => (

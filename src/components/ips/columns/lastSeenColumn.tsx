@@ -1,11 +1,15 @@
 'use client'
 
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { IpSummaryData } from '@/types/ips'
 import { formatRelativeDate } from '@/utils/format'
 import type { ColumnDef } from '@tanstack/react-table'
 
-export const lastSeenColumn: ColumnDef<IpSummaryData> = {
+export const lastSeenColumn: ColumnDef<
+  typeof dataTableFeatures,
+  IpSummaryData
+> = {
   accessorKey: 'lastSeen',
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Last Seen" />

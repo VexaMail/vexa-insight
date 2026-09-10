@@ -1,5 +1,6 @@
 'use client'
 
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
 import type { ColumnDef } from '@tanstack/react-table'
 import { complianceColumn } from './columns/complianceColumn'
@@ -11,7 +12,7 @@ import type { GetDomainsColumnsParams } from './GetDomainsColumnsParams'
 
 export function getDomainsColumns(
   params: GetDomainsColumnsParams,
-): ColumnDef<DomainsTableRow>[] {
+): ColumnDef<typeof dataTableFeatures, DomainsTableRow>[] {
   return [
     domainNameColumn,
     messagesColumn,

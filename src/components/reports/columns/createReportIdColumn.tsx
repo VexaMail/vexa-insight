@@ -1,6 +1,7 @@
 'use client'
 
 import { SortHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import { FileText } from 'lucide-react'
 import type { GetReportsColumnsParams } from '../GetReportsColumnsParams'
@@ -10,7 +11,7 @@ export function createReportIdColumn({
   dispatch,
   sortKey,
   sortDir,
-}: GetReportsColumnsParams): ColumnDef<ReportRow> {
+}: GetReportsColumnsParams): ColumnDef<typeof dataTableFeatures, ReportRow> {
   return {
     accessorKey: 'reportId',
     header: () => (

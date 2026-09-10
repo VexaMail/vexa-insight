@@ -1,5 +1,6 @@
 import { IpDisplay } from '@/components/ips'
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetDomainSourcesColumnsParams } from '../GetDomainSourcesColumnsParams'
 import type { SourceRow } from '../SourceRow'
@@ -9,7 +10,10 @@ export function createSourceIpColumn({
   localHostnames,
   refreshingIps,
   onRefresh,
-}: GetDomainSourcesColumnsParams): ColumnDef<SourceRow> {
+}: GetDomainSourcesColumnsParams): ColumnDef<
+  typeof dataTableFeatures,
+  SourceRow
+> {
   return {
     accessorKey: 'sourceIp',
     header: ({ column }) => (

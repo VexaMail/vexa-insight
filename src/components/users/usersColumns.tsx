@@ -1,3 +1,4 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
 import { allowedDomainsColumn } from './columns/allowedDomainsColumn'
@@ -8,7 +9,7 @@ import type { GetUsersColumnsParams } from './GetUsersColumnsParams'
 
 export function getUsersColumns(
   params: GetUsersColumnsParams,
-): ColumnDef<User>[] {
+): ColumnDef<typeof dataTableFeatures, User>[] {
   return [
     createUsernameColumn(params.currentUserId),
     roleColumn,

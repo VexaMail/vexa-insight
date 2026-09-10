@@ -1,6 +1,7 @@
 'use client'
 
 import { useListState } from '@/hooks/core'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type {
   DomainsTableProps,
   DomainsTableRow,
@@ -40,7 +41,7 @@ export function useDomainsTable({
     router.replace(`?${newParams.toString()}`, { scroll: false })
   }
 
-  function handleRowClick(row: Row<DomainsTableRow>) {
+  function handleRowClick(row: Row<typeof dataTableFeatures, DomainsTableRow>) {
     setScope(filtered.map((d) => d.domainName))
     router.push(`/domains/${row.original.domainName}`)
   }

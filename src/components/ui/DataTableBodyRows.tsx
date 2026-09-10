@@ -1,12 +1,13 @@
 import type { DataTableRowsProps } from '@/types/ui'
 import { isSelectedTableRow } from '@/utils/ui'
+import type { RowData } from '@tanstack/react-table'
 import { flexRender } from '@tanstack/react-table'
 import { TableBody } from './TableBody'
 import { TableCell } from './TableCell'
 import { TableRow } from './TableRow'
 
 /** Body rows of a data table, or its empty state. */
-export function DataTableBodyRows<TData>({
+export function DataTableBodyRows<TData extends RowData>({
   table,
   columnCount,
   selectedRowId,
