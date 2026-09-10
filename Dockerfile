@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22-alpine AS builder
+FROM node:26-alpine AS builder
 
 # better-sqlite3 ships no musl/arm64 prebuilt binary, so pnpm install falls
 # back to node-gyp, which needs a Python and a C++ toolchain.
@@ -11,13 +11,15 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 # pnpm 11 refuses to remove an existing node_modules without TTY unless CI=true;
 # without this, install fails with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY.
 ENV CI=true
-RUN corepack enable pnpm && pnpm install --frozen-lockfile
+# Node 26 no longer bundles corepack, so install it from npm before enabling
+# it; the pnpm version still comes from package.json's packageManager field.
+RUN npm install -g corepack@latest && corepack enable pnpm && pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm run build
 
 # Run stage
-FROM node:22-alpine AS runner
+FROM node:26-alpine AS runner
 
 WORKDIR /app
 
