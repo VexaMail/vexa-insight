@@ -1,5 +1,6 @@
 'use client'
 
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import { createActionsColumn } from './columns/createActionsColumn'
 import { createDateRangeColumn } from './columns/createDateRangeColumn'
@@ -11,7 +12,7 @@ import type { ReportRow } from './ReportRow'
 
 export function getReportsColumns(
   params: GetReportsColumnsParams,
-): ColumnDef<ReportRow>[] {
+): ColumnDef<typeof dataTableFeatures, ReportRow>[] {
   return [
     relatedDomainsColumn,
     createReportIdColumn(params),

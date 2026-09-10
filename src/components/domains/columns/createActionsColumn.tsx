@@ -1,5 +1,6 @@
 'use client'
 
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Activity, ExternalLink } from 'lucide-react'
@@ -9,7 +10,10 @@ import type { GetDomainsColumnsParams } from '../GetDomainsColumnsParams'
 export function createActionsColumn({
   setScope,
   filtered,
-}: GetDomainsColumnsParams): ColumnDef<DomainsTableRow> {
+}: GetDomainsColumnsParams): ColumnDef<
+  typeof dataTableFeatures,
+  DomainsTableRow
+> {
   return {
     id: 'actions',
     cell: ({ row }) => {

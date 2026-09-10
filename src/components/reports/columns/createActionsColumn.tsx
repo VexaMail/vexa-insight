@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
@@ -11,7 +12,7 @@ export function createActionsColumn({
   domainName,
   filtered,
   setScope,
-}: GetReportsColumnsParams): ColumnDef<ReportRow> {
+}: GetReportsColumnsParams): ColumnDef<typeof dataTableFeatures, ReportRow> {
   return {
     id: 'actions',
     cell: ({ row }) => {

@@ -1,9 +1,10 @@
 import type { DataTableToolbarProps } from '@/types/ui'
+import type { RowData } from '@tanstack/react-table'
 import { SearchIcon } from 'lucide-react'
 import { Input } from './input'
 
 /** Search box and caller-supplied actions above a data table. */
-export function DataTableToolbar<TData>({
+export function DataTableToolbar<TData extends RowData>({
   table,
   globalFilter,
   onGlobalFilterChange,

@@ -1,12 +1,16 @@
 'use client'
 
 import { Badge, SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
 import { getDomainStatus } from '@/utils/domains'
 import type { ColumnDef } from '@tanstack/react-table'
 import { getComplianceStyles } from '../getComplianceStyles'
 
-export const statusColumn: ColumnDef<DomainsTableRow> = {
+export const statusColumn: ColumnDef<
+  typeof dataTableFeatures,
+  DomainsTableRow
+> = {
   id: 'status',
   accessorFn: (row) => getDomainStatus(row.passRatePercent),
   header: ({ column }) => (

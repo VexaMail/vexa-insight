@@ -1,4 +1,5 @@
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import { isActiveJobRun } from '@/utils/ingest'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetJobRunHistoryColumnsParams } from './GetJobRunHistoryColumnsParams'
@@ -10,7 +11,10 @@ export function createJobRunProcessedColumn({
   isGlobalRunning,
   activeJobRunId,
   currentProcessed,
-}: GetJobRunHistoryColumnsParams): ColumnDef<JobRunRow> {
+}: GetJobRunHistoryColumnsParams): ColumnDef<
+  typeof dataTableFeatures,
+  JobRunRow
+> {
   return {
     accessorKey: 'processed',
     header: ({ column }) => (

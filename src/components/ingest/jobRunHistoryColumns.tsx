@@ -1,3 +1,4 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import { createJobRunProcessedColumn } from './createJobRunProcessedColumn'
 import { createJobRunStatusColumn } from './createJobRunStatusColumn'
@@ -9,7 +10,7 @@ import { jobRunRunAtColumn } from './jobRunRunAtColumn'
 
 export function getJobRunHistoryColumns(
   params: GetJobRunHistoryColumnsParams,
-): ColumnDef<JobRunRow>[] {
+): ColumnDef<typeof dataTableFeatures, JobRunRow>[] {
   return [
     jobRunRunAtColumn,
     createJobRunStatusColumn(params),

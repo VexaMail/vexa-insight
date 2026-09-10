@@ -1,3 +1,4 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetUsersColumnsParams } from '../GetUsersColumnsParams'
@@ -7,7 +8,7 @@ export function createActionsColumn({
   currentUserId,
   onEdit,
   onDelete,
-}: GetUsersColumnsParams): ColumnDef<User> {
+}: GetUsersColumnsParams): ColumnDef<typeof dataTableFeatures, User> {
   return {
     id: 'actions',
     header: '',

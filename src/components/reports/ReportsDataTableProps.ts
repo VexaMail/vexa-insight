@@ -1,3 +1,4 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type {
   ReportRow,
   ReportsTableAction,
@@ -13,5 +14,5 @@ export type ReportsDataTableProps = {
   readonly filtered: ReportRow[]
   readonly domainName: string | undefined
   readonly loading: boolean
-  readonly onRowClick: (row: Row<ReportRow>) => void
+  readonly onRowClick: (row: Row<typeof dataTableFeatures, ReportRow>) => void
 }

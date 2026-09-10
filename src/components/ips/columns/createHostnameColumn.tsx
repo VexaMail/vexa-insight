@@ -1,6 +1,7 @@
 'use client'
 
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { IpSummaryData } from '@/types/ips'
 import { mainDomainFilterFn } from '@/utils/ips'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -12,7 +13,7 @@ export function createHostnameColumn({
   localHostnames,
   localHostnameLookupTimestamps,
   handleRefresh,
-}: GetIpsColumnsParams): ColumnDef<IpSummaryData> {
+}: GetIpsColumnsParams): ColumnDef<typeof dataTableFeatures, IpSummaryData> {
   return {
     accessorKey: 'hostname',
     header: ({ column }) => (

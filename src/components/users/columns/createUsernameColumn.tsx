@@ -1,9 +1,12 @@
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
 import { UserIcon } from 'lucide-react'
 
 /** The username, tagged "You" on the signed-in user's own row. */
-export function createUsernameColumn(currentUserId: string): ColumnDef<User> {
+export function createUsernameColumn(
+  currentUserId: string,
+): ColumnDef<typeof dataTableFeatures, User> {
   return {
     accessorKey: 'username',
     header: 'Username',
