@@ -6,6 +6,28 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Two assistant trailers removed from `main`, and the
+      Dependabot branches carrying them rebased:** two documentation commits
+      pushed earlier the same day ended with a `Claude-Session:` line, which the
+      owner's global rule forbids and which the 2026-09-09 history rewrite had
+      just stripped from 85 older commits.
+  - Result: both commits were recreated without the trailer, with a byte
+    identical tree, and force-pushed. Classic branch protection refuses a force
+    push even to an admin, since `enforce_admins` only covers the other rules,
+    so the protection was snapshotted, `allow_force_pushes` flipped for the
+    single push, and the snapshot put back. Six open Dependabot branches still
+    descended from the old commit and kept it reachable in the public
+    repository; `@dependabot rebase` on each pull request moved them onto the
+    new head. The Mac mini clone was refetched and garbage-collected.
+  - Evidence: a diff of the branch protection before and after the push is
+    empty; no branch in the repository compares `ahead` or `identical` against
+    the old commit; the GitHub API reports zero commits carrying the trailer; CI
+    and CodeQL are green on the rewritten head, all five checks passing; the Mac
+    mini reports the old object gone and no trailer in `--all`.
+  - Caveat: the orphaned commit stays fetchable by its full hash until GitHub
+    garbage-collects it. It carries a session URL, not a credential, so it did
+    not justify deleting and recreating the repository a second time.
+
 - [x] 2026-09-10 — **Production redeployed to 0.2.2 on nova:** the live instance
       was still running 0.2.0, with the pre-rename repository slug compiled into
       its update checker. It kept working only because GitHub redirects the old
