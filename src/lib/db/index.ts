@@ -1,3 +1,4 @@
+export { applySqlFile } from './applySqlFile'
 export { getDb } from './client'
 export { resolveDbFilePath } from './resolveDbFilePath'
 export { runMigrations } from './runMigrations'
