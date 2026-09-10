@@ -2,7 +2,7 @@
 
 Plain-YAML manifests for running Vexa on a single Kubernetes cluster.
 For a parameterized install, prefer the Helm chart under
-[../helm/vexa-insight-dashboard](../helm/vexa-insight-dashboard).
+[../helm/vexa-insight](../helm/vexa-insight).
 
 ## Prerequisites
 
@@ -49,4 +49,4 @@ kubectl -n vexa logs deploy/vexa
 
 If you want to template these manifests (multiple environments, value
 overrides, integration with an existing Helm-managed cluster), use the
-chart at [../helm/vexa-insight-dashboard](../helm/vexa-insight-dashboard).
+chart at [../helm/vexa-insight](../helm/vexa-insight).

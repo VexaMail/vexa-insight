@@ -34,8 +34,8 @@ Wants=network-online.target
 Type=simple
 User=vexa
 Group=vexa
-WorkingDirectory=/opt/vexa-insight-dashboard
-EnvironmentFile=-/opt/vexa-insight-dashboard/.env
+WorkingDirectory=/opt/vexa-insight
+EnvironmentFile=-/opt/vexa-insight/.env
 Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOSTNAME=127.0.0.1
@@ -58,7 +58,7 @@ SuccessExitStatus=143
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ReadWritePaths=/opt/vexa-insight-dashboard
+ReadWritePaths=/opt/vexa-insight
 ProtectHome=true
 
 [Install]

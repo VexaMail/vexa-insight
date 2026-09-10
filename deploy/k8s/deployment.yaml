@@ -4,7 +4,7 @@ metadata:
   name: vexa
   namespace: vexa
   labels:
-    app.kubernetes.io/name: vexa-insight-dashboard
+    app.kubernetes.io/name: vexa-insight
 spec:
   # SQLite enforces single-writer; do not scale beyond 1 without moving
   # to a network DB.
@@ -14,11 +14,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/name: vexa-insight-dashboard
+      app.kubernetes.io/name: vexa-insight
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: vexa-insight-dashboard
+        app.kubernetes.io/name: vexa-insight
     spec:
       securityContext:
         runAsNonRoot: true
@@ -27,7 +27,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: app
-          image: ghcr.io/vexamail/vexa-insight-dashboard:latest
+          image: ghcr.io/vexamail/vexa-insight:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

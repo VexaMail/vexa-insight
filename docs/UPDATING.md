@@ -1,8 +1,8 @@
 # Updating Vexa Mail Insight
 
 Vexa Mail Insight is self-hosted. New versions are published as
-[GitHub Releases](https://github.com/VexaMail/vexa-insight-dashboard/releases)
-following [Semantic Versioning](https://semver.org/).
+[GitHub Releases](https://github.com/VexaMail/vexa-insight/releases) following
+[Semantic Versioning](https://semver.org/).
 
 The dashboard checks GitHub for new releases once per day and surfaces the
 result in two places:
@@ -16,14 +16,14 @@ pulls code, never modifies your filesystem. You stay in control.
 
 ## How the check works
 
-| Property    | Value                                                                              |
-| ----------- | ---------------------------------------------------------------------------------- |
-| Endpoint    | `GET https://api.github.com/repos/VexaMail/vexa-insight-dashboard/releases/latest` |
-| HTTP method | `GET` (no payload, no telemetry, no installation ID)                               |
-| Headers     | `Accept`, `X-GitHub-Api-Version`, `User-Agent: vexa-insight/<version>`             |
-| Cadence     | One server-side run ~60s after boot, then every 24 hours via cron                  |
-| Cache       | Single-row `update_state` table in your SQLite/Postgres/MySQL                      |
-| Channel     | Stable releases only (`/releases/latest` excludes drafts and pre-releases)         |
+| Property    | Value                                                                      |
+| ----------- | -------------------------------------------------------------------------- |
+| Endpoint    | `GET https://api.github.com/repos/VexaMail/vexa-insight/releases/latest`   |
+| HTTP method | `GET` (no payload, no telemetry, no installation ID)                       |
+| Headers     | `Accept`, `X-GitHub-Api-Version`, `User-Agent: vexa-insight/<version>`     |
+| Cadence     | One server-side run ~60s after boot, then every 24 hours via cron          |
+| Cache       | Single-row `update_state` table in your SQLite/Postgres/MySQL              |
+| Channel     | Stable releases only (`/releases/latest` excludes drafts and pre-releases) |
 
 GitHub's unauthenticated rate limit is 60 requests per hour per IP. We cache the
 result, so a single instance hits GitHub roughly **1 time per day**, well under
@@ -57,10 +57,10 @@ The project ships a public, multi-architecture image to GitHub Container
 Registry on every release tag (`amd64` + `arm64`):
 
 ```
-ghcr.io/vexamail/vexa-insight-dashboard:latest
-ghcr.io/vexamail/vexa-insight-dashboard:vX.Y.Z
-ghcr.io/vexamail/vexa-insight-dashboard:X.Y
-ghcr.io/vexamail/vexa-insight-dashboard:X
+ghcr.io/vexamail/vexa-insight:latest
+ghcr.io/vexamail/vexa-insight:vX.Y.Z
+ghcr.io/vexamail/vexa-insight:X.Y
+ghcr.io/vexamail/vexa-insight:X
 ```
 
 Layer the bundled Watchtower override on top of `docker-compose.yml` to get
@@ -88,7 +88,7 @@ GitHub, without any manual command. Track a more conservative tag (e.g. pin to
 your `.env`:
 
 ```bash
-VEXA_IMAGE=ghcr.io/vexamail/vexa-insight-dashboard:0.1
+VEXA_IMAGE=ghcr.io/vexamail/vexa-insight:0.1
 ```
 
 Stop auto-updates:
@@ -231,7 +231,7 @@ the "Update available" card.
 When the build succeeded but the new version misbehaves at runtime:
 
 ```bash
-cd /opt/vexa-insight-dashboard          # your install dir
+cd /opt/vexa-insight          # your install dir
 git checkout v0.1.0                     # the previous tag
 cp data/vexa.db.pre-update.<timestamp> data/vexa.db
 pnpm install
@@ -288,6 +288,6 @@ notes; cross-check with `git log` if you build from source.
 
 ## Reporting upgrade problems
 
-Open an issue at <https://github.com/VexaMail/vexa-insight-dashboard/issues>
-with the output of `pnpm run check` and the contents of your `update_state` row
-(Settings → Updates → "Check now" surfaces the last error).
+Open an issue at <https://github.com/VexaMail/vexa-insight/issues> with the
+output of `pnpm run check` and the contents of your `update_state` row (Settings
+→ Updates → "Check now" surfaces the last error).

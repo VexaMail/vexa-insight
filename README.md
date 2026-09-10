@@ -4,11 +4,11 @@
 
 ### Self-hosted DMARC observability. Your data, your server, your dashboard.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight-dashboard/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight-dashboard/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight-dashboard?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight-dashboard/releases)
-[![Docker Pulls](https://img.shields.io/badge/ghcr.io-vexamail%2Fvexa--insight--dashboard-2496ED?logo=docker)](https://github.com/VexaMail/vexa-insight-dashboard/pkgs/container/vexa-insight-dashboard)
+[![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight/releases)
+[![Docker Pulls](https://img.shields.io/badge/ghcr.io-vexamail%2Fvexa--insight--dashboard-2496ED?logo=docker)](https://github.com/VexaMail/vexa-insight/pkgs/container/vexa-insight)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Stars](https://img.shields.io/github/stars/VexaMail/vexa-insight-dashboard?style=social)](https://github.com/VexaMail/vexa-insight-dashboard/stargazers)
+[![Stars](https://img.shields.io/github/stars/VexaMail/vexa-insight?style=social)](https://github.com/VexaMail/vexa-insight/stargazers)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 </div>
@@ -38,7 +38,7 @@ docker run -d --name vexa \
   -p 127.0.0.1:3000:3000 \
   -v vexa-data:/app/data \
   -e SECRET_KEY=$(openssl rand -hex 32) \
-  ghcr.io/vexamail/vexa-insight-dashboard:latest
+  ghcr.io/vexamail/vexa-insight:latest
 
 # Grab the one-time install token from the container logs:
 docker logs vexa 2>&1 | grep -A1 'install token'
@@ -161,8 +161,8 @@ release.
 ### Source install (SQLite default, no .env required)
 
 ```bash
-git clone https://github.com/VexaMail/vexa-insight-dashboard.git
-cd vexa-insight-dashboard
+git clone https://github.com/VexaMail/vexa-insight.git
+cd vexa-insight
 pnpm install
 pnpm run seed:demo      # optional — populate sample data for first impression
 pnpm dev                # open http://localhost:3000

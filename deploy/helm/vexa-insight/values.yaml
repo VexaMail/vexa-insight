@@ -1,9 +1,9 @@
-# Default values for vexa-insight-dashboard.
+# Default values for vexa-insight.
 # Override per environment with `helm install ... -f values.prod.yaml`
 # or `--set key=value`.
 
 image:
-  repository: ghcr.io/vexamail/vexa-insight-dashboard
+  repository: ghcr.io/vexamail/vexa-insight
   # Pin to a real release; "latest" is convenient but not reproducible.
   tag: ''
   pullPolicy: IfNotPresent

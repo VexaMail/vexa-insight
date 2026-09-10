@@ -21,7 +21,7 @@ Report vulnerabilities privately to:
 - Subject prefix: `[security] vexa-mail-insight: <short description>`
 
 You can also use GitHub's
-[private security advisories](https://github.com/VexaMail/vexa-insight-dashboard/security/advisories/new)
+[private security advisories](https://github.com/VexaMail/vexa-insight/security/advisories/new)
 for coordinated disclosure.
 
 When reporting, please include:

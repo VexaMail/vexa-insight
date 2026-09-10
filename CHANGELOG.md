@@ -102,7 +102,7 @@ and this project adheres to
   a GitHub Release with auto-generated notes whenever a `v*` tag is pushed.
 - **Multi-arch container image** published to GitHub Container Registry on every
   release tag (`linux/amd64`, `linux/arm64`):
-  `ghcr.io/vexamail/vexa-insight-dashboard:{latest,vX.Y.Z,X.Y,X}`.
+  `ghcr.io/vexamail/vexa-insight:{latest,vX.Y.Z,X.Y,X}`.
 - **Hands-off auto-updates via Watchtower.** New `docker-compose.watchtower.yml`
   override layers a Watchtower container that polls the registry every 6 hours
   and recreates the `web` service when a new image lands — preserving your
@@ -398,7 +398,6 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
   `Authorization: Bearer`).
 - `/install` permanently locked after the first user exists.
 
-[Unreleased]:
-  https://github.com/VexaMail/vexa-insight-dashboard/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.2.1
-[0.2.0]: https://github.com/VexaMail/vexa-insight-dashboard/releases/tag/v0.2.0
+[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.1
+[0.2.0]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.0

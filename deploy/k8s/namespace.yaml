@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: vexa
   labels:
-    app.kubernetes.io/name: vexa-insight-dashboard
+    app.kubernetes.io/name: vexa-insight

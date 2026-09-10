@@ -18,7 +18,7 @@ module.exports = {
   apps: [
     {
       name: 'vexa-insight',
-      cwd: '/opt/vexa-insight-dashboard',
+      cwd: '/opt/vexa-insight',
       script: 'pnpm',
       args: 'run start',
       env: {

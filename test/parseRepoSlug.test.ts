@@ -3,25 +3,21 @@ import { parseRepoSlug } from '../src/utils/updates/parseRepoSlug'
 
 describe('parseRepoSlug', () => {
   it('parses owner/repo strings', () => {
-    expect(parseRepoSlug('VexaMail/vexa-insight-dashboard')).toEqual({
+    expect(parseRepoSlug('VexaMail/vexa-insight')).toEqual({
       owner: 'VexaMail',
-      repo: 'vexa-insight-dashboard',
+      repo: 'vexa-insight',
     })
   })
   it('parses GitHub https URLs', () => {
-    expect(
-      parseRepoSlug('https://github.com/VexaMail/vexa-insight-dashboard'),
-    ).toEqual({
+    expect(parseRepoSlug('https://github.com/VexaMail/vexa-insight')).toEqual({
       owner: 'VexaMail',
-      repo: 'vexa-insight-dashboard',
+      repo: 'vexa-insight',
     })
   })
   it('parses git+https URLs and strips .git', () => {
     expect(
-      parseRepoSlug(
-        'git+https://github.com/VexaMail/vexa-insight-dashboard.git',
-      ),
-    ).toEqual({ owner: 'VexaMail', repo: 'vexa-insight-dashboard' })
+      parseRepoSlug('git+https://github.com/VexaMail/vexa-insight.git'),
+    ).toEqual({ owner: 'VexaMail', repo: 'vexa-insight' })
   })
   it('returns null for non-GitHub hosts', () => {
     expect(parseRepoSlug('https://gitlab.com/foo/bar')).toBeNull()

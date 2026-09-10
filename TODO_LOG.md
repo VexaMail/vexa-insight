@@ -57,7 +57,7 @@
     Dependabot PRs closed and their branches deleted (Dependabot re-opens
     against the new main). A stale `.git/filter-repo/` from 2026-07-25 made
     filter-repo prompt interactively; moved aside. Full pre-rewrite copy:
-    `~/vexa-insight-dashboard-pre-rewrite-2026-09-09.bundle`.
+    `~/vexa-insight-pre-rewrite-2026-09-09.bundle`.
   - Result: repository flipped public (`gh repo edit --visibility public`);
     first public CodeQL run green on the rewritten head after eight straight
     failures on the private repo. Secret scanning, push protection and
@@ -255,11 +255,11 @@
       fixes on top of a `0.1.0` that was never tagged). `release.yml` run
       34290113725 published the GitHub Release with the CycloneDX SBOM, and
       built, pushed and cosign-signed the multi-arch image
-      `ghcr.io/vexamail/vexa-insight-dashboard:{latest,0,0.2,0.2.0}`. The only
-      failed step was the build-provenance attestation ("Feature not available
-      for the VexaMail organization"), which is a private-repo limitation; the
-      step now skips while the repo is private. Local `pnpm run check:ci` before
-      tagging: 91 files, 564 tests, migrations OK.
+      `ghcr.io/vexamail/vexa-insight:{latest,0,0.2,0.2.0}`. The only failed step
+      was the build-provenance attestation ("Feature not available for the
+      VexaMail organization"), which is a private-repo limitation; the step now
+      skips while the repo is private. Local `pnpm run check:ci` before tagging:
+      91 files, 564 tests, migrations OK.
 - [x] 2026-09-09 — **Open-source launch, screenshots:** the eight
       `docs/screenshots/*.png` are regenerated from the `pnpm run seed:demo`
       dataset at 1440x900 (example.com domains, documentation-range IPs, demo
@@ -1138,7 +1138,7 @@
     `utils/imap/isImapDebugEnabled.ts`, `lib/env.ts`,
     `test/imapLogging.test.ts`, `.env.example`, `README.md`,
     `docker-compose.yml`, `deploy/k8s/configmap.yaml`,
-    `deploy/helm/vexa-insight-dashboard/values.yaml`.
+    `deploy/helm/vexa-insight/values.yaml`.
 
 - [x] 2026-08-25 — **Infrastructure:** Fix the install check so an installed
       instance stops redirecting to `/install` behind a reverse proxy.
@@ -2139,7 +2139,7 @@
     persistence, ingress, and hardened container settings.
   - Evidence: `e8287ee4`; validated with `helm lint`, `helm template`, and
     `kubectl apply -k --dry-run=client`.
-  - Files: `deploy/k8s/`, `deploy/helm/vexa-insight-dashboard/`.
+  - Files: `deploy/k8s/`, `deploy/helm/vexa-insight/`.
 
 - [x] 2026-05-19 — **Infrastructure:** Enforce reversible database migrations in
       CI.

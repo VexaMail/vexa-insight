@@ -14,7 +14,7 @@
 
 services:
   web:
-    image: ${VEXA_IMAGE:-ghcr.io/vexamail/vexa-insight-dashboard:latest}
+    image: ${VEXA_IMAGE:-ghcr.io/vexamail/vexa-insight:latest}
     # Uncomment the build block below (and comment out `image:`) to build
     # from the local checkout instead of pulling the published image.
     # build: .
