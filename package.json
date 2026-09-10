@@ -1,6 +1,6 @@
 {
   "name": "vexa-mail-insight",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Open-source DMARC observability platform: ingest, normalize, and visualize email authentication reports (SPF, DKIM, DMARC) with a self-hostable Next.js dashboard.",
   "license": "Apache-2.0",

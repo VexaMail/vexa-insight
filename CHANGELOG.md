@@ -8,6 +8,26 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-09-10
+
+### Changed
+
+- **The repository is now `VexaMail/vexa-insight`.** The slug matches the
+  product name minus the `Mail` the organization already supplies, and drops
+  `dashboard`, which named only one of the surfaces: the app also ingests over
+  IMAP and serves a REST API, Prometheus metrics and webhooks. GitHub redirects
+  the old URL, so existing clones and remotes keep working.
+- **The container moved to `ghcr.io/vexamail/vexa-insight`.** Container
+  registries do not redirect, so pulls of
+  `ghcr.io/vexamail/vexa-insight-dashboard` stop working: change the image in
+  your compose file, Helm values or systemd unit and pull again. The Helm chart
+  directory is now `deploy/helm/vexa-insight` and the chart is named
+  `vexa-insight`.
+- **The update checker's default repository follows the new slug**
+  (`src/constants/updates/defaultRepoSlug.ts`). An instance still carrying the
+  old default keeps working through GitHub's API redirect; set
+  `VEXA_UPDATE_REPO` if you pin it explicitly.
+
 ## [0.2.1] - 2026-09-09
 
 ### Fixed
@@ -398,6 +418,7 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
   `Authorization: Bearer`).
 - `/install` permanently locked after the first user exists.
 
-[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.2
 [0.2.1]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.1
 [0.2.0]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.0
