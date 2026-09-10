@@ -6,6 +6,61 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Open-source readiness audit closed: seven pull requests,
+      from three security defects to five contributor issues.** The launch
+      itself was already done; the audit found a dependency backlog, defects in
+      paths the documentation told operators to use, and documentation that
+      described a different application.
+  - Result, in merge order. #17 cleared fifteen dependency bumps and moved the
+    image to `node:26-alpine` (Node 26 no longer bundles corepack, so it is
+    installed from npm before `corepack enable`). #18 bound SSO logins to the
+    OIDC `(issuer, sub)` pair instead of the email claim, gated on
+    `email_verified`, and put account adoption behind
+    `OIDC_ALLOW_EMAIL_LINKING`. #19 repaired the documented install, recovery
+    and backup paths: `VEXA_ALLOW_REMOTE_INSTALL` expanded to an empty string
+    that the enum rejects, so `docker compose up` died before migrations; the
+    four README recovery commands pointed at a script that did not exist; and
+    the backup copied a WAL-mode database file, losing committed rows, now a
+    `VACUUM INTO` snapshot that `self-update.sh` refuses to proceed without. #20
+    migrated TanStack Table to v9. #21 re-encrypted stored secrets during a key
+    rotation, which previously left every IMAP password and the AI key
+    undecryptable, and closed a DNS-rebinding window in `safeFetch` by pinning
+    each redirect hop to the addresses that hop validated. #22 made the
+    migration runner fail on a journal entry with no SQL file and on an edited
+    applied migration, which the contributor documentation already promised. #23
+    corrected four false documentation claims. #24 pinned the base image by
+    digest and kept the coverage report. #30 published the Helm chart. #31
+    pointed contributors at the new issue backlog.
+  - Evidence: every defect was reproduced before it was fixed and pinned with a
+    test that fails on the old behaviour. The suite went from 96 files / 582
+    tests to 103 files / 605 tests. `CI=true pnpm run check:ci` green on each
+    branch, all six checks green on each pull request.
+  - Follow-ups filed as issues rather than fixed here: #25 and #26 for the Slack
+    and Teams webhook adapters, #27 for delivery retries, #28 for the unused
+    `app_settings.project_name` column, #29 for the drizzle snapshot drift that
+    makes `db:generate` emit a destructive `app_settings` rebuild.
+
+- [x] 2026-09-10 — **Four false claims removed from the operator
+      documentation.** Each one cost an operator a configuration that did
+      nothing.
+  - `IMAP_SERVER`, `IMAP_PORT`, `IMAP_USERNAME`, `IMAP_PASSWORD` and
+    `PROJECT_NAME` were documented in the README, `.env.example` and
+    `docker-compose.yml`; no code reads any of them.
+    `test/documentedEnvVars.test.ts` now fails when a variable the app never
+    reads is documented again, verified by reintroducing `PROJECT_NAME`.
+  - `INGESTION_INTERVAL_MINUTES`, `INGESTION_DAYS_BACK` and `ENVIRONMENT` are
+    read only while the settings row still holds `CHANGE_ME`, not on every boot.
+  - Outbound webhooks were sold as Slack and Teams integrations. Delivery is a
+    generic JSON envelope, one attempt, no retry.
+  - The self-hosting comparison implied nothing leaves the host. The README now
+    tables every feature that reaches the network, its default and what it
+    sends.
+  - The documented Docker rollup backfill could not run: the runner image is a
+    bare `node:26-alpine` with neither pnpm nor corepack, and tsx is absent from
+    the standalone output. The entrypoint is now bundled to CJS at build time.
+    Verified inside the built image:
+    `[backfill:rollup] Rebuilt event_rollup_daily: 0 rows.`
+
 - [x] 2026-09-10 — **Two assistant trailers removed from `main`, and the
       Dependabot branches carrying them rebased:** two documentation commits
       pushed earlier the same day ended with a `Claude-Session:` line, which the
