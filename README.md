@@ -199,6 +199,29 @@ docker compose up -d              # pulls the image + persists data + healthchec
 docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
 ```
 
+### Kubernetes (Helm)
+
+The chart is published to GitHub Container Registry as an OCI artifact on every
+release, signed with cosign, and its `appVersion` is checked against
+`package.json` in CI so a default install cannot pull a tag that was never
+published.
+
+```bash
+helm install vexa-insight oci://ghcr.io/vexamail/charts/vexa-insight \
+  --version 0.2.2
+```
+
+Verify the signature before installing:
+
+```bash
+cosign verify ghcr.io/vexamail/charts/vexa-insight:0.2.2 \
+  --certificate-identity-regexp '^https://github.com/VexaMail/vexa-insight/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+The chart source is in [`deploy/helm/vexa-insight`](deploy/helm/vexa-insight);
+`values.yaml` documents the ingress, persistence and resource settings.
+
 ### Environment variables
 
 | Variable                     | Required    | Description                                                                                                                                                                   |
