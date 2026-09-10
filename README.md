@@ -71,6 +71,26 @@ the loopback bind, and an opt-in Watchtower auto-update layer.
 If the answer to "can we ship our authentication logs to a SaaS vendor?" is _no,
 definitely not_, this project exists for you.
 
+### What still leaves your server
+
+Self-hosted does not mean airgapped. Reports, the database and the dashboard
+never leave the host, but these features reach the network, and every one of
+them is either opt-in or can be turned off:
+
+| Feature                   | Destination                                                      | Default            | What is sent                                                                     |
+| ------------------------- | ---------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------- |
+| IMAP ingestion            | Your mailbox provider                                            | On once configured | IMAP credentials and fetch commands                                              |
+| DNS diagnostics           | Your host's resolver                                             | On                 | Domain names you monitor                                                         |
+| Reverse DNS on source IPs | Your host's resolver                                             | On                 | IPs that appear in your reports                                                  |
+| MTA-STS policy fetch      | `https://mta-sts.<your-domain>/`                                 | On                 | Nothing beyond the request itself                                                |
+| Update check              | `api.github.com`                                                 | On                 | Nothing beyond the request itself; `VEXA_UPDATE_CHECK_ENABLED=false` disables it |
+| AI analysis               | Anthropic, OpenAI, Google or OpenRouter, whichever you configure | Off                | Aggregated DMARC findings and DNS records for the prompt                         |
+| GeoIP database update     | MaxMind                                                          | Off                | Your MaxMind license key                                                         |
+| Outbound webhooks         | The endpoints you add in Settings                                | Off                | The event envelope                                                               |
+
+For a fully offline deployment, leave AI and GeoIP unconfigured, set
+`VEXA_UPDATE_CHECK_ENABLED=false`, and point ingestion at a local mailbox.
+
 ---
 
 ## Who is this for?
@@ -181,20 +201,18 @@ docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
 
 ### Environment variables
 
-| Variable                                                        | Required    | Description                                                                                                                                                                |
-| --------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`                                                  | No          | SQLite file path, default `file:./data/vexa.db`.                                                                                                                           |
-| `SECRET_KEY`                                                    | Recommended | Min 32 characters. Used for admin API auth (`X-API-Key` / `Authorization: Bearer`). Left as `CHANGE_ME`, admin API is disabled until you set it via installer or Settings. |
-| `IMAP_SERVER` / `IMAP_PORT` / `IMAP_USERNAME` / `IMAP_PASSWORD` | No          | IMAP credentials. Can also be set in the Settings UI.                                                                                                                      |
-| `INGESTION_INTERVAL_MINUTES`                                    | No          | Scheduler interval (default `60`).                                                                                                                                         |
-| `INGESTION_DAYS_BACK`                                           | No          | Days of mailbox history each run fetches (default `30`, minimum `1`). A full-mailbox pass is a one-off action from the ingest page.                                        |
-| `PROJECT_NAME`                                                  | No          | Default `Vexa Mail Insight`.                                                                                                                                               |
-| `ENVIRONMENT`                                                   | No          | `development` / `staging` / `production`.                                                                                                                                  |
-| `VEXA_IMAP_DEBUG`                                               | No          | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                           |
-| `VEXA_UPDATE_CHECK_ENABLED`                                     | No          | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                            |
-| `VEXA_UPDATE_REPO`                                              | No          | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                 |
-| `VEXA_ALLOW_REMOTE_INSTALL`                                     | No          | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.             |
-| `VEXA_ALLOWED_ORIGINS`                                          | No          | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.   |
+| Variable                     | Required    | Description                                                                                                                                                                   |
+| ---------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | No          | SQLite file path, default `file:./data/vexa.db`.                                                                                                                              |
+| `SECRET_KEY`                 | Recommended | Min 32 characters. Used for admin API auth (`X-API-Key` / `Authorization: Bearer`). Left as `CHANGE_ME`, admin API is disabled until you set it via installer or Settings.    |
+| `INGESTION_INTERVAL_MINUTES` | No          | Scheduler interval (default `60`). Read only while settings still hold `CHANGE_ME`; once `SECRET_KEY` is set the stored value wins, so change it in Settings.                 |
+| `INGESTION_DAYS_BACK`        | No          | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page. |
+| `ENVIRONMENT`                | No          | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                        |
+| `VEXA_IMAP_DEBUG`            | No          | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                              |
+| `VEXA_UPDATE_CHECK_ENABLED`  | No          | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                               |
+| `VEXA_UPDATE_REPO`           | No          | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                    |
+| `VEXA_ALLOW_REMOTE_INSTALL`  | No          | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                |
+| `VEXA_ALLOWED_ORIGINS`       | No          | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.      |
 
 ---
 
@@ -279,9 +297,11 @@ The dashboard checks GitHub once per day for new stable releases and shows an
 The check itself is notification-only — Vexa never modifies your filesystem on
 its own. Full details: [docs/UPDATING.md](docs/UPDATING.md).
 
-Migrations run on boot, but existing installs must run the one-time
-`pnpm run backfill:rollup` after upgrading to the release that introduced the
-`event_rollup_daily` table — until then the dashboard totals lag your data. See
+Migrations run on boot, but existing installs must run a one-time rollup
+backfill after upgrading to the release that introduced the `event_rollup_daily`
+table (`pnpm run backfill:rollup` from source, or
+`docker compose exec web node dist/backfill-rollup.cjs` in Docker) — until then
+the dashboard totals lag your data. See
 [One-time post-upgrade steps](docs/UPDATING.md#one-time-post-upgrade-steps).
 
 ---
@@ -291,8 +311,9 @@ Migrations run on boot, but existing installs must run the one-time
 - **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
   dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
   flow.
-- **Phase 2:** Outbound webhook / Slack / Teams alerts, Prometheus metrics,
-  OpenAPI spec, forensic reports (RUF).
+- **Phase 2:** Slack / Teams webhook adapters and delivery retries, forensic
+  reports (RUF). Generic outbound webhooks, Prometheus metrics and the OpenAPI
+  spec already ship.
 - **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation
   scoring, threat-intel enrichment, anomaly detection.
 - **Phase 4:** Full Email Authentication Control Center.
@@ -313,8 +334,14 @@ The following endpoints are stable and meant for automation:
   `HEALTHCHECK`).
 - `GET /api/v1/openapi.json` — machine-readable spec of public endpoints.
 
-Outbound webhooks (Slack, Teams, generic) for "unauthorized source detected" and
-"ingest job failed" are configured in Settings.
+Outbound webhooks for "unauthorized source detected" and "ingest job failed" are
+configured in Settings. Each endpoint receives a generic JSON envelope (`event`,
+`timestamp`, `source`, `data`) by `POST`, optionally signed with an HMAC-SHA256
+`x-vexa-signature` header when the endpoint has a secret. Delivery is a single
+attempt with a 5s timeout and no retry; the last status and error are stored per
+endpoint. Slack and Microsoft Teams expect their own payload shapes, so they
+need a small receiver or relay in front of this envelope, and native adapters
+are Phase 2 on the roadmap.
 
 ---
 

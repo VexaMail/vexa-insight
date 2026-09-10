@@ -17,6 +17,9 @@ RUN npm install -g corepack@latest && corepack enable pnpm && pnpm install --fro
 
 COPY . .
 RUN pnpm run build
+# The runner has no pnpm and no tsx, so the one-off maintenance entrypoint is
+# bundled here into plain CJS that `node` can execute inside the container.
+RUN pnpm run build:backfill
 
 # Run stage
 FROM node:26-alpine AS runner
@@ -34,6 +37,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/dist ./dist
+# Next's standalone output leaves better-sqlite3 inside the pnpm store layout,
+# which only resolves for the traced server files. The bundled maintenance
+# entrypoint keeps the native module external, so give it a resolvable path.
+RUN ln -s "$(ls -d /app/node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3)" /app/node_modules/better-sqlite3
 COPY --from=builder /app/package.json ./
 RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
 
