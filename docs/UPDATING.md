@@ -22,7 +22,7 @@ pulls code, never modifies your filesystem. You stay in control.
 | HTTP method | `GET` (no payload, no telemetry, no installation ID)                       |
 | Headers     | `Accept`, `X-GitHub-Api-Version`, `User-Agent: vexa-insight/<version>`     |
 | Cadence     | One server-side run ~60s after boot, then every 24 hours via cron          |
-| Cache       | Single-row `update_state` table in your SQLite/Postgres/MySQL              |
+| Cache       | Single-row `update_state` table in the SQLite database                     |
 | Channel     | Stable releases only (`/releases/latest` excludes drafts and pre-releases) |
 
 GitHub's unauthenticated rate limit is 60 requests per hour per IP. We cache the
@@ -58,7 +58,7 @@ Registry on every release tag (`amd64` + `arm64`):
 
 ```
 ghcr.io/vexamail/vexa-insight:latest
-ghcr.io/vexamail/vexa-insight:vX.Y.Z
+ghcr.io/vexamail/vexa-insight:X.Y.Z
 ghcr.io/vexamail/vexa-insight:X.Y
 ghcr.io/vexamail/vexa-insight:X
 ```
@@ -172,9 +172,10 @@ What happens when you click it:
    detached background process.
 2. The script:
    - refuses if the working tree is dirty,
-   - copies `data/vexa.db` to `data/vexa.db.pre-update.<timestamp>`,
+   - snapshots the database to `<database>.backup.<timestamp>` through SQLite,
+     and aborts the update if that fails,
    - runs `git fetch --tags --prune` + `git pull --ff-only` (or checks out a
-     specific `vX.Y.Z` tag if requested),
+     specific `X.Y.Z` tag if requested),
    - runs `pnpm install --frozen-lockfile`,
    - runs `pnpm run build`,
    - sends `SIGTERM` to the Node process.
@@ -209,9 +210,12 @@ the "Update available" card.
 - **Whitelisted refs only**: the API rejects any `ref` that is not a proper
   `vMAJOR.MINOR.PATCH` tag — no branches, hashes, or arbitrary strings. The
   script enforces the same regex as a defense-in-depth.
-- **Database backed up first**: SQLite users get an automatic snapshot named
-  `data/vexa.db.pre-update.<timestamp>` on every run. PostgreSQL/MySQL backups
-  remain the operator's responsibility.
+- **Database backed up first**: every run takes a snapshot through SQLite itself
+  (`scripts/backup-db.ts`, a `VACUUM INTO`), named
+  `<database>.backup.<UTC timestamp>` beside the configured database. The
+  connections the app holds run in write-ahead-log mode, so a plain `cp` of the
+  main file can miss committed rows; this does not. A failed backup fails the
+  update with exit code 9 rather than proceeding without one.
 - **Build is atomic-ish with auto-rollback on failure**: the previous `.next/`
   build is snapshotted to `.next.pre-update` before the new build runs. If
   `git pull`, `pnpm install`, or `pnpm run build` fail, the script restores the
@@ -230,14 +234,24 @@ the "Update available" card.
 
 When the build succeeded but the new version misbehaves at runtime:
 
+Stop the service before touching the database. Replacing the file underneath a
+running process leaves it holding the old write-ahead log, which corrupts the
+restored copy.
+
 ```bash
 cd /opt/vexa-insight          # your install dir
+sudo systemctl stop vexa                # or: pm2 stop vexa-insight
 git checkout v0.1.0                     # the previous tag
-cp data/vexa.db.pre-update.<timestamp> data/vexa.db
+rm -f data/vexa.db-wal data/vexa.db-shm # stale log of the version you are leaving
+cp data/vexa.db.backup.<timestamp> data/vexa.db
 pnpm install
 pnpm run build
-sudo systemctl restart vexa             # or: pm2 restart vexa-insight
+sudo systemctl start vexa               # or: pm2 start vexa-insight
 ```
+
+Then check that the restored database holds what you expect before letting users
+back in: the domains list and the report count on the dashboard are the quickest
+confirmation.
 
 ### Recovering from a half-applied update
 
@@ -252,10 +266,12 @@ rollback path didn't run:
    git fetch --tags
    git reset --hard v0.1.0      # use the tag from the audit log entry
    ```
-4. If `data/vexa.db.pre-update.<timestamp>` is more recent than current
-   `data/vexa.db`, restore it (rare — only if a migration ran and misbehaved):
+4. If `data/vexa.db.backup.<timestamp>` is more recent than current
+   `data/vexa.db`, restore it (rare — only if a migration ran and misbehaved).
+   The service must be stopped first, as in the rollback section above:
    ```bash
-   cp data/vexa.db.pre-update.<timestamp> data/vexa.db
+   rm -f data/vexa.db-wal data/vexa.db-shm
+   cp data/vexa.db.backup.<timestamp> data/vexa.db
    ```
 5. Reinstall and rebuild:
    ```bash

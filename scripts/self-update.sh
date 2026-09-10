@@ -59,13 +59,18 @@ mkdir -p "$(dirname "$LOG_FILE")"
     exit 5
   fi
 
-  # Back up SQLite if present. Postgres/MySQL backups are the operator's job.
-  db_path="${APP_DIR}/data/vexa.db"
-  if [ -f "$db_path" ]; then
-    backup_path="${db_path}.pre-update.$(date -u +%Y%m%d%H%M%S)"
-    cp -p "$db_path" "$backup_path"
-    echo "Backed up DB to $backup_path"
+  # Snapshot the database through SQLite itself. A `cp` of the main file is
+  # not a backup while the app is running: in WAL mode committed rows can live
+  # only in the -wal file, so the copy silently restores without them. This
+  # also honours a DATABASE_URL that points somewhere other than data/vexa.db.
+  # A failed backup fails the update; continuing would remove the reason the
+  # backup exists.
+  backup_path="$("$PNPM" exec tsx "${APP_DIR}/scripts/backup-db.ts" | tail -n 1)"
+  if [ -z "$backup_path" ] || [ ! -f "$backup_path" ]; then
+    echo "ERROR: database backup failed — refusing to update" >&2
+    exit 9
   fi
+  echo "Backed up DB to $backup_path"
 
   # Capture the rollback target BEFORE anything mutates the repo / build.
   previous_sha="$(git rev-parse HEAD)"
