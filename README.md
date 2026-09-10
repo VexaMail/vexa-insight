@@ -6,7 +6,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight/releases)
-[![Docker Pulls](https://img.shields.io/badge/ghcr.io-vexamail%2Fvexa--insight--dashboard-2496ED?logo=docker)](https://github.com/VexaMail/vexa-insight/pkgs/container/vexa-insight)
+[![Docker Pulls](https://img.shields.io/badge/ghcr.io-vexamail%2Fvexa--insight-2496ED?logo=docker)](https://github.com/VexaMail/vexa-insight/pkgs/container/vexa-insight)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Stars](https://img.shields.io/github/stars/VexaMail/vexa-insight?style=social)](https://github.com/VexaMail/vexa-insight/stargazers)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)

@@ -6,6 +6,37 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Renamed to `vexa-insight`, everywhere:** the slug dropped
+      the `Mail` the organization already supplies and the `dashboard` that
+      named only one surface, since the app also ingests over IMAP and serves a
+      REST API, Prometheus metrics and webhooks.
+  - Result: repository renamed on GitHub (the old URL 301-redirects), 55 slug
+    references rewritten across 18 files, the Helm chart directory and chart
+    name moved to `vexa-insight`, and the update checker's default slug in
+    `src/constants/updates/defaultRepoSlug.ts` with its test. `v0.2.2` released
+    with the container move documented as a breaking change for anyone pulling
+    the old path.
+  - Result: the container moved to `ghcr.io/vexamail/vexa-insight`, because the
+    workflow builds `ghcr.io/${{ github.repository }}`. Registries do not
+    redirect, so the old package was deleted once the new one built; the old
+    path now answers 401 and the organization holds one container package.
+    Evidence: tags `latest`, `0.2.2`, `0.2` and `0` answer 200 anonymously and
+    `gh attestation verify` exits 0 on `0.2.2`.
+  - Result: the local checkout is `~/p/vexa-insight` on both Macs, with the
+    macmini's remote repointed and its tree reset onto `origin/main`. Also
+    moved: the `SRC` default in `~/.local/bin/vexa-deploy` on both machines
+    (verified identical), the agent project directories keyed on the path (one
+    rename covers both profiles here, since `~/.claude-favish/projects` is a
+    symlink), the `ALIASES` entry in `~/p/bin/render-project-map.py` with
+    `PROJECT-MAP.md` regenerated clean, the `~/p` inventories, and the brain's
+    `sources:` paths, `repo-catalog` entry and `projects/vexa` page. The dated
+    `SYNC-2026-09-04.md` snapshot keeps the old name on purpose.
+  - Evidence: from the new path, `tsc` clean, 568 tests green, `git status`
+    clean against `origin/main`.
+  - Files: `README.md`, `CHANGELOG.md`, `package.json`,
+    `deploy/helm/vexa-insight/**`, `src/constants/updates/defaultRepoSlug.ts`,
+    `TODO.md`.
+
 - [x] 2026-09-10 — **Pre-rewrite history purged from GitHub, old copies
       deleted:** the force-push had left `refs/pull/1..66` on the server, so the
       original screenshots stayed fetchable by SHA. The repository held nothing

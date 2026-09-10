@@ -27,14 +27,6 @@ history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
 
 ## Housekeeping
 
-- [ ] Rename the local checkout from `~/p/vexa-insight-dashboard` to
-      `~/p/vexa-insight` to match the repository, in a session whose working
-      directory is not inside it. Three things point at the old path and move
-      with it: the `SRC` default in `~/.local/bin/vexa-deploy`, the per-project
-      agent memory directory keyed on the path, and the `repo-catalog` entry
-      plus every `sources:` path in the brain's `projects/vexa` page. Nothing
-      breaks while the two names differ; the divergence is only a wart against
-      the `~/p/<repo>` convention.
 - [ ] Give the Helm chart a version that tracks the app. `Chart.yaml` still
       carries `version: 0.1.0` and `appVersion: '0.1.0'` while the app is on
       `0.2.2`, so `helm search` and `helm upgrade` report a version that has not
