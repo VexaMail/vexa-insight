@@ -11,7 +11,9 @@ import type { SafeFetchResult } from './SafeFetchResult'
  *      in a private/reserved range (RFC 1918, loopback, link-local, CGNAT,
  *      cloud metadata, IPv6 ULA/loopback/link-local, etc).
  *   3. Dispatch with `redirect: 'manual'` under one AbortController timeout
- *      (default 10s) that covers the whole redirect chain.
+ *      (default 10s) that covers the whole redirect chain, through a
+ *      dispatcher pinned to the addresses step 2 resolved, so DNS cannot
+ *      answer differently between the check and the connection.
  *   4. On a 301/302/303/307/308 with a `Location`, resolve it against the
  *      current URL, run steps 1-2 on the target, and re-dispatch; a rejected
  *      target fails with REDIRECT_BLOCKED and more than MAX_REDIRECT_HOPS
@@ -51,6 +53,7 @@ export async function safeFetch(
   try {
     return await followSafeRedirects({
       url: rawUrl,
+      addresses: validated.addresses,
       init,
       signal: controller.signal,
       hop: 0,
