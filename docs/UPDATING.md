@@ -151,10 +151,12 @@ Properties:
 - **Only needed once per install.** After the backfill, ingestion maintains the
   rollup incrementally inside its own transaction.
 
-Docker installs run it against the container's database:
+Docker installs run the bundled entrypoint instead. The runner image carries no
+pnpm and no tsx, so `pnpm run backfill:rollup` is not available inside the
+container:
 
 ```bash
-docker compose exec web pnpm run backfill:rollup
+docker compose exec web node dist/backfill-rollup.cjs
 ```
 
 Newly created installs need nothing: the rollup is maintained from the first

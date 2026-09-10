@@ -80,3 +80,6 @@ TODO_HISTORY_INDEX.jsonl
 
 # Playwright MCP session artifacts
 .playwright-mcp/
+
+# Bundled maintenance entrypoints, produced by pnpm run build:backfill
+/dist
