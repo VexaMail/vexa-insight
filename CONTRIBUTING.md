@@ -3,6 +3,16 @@
 Thanks for your interest in contributing! This document covers everything you
 need to get a development environment running and submit a high-quality PR.
 
+## Where to start
+
+Issues labelled
+[good first issue](https://github.com/VexaMail/vexa-insight/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+are scoped small and name the files to touch. Comment on one to claim it.
+Everything open is at
+[all issues](https://github.com/VexaMail/vexa-insight/issues); if what you want
+to build is not there, open an issue first so the design is settled before you
+write code.
+
 ## Development setup
 
 **Requirements:** Node.js 22+, [pnpm](https://pnpm.io/) 10+.
