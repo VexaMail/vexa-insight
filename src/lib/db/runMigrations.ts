@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { applySqlFile } from './applySqlFile'
 import { MIGRATIONS_TABLE } from './migrationsTable'
+import { MIGRATIONS_TABLE_CHECKSUM_COLUMN } from './migrationsTableChecksumColumn'
 import { resolveDbFilePath } from './resolveDbFilePath'
 
 /**
@@ -34,6 +35,12 @@ function runMigrations(): void {
   const entries = journal.entries ?? []
   const db = new Database(absPath)
   db.exec(MIGRATIONS_TABLE)
+  try {
+    // Older installs have the ledger without its checksum column.
+    db.exec(MIGRATIONS_TABLE_CHECKSUM_COLUMN)
+  } catch {
+    // Already present; SQLite has no ADD COLUMN IF NOT EXISTS.
+  }
   const drizzleDir = path.join(process.cwd(), 'drizzle')
   for (const entry of entries) {
     applySqlFile(db, entry.tag, drizzleDir)

@@ -21,10 +21,16 @@ automatically and runs in `pnpm run check:ci`.
 3. **No data-loss SQL** (e.g. `DELETE FROM` without a `WHERE`, `TRUNCATE`,
    `UPDATE ... SET col = NULL` over a populated column).
 4. **Migration files are append-only.** Once a numbered file is merged to
-   `main`, do not edit it; add a new file instead. The runner records applied
-   filenames in `__drizzle_migrations` and will reject a content change.
-5. **One logical change per file.** A bug in step 3 of a 5-step migration leaves
-   the DB half-applied; smaller files limit the blast radius.
+   `main`, do not edit it; add a new file instead. The runner records each
+   applied file's name and the SHA-256 of its contents in `__app_migrations`,
+   and refuses to start when a recorded file has changed. A file named in
+   `drizzle/meta/_journal.json` that is missing from `drizzle/` is an error too,
+   rather than a silent skip.
+5. **One logical change per file.** Statements are applied one at a time and not
+   inside a per-file transaction, because SQLite's table-rebuild pattern needs
+   `PRAGMA foreign_keys`, which is a no-op inside one. So a bug in step 3 of a
+   5-step migration really does leave the database half-applied, and the file is
+   not marked as applied; smaller files limit the blast radius.
 
 If you genuinely need to break one of the above (e.g. removing a table that has
 been deprecated for two releases), prefix the migration with the acknowledgement
