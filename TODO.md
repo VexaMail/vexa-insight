@@ -27,6 +27,16 @@ history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
 
 ## Security
 
+- [!] Purge the pre-rewrite history from the laptop's clone. `main` was
+  rewritten and force-pushed on 2026-09-10 to strip client screenshots and
+  assistant trailers, and the remote repository was recreated, but the clone on
+  the laptop was offline through the whole operation, so it may still hold the
+  old objects. This Mac and the Mac mini were both cleaned. Blocked on reaching
+  the machine: it answers ping but refuses SSH on port 22, so Remote Login is
+  off. Smallest unblock: enable Remote Login there, or run this in a local
+  terminal on it:
+  `git fetch --prune --prune-tags --force && git reset --hard origin/main &&     git reflog expire --expire=now --all && git gc --prune=now`.
+
 - [!] Consider per-user API keys with real role mapping to replace the single
   shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their
   own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to
