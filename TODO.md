@@ -1,7 +1,7 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-09-09. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-09-10. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
@@ -24,15 +24,6 @@ history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
       parity decision under Pending Decisions: either supply the reference
       scores or drop parity and design our own rubric. Either way pin the rubric
       in `test/computeDomainScore.test.ts`.
-
-## Housekeeping
-
-- [ ] Give the Helm chart a version that tracks the app. `Chart.yaml` still
-      carries `version: 0.1.0` and `appVersion: '0.1.0'` while the app is on
-      `0.2.2`, so `helm search` and `helm upgrade` report a version that has not
-      existed since before the first release. Decide whether `appVersion`
-      follows the release automatically in `release.yml` or is bumped by hand,
-      then pin whichever it is in the release checklist.
 
 ## Security
 
@@ -57,7 +48,12 @@ history are logged in `TODO_LOG.md`. Nothing launch-related is pending.
       of 6 runs on the new wording wrapped the JSON in a ```json fence where 0
       of 2 baseline runs did. Two baseline samples cannot establish that as a
       regression, and nothing breaks today. Smallest next step: 4 more baseline
-      runs to see whether the rates actually differ before touching the wording.
+      runs to see whether the rates actually differ before touching the wording;
+      each run spends model quota, so it wants the owner's go-ahead like the
+      blocked item below. `test/parseDiagnosticsInsightsFromContent.test.ts` (5
+      cases, on `main` since 2026-09-10) pins today's behaviour either way: the
+      parser accepts fenced and unfenced JSON, so the wording can change without
+      breaking the pipeline.
 - [!] Verify the diagnostics AI rollout plan against a live provider call
   (implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call
   was run). Blocked: needs a real provider API key and spends paid model quota,
@@ -180,6 +176,6 @@ remains below is what those passes did not reach.
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
       dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`
-      ever ships a version that no longer needs it. Re-checked 2026-08-28:
+      ever ships a version that no longer needs it. Re-checked 2026-09-10:
       unchanged — `@lhci/cli` latest is still 0.15.1, pinning
       `lighthouse@12.6.1`; the override stays.

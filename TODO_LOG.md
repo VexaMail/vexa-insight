@@ -6,6 +6,36 @@
 
 ### 2026-09
 
+- [x] 2026-09-10 — **Helm chart version pinned to the app, and the drift
+      guarded:** `Chart.yaml` carried `version: 0.1.0` and `appVersion: '0.1.0'`
+      while the app was on `0.2.2`. That was not cosmetic:
+      `templates/deployment.yaml` resolves the image as
+      `{{ .Values.image.tag | default .Chart.AppVersion }}` and `values.yaml`
+      ships an empty tag, so a default `helm install` pulled
+      `ghcr.io/vexamail/vexa-insight:0.1.0`, a tag that has never existed.
+  - Result: both fields set to `0.2.2`, and `scripts/check-chart-version.sh`
+    added on the shape of `check-migrations.sh` — it compares the chart's
+    `version` and `appVersion` against `package.json` and fails the build on
+    either mismatch. Wired into `check:ci` as `pnpm run check:chart`, so the
+    answer to "automatic or by hand" is: by hand with the release commit, and CI
+    refuses to let it drift again.
+  - Evidence: `pnpm run check:chart` prints `OK (0.2.2)`; `check:ci` green.
+  - Files: `deploy/helm/vexa-insight/Chart.yaml`,
+    `scripts/check-chart-version.sh`, `package.json`.
+
+- [x] 2026-09-10 — **Recovered the fenced-JSON parser test from a dangling
+      branch:** `bot/f4d82a7f` held
+      `test/parseDiagnosticsInsightsFromContent.test.ts` (5 cases pinning that
+      the diagnostics parser accepts both fenced and unfenced JSON), which had
+      never reached `main`. Cherry-picked the test alone: the branch's other
+      change reflowed `deploy/k8s/README.md` and still pointed at the pre-rename
+      `helm/vexa-insight-dashboard` path, so merging it would have undone part
+      of the rename. Branch deleted.
+  - Result: the open prompt-wording decision is now safe either way, since the
+    parser's tolerance is pinned by a test.
+  - Evidence: the 5 cases pass against `main`.
+  - Files: `test/parseDiagnosticsInsightsFromContent.test.ts`.
+
 - [x] 2026-09-10 — **Renamed to `vexa-insight`, everywhere:** the slug dropped
       the `Mail` the organization already supplies and the `dashboard` that
       named only one surface, since the app also ingests over IMAP and serves a
