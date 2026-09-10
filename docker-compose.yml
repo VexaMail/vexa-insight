@@ -29,10 +29,8 @@ services:
       # SECRET_KEY must be set to a random 32+ char value before going to prod.
       # Leaving CHANGE_ME triggers the first-run installer and refuses admin auth.
       - SECRET_KEY=${SECRET_KEY:-CHANGE_ME}
-      - IMAP_SERVER=${IMAP_SERVER:-}
-      - IMAP_PORT=${IMAP_PORT:-993}
-      - IMAP_USERNAME=${IMAP_USERNAME:-}
-      - IMAP_PASSWORD=${IMAP_PASSWORD:-}
+      # IMAP mailboxes live in the database, set through the installer or the
+      # Settings UI; the app reads no IMAP environment variable.
       - INGESTION_INTERVAL_MINUTES=${INGESTION_INTERVAL_MINUTES:-60}
       - INGESTION_DAYS_BACK=${INGESTION_DAYS_BACK:-30}
       - VEXA_IMAP_DEBUG=${VEXA_IMAP_DEBUG:-false}
