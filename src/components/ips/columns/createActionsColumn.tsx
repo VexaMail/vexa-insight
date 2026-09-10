@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { IpSummaryData } from '@/types/ips'
 import type { ColumnDef } from '@tanstack/react-table'
 import { ExternalLink } from 'lucide-react'
@@ -10,7 +11,7 @@ import type { GetIpsColumnsParams } from '../GetIpsColumnsParams'
 export function createActionsColumn({
   ips,
   setScope,
-}: GetIpsColumnsParams): ColumnDef<IpSummaryData> {
+}: GetIpsColumnsParams): ColumnDef<typeof dataTableFeatures, IpSummaryData> {
   return {
     id: 'actions',
     cell: ({ row }) => (

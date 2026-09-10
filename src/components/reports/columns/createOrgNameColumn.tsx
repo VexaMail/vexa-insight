@@ -1,6 +1,7 @@
 'use client'
 
 import { SortHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetReportsColumnsParams } from '../GetReportsColumnsParams'
 import type { ReportRow } from '../ReportRow'
@@ -9,7 +10,7 @@ export function createOrgNameColumn({
   dispatch,
   sortKey,
   sortDir,
-}: GetReportsColumnsParams): ColumnDef<ReportRow> {
+}: GetReportsColumnsParams): ColumnDef<typeof dataTableFeatures, ReportRow> {
   return {
     accessorKey: 'orgName',
     header: () => (

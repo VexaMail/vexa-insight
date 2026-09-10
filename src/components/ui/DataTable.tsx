@@ -2,14 +2,15 @@
 
 import { useDataTable } from '@/hooks/ui'
 import type { DataTableProps } from '@/types/ui'
+import type { RowData } from '@tanstack/react-table'
 import { DataTableBodyRows } from './DataTableBodyRows'
 import { DataTableHeaderRows } from './DataTableHeaderRows'
 import { DataTablePagination } from './DataTablePagination'
 import { DataTableToolbar } from './DataTableToolbar'
 import { Table } from './table'
 
-export function DataTable<TData, TValue>(
-  props: Readonly<DataTableProps<TData, TValue>>,
+export function DataTable<TData extends RowData>(
+  props: Readonly<DataTableProps<TData>>,
 ) {
   const {
     columns,
@@ -21,9 +22,7 @@ export function DataTable<TData, TValue>(
     pageSizeOptions,
   } = props
 
-  const { globalFilter, setGlobalFilter, table } = useDataTable<TData, TValue>(
-    props,
-  )
+  const { globalFilter, setGlobalFilter, table } = useDataTable<TData>(props)
 
   return (
     <div className="space-y-4">

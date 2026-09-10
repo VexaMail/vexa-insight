@@ -1,10 +1,14 @@
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ProcessedEmail } from '@/types/ingest'
 import { formatPollStatusTime } from '@/utils/format'
 import type { ColumnDef } from '@tanstack/react-table'
 
 /** The read-only columns of the processed emails table. */
-export const processedEmailInfoColumns: ColumnDef<ProcessedEmail>[] = [
+export const processedEmailInfoColumns: ColumnDef<
+  typeof dataTableFeatures,
+  ProcessedEmail
+>[] = [
   {
     accessorKey: 'processedAt',
     header: ({ column }) => (
@@ -15,7 +19,7 @@ export const processedEmailInfoColumns: ColumnDef<ProcessedEmail>[] = [
         {formatPollStatusTime(row.getValue('processedAt'))}
       </span>
     ),
-    sortingFn: 'datetime',
+    sortFn: 'datetime',
   },
   {
     accessorKey: 'messageId',

@@ -1,5 +1,6 @@
 'use client'
 
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { IpSummaryData } from '@/types/ips'
 import type { ColumnDef } from '@tanstack/react-table'
 import { authStatusColumn } from './columns/authStatusColumn'
@@ -15,7 +16,7 @@ import type { GetIpsColumnsParams } from './GetIpsColumnsParams'
 
 export function getIpsColumns(
   params: GetIpsColumnsParams,
-): ColumnDef<IpSummaryData>[] {
+): ColumnDef<typeof dataTableFeatures, IpSummaryData>[] {
   return [
     countryColumn,
     ipColumn,

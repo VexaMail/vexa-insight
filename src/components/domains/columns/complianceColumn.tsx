@@ -1,11 +1,15 @@
 'use client'
 
 import { SortableHeaderButton } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
 import type { ColumnDef } from '@tanstack/react-table'
 import { ComplianceBar } from '../ComplianceBar'
 
-export const complianceColumn: ColumnDef<DomainsTableRow> = {
+export const complianceColumn: ColumnDef<
+  typeof dataTableFeatures,
+  DomainsTableRow
+> = {
   accessorKey: 'passRatePercent',
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Compliance" descendingFirst />

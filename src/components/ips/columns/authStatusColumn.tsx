@@ -7,12 +7,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui'
+import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { IpSummaryData } from '@/types/ips'
 import { getAuthHealthStatus } from '@/utils/ips'
 import type { ColumnDef } from '@tanstack/react-table'
 import AuthHealthBadge from '../AuthHealthBadge'
 
-export const authStatusColumn: ColumnDef<IpSummaryData> = {
+export const authStatusColumn: ColumnDef<
+  typeof dataTableFeatures,
+  IpSummaryData
+> = {
   accessorKey: 'fullyAlignedRate',
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Auth Status" />
