@@ -1,21 +1,17 @@
-import { isDerivableSecret } from '@/utils/auth'
 import { getEnvSecretKey } from './getEnvSecretKey'
-import { getSettingsRow } from './getSettingsRow'
 
 /**
- * The key every stored secret is encrypted with, or null when the instance
- * has none yet.
+ * The key every stored secret is encrypted with, or null when the environment
+ * does not supply one.
  *
- * The stored column wins when it holds a usable value, because that is the key
- * the existing ciphertext was actually written with: an instance whose key was
- * rotated through the settings page re-encrypted its secrets against that
- * value, and preferring the environment there would make every stored
- * credential unreadable. Deployments that never rotate in-app leave the column
- * at its placeholder, so the key is read from the environment and never
- * persisted. See `docs/adr/0003-secret-key-out-of-the-database.md`.
+ * There is deliberately no database fallback. A key read from `app_settings`
+ * would be sitting inside the very file it encrypts, which is the failure
+ * ADR 0009 was written to close and which a column update cannot undo, because
+ * SQLite leaves freed bytes in place. Keeping the key out of the file is the
+ * only version of that promise that survives someone copying `vexa.db`.
+ *
+ * See `docs/adr/0010-secret-key-is-environment-only.md`.
  */
 export function resolveSecretKey(): string | null {
-  const stored = getSettingsRow()?.secretKey
-  if (isDerivableSecret(stored)) return stored as string
   return getEnvSecretKey()
 }

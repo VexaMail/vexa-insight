@@ -9,7 +9,6 @@ export type SettingsUpdatePayload = {
   ingestionDaysBack?: number | undefined
   ingestionIncludeTrash?: boolean | undefined
   ingestionIncludeAllFolders?: boolean | undefined
-  secretKey?: string | undefined
   backendCorsOrigins?: string | undefined
   environment?: string | undefined
   ipHostnameLookupEnabled?: boolean | undefined

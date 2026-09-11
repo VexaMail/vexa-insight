@@ -1,8 +1,8 @@
 import { getCached, getDatabaseUrl, rowToConfig, setCached } from '@/lib/config'
 import {
-  clearDuplicatedSecretKey,
   getImapAccountsRow,
   getSettingsRow,
+  purgeStoredSecretKey,
   resolveSecretKey,
   seedSettingsFromEnv,
 } from '@/services/settings-store'
@@ -23,7 +23,7 @@ export function getConfig(): AppConfig {
   seedSettingsFromEnv()
   // Instances installed before 0.2.3 carry a copy of the environment's key in
   // the database; drop it before anything reads the row.
-  clearDuplicatedSecretKey()
+  purgeStoredSecretKey()
   const freshRow = getSettingsRow()
   const rowToUse = freshRow ?? row
   const imapRows = getImapAccountsRow()

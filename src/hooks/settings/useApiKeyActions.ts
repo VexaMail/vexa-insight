@@ -1,10 +1,9 @@
 import type { UseApiKeyActionsParams } from '@/types/settings'
-import { generateApiKey, testImapConnection } from '@/utils/settings'
+import { testImapConnection } from '@/utils/settings'
 
 /** Copy, regenerate and test-connection handlers bound to the current key. */
 export function useApiKeyActions({
   apiKey,
-  setForm,
   setMessage,
   setSaveStatus,
 }: UseApiKeyActionsParams) {
@@ -16,10 +15,6 @@ export function useApiKeyActions({
     setTimeout(() => {
       setMessage('')
     }, 2000)
-  }
-
-  function handleGenerateNewApiKey() {
-    setForm((prev) => ({ ...prev, secretKeyNew: generateApiKey() }))
   }
 
   async function handleTestConnection(accountId: number) {
@@ -34,5 +29,5 @@ export function useApiKeyActions({
     }
   }
 
-  return { handleCopyApiKey, handleGenerateNewApiKey, handleTestConnection }
+  return { handleCopyApiKey, handleTestConnection }
 }

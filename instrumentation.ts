@@ -12,7 +12,7 @@ export async function register(): Promise<void> {
   const { runMigrations } = await import('@/lib/db')
   runMigrations()
 
-  const { getOrCreateInstallToken, isInstalled } =
+  const { getOrCreateInstallToken, isInstalled, reportMissingSecretKey } =
     await import('@/services/install')
   const installed = isInstalled()
   if (!installed) {
@@ -30,6 +30,7 @@ export async function register(): Promise<void> {
   }
 
   if (installed) {
+    reportMissingSecretKey()
     const { encryptLegacyImapPasswords } = await import('@/services/settings')
     try {
       const { migrated } = encryptLegacyImapPasswords()

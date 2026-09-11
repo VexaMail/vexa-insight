@@ -4,7 +4,6 @@ import type { UseInstallFormReturn } from '@/types/install'
 import {
   buildInstallRequestBody,
   completeImapAccounts,
-  generateSecretKey,
   initialInstallState,
   installErrorAction,
   installFormError,
@@ -17,10 +16,6 @@ export function useInstallForm(
   isPartial: UseInstallFormReturn['isPartial'],
 ): UseInstallFormReturn {
   const [state, dispatch] = useReducer(installReducer, initialInstallState())
-
-  function handleGenerateKey() {
-    dispatch({ type: 'SET_SECRET_KEY', payload: generateSecretKey() })
-  }
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
@@ -44,5 +39,5 @@ export function useInstallForm(
     }
   }
 
-  return { state, dispatch, handleGenerateKey, handleSubmit, isPartial }
+  return { state, dispatch, handleSubmit, isPartial }
 }

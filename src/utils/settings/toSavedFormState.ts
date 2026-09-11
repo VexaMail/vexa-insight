@@ -5,6 +5,5 @@ export function toSavedFormState(data: SettingsPublic): SettingsFormState {
   return {
     ...data,
     imapAccounts: data.imapAccounts.map((a) => ({ ...a, passwordNew: '' })),
-    secretKeyNew: '',
   }
 }

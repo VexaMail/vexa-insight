@@ -11,8 +11,6 @@ export function reduceInstallFields(
       return { ...state, adminPassword: action.payload }
     case 'SET_INSTALL_TOKEN':
       return { ...state, installToken: action.payload }
-    case 'SET_SECRET_KEY':
-      return { ...state, secretKey: action.payload }
     case 'SET_INTERVAL':
       return { ...state, ingestionIntervalMinutes: action.payload }
     case 'SET_DAYS_BACK':

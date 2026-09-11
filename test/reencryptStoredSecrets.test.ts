@@ -12,6 +12,22 @@ describe('secret key rotation', () => {
   const NEW_KEY = 'new-secret-key-value-9876543210'
   const IMAP_PASSWORD = 'mailbox-password'
   const AI_KEY = 'sk-provider-key'
+  // rotateEncryptionKey enforces MIN_SECRET_LENGTH, which OLD_KEY is under.
+  const ROTATION_OLD_KEY = 'rotation-old-secret-key-0123456789'
+  const ROTATION_NEW_KEY = 'rotation-new-secret-key-9876543210'
+
+  const seedImapPassword = async (key: string) => {
+    const { getDb, imapAccounts } = await import('@/lib/db')
+    const { encryptSecret } = await import('@/services/crypto')
+    const db = getDb()
+    await db.delete(imapAccounts)
+    await db.insert(imapAccounts).values({
+      server: 'imap.example.com',
+      port: 993,
+      username: 'reports@example.com',
+      password: encryptSecret(IMAP_PASSWORD, key),
+    })
+  }
 
   beforeAll(async () => {
     setupTestDb()
@@ -75,17 +91,38 @@ describe('secret key rotation', () => {
     expect(getDb().select().from(imapAccounts).get()?.password).toBe(before)
   })
 
-  it('rotates through updateSettings, keeping the mailbox usable', async () => {
-    const { updateSettings } = await import('@/services/settings')
-    const { invalidateConfigCache } = await import('@/lib/config')
+  // Rotation left the settings page with ADR 0010: the key is read from the
+  // environment, which a running instance cannot rewrite for itself, so the
+  // operator drives it from the recovery CLI with the instance stopped.
+  it('rotates through the recovery CLI, keeping the mailbox usable', async () => {
+    const { rotateEncryptionKey } = await import('@/services/recovery')
     const { getDb, imapAccounts } = await import('@/lib/db')
     const { decryptSecret } = await import('@/services/crypto')
-    invalidateConfigCache()
+    const previous = process.env['SECRET_KEY']
+    process.env['SECRET_KEY'] = ROTATION_OLD_KEY
+    await seedImapPassword(ROTATION_OLD_KEY)
+    try {
+      expect(rotateEncryptionKey(ROTATION_NEW_KEY)).toBeGreaterThan(0)
+      const account = getDb().select().from(imapAccounts).get()
+      expect(decryptSecret(account?.password ?? '', ROTATION_NEW_KEY)).toBe(
+        IMAP_PASSWORD,
+      )
+    } finally {
+      if (previous === undefined) delete process.env['SECRET_KEY']
+      else process.env['SECRET_KEY'] = previous
+    }
+  })
 
-    updateSettings({ secretKey: NEW_KEY })
-    invalidateConfigCache()
-
-    const account = getDb().select().from(imapAccounts).get()
-    expect(decryptSecret(account?.password ?? '', NEW_KEY)).toBe(IMAP_PASSWORD)
+  it('refuses to rotate without a key in the environment', async () => {
+    const { rotateEncryptionKey } = await import('@/services/recovery')
+    const previous = process.env['SECRET_KEY']
+    delete process.env['SECRET_KEY']
+    try {
+      expect(() => rotateEncryptionKey(ROTATION_NEW_KEY)).toThrow(
+        /SECRET_KEY is not set/,
+      )
+    } finally {
+      if (previous !== undefined) process.env['SECRET_KEY'] = previous
+    }
   })
 })

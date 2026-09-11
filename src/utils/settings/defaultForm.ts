@@ -10,7 +10,6 @@ export const DEFAULT_FORM: SettingsFormState = {
   secretKeyMasked: false,
   backendCorsOrigins: '',
   environment: 'development',
-  secretKeyNew: '',
   ipHostnameLookupEnabled: false,
   ipHostnameRefreshIntervalHours: 48,
   ipHostnameTimeoutMs: 2000,

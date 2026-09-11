@@ -12,7 +12,6 @@ function getSettingsFormState(
   return {
     ...initialData,
     imapAccounts: initialData.imapAccounts.map(toFormEntry),
-    secretKeyNew: '',
   }
 }
 

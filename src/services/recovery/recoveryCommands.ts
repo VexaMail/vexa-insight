@@ -3,6 +3,7 @@ import { deleteEveryUser } from './deleteEveryUser'
 import { promoteAccountToAdmin } from './promoteAccountToAdmin'
 import { requireRecoveryArgs } from './requireRecoveryArgs'
 import { resetAccountPassword } from './resetAccountPassword'
+import { rotateEncryptionKey } from './rotateEncryptionKey'
 
 /**
  * The recovery verbs, keyed by the name typed on the command line. Each one
@@ -32,6 +33,15 @@ export const recoveryCommands: Record<
     const [username] = requireRecoveryArgs(args, 1) as [string]
     await promoteAccountToAdmin(username)
     return `"${username}" is now an admin.`
+  },
+  'rotate-key': async (args) => {
+    const [newKey] = requireRecoveryArgs(args, 1) as [string]
+    const moved = rotateEncryptionKey(newKey)
+    return Promise.resolve(
+      `${String(moved)} stored secret(s) re-encrypted. Set SECRET_KEY to the ` +
+        'new value in the environment before starting the instance again; ' +
+        'until then the credentials cannot be read.',
+    )
   },
   'hard-reset': async (args) => {
     if (!args.includes('--confirm')) {

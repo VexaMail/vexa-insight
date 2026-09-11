@@ -13,7 +13,6 @@ export function buildInstallRequestBody(
     installToken: state.installToken.trim(),
     adminEmail: state.adminEmail.trim(),
     adminPassword: state.adminPassword,
-    secretKey: state.secretKey.trim(),
     imapAccounts: accounts.map((a) => ({
       label: a.label.trim() || 'Account',
       server: a.server.trim(),

@@ -6,6 +6,7 @@
  *   npx tsx scripts/recovery.ts create-admin <username> <password>
  *   npx tsx scripts/recovery.ts reset-password <username> <password>
  *   npx tsx scripts/recovery.ts promote-user <username>
+ *   npx tsx scripts/recovery.ts rotate-key <new-secret-key>
  *   npx tsx scripts/recovery.ts hard-reset --confirm
  *
  * A self-hosted deployment usually has no SMTP, so there is no "email me a
@@ -13,7 +14,11 @@
  * by DATABASE_URL (default `file:./data/vexa.db`).
  *
  * `hard-reset` deletes every account and session, which unlocks `/install`.
- * Settings survive it, including the key that decrypts stored IMAP passwords.
+ * Settings survive it; the key that decrypts stored IMAP passwords is not in
+ * the database at all, it comes from `SECRET_KEY` in the environment.
+ *
+ * `rotate-key` re-encrypts those stored secrets under a new key. Run it with
+ * the instance stopped, then set `SECRET_KEY` to the new value.
  */
 import { runMigrations } from '@/lib/db'
 import { runRecoveryCommand } from '@/services/recovery'

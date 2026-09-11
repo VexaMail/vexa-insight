@@ -4,7 +4,7 @@ import { validateSettings } from './validateSettings'
 
 /**
  * Validates request body for POST /api/install.
- * If isPartial is false, requires secretKey and imapAccounts with at least one valid account.
+ * If isPartial is false, requires imapAccounts with at least one valid account.
  */
 function validateInstallBody(
   body: unknown,
@@ -28,7 +28,6 @@ function validateInstallBody(
     if ('error' in settingsResult)
       return { ok: false, message: settingsResult.error }
 
-    payload.secretKey = settingsResult.secretKey
     payload.imapAccounts = settingsResult.imapAccounts
     if (settingsResult.ingestionIntervalMinutes !== undefined) {
       payload.ingestionIntervalMinutes = settingsResult.ingestionIntervalMinutes

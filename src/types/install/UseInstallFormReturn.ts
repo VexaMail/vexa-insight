@@ -6,7 +6,6 @@ import type { InstallState } from './InstallState'
 
 export type UseInstallFormReturn = {
   readonly dispatch: Dispatch<InstallAction>
-  readonly handleGenerateKey: () => void
   readonly handleSubmit: (e: SyntheticEvent) => Promise<void>
   readonly isPartial: InstallFormProps['isPartial']
   readonly state: InstallState

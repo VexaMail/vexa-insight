@@ -26,7 +26,7 @@ export const appSettings = sqliteTable('app_settings', {
    * Fallback storage for the root secret, used only when the deployment does
    * not supply `SECRET_KEY` through the environment. When it does, this column
    * keeps the `CHANGE_ME` placeholder and the key never touches the database.
-   * See `docs/adr/0003-secret-key-out-of-the-database.md`.
+   * See `docs/adr/0009-secret-key-out-of-the-database.md`.
    */
   secretKey: text('secret_key').notNull().default('CHANGE_ME'),
   backendCorsOrigins: text('backend_cors_origins')

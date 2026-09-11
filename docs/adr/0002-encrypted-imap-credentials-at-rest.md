@@ -4,12 +4,13 @@ Date: 2026-05-18
 
 ## Status
 
-Accepted, amended by [ADR 0003](0003-secret-key-out-of-the-database.md).
+Accepted, amended by [ADR 0009](0009-secret-key-out-of-the-database.md) and
+[ADR 0010](0010-secret-key-is-environment-only.md).
 
 **Correction (2026-09-11):** the first Consequence below was wrong as shipped.
 `SECRET_KEY` was read from `app_settings.secret_key`, so up to and including
 0.2.2 the key lived in the same database file as the ciphertext and a leaked
-file did expose the credentials. ADR 0003 records the fix and the resolution
+file did expose the credentials. ADR 0009 records the fix and the resolution
 order that replaces it.
 
 ## Context
@@ -40,7 +41,7 @@ single-binary deployment.
 
 - A leaked database file no longer exposes mailbox credentials unless
   `SECRET_KEY` leaks with it. **Superseded — see the correction above and
-  ADR 0003.** As shipped, the key was stored alongside the ciphertext.
+  ADR 0009.** As shipped, the key was stored alongside the ciphertext.
 - `SECRET_KEY` becomes the root secret for both auth (ADR 0001) and encryption;
   rotating it invalidates stored ciphertexts, and there is no built-in
   key-rotation flow yet.

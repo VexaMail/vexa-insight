@@ -1,7 +1,13 @@
 import type { SettingsUpdatePayload } from '@/types/settings'
 import { settingsScalarFields } from './settingsScalarFields'
 
-/** Collects the `app_settings` columns the payload actually asks to change. */
+/**
+ * Collects the `app_settings` columns the payload actually asks to change.
+ *
+ * `secret_key` is not among them and cannot be: since ADR 0010 the encryption
+ * root is read from the environment only, so a value written here would be
+ * stored and never used.
+ */
 export function buildAppSettingsUpdates(
   payload: SettingsUpdatePayload,
 ): Record<string, unknown> {
@@ -11,10 +17,6 @@ export function buildAppSettingsUpdates(
     if (payload[field] !== undefined) {
       updates[field] = payload[field]
     }
-  }
-
-  if (payload.secretKey !== undefined && payload.secretKey.trim() !== '') {
-    updates['secretKey'] = payload.secretKey
   }
 
   return updates

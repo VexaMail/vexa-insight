@@ -1,10 +1,11 @@
-# ADR 0003: Keep SECRET_KEY out of the database it protects
+# ADR 0009: Keep SECRET_KEY out of the database it protects
 
 Date: 2026-09-11
 
 ## Status
 
-Accepted. Amends ADR 0002.
+Superseded by [ADR 0010](0010-secret-key-is-environment-only.md), which removed
+the database fallback described below. Amends ADR 0002.
 
 ## Context
 

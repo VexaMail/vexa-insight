@@ -6,5 +6,4 @@ import type { SettingsPublic } from './SettingsPublic'
  */
 export type SettingsFormState = {
   imapAccounts: ImapAccountFormEntry[]
-  secretKeyNew: string
 } & Omit<SettingsPublic, 'imapAccounts'>

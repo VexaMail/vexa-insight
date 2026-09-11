@@ -41,50 +41,16 @@ the portfolio repo.
 
 ## Security
 
-- [ ] The at-rest key cleanup is a logical clear, not an erasure. Found
-      2026-09-11 by an adversarial review of the fix itself, which recovered a
-      mailbox password from a raw copy of `vexa.db` taken after
-      `clearDuplicatedSecretKey()` had run. SQLite runs with `secure_delete`
-      off, so the freed cell keeps its bytes; an independent reproduction on a
-      near-empty database did NOT retain them, so retention is page-layout
-      dependent, which for a security guarantee is the same as unreliable.
-      `VACUUM INTO`, which `createDatabaseSnapshot()` already uses, produces a
-      clean file. Smallest next step: decide whether the upgrade performs a
-      consistent rewrite of the database (and how it handles the WAL), or
-      whether the README simply tells upgraded instances to rotate. Either way,
-      backups taken before the upgrade keep the key and nothing can revoke them.
-
-- [ ] Saving settings writes the environment-owned key back into the database.
-      `buildAppSettingsUpdates`
-      (`src/services/settings/buildAppSettingsUpdates.ts:16`) persists any
-      non-empty `secretKey` in the payload, including one that merely repeats
-      the value the environment already supplies, which silently undoes the
-      environment-only property until the next boot clears it again. Found
-      2026-09-11; reproduced by a review that then found the key in a
-      `createDatabaseSnapshot()` output. Smallest next step: skip the write when
-      the submitted value equals the resolved environment key, and cover update
-      → public read → snapshot in a regression test.
-
 - [ ] The encryption root key is rendered into the admin browser. The settings
       page passes the whole `getSettingsForAdmin()` object into a client
       component, and `ApiKeyCurrentField` renders it as a text input, so the
       same string is both the admin API token and the AES root. Pre-existing,
-      but since 2026-09-11 the value shown there is the environment-resolved
-      root rather than a column that may have been a placeholder. Verified by
-      rendering the real component against a scratch database: the generated
-      HTML contained the key; `getSettingsPublic()` did not. Smallest next step:
-      separate the API token from the encryption root, or stop returning the
-      root to the page.
-
-- [ ] `clearDuplicatedSecretKey` can erase a key another process just rotated.
-      It reads the row, compares it to the environment, then updates filtering
-      only on the settings id, so a rotation committed in between is overwritten
-      with the placeholder and its freshly re-encrypted secrets become
-      unreadable. Reproduced 2026-09-11 by interleaving two SQLite connections.
-      Only reachable with more than one process, which
-      `docs/adr/0003-sqlite-single-replica-deployment.md` already excludes, so
-      this is a latent trap rather than a live bug. Smallest next step: make the
-      update predicate include the key that was observed.
+      and unchanged by ADR 0010, which removed the rotation field but not the
+      display: the value shown is now always the environment-resolved root.
+      Verified by rendering the real component against a scratch database: the
+      generated HTML contained the key; `getSettingsPublic()` did not. Smallest
+      next step: separate the API token from the encryption root, or stop
+      returning the root to the page.
 
 - [ ] The demo seeder deletes by a report-id prefix the sender controls.
       `wipeDemoData` (`src/services/seed/wipeDemoData.ts:7`) matches

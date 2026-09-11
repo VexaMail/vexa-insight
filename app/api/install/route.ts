@@ -1,3 +1,4 @@
+import { SECRET_KEY_REQUIRED_MESSAGE } from '@/constants/install'
 import { runMigrations } from '@/lib/db'
 import {
   clearInstallToken,
@@ -7,6 +8,7 @@ import {
   isLoopbackRequest,
   isPartiallyInstalled,
 } from '@/services/install'
+import { getEnvSecretKey } from '@/services/settings-store'
 import {
   ALLOW_REMOTE_INSTALL,
   timingSafeStringEqual,
@@ -23,6 +25,9 @@ import { remoteInstallForbiddenMessage } from './remoteInstallForbiddenMessage'
  *   1. Loopback-only origin (override with VEXA_ALLOW_REMOTE_INSTALL=1).
  *   2. One-time install token printed to server stdout on boot (header
  *      `x-install-token` or body field `installToken`).
+ *   3. A usable `SECRET_KEY` in the environment: it is the only place the
+ *      encryption root is read from, so installing without it would produce an
+ *      instance that cannot store a mailbox password.
  *
  * Returns 403 if already installed or remote-but-not-allowed, 401 on bad
  * token, 400 on validation error, 409 if the token store is somehow empty
@@ -34,6 +39,9 @@ export async function POST(
   runMigrations()
   if (isInstalled()) {
     return installErrorResponse('FORBIDDEN', 'Already installed', 403)
+  }
+  if (!getEnvSecretKey()) {
+    return installErrorResponse('BAD_REQUEST', SECRET_KEY_REQUIRED_MESSAGE, 400)
   }
   if (!ALLOW_REMOTE_INSTALL && !isLoopbackRequest(request)) {
     return installErrorResponse('FORBIDDEN', remoteInstallForbiddenMessage, 403)

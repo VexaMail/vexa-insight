@@ -182,12 +182,40 @@ docker restart vexa
 The wizard then asks for an admin account only, and leaves the settings and the
 ingested reports alone.
 
-> **Never recover by deleting `app_settings`.** That row holds `secret_key`,
-> which is the key every stored IMAP password and the AI provider key are
-> encrypted with. Deleting it does not reset the instance, it destroys those
-> credentials permanently — and if the key lives only in the database (see
-> [ADR 0003](adr/0003-secret-key-out-of-the-database.md)), nothing can recover
-> them. Releases up to 0.2.2 documented that delete here; it was wrong.
+> **Never recover by deleting `app_settings`.** That row holds the instance
+> configuration and every IMAP account, and deleting it does not reset the
+> instance, it destroys them. The encryption key is not in there: since
+> [ADR 0010](adr/0010-secret-key-is-environment-only.md) it is read from
+> `SECRET_KEY` in the environment and nowhere else. Releases up to 0.2.2
+> documented that delete here; it was wrong.
+
+## `SECRET_KEY` missing or wrong
+
+Two lines in the boot log point here.
+
+`[secret] SECRET_KEY is not set on an installed instance` means the variable is
+absent. The app still serves the reports it already has, but nothing can decrypt
+a mailbox password, so ingestion never runs. Set the variable to the value the
+instance was installed with and restart. The installer refuses to run at all
+without it, so a fresh instance cannot reach this state by accident.
+
+`[secret] app_settings.secret_key holds a key that SECRET_KEY does not match`
+means the instance was installed before 0.2.3 and had its key rotated through
+the old settings page, which wrote it into the database. Since
+[ADR 0010](adr/0010-secret-key-is-environment-only.md) that column is never
+read. Nothing is lost and nothing was changed: read the column out of the
+database and set `SECRET_KEY` to it.
+
+```bash
+sqlite3 data/vexa.db "SELECT secret_key FROM app_settings WHERE id = 1;"
+```
+
+Treat that value as exposed once you have it — it has been sitting inside the
+database it encrypts — and rotate once the instance is running again:
+
+```bash
+node dist/recovery.cjs rotate-key "$NEW_KEY"   # instance stopped
+```
 
 ## Update check disabled or silent
 

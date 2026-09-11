@@ -4,19 +4,17 @@ import { SETTINGS_ID } from '@/services/settings-store'
 import type { SettingsUpdatePayload } from '@/types/settings'
 import { eq } from 'drizzle-orm'
 import { buildAppSettingsUpdates } from './buildAppSettingsUpdates'
-import { reencryptStoredSecrets } from './reencryptStoredSecrets'
 import { syncImapAccounts } from './syncImapAccounts'
 
+/**
+ * Applies a settings payload.
+ *
+ * Rotating the encryption root is deliberately not part of this: the key comes
+ * from the environment (ADR 0010), which a running instance cannot change for
+ * itself. Rotation is `recovery.ts rotate-key`, run with the instance stopped.
+ */
 function updateSettings(payload: SettingsUpdatePayload): void {
   const db = getDb()
-  const payloadSecret = (payload.secretKey ?? '').trim()
-  const previousSecret = getConfig().secretKey
-
-  // Every stored secret is encrypted with a key derived from this one, so the
-  // rotation has to carry them over before the old key is gone.
-  if (payloadSecret !== '' && payloadSecret !== previousSecret) {
-    reencryptStoredSecrets(previousSecret, payloadSecret)
-  }
 
   db.update(appSettings)
     .set(buildAppSettingsUpdates(payload))
@@ -25,11 +23,7 @@ function updateSettings(payload: SettingsUpdatePayload): void {
 
   if (payload.imapAccounts === undefined) return
 
-  syncImapAccounts(
-    db,
-    payload.imapAccounts,
-    payloadSecret === '' ? previousSecret : payloadSecret,
-  )
+  syncImapAccounts(db, payload.imapAccounts, getConfig().secretKey)
 }
 
 export { updateSettings }

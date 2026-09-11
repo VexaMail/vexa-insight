@@ -5,7 +5,6 @@ import type { ImapAccountInstall } from './ImapAccountInstall'
 export type InstallPayload = {
   adminEmail: string
   adminPassword: string
-  secretKey?: string
   imapAccounts?: ImapAccountInstall[]
   ingestionIntervalMinutes?: number
   ingestionDaysBack?: number

@@ -15,7 +15,9 @@ import { useImapAccountsForm } from './useImapAccountsForm'
 export function useSettingsConfig(
   initialData: SettingsConfigFormProps['initialData'],
 ) {
-  const [apiKey, setApiKey] = useState(initialData?.secretKey ?? '')
+  // Read-only since ADR 0010: the key is the environment's, and the page has
+  // no way to change it.
+  const apiKey = initialData?.secretKey ?? ''
   const [form, setForm] = useState<SettingsFormState>(() =>
     getSettingsFormState(initialData),
   )
@@ -24,7 +26,6 @@ export function useSettingsConfig(
 
   const apiKeyActions = useApiKeyActions({
     apiKey,
-    setForm,
     setMessage,
     setSaveStatus,
   })
@@ -38,7 +39,6 @@ export function useSettingsConfig(
     try {
       const saved = await saveSettings(form, apiKey)
       setForm(toSavedFormState(saved))
-      if (form.secretKeyNew.trim()) setApiKey(form.secretKeyNew)
       setSaveStatus('success')
       setMessage('Settings saved.')
     } catch (error) {

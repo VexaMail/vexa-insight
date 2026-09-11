@@ -7,27 +7,17 @@ import UpdateStatusSection from './UpdateStatusSection'
 export function SettingsAccessSections({
   apiKey,
   form,
-  setForm,
   onImapUpdate,
   onImapAdd,
   onImapRemove,
   onTestConnection,
   onCopyApiKey,
-  onGenerateNewApiKey,
 }: SettingsAccessSectionsProps) {
   return (
     <>
       <UpdateStatusSection apiKey={apiKey} />
 
-      <ApiKeySection
-        apiKey={apiKey}
-        newKey={form.secretKeyNew}
-        onCopy={onCopyApiKey}
-        onGenerate={onGenerateNewApiKey}
-        onNewKeyChange={(v) => {
-          setForm((prev) => ({ ...prev, secretKeyNew: v }))
-        }}
-      />
+      <ApiKeySection apiKey={apiKey} onCopy={onCopyApiKey} />
 
       <ImapAccountsSection
         accounts={form.imapAccounts}

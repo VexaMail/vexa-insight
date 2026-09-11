@@ -8,13 +8,7 @@ describe('ApiKeySection accessibility', () => {
     render(
       <main>
         <h1>Settings</h1>
-        <ApiKeySection
-          apiKey={apiKey}
-          newKey=""
-          onCopy={vi.fn()}
-          onGenerate={vi.fn()}
-          onNewKeyChange={vi.fn()}
-        />
+        <ApiKeySection apiKey={apiKey} onCopy={vi.fn()} />
       </main>,
     )
 
@@ -40,20 +34,25 @@ describe('ApiKeySection accessibility', () => {
   // jsdom never advances the animation, so `toBeVisible` would fail on every
   // node here for a reason unrelated to accessibility. Resolving each control
   // by role *and* accessible name is the assertion that matters.
-  it('names both text fields and both icon-only buttons', () => {
+  it('names the field and the icon-only button', () => {
     renderSection('secret-key')
 
     expect(
       screen.getByRole('textbox', { name: 'Current API key' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('textbox', { name: 'New API key (optional)' }),
-    ).toBeInTheDocument()
-    expect(
       screen.getByRole('button', { name: 'Copy API key' }),
     ).toBeInTheDocument()
+  })
+
+  // Rotation left the settings page with ADR 0010: the key comes from the
+  // environment, which a running instance cannot rewrite for itself.
+  it('offers no way to set a new key', () => {
+    renderSection('secret-key')
+
+    expect(screen.queryAllByRole('textbox')).toHaveLength(1)
     expect(
-      screen.getByRole('button', { name: 'Generate new API key' }),
-    ).toBeInTheDocument()
+      screen.queryByRole('button', { name: 'Generate new API key' }),
+    ).toBeNull()
   })
 })

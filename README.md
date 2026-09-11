@@ -239,18 +239,18 @@ The chart source is in [`deploy/helm/vexa-insight`](deploy/helm/vexa-insight);
 
 ### Environment variables
 
-| Variable                     | Required    | Description                                                                                                                                                                   |
-| ---------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`               | No          | SQLite file path, default `file:./data/vexa.db`.                                                                                                                              |
-| `SECRET_KEY`                 | Recommended | Min 32 characters. Used for admin API auth (`X-API-Key` / `Authorization: Bearer`). Left as `CHANGE_ME`, admin API is disabled until you set it via installer or Settings.    |
-| `INGESTION_INTERVAL_MINUTES` | No          | Scheduler interval (default `60`). Read only while settings still hold `CHANGE_ME`; once `SECRET_KEY` is set the stored value wins, so change it in Settings.                 |
-| `INGESTION_DAYS_BACK`        | No          | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page. |
-| `ENVIRONMENT`                | No          | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                        |
-| `VEXA_IMAP_DEBUG`            | No          | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                              |
-| `VEXA_UPDATE_CHECK_ENABLED`  | No          | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                               |
-| `VEXA_UPDATE_REPO`           | No          | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                    |
-| `VEXA_ALLOW_REMOTE_INSTALL`  | No          | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                |
-| `VEXA_ALLOWED_ORIGINS`       | No          | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.      |
+| Variable                     | Required     | Description                                                                                                                                                                                                                                               |
+| ---------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | No           | SQLite file path, default `file:./data/vexa.db`.                                                                                                                                                                                                          |
+| `SECRET_KEY`                 | **Required** | Min 32 characters. Encrypts stored mailbox credentials and authenticates the admin API (`X-API-Key` / `Authorization: Bearer`). Read from the environment only; the installer refuses to run without it. Keep it: losing it loses the stored credentials. |
+| `INGESTION_INTERVAL_MINUTES` | No           | Scheduler interval (default `60`). Seeded into settings on first boot only; afterwards the stored value wins, so change it in Settings.                                                                                                                   |
+| `INGESTION_DAYS_BACK`        | No           | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page.                                                                             |
+| `ENVIRONMENT`                | No           | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                                                                                                    |
+| `VEXA_IMAP_DEBUG`            | No           | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                                                                                                          |
+| `VEXA_UPDATE_CHECK_ENABLED`  | No           | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                                                                                                           |
+| `VEXA_UPDATE_REPO`           | No           | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                                                                                                |
+| `VEXA_ALLOW_REMOTE_INSTALL`  | No           | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                                                                                            |
+| `VEXA_ALLOWED_ORIGINS`       | No           | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.                                                                                  |
 
 ---
 
@@ -427,35 +427,31 @@ migrations for schema changes).
 ### Where the encryption key lives
 
 Stored IMAP passwords and the AI provider key are encrypted with a key derived
-from `SECRET_KEY`. Where you put that key decides what a copy of `vexa.db` is
-worth to whoever gets it:
+from `SECRET_KEY`, and `SECRET_KEY` comes from the environment. Nothing writes
+it to disk inside the database, there is no settings field for it, and there is
+no fallback that reads it back out of `vexa.db`. A leaked database file is
+therefore not enough to recover a mailbox password.
 
-| You set `SECRET_KEY`                                       | Key stored in the database | A leaked `vexa.db` exposes credentials |
-| ---------------------------------------------------------- | -------------------------- | -------------------------------------- |
-| In the environment (the Docker, Compose and Helm examples) | No                         | No                                     |
-| Through `Settings > Access` instead                        | Yes                        | Yes                                    |
+The cost is the obvious one: lose the key and the stored credentials are gone
+with it. Back it up wherever you keep the rest of your secrets. Rotate it with
+the instance stopped:
 
-Prefer the environment. Setting or rotating the key through the settings page
-writes it into the database and makes it authoritative from then on, which is
-supported for deployments that cannot set an environment variable but is the
-weaker of the two.
+```bash
+docker compose stop vexa
+docker compose run --rm vexa node dist/recovery.cjs rotate-key "$NEW_KEY"
+# then set SECRET_KEY to the new value and start again
+docker compose up -d vexa
+```
 
-Releases up to and including 0.2.2 seeded the environment value into the
-database on first boot, so every instance installed before 0.2.3 stored the key
-next to the ciphertext regardless of how it was set. Upgrading clears that
-stored copy when the environment still supplies the same value.
-
-**That clear is logical, not physical.** SQLite does not zero the bytes an
-update frees, so the old key can still sit in unused space inside the file, and
-a raw copy of `vexa.db` may yield it. `VACUUM INTO` rewrites the file without
-that free space. Any backup taken before the upgrade holds the key regardless;
-no upgrade can reach a copy someone already has. **If your instance ran 0.2.2 or
-earlier, treat the key as exposed to everyone who has ever held a copy of the
-database, and rotate it.** See
-[ADR 0003](docs/adr/0003-secret-key-out-of-the-database.md).
-
-Losing `SECRET_KEY` on an instance that has no stored copy means losing the
-stored credentials. Back it up wherever you keep the rest of your secrets.
+Releases up to and including 0.2.2 seeded the environment value into
+`app_settings.secret_key`, so every instance installed before 0.2.3 kept the key
+next to the ciphertext. Upgrading clears that column and runs `VACUUM`, which
+rewrites the file so the freed bytes go with it. **Any backup taken before the
+upgrade still holds the key, and no upgrade can reach a copy someone already
+has: if your instance ran 0.2.2 or earlier, rotate.** If you had rotated the key
+through the old settings page, set `SECRET_KEY` to that rotated value before
+upgrading; the boot log says so if you do not. See
+[ADR 0010](docs/adr/0010-secret-key-is-environment-only.md).
 
 Report security issues privately as described in [SECURITY.md](SECURITY.md).
 

@@ -8,8 +8,7 @@ import { InstallSubmitButton } from './InstallSubmitButton'
 import { InstallTokenField } from './InstallTokenField'
 
 export default function InstallForm({ isPartial = false }: InstallFormProps) {
-  const { state, dispatch, handleGenerateKey, handleSubmit } =
-    useInstallForm(isPartial)
+  const { state, dispatch, handleSubmit } = useInstallForm(isPartial)
 
   return (
     <form
@@ -32,11 +31,7 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
       />
 
       {!isPartial && (
-        <InstallFullSetupFields
-          state={state}
-          dispatch={dispatch}
-          onGenerateKey={handleGenerateKey}
-        />
+        <InstallFullSetupFields state={state} dispatch={dispatch} />
       )}
 
       {state.message !== '' && (

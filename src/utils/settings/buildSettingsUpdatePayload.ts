@@ -1,7 +1,7 @@
 import type { SettingsFormState } from '@/types/settings'
 import { toImapAccountPayload } from './toImapAccountPayload'
 
-/** Body of PUT /api/v1/admin/settings. A blank new secret is left out. */
+/** Body of PUT /api/v1/admin/settings. */
 export function buildSettingsUpdatePayload(
   form: SettingsFormState,
 ): Record<string, unknown> {
@@ -23,7 +23,5 @@ export function buildSettingsUpdatePayload(
     ipHostnameAllowPrivateIps: form.ipHostnameAllowPrivateIps,
     ipHostnameNegativeCacheHours: form.ipHostnameNegativeCacheHours,
   }
-  if (form.secretKeyNew.trim()) payload['secretKey'] = form.secretKeyNew
-
   return payload
 }

@@ -15,7 +15,9 @@ export function ApiKeySectionHeader() {
           API Key
         </h2>
         <p className="text-muted-foreground text-xs">
-          Used for API calls, crons, and external scripts
+          SECRET_KEY from the environment. Used for API calls, crons and
+          external scripts, and to encrypt stored credentials. Change it with
+          `recovery.ts rotate-key`, not here.
         </p>
       </div>
     </div>

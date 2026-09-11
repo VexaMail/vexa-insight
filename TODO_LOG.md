@@ -6,6 +6,38 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **The encryption root became environment-only, closing the
+      leak the previous fix left behind.** ADR 0010 supersedes the resolution
+      order in ADR 0009: `resolveSecretKey()` now returns `getEnvSecretKey()`
+      and nothing else, and no code path writes `app_settings.secret_key`.
+  - Root cause: the database fallback kept the key reachable from inside the
+    file it encrypts. Clearing the column was a logical erase only — SQLite runs
+    with `secure_delete` off — and an adversarial review recovered a mailbox
+    password from a raw copy taken after the boot cleanup. The same fallback
+    kept two more defects alive: settings saves rewrote the key into the column,
+    and the cleanup could erase a concurrently rotated key.
+  - Result:
+    - `purgeStoredSecretKey()` replaces `clearDuplicatedSecretKey()`. It clears
+      the column only when the environment carries the same value, then runs
+      `VACUUM` so the freed bytes go with it. A column that differs is reported,
+      not destroyed: it is the only key its ciphertext will open.
+    - The installer no longer collects a key. `/install` and `POST /api/install`
+      refuse without `SECRET_KEY` and say why; the settings page lost its
+      rotation field, since a running instance cannot change its environment.
+    - Rotation moved to `recovery.ts rotate-key <new-key>`, run with the
+      instance stopped, and an installed instance booting without the key now
+      logs an error naming the consequence.
+    - README, `.env.example` and `docs/TROUBLESHOOTING.md` follow, including the
+      two boot-log lines an operator can hit and what to do about each.
+  - Evidence: `pnpm run check:ci` green — 105 test files, 616 tests,
+    `check-migrations: OK`, `check-chart-version: OK (0.2.2)`. The erasure was
+    verified directly rather than assumed: a scratch database seeded with the
+    key, churned 200 times to push the old cell into free space, then purged,
+    contained zero raw occurrences of the key string.
+  - Follow-ups that stay open: the root still doubles as the admin API token and
+    renders into the browser, and the demo seeder still deletes by a
+    sender-controlled report-id prefix. Both remain in `TODO.md`.
+
 - [x] 2026-09-11 — **The encryption key no longer ships inside the database it
       protects, and five other launch-blocking claims were corrected.** An audit
       of what a public launch would assert about this app found that ADR 0002's

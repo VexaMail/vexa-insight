@@ -4,9 +4,9 @@ import { setupTestDb } from './setup/setupTestDb'
 /**
  * Releases up to 0.2.2 seeded SECRET_KEY from the environment into
  * `app_settings.secret_key`, which left the AES key inside the very database it
- * encrypts. The key now resolves from the environment unless the column holds a
- * usable value of its own, and a stored copy that merely duplicates the
- * environment is dropped on boot.
+ * encrypts. Since ADR 0010 the key resolves from the environment and from
+ * nowhere else, and the boot purge rewrites the file so the old bytes go with
+ * the column.
  */
 describe('secret key resolution', () => {
   const ENV_KEY = 'env-secret-key-value-0123456789ab'
@@ -51,44 +51,43 @@ describe('secret key resolution', () => {
     return getSettingsRow()?.secretKey
   }
 
-  it('reads the key from the environment when the column is a placeholder', async () => {
+  it('reads the key from the environment', async () => {
     process.env['SECRET_KEY'] = ENV_KEY
     const { resolveSecretKey } = await import('@/services/settings-store')
     expect(resolveSecretKey()).toBe(ENV_KEY)
   })
 
-  it('returns null when neither the environment nor the column has one', async () => {
+  it('returns null when the environment has none', async () => {
+    await setStoredKey(STORED_KEY)
     const { resolveSecretKey } = await import('@/services/settings-store')
     expect(resolveSecretKey()).toBeNull()
   })
 
-  // An instance whose key was rotated through the settings page re-encrypted
-  // its secrets against the stored value. Preferring the environment there
-  // would make every stored credential unreadable.
-  it('prefers a stored key over a different environment key', async () => {
+  // The whole point of ADR 0010: a key sitting in the file it encrypts is not
+  // a second source to fall back on, it is the leak.
+  it('never falls back to the stored column', async () => {
     process.env['SECRET_KEY'] = ENV_KEY
     await setStoredKey(STORED_KEY)
     const { resolveSecretKey } = await import('@/services/settings-store')
-    expect(resolveSecretKey()).toBe(STORED_KEY)
-  })
-
-  it('drops a stored copy that only duplicates the environment', async () => {
-    process.env['SECRET_KEY'] = ENV_KEY
-    await setStoredKey(ENV_KEY)
-    const { clearDuplicatedSecretKey, resolveSecretKey } =
-      await import('@/services/settings-store')
-    const { PLACEHOLDER_SECRET } = await import('@/constants/auth')
-    clearDuplicatedSecretKey()
-    expect(await readStoredKey()).toBe(PLACEHOLDER_SECRET)
     expect(resolveSecretKey()).toBe(ENV_KEY)
   })
 
+  it('purges a stored copy that duplicates the environment', async () => {
+    process.env['SECRET_KEY'] = ENV_KEY
+    await setStoredKey(ENV_KEY)
+    const { purgeStoredSecretKey } = await import('@/services/settings-store')
+    const { PLACEHOLDER_SECRET } = await import('@/constants/auth')
+    purgeStoredSecretKey()
+    expect(await readStoredKey()).toBe(PLACEHOLDER_SECRET)
+  })
+
+  // That column is the only key its ciphertext will open. Blanking it would
+  // destroy the credentials rather than protect them.
   it('keeps a stored key that differs from the environment', async () => {
     process.env['SECRET_KEY'] = ENV_KEY
     await setStoredKey(STORED_KEY)
-    const { clearDuplicatedSecretKey } =
-      await import('@/services/settings-store')
-    clearDuplicatedSecretKey()
+    const { purgeStoredSecretKey } = await import('@/services/settings-store')
+    purgeStoredSecretKey()
     expect(await readStoredKey()).toBe(STORED_KEY)
   })
 
@@ -97,6 +96,18 @@ describe('secret key resolution', () => {
     const { seedSettingsFromEnv } = await import('@/services/settings-store')
     const { PLACEHOLDER_SECRET } = await import('@/constants/auth')
     seedSettingsFromEnv()
+    expect(await readStoredKey()).toBe(PLACEHOLDER_SECRET)
+  })
+
+  // A settings save used to write the environment's key straight back into the
+  // column the purge had just cleared.
+  it('does not write the key back when settings are saved', async () => {
+    process.env['SECRET_KEY'] = ENV_KEY
+    const { updateSettings } = await import('@/services/settings')
+    const { invalidateConfigCache } = await import('@/lib/config')
+    const { PLACEHOLDER_SECRET } = await import('@/constants/auth')
+    invalidateConfigCache()
+    updateSettings({ ingestionDaysBack: 7 })
     expect(await readStoredKey()).toBe(PLACEHOLDER_SECRET)
   })
 })

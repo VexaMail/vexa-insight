@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 
-import { InstallForm } from '@/components/install'
+import { InstallForm, InstallSecretKeyNotice } from '@/components/install'
 import { ThemeToggle } from '@/components/shell'
 import { isInstalled, isPartiallyInstalled } from '@/services/install'
+import { getEnvSecretKey } from '@/services/settings-store'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function InstallPage() {
   }
 
   const isPartial = isPartiallyInstalled()
+  const hasSecretKey = getEnvSecretKey() !== null
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
@@ -35,7 +37,11 @@ export default function InstallPage() {
               : 'Complete the form below to configure your instance.'}
           </p>
         </div>
-        <InstallForm isPartial={isPartial} />
+        {hasSecretKey ? (
+          <InstallForm isPartial={isPartial} />
+        ) : (
+          <InstallSecretKeyNotice />
+        )}
       </div>
     </div>
   )

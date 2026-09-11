@@ -8,7 +8,6 @@ export const settingsUpdateSchema = z.object({
   ingestionDaysBack: z.number().int().min(1).max(365).optional(),
   ingestionIncludeTrash: z.boolean().optional(),
   ingestionIncludeAllFolders: z.boolean().optional(),
-  secretKey: z.string().min(32).optional(),
   backendCorsOrigins: z.string().optional(),
   environment: z.enum(['development', 'staging', 'production']).optional(),
 

@@ -4,7 +4,6 @@ import type { SettingsFormState } from './SettingsFormState'
 export type SettingsAccessSectionsProps = {
   readonly apiKey: string
   readonly form: SettingsFormState
-  readonly setForm: React.Dispatch<React.SetStateAction<SettingsFormState>>
   readonly onImapUpdate: (
     index: number,
     updates: Partial<ImapAccountFormEntry>,
@@ -13,5 +12,4 @@ export type SettingsAccessSectionsProps = {
   readonly onImapRemove: (index: number) => void
   readonly onTestConnection: (accountId: number) => void
   readonly onCopyApiKey: () => void
-  readonly onGenerateNewApiKey: () => void
 }

@@ -9,7 +9,6 @@ export function initialInstallState(): InstallState {
     adminEmail: '',
     adminPassword: '',
     installToken: '',
-    secretKey: '',
     imapAccounts: [defaultAccount()],
     ingestionIntervalMinutes: DEFAULT_INTERVAL,
     ingestionDaysBack: DEFAULT_DAYS_BACK,

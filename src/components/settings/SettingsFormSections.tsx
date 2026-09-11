@@ -12,7 +12,6 @@ export function SettingsFormSections({ settings }: SettingsFormSectionsProps) {
       <SettingsAccessSections
         apiKey={apiKey}
         form={form}
-        setForm={setForm}
         onImapUpdate={settings.handleImapUpdate}
         onImapAdd={settings.handleImapAdd}
         onImapRemove={settings.handleImapRemove}
@@ -20,7 +19,6 @@ export function SettingsFormSections({ settings }: SettingsFormSectionsProps) {
           void settings.handleTestConnection(id)
         }}
         onCopyApiKey={settings.handleCopyApiKey}
-        onGenerateNewApiKey={settings.handleGenerateNewApiKey}
       />
 
       <SettingsIngestionSections

@@ -40,7 +40,6 @@ async function completeInstall(
     return // Skip modifying settings if already initialized
   }
   updateSettings({
-    secretKey: payload.secretKey ?? '',
     ingestionIntervalMinutes: payload.ingestionIntervalMinutes,
     ingestionDaysBack: payload.ingestionDaysBack,
     imapAccounts: (payload.imapAccounts ?? []).map((a) => ({
