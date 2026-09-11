@@ -43,11 +43,12 @@ export async function register(): Promise<void> {
     }
   }
 
-  const { startScheduler } = await import('@/services/job')
+  const { startScheduler, reportSchedulerStartFailure } =
+    await import('@/services/job')
   try {
     startScheduler()
-  } catch {
-    // Not installed yet (no app_settings row or secret_key still CHANGE_ME); skip scheduler
+  } catch (err) {
+    reportSchedulerStartFailure(err)
   }
 
   const { startUpdateCheckScheduler } = await import('@/services/updates')
