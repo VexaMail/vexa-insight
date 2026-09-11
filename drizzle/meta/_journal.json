@@ -232,6 +232,13 @@
       "when": 1789096131716,
       "tag": "0032_bouncy_darkstar",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1789100019737,
+      "tag": "0033_unique_wither",
+      "breakpoints": true
     }
   ]
 }

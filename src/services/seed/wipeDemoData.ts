@@ -1,20 +1,27 @@
 import { eventRollupDaily, getDb, normalizedEvents, rawReports } from '@/lib/db'
-import { inArray, like } from 'drizzle-orm'
-import { DEMO_REPORT_PREFIX } from './demoReportPrefix'
+import { eq, inArray } from 'drizzle-orm'
 
+/**
+ * Deletes every report the seeder wrote, and nothing else.
+ *
+ * The selector is `raw_reports.is_demo`, set at insert time. It used to be
+ * `report_id LIKE 'demo-%'`, and a report id is written by the reporting
+ * organisation: a genuine aggregate report whose id happened to begin `demo-`
+ * was deleted here along with its events and its domain's rollup rows.
+ */
 export function wipeDemoData(): void {
   const db = getDb()
   const demoReportIds = db
     .select({ id: rawReports.id })
     .from(rawReports)
-    .where(like(rawReports.reportId, `${DEMO_REPORT_PREFIX}%`))
+    .where(eq(rawReports.isDemo, true))
     .all()
     .map((row) => row.id)
   if (demoReportIds.length > 0) {
     // Capture the demo domains before deleting events so their derived rollup
     // rows can be cleared too; otherwise a force-reseed would double-count via
-    // the additive upsert in seedDemoDay. Demo domains are isolated by prefix,
-    // so dropping their rollup rows does not affect real ingested data.
+    // the additive upsert in seedDemoDay. Demo domains are the seeder's own, so
+    // dropping their rollup rows does not affect real ingested data.
     const demoDomainIds = [
       ...new Set(
         db
@@ -34,7 +41,5 @@ export function wipeDemoData(): void {
         .run()
     }
   }
-  db.delete(rawReports)
-    .where(like(rawReports.reportId, `${DEMO_REPORT_PREFIX}%`))
-    .run()
+  db.delete(rawReports).where(eq(rawReports.isDemo, true)).run()
 }

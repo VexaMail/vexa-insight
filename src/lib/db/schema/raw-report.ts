@@ -10,4 +10,11 @@ export const rawReports = sqliteTable('raw_reports', {
   sourceEmail: text('source_email'),
   sourceMessageId: text('source_message_id'),
   ingestedAt: integer('ingested_at', { mode: 'timestamp' }).notNull(),
+  /**
+   * Set only by the demo seeder. `wipeDemoData` deletes on this and nothing
+   * else: it used to match `report_id LIKE 'demo-%'`, and a report id is
+   * written by the reporting organisation, so a genuine report whose id began
+   * `demo-` was deleted along with the synthetic ones.
+   */
+  isDemo: integer('is_demo', { mode: 'boolean' }).notNull().default(false),
 })

@@ -6,6 +6,21 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **The demo seeder no longer deletes genuine reports.**
+      `wipeDemoData` matched `report_id LIKE 'demo-%'`, and a report id is
+      written by the reporting organisation, so `--force` deleted any real
+      aggregate report whose id began `demo-`, its normalized events, and its
+      domain's rollup rows with them.
+  - Result: migration `0033` adds `raw_reports.is_demo`, set at insert time by
+    the seeder and backfilled for rows it wrote before the column existed
+    (prefix plus the two other values only the seeder writes, so the backfill
+    does not repeat the bug it fixes). `wipeDemoData` and `isDemoAlreadySeeded`
+    both select on that column.
+  - Evidence: `pnpm run check:ci` green — 106 test files, 618 tests,
+    `check-migrations: OK`. `test/wipeDemoData.test.ts` keeps a genuine
+    `demo-`-prefixed report across a wipe and reports nothing seeded when only
+    such a report exists.
+
 - [x] 2026-09-11 — **The encryption root became environment-only, closing the
       leak the previous fix left behind.** ADR 0010 supersedes the resolution
       order in ADR 0009: `resolveSecretKey()` now returns `getEnvSecretKey()`

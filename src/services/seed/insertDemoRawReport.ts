@@ -25,6 +25,7 @@ export function insertDemoRawReport({
       sourceEmail: 'demo@vexamail.local',
       sourceMessageId: `demo-${reportId}`,
       ingestedAt: now,
+      isDemo: true,
     })
     .returning({ id: rawReports.id })
     .get()

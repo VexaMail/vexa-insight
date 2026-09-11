@@ -52,15 +52,6 @@ the portfolio repo.
       next step: separate the API token from the encryption root, or stop
       returning the root to the page.
 
-- [ ] The demo seeder deletes by a report-id prefix the sender controls.
-      `wipeDemoData` (`src/services/seed/wipeDemoData.ts:7`) matches
-      `report_id LIKE 'demo-%'`, and a report id comes from the reporting
-      organisation, so a genuine aggregate report whose id begins `demo-` is
-      deleted by `--force` along with its events, and its domain's rollup rows
-      go with it. Reproduced 2026-09-11 against a migrated scratch database. The
-      README warning added the same day is a stopgap. Smallest next step: mark
-      demo rows by provenance at insert time and delete on that.
-
 - [!] Purge the pre-rewrite history from the laptop's clone. `main` was
   rewritten and force-pushed on 2026-09-10 to strip client screenshots and
   assistant trailers, and the remote repository was recreated, but the clone on
