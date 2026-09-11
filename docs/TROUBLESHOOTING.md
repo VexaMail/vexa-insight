@@ -146,17 +146,43 @@ Checklist, in order:
 ## Install token rotated / lost
 
 The first-run install token is logged on every boot until installation
-completes. If the container has already been installed but you need a fresh
-token (e.g. to re-run the wizard on a new mailbox):
+completes. Once an instance is installed the token is gone, and what you do next
+depends on what you actually need.
+
+**You want to point it at a different mailbox.** You do not need the installer.
+Change the account under `Settings > Ingestion`; the wizard configures nothing
+that page cannot.
+
+**You lost the admin password.** Reset it with the recovery CLI. It touches
+accounts only:
 
 ```bash
-docker exec -it vexa sqlite3 /app/data/vexa.db \
-  "DELETE FROM app_settings; DELETE FROM users;"
-docker restart vexa
-# new token will appear in docker logs vexa
+docker exec -it vexa node dist/recovery.cjs \
+  reset-password admin@example.com 'NewPassword123!'
 ```
 
-This wipes credentials and the admin user but preserves ingested reports.
+`create-admin` and `promote-user` are available the same way. See
+[Password recovery](../README.md#password-recovery).
+
+**You lost every admin account.** Back up the database first, then clear the
+accounts so `/install` unlocks and hands you a fresh token:
+
+```bash
+docker cp vexa:/app/data/vexa.db ./vexa-backup-$(date +%F).db
+docker exec -it vexa node dist/recovery.cjs hard-reset --confirm
+docker restart vexa
+# new token appears in: docker logs vexa
+```
+
+The wizard then asks for an admin account only, and leaves the settings and the
+ingested reports alone.
+
+> **Never recover by deleting `app_settings`.** That row holds `secret_key`,
+> which is the key every stored IMAP password and the AI provider key are
+> encrypted with. Deleting it does not reset the instance, it destroys those
+> credentials permanently — and if the key lives only in the database (see
+> [ADR 0003](adr/0003-secret-key-out-of-the-database.md)), nothing can recover
+> them. Releases up to 0.2.2 documented that delete here; it was wrong.
 
 ## Update check disabled or silent
 

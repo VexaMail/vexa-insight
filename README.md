@@ -20,8 +20,11 @@
 **Vexa Mail Insight** turns raw DMARC aggregate reports (RUA) into a queryable
 security signal: who is sending mail using your domains, how SPF/DKIM are
 performing, where unauthorized senders are coming from. Built with Next.js 16,
-TypeScript, and Drizzle ORM. SQLite by default — **install in 30 seconds, no
-third party touches your data**.
+TypeScript, and Drizzle ORM. SQLite by default — **one container, and your
+reports stay on your server**. Nothing is sent to a Vexa service, because there
+isn't one; the outbound calls the app does make are listed under
+[Network egress](#what-still-leaves-your-server) and every optional one is off
+until you configure it.
 
 <p align="center">
   <a href="docs/screenshots/domains.png"><img src="docs/screenshots/domains.png" alt="Domains list with compliance bars and status pills" width="32%" /></a>
@@ -45,8 +48,19 @@ docker logs vexa 2>&1 | grep -A1 'install token'
 ```
 
 Then open <http://127.0.0.1:3000>, paste the install token into the web
-installer, and connect your DMARC mailbox (or run `pnpm run seed:demo` against a
-local checkout to see the dashboard with sample data first).
+installer, and connect your DMARC mailbox.
+
+**No DMARC mailbox yet?** Populate the dashboard with synthetic data and look
+around first — no mailbox, no credentials, no real domains:
+
+```bash
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
+```
+
+It only writes rows carrying a `demo-` report-id prefix, so it is safe to run
+against an instance you later point at a real mailbox, and
+`docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs --force`
+wipes and reseeds them.
 
 **Exposing beyond localhost?** Bind to all interfaces (`-p 3000:3000`), set
 `-e VEXA_ALLOW_REMOTE_INSTALL=1`, and put it behind a reverse proxy with TLS —
@@ -253,6 +267,10 @@ OSS deployments may not have SMTP configured, so recovery is performed via CLI
 on the server. Run it from the install directory, where `DATABASE_URL` points at
 the database you want to repair:
 
+In a container the same CLI is bundled at `dist/recovery.cjs`, so use
+`docker exec -it vexa node dist/recovery.cjs <command>` in place of the
+`npx tsx scripts/recovery.ts` prefix below.
+
 ```bash
 # create new admin
 npx tsx scripts/recovery.ts create-admin newadmin@example.com MySecurePassword123!
@@ -270,12 +288,18 @@ npx tsx scripts/recovery.ts hard-reset --confirm
 ### Seed demo data (optional)
 
 ```bash
+# source checkout
 pnpm run seed:demo            # idempotent — skips if already seeded
 pnpm run seed:demo --force    # wipe demo data and reseed
+
+# container
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs --force
 ```
 
 Refuses to run with `NODE_ENV=production` unless `VEXA_FORCE_SEED_DEMO=1` is
-set. Only touches rows tagged with the `demo-` report-id prefix.
+set, which is why the container form passes it. Only touches rows tagged with
+the `demo-` report-id prefix, so it leaves real ingested reports alone.
 
 ---
 
@@ -394,6 +418,31 @@ migrations for schema changes).
 - SQLite is the only supported database. There is no PostgreSQL or MySQL driver
   in the application; production hardening means file permissions, backups and
   network controls around that database file.
+
+### Where the encryption key lives
+
+Stored IMAP passwords and the AI provider key are encrypted with a key derived
+from `SECRET_KEY`. Where you put that key decides what a copy of `vexa.db` is
+worth to whoever gets it:
+
+| You set `SECRET_KEY`                                       | Key stored in the database | A leaked `vexa.db` exposes credentials |
+| ---------------------------------------------------------- | -------------------------- | -------------------------------------- |
+| In the environment (the Docker, Compose and Helm examples) | No                         | No                                     |
+| Through `Settings > Access` instead                        | Yes                        | Yes                                    |
+
+Prefer the environment. Setting or rotating the key through the settings page
+writes it into the database and makes it authoritative from then on, which is
+supported for deployments that cannot set an environment variable but is the
+weaker of the two.
+
+Releases up to and including 0.2.2 seeded the environment value into the
+database on first boot, so every instance installed before 0.2.3 stored the key
+next to the ciphertext regardless of how it was set. Upgrading removes that
+stored copy automatically when the environment still supplies the same value.
+See [ADR 0003](docs/adr/0003-secret-key-out-of-the-database.md).
+
+Losing `SECRET_KEY` on an instance that has no stored copy means losing the
+stored credentials. Back it up wherever you keep the rest of your secrets.
 
 Report security issues privately as described in [SECURITY.md](SECURITY.md).
 
