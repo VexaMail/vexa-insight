@@ -48,6 +48,10 @@ The project has no users yet, so nothing depends on the compatible answer.
   the environment change.
 - An installed instance that boots without `SECRET_KEY` logs an error naming the
   consequence, rather than failing later inside ingestion.
+- The admin API token is derived from `SECRET_KEY` with HKDF-SHA256 under its
+  own info label rather than being the key itself. The settings page and every
+  automation client hold the token; neither holds the encryption root, and HKDF
+  does not run backwards.
 
 ## Consequences
 
@@ -59,5 +63,8 @@ The project has no users yet, so nothing depends on the compatible answer.
 - An instance upgraded from 0.2.2 or earlier that had rotated its key in the
   settings page will not start ingesting until `SECRET_KEY` is set to that
   rotated value. The boot log names the file and the fix.
+- Every existing admin API token changes on upgrade, because it is now a
+  derivation rather than the key. Cron jobs and scripts have to be updated from
+  the settings page.
 - A key purge is not retroactive. Any backup taken before the upgrade still
   contains the key, so the honest advice after upgrading is to rotate.

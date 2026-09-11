@@ -13,6 +13,8 @@ export type AppConfig = {
   ingestionIncludeTrash: boolean
   ingestionIncludeAllFolders: boolean
   secretKey: string
+  /** Derived from `secretKey`; what admin clients authenticate with. */
+  apiToken: string
   backendCorsOrigins: string[]
   environment: string
   ipHostnameLookupEnabled: boolean

@@ -4,7 +4,7 @@ import { isUsableSecret } from './isUsableSecret'
 import { timingSafeTokenEqual } from './timingSafeTokenEqual'
 
 /**
- * Reports whether the current request carries the shared `SECRET_KEY`.
+ * Reports whether the current request carries the shared admin API token.
  * Mirrors `requireAdminAccess` token extraction (`x-api-key` header or
  * `Authorization: Bearer`).
  *
@@ -21,6 +21,6 @@ export async function hasValidApiKey(): Promise<boolean> {
   const config = getConfig()
   return (
     isUsableSecret(config.secretKey) &&
-    timingSafeTokenEqual(token, config.secretKey)
+    timingSafeTokenEqual(token, config.apiToken)
   )
 }

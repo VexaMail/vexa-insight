@@ -1,4 +1,5 @@
 import { APP_NAME } from '@/lib/constants'
+import { deriveApiToken } from '@/services/crypto'
 import type { AppConfig, ImapAccountConfig } from '@/types/config'
 import { parseIngestionDaysBack } from '@/utils/install'
 import type { ImapRow } from './ImapRow'
@@ -41,6 +42,7 @@ function rowToConfig(
     ingestionIncludeTrash: row.ingestionIncludeTrash,
     ingestionIncludeAllFolders: row.ingestionIncludeAllFolders,
     secretKey,
+    apiToken: deriveApiToken(secretKey),
     backendCorsOrigins:
       corsOrigins.length > 0 ? corsOrigins : ['http://localhost:3000'],
     environment: row.environment,

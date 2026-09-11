@@ -6,6 +6,22 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **The admin API token is no longer the encryption root.** The
+      settings page rendered `SECRET_KEY` into a browser as the API key, and
+      every cron job and script held the same string that decrypts the stored
+      mailbox credentials.
+  - Result: `deriveApiToken()` derives a 64-character token from `SECRET_KEY`
+    with HKDF-SHA256 under its own info label, beside the existing encryption
+    key derivation. `AppConfig.apiToken` carries it, the three auth paths
+    compare against it, and `getSettingsForAdmin()` returns it instead of the
+    key. Nothing recovers the root from the token.
+  - Breaking: every existing API token changes on upgrade. README, the API
+    requirements doc and the settings card say where to read the new one.
+  - Evidence: `pnpm run check:ci` green — 107 test files, 623 tests.
+    `test/deriveApiToken.test.ts` pins determinism, length, sensitivity to the
+    key, and that the token differs from the AES key derived from the same
+    secret (only the info label separates them).
+
 - [x] 2026-09-11 — **The demo seeder no longer deletes genuine reports.**
       `wipeDemoData` matched `report_id LIKE 'demo-%'`, and a report id is
       written by the reporting organisation, so `--force` deleted any real

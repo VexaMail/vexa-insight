@@ -48,10 +48,7 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
       >
         <CronsSection
           ingestionIntervalMinutes={settings?.ingestionIntervalMinutes ?? 60}
-          initialApiKey={adminOnlyApiKey(
-            session.user.role,
-            settings?.secretKey,
-          )}
+          initialApiKey={adminOnlyApiKey(session.user.role, settings?.apiToken)}
           isHistoricalJobContext={isHistoricalJobContext}
           jobId={effectiveJobId}
           jobRunsNode={

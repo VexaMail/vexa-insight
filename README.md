@@ -237,18 +237,18 @@ The chart source is in [`deploy/helm/vexa-insight`](deploy/helm/vexa-insight);
 
 ### Environment variables
 
-| Variable                     | Required     | Description                                                                                                                                                                                                                                               |
-| ---------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`               | No           | SQLite file path, default `file:./data/vexa.db`.                                                                                                                                                                                                          |
-| `SECRET_KEY`                 | **Required** | Min 32 characters. Encrypts stored mailbox credentials and authenticates the admin API (`X-API-Key` / `Authorization: Bearer`). Read from the environment only; the installer refuses to run without it. Keep it: losing it loses the stored credentials. |
-| `INGESTION_INTERVAL_MINUTES` | No           | Scheduler interval (default `60`). Seeded into settings on first boot only; afterwards the stored value wins, so change it in Settings.                                                                                                                   |
-| `INGESTION_DAYS_BACK`        | No           | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page.                                                                             |
-| `ENVIRONMENT`                | No           | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                                                                                                    |
-| `VEXA_IMAP_DEBUG`            | No           | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                                                                                                          |
-| `VEXA_UPDATE_CHECK_ENABLED`  | No           | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                                                                                                           |
-| `VEXA_UPDATE_REPO`           | No           | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                                                                                                |
-| `VEXA_ALLOW_REMOTE_INSTALL`  | No           | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                                                                                            |
-| `VEXA_ALLOWED_ORIGINS`       | No           | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.                                                                                  |
+| Variable                     | Required     | Description                                                                                                                                                                                                                   |
+| ---------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | No           | SQLite file path, default `file:./data/vexa.db`.                                                                                                                                                                              |
+| `SECRET_KEY`                 | **Required** | Min 32 characters. Encrypts stored mailbox credentials, and the admin API token is derived from it. Read from the environment only; the installer refuses to run without it. Keep it: losing it loses the stored credentials. |
+| `INGESTION_INTERVAL_MINUTES` | No           | Scheduler interval (default `60`). Seeded into settings on first boot only; afterwards the stored value wins, so change it in Settings.                                                                                       |
+| `INGESTION_DAYS_BACK`        | No           | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page.                                                 |
+| `ENVIRONMENT`                | No           | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                                                                        |
+| `VEXA_IMAP_DEBUG`            | No           | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                                                                              |
+| `VEXA_UPDATE_CHECK_ENABLED`  | No           | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                                                                               |
+| `VEXA_UPDATE_REPO`           | No           | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                                                                    |
+| `VEXA_ALLOW_REMOTE_INSTALL`  | No           | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                                                                |
+| `VEXA_ALLOWED_ORIGINS`       | No           | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.                                                      |
 
 ---
 
@@ -318,8 +318,10 @@ the in-Node scheduler starts on server startup. It runs every
   ```bash
   curl -X POST -H "X-API-Key: YOUR_API_KEY" https://your-host/api/v1/admin/trigger-poll
   ```
-  Or `Authorization: Bearer YOUR_API_KEY`. Do not expose admin endpoints
-  publicly.
+  Or `Authorization: Bearer YOUR_API_KEY`. The key is the 64-character token
+  shown on the settings page, not `SECRET_KEY` itself: it is derived from
+  `SECRET_KEY`, so it changes when you rotate the key and cannot be turned back
+  into it. Do not expose admin endpoints publicly.
 - _Manual:_ the Settings → Updates panel exposes UI controls for installs that
   have a supervisor.
 
@@ -407,11 +409,14 @@ migrations for schema changes).
 ## Security
 
 - Store IMAP credentials securely; never commit `.env`.
-- Do not expose `/api/v1/admin/*` publicly. Protect with `SECRET_KEY` and run
-  behind authentication in production.
+- Do not expose `/api/v1/admin/*` publicly. Protect with the admin API token and
+  run behind authentication in production.
+- The admin API token is derived from `SECRET_KEY` with HKDF-SHA256 under its
+  own info label, so the token every automation client holds is not the key that
+  decrypts the mailbox credentials, and nothing recovers one from the other.
 - Admin API auth uses timing-safe comparison and refuses to authenticate when
   `SECRET_KEY` is unset or under 32 characters.
-- `SECRET_KEY` is not an all-access role. On permission-checked routes it grants
+- The token is not an all-access role. On permission-checked routes it grants
   report reads/writes, settings reads and AI invocation only; user management,
   the audit log and configuration writes require a signed-in admin session.
 - Login is rate-limited (5 attempts / minute / IP).

@@ -17,7 +17,7 @@ export function useSettingsConfig(
 ) {
   // Read-only since ADR 0010: the key is the environment's, and the page has
   // no way to change it.
-  const apiKey = initialData?.secretKey ?? ''
+  const apiKey = initialData?.apiToken ?? ''
   const [form, setForm] = useState<SettingsFormState>(() =>
     getSettingsFormState(initialData),
   )

@@ -41,17 +41,6 @@ the portfolio repo.
 
 ## Security
 
-- [ ] The encryption root key is rendered into the admin browser. The settings
-      page passes the whole `getSettingsForAdmin()` object into a client
-      component, and `ApiKeyCurrentField` renders it as a text input, so the
-      same string is both the admin API token and the AES root. Pre-existing,
-      and unchanged by ADR 0010, which removed the rotation field but not the
-      display: the value shown is now always the environment-resolved root.
-      Verified by rendering the real component against a scratch database: the
-      generated HTML contained the key; `getSettingsPublic()` did not. Smallest
-      next step: separate the API token from the encryption root, or stop
-      returning the root to the page.
-
 - [!] Purge the pre-rewrite history from the laptop's clone. `main` was
   rewritten and force-pushed on 2026-09-10 to strip client screenshots and
   assistant trailers, and the remote repository was recreated, but the clone on

@@ -13,7 +13,7 @@ export async function requireAdminAccess(
     const config = getConfig()
     if (
       isUsableSecret(config.secretKey) &&
-      timingSafeTokenEqual(token, config.secretKey)
+      timingSafeTokenEqual(token, config.apiToken)
     ) {
       return null
     }

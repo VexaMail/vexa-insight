@@ -1,3 +1,5 @@
 export { decryptSecret } from './decryptSecret'
+export { deriveApiToken } from './deriveApiToken'
+export { deriveEncryptionKey } from './deriveEncryptionKey'
 export { encryptSecret } from './encryptSecret'
 export { isEncrypted } from './isEncrypted'
