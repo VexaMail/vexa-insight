@@ -1,6 +1,6 @@
 import { getDb, imapAccounts } from '@/lib/db'
 import { encryptSecret, isEncrypted } from '@/services/crypto'
-import { getSettingsRow } from '@/services/settings-store'
+import { resolveSecretKey } from '@/services/settings-store'
 import { eq } from 'drizzle-orm'
 
 /**
@@ -9,13 +9,12 @@ import { eq } from 'drizzle-orm'
  *
  * Safe to call repeatedly: rows already encrypted are skipped. Bails out
  * silently when the SECRET_KEY is unset so first-boot-before-install does
- * nothing destructive. Reads `secretKey` directly from `getSettingsRow()`
- * to avoid pulling the full `getConfig()` cache during early startup.
+ * nothing destructive. Resolves the key directly rather than through
+ * `getConfig()` to avoid pulling the full config cache during early startup.
  */
 function encryptLegacyImapPasswords(): { migrated: number } {
   const db = getDb()
-  const settings = getSettingsRow()
-  const secretKey = settings?.secretKey ?? ''
+  const secretKey = resolveSecretKey()
   if (!secretKey) return { migrated: 0 }
   const rows = db.select().from(imapAccounts).all()
   let migrated = 0

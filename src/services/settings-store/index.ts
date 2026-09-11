@@ -1,5 +1,8 @@
+export { clearDuplicatedSecretKey } from './clearDuplicatedSecretKey'
 export { findImapAccountConfig } from './findImapAccountConfig'
+export { getEnvSecretKey } from './getEnvSecretKey'
 export { getImapAccountsRow } from './getImapAccountsRow'
 export { getSettingsRow } from './getSettingsRow'
+export { resolveSecretKey } from './resolveSecretKey'
 export { seedSettingsFromEnv } from './seedSettingsFromEnv'
 export { SETTINGS_ID } from './settingsId'

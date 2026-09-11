@@ -1,8 +1,8 @@
 import { getDb, imapAccounts } from '@/lib/db'
-import { decryptSecret } from '@/services/crypto'
 import { asc } from 'drizzle-orm'
-import { getSettingsRow } from './getSettingsRow'
+import { decryptStoredPassword } from './decryptStoredPassword'
 import type { ImapAccountRow } from './ImapAccountRow'
+import { resolveSecretKey } from './resolveSecretKey'
 
 /**
  * Returns all imap_accounts rows ordered by sortOrder.
@@ -11,14 +11,17 @@ import type { ImapAccountRow } from './ImapAccountRow'
  * rows (no `v1:` prefix) are passed through unchanged so they keep working
  * until the lazy migration in `encryptLegacyImapPasswords` upgrades them.
  *
- * We read the secret directly from `getSettingsRow()` rather than `getConfig()`
- * to avoid the circular dependency: `getConfig()` calls this function while
- * building its own cache, so calling `getConfig()` here would recurse.
+ * We resolve the secret directly rather than through `getConfig()` to avoid the
+ * circular dependency: `getConfig()` calls this function while building its own
+ * cache, so calling `getConfig()` here would recurse.
+ *
+ * An encrypted password with no key available is a hard error. Passing the
+ * ciphertext through would send it to the mail server as the password, turning
+ * a configuration fault into a silent authentication failure.
  */
 function getImapAccountsRow(): ImapAccountRow[] {
   const db = getDb()
-  const settings = getSettingsRow()
-  const secretKey = settings?.secretKey ?? ''
+  const secretKey = resolveSecretKey()
   const rows = db
     .select()
     .from(imapAccounts)
@@ -30,10 +33,7 @@ function getImapAccountsRow(): ImapAccountRow[] {
     server: r.server,
     port: r.port,
     username: r.username,
-    password:
-      r.password && secretKey
-        ? decryptSecret(r.password, secretKey)
-        : r.password,
+    password: decryptStoredPassword(r.password, secretKey, r.id),
     sortOrder: r.sortOrder,
     fetchIncludeTrash: r.fetchIncludeTrash,
     fetchIncludeAllFolders: r.fetchIncludeAllFolders,

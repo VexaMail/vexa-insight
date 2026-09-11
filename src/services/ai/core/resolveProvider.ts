@@ -1,4 +1,4 @@
-import { getSettingsRow } from '@/services/settings-store'
+import { resolveSecretKey } from '@/services/settings-store'
 import type { AIProviderAdapter } from '../contracts'
 import { createAnthropicAdapter } from '../providers/anthropic/createAnthropicAdapter'
 import { createGeminiAdapter } from '../providers/gemini/createGeminiAdapter'
@@ -22,8 +22,8 @@ export function resolveProvider(): AIProviderAdapter {
     )
   }
 
-  const settingsRow = getSettingsRow()
-  if (!settingsRow) {
+  const secretKey = resolveSecretKey()
+  if (!secretKey) {
     throw new AIServiceErrorException(
       'NOT_CONFIGURED',
       'Application settings not found.',
@@ -33,7 +33,7 @@ export function resolveProvider(): AIProviderAdapter {
   const apiKey = decryptApiKey(
     aiSettings.apiKeyEncrypted,
     aiSettings.apiKeyIv,
-    settingsRow.secretKey,
+    secretKey,
   )
   if (!apiKey) {
     throw new AIServiceErrorException(

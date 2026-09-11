@@ -1,3 +1,4 @@
+import { MIN_ENCRYPTION_KEY_LENGTH } from '@/constants/auth'
 import crypto from 'node:crypto'
 import { ENCRYPTION_KEY_INFO } from './encryptionKeyInfo'
 import { ENCRYPTION_KEY_SALT } from './encryptionKeySalt'
@@ -8,7 +9,7 @@ import { ENCRYPTION_KEY_SALT } from './encryptionKeySalt'
  * yields the same derived key (deterministic across boots).
  */
 function deriveEncryptionKey(secretKey: string): Buffer {
-  if (!secretKey || secretKey.length < 16) {
+  if (!secretKey || secretKey.length < MIN_ENCRYPTION_KEY_LENGTH) {
     throw new Error('SECRET_KEY too short to derive encryption key (min 16)')
   }
   return Buffer.from(

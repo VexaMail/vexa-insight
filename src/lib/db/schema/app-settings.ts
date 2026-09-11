@@ -22,6 +22,12 @@ export const appSettings = sqliteTable('app_settings', {
   })
     .notNull()
     .default(false),
+  /**
+   * Fallback storage for the root secret, used only when the deployment does
+   * not supply `SECRET_KEY` through the environment. When it does, this column
+   * keeps the `CHANGE_ME` placeholder and the key never touches the database.
+   * See `docs/adr/0003-secret-key-out-of-the-database.md`.
+   */
   secretKey: text('secret_key').notNull().default('CHANGE_ME'),
   backendCorsOrigins: text('backend_cors_origins')
     .notNull()
@@ -70,6 +76,13 @@ export const appSettings = sqliteTable('app_settings', {
   aiApiKeyEncrypted: text('ai_api_key_encrypted'),
   aiApiKeyIv: text('ai_api_key_iv'),
   aiModel: text('ai_model'),
+
+  /**
+   * Set once the install wizard completes. This, not `secretKey`, is what
+   * marks an instance as installed: the encryption key may legitimately live
+   * only in the environment, leaving `secretKey` at its placeholder.
+   */
+  installedAt: integer('installed_at', { mode: 'timestamp' }),
 
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 })

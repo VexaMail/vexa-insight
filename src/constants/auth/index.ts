@@ -1,4 +1,5 @@
 export { API_KEY_PERMISSIONS } from './apiKeyPermissions'
+export { MIN_ENCRYPTION_KEY_LENGTH } from './minEncryptionKeyLength'
 export { MIN_SECRET_LENGTH } from './minSecretLength'
 export { PLACEHOLDER_SECRET } from './placeholderSecret'
 export { REPORTS_READ_PERMISSION } from './reportsReadPermission'

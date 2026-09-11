@@ -25,7 +25,12 @@ describe('rowToConfig ingestion window', () => {
   }
 
   const configFor = (ingestionDaysBack: number) =>
-    rowToConfig({ ...baseRow, ingestionDaysBack }, 'file:./data/vexa.db', [])
+    rowToConfig(
+      { ...baseRow, ingestionDaysBack },
+      'file:./data/vexa.db',
+      [],
+      'x'.repeat(32),
+    )
 
   it('keeps a configured window', () => {
     expect(configFor(7).ingestionDaysBack).toBe(7)

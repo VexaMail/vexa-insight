@@ -9,6 +9,7 @@ function getSettingsRow(): {
   ingestionIncludeTrash: boolean
   ingestionIncludeAllFolders: boolean
   secretKey: string
+  installedAt: Date | null
   backendCorsOrigins: string
   environment: string
   ipHostnameLookupEnabled: boolean
@@ -36,6 +37,7 @@ function getSettingsRow(): {
     ingestionIncludeTrash: row.ingestionIncludeTrash,
     ingestionIncludeAllFolders: row.ingestionIncludeAllFolders,
     secretKey: row.secretKey,
+    installedAt: row.installedAt,
     backendCorsOrigins: row.backendCorsOrigins,
     environment: row.environment,
     ipHostnameLookupEnabled: row.ipHostnameLookupEnabled,

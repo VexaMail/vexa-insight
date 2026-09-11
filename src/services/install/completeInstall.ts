@@ -5,11 +5,12 @@ import { createSession, hashPassword } from '@/services/auth'
 import { updateSettings } from '@/services/settings'
 import type { InstallPayload } from '@/types/install'
 import crypto from 'node:crypto'
+import { markInstalled } from './markInstalled'
 
 /**
  * Updates app_settings row id=1 and imap_accounts from install payload; invalidates config cache.
  * Creates the initial superadmin user and establishes their session.
- * Call only when not yet installed (secret_key === 'CHANGE_ME') or partially installed (no users).
+ * Call only when not yet installed, or partially installed (no users).
  */
 async function completeInstall(
   payload: InstallPayload,
@@ -35,6 +36,7 @@ async function completeInstall(
   })
 
   if (isPartial) {
+    markInstalled()
     return // Skip modifying settings if already initialized
   }
   updateSettings({
@@ -49,6 +51,7 @@ async function completeInstall(
       password: a.password,
     })),
   })
+  markInstalled()
   invalidateConfigCache()
 }
 

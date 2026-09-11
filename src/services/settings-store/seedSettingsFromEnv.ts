@@ -6,12 +6,16 @@ import { getSettingsRow } from './getSettingsRow'
 import { SETTINGS_ID } from './settingsId'
 
 /**
- * If the current row has secretKey === 'CHANGE_ME' and env has SECRET_KEY (and
- * optionally other vars), update the row once from env for backward compatibility.
+ * Copies the optional environment overrides into the settings row once, before
+ * the instance is installed.
+ *
+ * `SECRET_KEY` is deliberately NOT among them. It is read straight from the
+ * environment by `resolveSecretKey`, so writing it here would put the
+ * encryption key inside the database it protects for no gain.
  */
 function seedSettingsFromEnv(): void {
   const row = getSettingsRow()
-  if (!row || row.secretKey !== 'CHANGE_ME') return
+  if (!row || row.installedAt !== null) return
   const env = process.env
   if (!env['SECRET_KEY'] || env['SECRET_KEY'].length < 32) return
   const db = getDb()
@@ -26,7 +30,6 @@ function seedSettingsFromEnv(): void {
       ingestionDaysBack: env['INGESTION_DAYS_BACK']
         ? parseIngestionDaysBack(env['INGESTION_DAYS_BACK'])
         : row.ingestionDaysBack,
-      secretKey: env['SECRET_KEY'],
       backendCorsOrigins: env['BACKEND_CORS_ORIGINS'] ?? row.backendCorsOrigins,
       environment,
       updatedAt: new Date(),

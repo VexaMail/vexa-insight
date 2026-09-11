@@ -225,6 +225,13 @@
       "when": 1789055990951,
       "tag": "0031_narrow_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1789096131716,
+      "tag": "0032_bouncy_darkstar",
+      "breakpoints": true
     }
   ]
 }

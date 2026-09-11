@@ -1,4 +1,4 @@
-import { getSettingsRow } from '@/services/settings-store'
+import { resolveSecretKey } from '@/services/settings-store'
 import type { SettingsForAdmin } from '@/types/settings'
 import { getSettingsPublic } from './getSettingsPublic'
 
@@ -9,10 +9,9 @@ import { getSettingsPublic } from './getSettingsPublic'
 function getSettingsForAdmin(): SettingsForAdmin | null {
   const publicSettings = getSettingsPublic()
   if (!publicSettings) return null
-  const row = getSettingsRow()
   return {
     ...publicSettings,
-    secretKey: row?.secretKey ?? null,
+    secretKey: resolveSecretKey(),
   }
 }
 

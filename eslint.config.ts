@@ -208,10 +208,14 @@ const config = defineConfig([
   },
 
   {
-    // `isUsableSecret` compares the configured secret against the public
-    // installer placeholder to refuse an unconfigured instance; nothing
-    // secret is on either side of that `===`, so there is no timing to leak.
-    files: ['src/services/credentials/isUsableSecret.ts'],
+    // `isUsableSecret` and `isDerivableSecret` compare the configured secret
+    // against the public installer placeholder to refuse an unconfigured
+    // instance; nothing secret is on either side of that `===`, so there is no
+    // timing to leak.
+    files: [
+      'src/services/credentials/isUsableSecret.ts',
+      'src/utils/auth/isDerivableSecret.ts',
+    ],
     rules: {
       'security/detect-possible-timing-attacks': 'off',
     },

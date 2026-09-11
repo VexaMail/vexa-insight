@@ -8,6 +8,7 @@ function rowToConfig(
   row: SettingsRow,
   databaseUrl: string,
   imapRows: ImapRow[],
+  secretKey: string,
 ): AppConfig {
   const corsOrigins = row.backendCorsOrigins
     .split(',')
@@ -39,7 +40,7 @@ function rowToConfig(
     ingestionDaysBack: parseIngestionDaysBack(row.ingestionDaysBack),
     ingestionIncludeTrash: row.ingestionIncludeTrash,
     ingestionIncludeAllFolders: row.ingestionIncludeAllFolders,
-    secretKey: row.secretKey,
+    secretKey,
     backendCorsOrigins:
       corsOrigins.length > 0 ? corsOrigins : ['http://localhost:3000'],
     environment: row.environment,
