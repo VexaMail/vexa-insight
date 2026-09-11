@@ -8,6 +8,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-09-11
+
+### Fixed
+
+- **The published Helm chart is signed again.** The chart job authenticated to
+  GHCR with `helm registry login`, which writes Helm's own registry config;
+  cosign reads `~/.docker/config.json` and so had no credentials, and signing
+  the chart it had just pushed failed with `UNAUTHORIZED`. The 0.3.0 chart is
+  published but unsigned, so `cosign verify` on it fails: use 0.3.1. The job now
+  logs in with `docker/login-action`, which both tools read.
+
+  No application code changed between 0.3.0 and 0.3.1.
+
 ## [0.3.0] - 2026-09-11
 
 A security release. Two changes break existing deployments, both deliberately:

@@ -6,6 +6,21 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **The release workflow could push a Helm chart but not sign
+      it.** The 0.3.0 Release run failed on `Sign chart with cosign (keyless)`
+      with `UNAUTHORIZED: unauthenticated` against
+      `ghcr.io/vexamail/charts/vexa-insight`.
+  - Root cause: the chart job authenticated with `helm registry login`, which
+    writes Helm's own registry config. cosign reads `~/.docker/config.json`, so
+    it had no credentials for a registry the same job had just pushed to. The
+    container-image job was unaffected because it uses `docker/login-action`.
+  - Why it had never failed before: the chart job arrived in #30, after `v0.2.2`
+    was tagged, so `v0.3.0` was the first release to run it at all.
+  - Result: the chart job logs in with `docker/login-action`, which Helm and
+    cosign both read. Released as `0.3.1`; the 0.3.0 chart stays published but
+    unsigned, so `cosign verify` against it fails and the README points at
+    0.3.1. No application code changed between the two.
+
 - [x] 2026-09-11 — **0.3.0 cut and verified against the built image.** The
       release opened as 0.2.3 and became a minor bump: two of its changes break
       existing deployments, and on 0.x a breaking change takes the minor.

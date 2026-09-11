@@ -175,14 +175,16 @@ jobs:
       - name: Lint chart
         run: helm lint deploy/helm/vexa-insight
 
+      # docker/login-action, not `helm registry login`: the latter writes to
+      # Helm's own registry config, which cosign does not read, so signing the
+      # pushed chart failed with UNAUTHORIZED on the 0.3.0 release. This writes
+      # ~/.docker/config.json, which Helm and cosign both read.
       - name: Log in to GitHub Container Registry
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          echo "$GITHUB_TOKEN" | helm registry login ghcr.io \
-            --username "${OWNER}" --password-stdin
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package and push chart
         id: push
