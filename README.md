@@ -57,11 +57,9 @@ synthetic data — no mailbox, no credentials, no real domains:
 docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
 ```
 
-Use it on an instance you intend to throw away, not on one that also holds real
-reports. The seeder identifies its own rows by a `demo-` report-id prefix, and a
-report id is chosen by whoever sent the report: a genuine DMARC reporter whose
-id happens to start `demo-` is indistinguishable to it, and `--force` would
-delete that report along with the synthetic ones.
+Still worth using on an instance you intend to throw away. The seeder marks its
+own rows and `--force` deletes only those, but the synthetic reports otherwise
+sit in the same tables as real ones and skew every total on the dashboard.
 
 **Exposing beyond localhost?** Bind to all interfaces (`-p 3000:3000`), set
 `-e VEXA_ALLOW_REMOTE_INSTALL=1`, and put it behind a reverse proxy with TLS —
@@ -300,11 +298,10 @@ docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
 Refuses to run with `NODE_ENV=production` unless `VEXA_FORCE_SEED_DEMO=1` is
 set, which is why the container form has to pass it.
 
-> **Only on an instance you can throw away.** The seeder finds its own rows by a
-> `demo-` report-id prefix, but the report id comes from whoever sent the
-> report. A genuine aggregate report whose id begins `demo-` looks the same to
-> it, so `--force` can delete real data along with the synthetic rows. Tracked
-> in `TODO.md` until deletion is governed by provenance rather than a prefix.
+> **Prefer an instance you can throw away.** `--force` deletes only rows the
+> seeder wrote, which it marks at insert time, so it will not touch a real
+> report. The synthetic ones still land in the same tables and count towards
+> every total the dashboard shows.
 
 ---
 
