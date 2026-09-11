@@ -200,7 +200,7 @@ instance was installed with and restart. The installer refuses to run at all
 without it, so a fresh instance cannot reach this state by accident.
 
 `[secret] app_settings.secret_key holds a key that SECRET_KEY does not match`
-means the instance was installed before 0.2.3 and had its key rotated through
+means the instance was installed before 0.3.0 and had its key rotated through
 the old settings page, which wrote it into the database. Since
 [ADR 0010](adr/0010-secret-key-is-environment-only.md) that column is never
 read. Nothing is lost and nothing was changed: read the column out of the

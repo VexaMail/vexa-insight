@@ -446,7 +446,7 @@ docker compose up -d vexa
 ```
 
 Releases up to and including 0.2.2 seeded the environment value into
-`app_settings.secret_key`, so every instance installed before 0.2.3 kept the key
+`app_settings.secret_key`, so every instance installed before 0.3.0 kept the key
 next to the ciphertext. Upgrading clears that column and runs `VACUUM`, which
 rewrites the file so the freed bytes go with it. **Any backup taken before the
 upgrade still holds the key, and no upgrade can reach a copy someone already
