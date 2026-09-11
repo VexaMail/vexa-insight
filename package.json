@@ -47,6 +47,8 @@
     "seed:demo": "tsx scripts/seed-demo.ts",
     "backfill:rollup": "tsx scripts/backfill-rollup.ts",
     "build:backfill": "esbuild scripts/backfill-rollup.ts --bundle --platform=node --format=cjs --target=node22 --external:better-sqlite3 --outfile=dist/backfill-rollup.cjs",
+    "build:seed": "esbuild scripts/seed-demo.ts --bundle --platform=node --format=cjs --target=node22 --external:better-sqlite3 --outfile=dist/seed-demo.cjs",
+    "build:recovery": "esbuild scripts/recovery.ts --bundle --platform=node --format=cjs --target=node22 --external:better-sqlite3 --outfile=dist/recovery.cjs",
     "eval:ai": "tsx scripts/run-ai-eval.ts",
     "check": "pnpm run type-check && pnpm run format && pnpm run lint:fix",
     "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run test",

@@ -20,6 +20,12 @@ RUN pnpm run build
 # The runner has no pnpm and no tsx, so the one-off maintenance entrypoint is
 # bundled here into plain CJS that `node` can execute inside the container.
 RUN pnpm run build:backfill
+# Same reason: the demo seeder is the only way to see the dashboard populated
+# without connecting a real mailbox, and it must be runnable inside the image.
+RUN pnpm run build:seed
+# And the recovery CLI: it is the supported way out of a lost admin password or
+# a locked install, so it has to exist where the failure happens.
+RUN pnpm run build:recovery
 
 # Run stage
 FROM node:26-alpine@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868 AS runner
