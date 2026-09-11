@@ -168,7 +168,12 @@ docker exec -it vexa node dist/recovery.cjs \
 accounts so `/install` unlocks and hands you a fresh token:
 
 ```bash
-docker cp vexa:/app/data/vexa.db ./vexa-backup-$(date +%F).db
+# Stop first: the database runs in WAL mode, so copying vexa.db from a running
+# container silently leaves behind whatever is still in the -wal file.
+docker stop vexa
+docker run --rm -v vexa-data:/data -v "$PWD":/out alpine \
+  sh -c 'cp /data/vexa.db* /out/'
+docker start vexa
 docker exec -it vexa node dist/recovery.cjs hard-reset --confirm
 docker restart vexa
 # new token appears in: docker logs vexa

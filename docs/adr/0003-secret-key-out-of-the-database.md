@@ -39,8 +39,15 @@ storage location and the install state were the same fact.
   key never touches disk inside the database.
 - On boot, `clearDuplicatedSecretKey()` resets the column to its placeholder
   when it holds exactly the value the environment already supplies. That is the
-  upgrade path for instances installed before this release: they lose the stored
-  copy and keep working, because the environment still carries the key.
+  upgrade path for instances installed before this release: they keep working,
+  because the environment still carries the key.
+
+  This clears the value, it does not erase the bytes. SQLite runs with
+  `secure_delete` off, so freed cell space keeps its old contents and a raw copy
+  of the file can still yield the key; whether it does depends on page layout,
+  which is not a property to rely on either way. A `VACUUM INTO` snapshot, which
+  is what `createDatabaseSnapshot()` already produces, does not carry it.
+
 - Treat an encrypted password with no resolvable key as a hard error rather than
   passing the ciphertext through as if it were the password.
 - Judge a candidate key by `isDerivableSecret` (16 characters, ADR 0002's
@@ -52,9 +59,16 @@ storage location and the install state were the same fact.
 
 ## Consequences
 
-- With the key supplied through the environment, a leaked database file does not
-  expose mailbox credentials. This is the configuration the README documents and
-  the Docker and Compose examples use.
+- With the key supplied through the environment on a **fresh** install, the key
+  is never written to the database and a leaked database file does not expose
+  mailbox credentials. This is the configuration the README documents and the
+  Docker and Compose examples use.
+- On an instance **upgraded** from 0.2.2 or earlier, that guarantee does not
+  hold retroactively. The key was in the file, may remain in its free space, and
+  is present in every backup taken before the upgrade. Those instances have to
+  rotate the key to get the property, and rotating through the settings page
+  puts it back in the database. A physical sanitisation path is not implemented;
+  it is tracked in `TODO.md`.
 - With the key set through the settings page instead, the key is stored in the
   database and a leaked file does expose the credentials. That path stays
   supported for instances that cannot set an environment variable, and it is

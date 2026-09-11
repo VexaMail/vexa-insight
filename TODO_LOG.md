@@ -51,6 +51,12 @@
     `test/secretKeyResolution.test.ts` and `test/installStateMarker.test.ts`
     covering the resolution order, the upgrade cleanup and the install marker.
     `bash scripts/check-migrations.sh` reports OK on migration 0032.
+  - Corrected the same day, after an adversarial review of this very work: the
+    boot cleanup clears the stored key logically, it does not erase the bytes
+    SQLite frees, so the "leaked database file is safe" property holds for a
+    fresh environment-keyed install but NOT retroactively for an upgraded one.
+    The README and ADR 0003 now say so and tell upgraded instances to rotate.
+    The review's other five findings are open in `TODO.md`.
   - Out of scope: cutting the 0.2.3 release that publishes any of this, which
     stays open in `TODO.md`.
 

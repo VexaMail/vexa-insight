@@ -50,17 +50,18 @@ docker logs vexa 2>&1 | grep -A1 'install token'
 Then open <http://127.0.0.1:3000>, paste the install token into the web
 installer, and connect your DMARC mailbox.
 
-**No DMARC mailbox yet?** Populate the dashboard with synthetic data and look
-around first — no mailbox, no credentials, no real domains:
+**No DMARC mailbox yet?** Bring up a throwaway container and fill it with
+synthetic data — no mailbox, no credentials, no real domains:
 
 ```bash
-docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
 ```
 
-It only writes rows carrying a `demo-` report-id prefix, so it is safe to run
-against an instance you later point at a real mailbox, and
-`docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs --force`
-wipes and reseeds them.
+Use it on an instance you intend to throw away, not on one that also holds real
+reports. The seeder identifies its own rows by a `demo-` report-id prefix, and a
+report id is chosen by whoever sent the report: a genuine DMARC reporter whose
+id happens to start `demo-` is indistinguishable to it, and `--force` would
+delete that report along with the synthetic ones.
 
 **Exposing beyond localhost?** Bind to all interfaces (`-p 3000:3000`), set
 `-e VEXA_ALLOW_REMOTE_INSTALL=1`, and put it behind a reverse proxy with TLS —
@@ -292,14 +293,18 @@ npx tsx scripts/recovery.ts hard-reset --confirm
 pnpm run seed:demo            # idempotent — skips if already seeded
 pnpm run seed:demo --force    # wipe demo data and reseed
 
-# container
-docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
-docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs --force
+# container (demo instances only, see the warning below)
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
 ```
 
 Refuses to run with `NODE_ENV=production` unless `VEXA_FORCE_SEED_DEMO=1` is
-set, which is why the container form passes it. Only touches rows tagged with
-the `demo-` report-id prefix, so it leaves real ingested reports alone.
+set, which is why the container form has to pass it.
+
+> **Only on an instance you can throw away.** The seeder finds its own rows by a
+> `demo-` report-id prefix, but the report id comes from whoever sent the
+> report. A genuine aggregate report whose id begins `demo-` looks the same to
+> it, so `--force` can delete real data along with the synthetic rows. Tracked
+> in `TODO.md` until deletion is governed by provenance rather than a prefix.
 
 ---
 
@@ -437,9 +442,17 @@ weaker of the two.
 
 Releases up to and including 0.2.2 seeded the environment value into the
 database on first boot, so every instance installed before 0.2.3 stored the key
-next to the ciphertext regardless of how it was set. Upgrading removes that
-stored copy automatically when the environment still supplies the same value.
-See [ADR 0003](docs/adr/0003-secret-key-out-of-the-database.md).
+next to the ciphertext regardless of how it was set. Upgrading clears that
+stored copy when the environment still supplies the same value.
+
+**That clear is logical, not physical.** SQLite does not zero the bytes an
+update frees, so the old key can still sit in unused space inside the file, and
+a raw copy of `vexa.db` may yield it. `VACUUM INTO` rewrites the file without
+that free space. Any backup taken before the upgrade holds the key regardless;
+no upgrade can reach a copy someone already has. **If your instance ran 0.2.2 or
+earlier, treat the key as exposed to everyone who has ever held a copy of the
+database, and rotate it.** See
+[ADR 0003](docs/adr/0003-secret-key-out-of-the-database.md).
 
 Losing `SECRET_KEY` on an instance that has no stored copy means losing the
 stored credentials. Back it up wherever you keep the rest of your secrets.
