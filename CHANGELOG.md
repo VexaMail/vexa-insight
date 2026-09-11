@@ -8,6 +8,74 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-11
+
+A security release. Two changes break existing deployments, both deliberately:
+`SECRET_KEY` must now be in the environment, and every admin API token changes.
+Read the two "Breaking" items before upgrading.
+
+### Breaking
+
+- **`SECRET_KEY` is read from the environment and nowhere else.** It used to be
+  resolved from `app_settings.secret_key` in preference to the environment,
+  which left the key that decrypts your mailbox passwords inside the very file
+  it protects: a copied `vexa.db` was enough to recover them. There is no
+  database fallback any more, nothing writes that column, and the installer
+  refuses to run without the variable set. On first boot after the upgrade the
+  stored copy is cleared and the database file is rewritten with `VACUUM`, which
+  is what actually drops the freed bytes.
+
+  If you rotated your key through the old settings page, that rotated value is
+  the only one your stored credentials will open: set `SECRET_KEY` to it before
+  upgrading. If you did not, the value you already have in your environment is
+  the right one and there is nothing to do. Either way, any backup taken before
+  this upgrade still contains the key, so treat it as exposed and rotate. See
+  [ADR 0010](docs/adr/0010-secret-key-is-environment-only.md).
+
+- **The admin API token is derived from `SECRET_KEY` rather than being it.**
+  Cron jobs and scripts that sent `SECRET_KEY` as `X-API-Key` will get a 401.
+  Read the new 64-character token from `Settings > API Key` and update them. The
+  derivation is HKDF-SHA256 under its own info label, so the token every
+  automation client holds is no longer the key that decrypts the mailbox
+  credentials, and neither can be recovered from the other.
+
+### Added
+
+- **`recovery.ts rotate-key <new-key>`** re-encrypts every stored secret onto a
+  new key. Rotation left the settings page with the change above, because a
+  running instance cannot rewrite its own environment: run this with the
+  instance stopped, then set `SECRET_KEY` to the new value.
+- **The container image now carries the recovery CLI and the demo seeder**
+  (`dist/recovery.cjs`, `dist/seed-demo.cjs`), so account recovery and the
+  synthetic demo data no longer need a source checkout.
+- **A boot diagnostic for a missing key.** An installed instance starting
+  without `SECRET_KEY` logs an error naming the consequence instead of failing
+  later, silently, inside ingestion.
+
+### Fixed
+
+- **The demo seeder no longer deletes genuine reports.** `--force` matched
+  `report_id LIKE 'demo-%'`, and a report id is written by the reporting
+  organisation, so a real aggregate report whose id began `demo-` was deleted
+  along with its events and its domain's rollup rows. Migration `0033` adds
+  `raw_reports.is_demo`, set at insert time, and the wipe selects on that.
+- **The install state no longer depends on where the key is stored.**
+  `isInstalled()` read `secret_key !== 'CHANGE_ME'`, which is what made the key
+  impossible to move out of the database. Migration `0032` adds
+  `app_settings.installed_at` and backfills it from the old rule.
+- **A failed scheduler start says why.** The boot path swallowed the error; on
+  an installed instance it now names `SECRET_KEY` as the likely cause.
+
+### Changed
+
+- **The README no longer claims what the code did not do.** The at-rest
+  guarantee, the install-time promises and the recovery and backup procedures
+  were corrected against the actual behaviour, and the bug-report template now
+  refuses raw DMARC reports, credentials and monitored domains.
+- **`docs/TROUBLESHOOTING.md` stopped recommending two unsafe commands**: a
+  `DELETE FROM app_settings` that destroyed the instance configuration, and a
+  live-file backup that ignored the WAL.
+
 ## [0.2.2] - 2026-09-10
 
 ### Changed

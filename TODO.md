@@ -19,15 +19,6 @@ launch would actually make, found six more and closed them — see `TODO_LOG.md`
 The launch plan itself is private, at `career/launches/vexa-insight/plan.md` in
 the portfolio repo.
 
-- [ ] Cut and verify the 0.2.3 release. Everything logged for 2026-09-11 ships
-      only once a tag exists: the README quick start, the Compose file and the
-      Helm chart all resolve to the published artifact, and `v0.2.2` predates
-      the OIDC-subject binding (#18), the key-rotation secret carry (#21), the
-      migration-integrity check (#22) and the at-rest key fix. Smallest next
-      step: `pnpm run check:ci`, `pnpm run build` and `pnpm run smoke`, then a
-      manual install → synthetic ingestion → restart → recovery pass against the
-      built image, then tag.
-
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
       rarely present), which is 11 of the 12 domains sampled on 2026-09-09; the

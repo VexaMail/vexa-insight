@@ -130,6 +130,43 @@ work at boot (see [ADR 0004](adr/0004-reversible-migrations-policy.md) and
 [ADR 0008](adr/0008-batched-ingest-and-daily-rollups.md)): recomputing millions
 of rows during startup would stall a large install.
 
+### Upgrading to 0.3.0: two things break on purpose
+
+**`SECRET_KEY` must be in the environment.** Before 0.3.0 the key was read from
+`app_settings.secret_key` in preference to the environment, which put the key
+that decrypts your mailbox passwords inside the file it protects. There is no
+database fallback now. Most installs already set the variable and need to do
+nothing; the first boot clears the stored copy and rewrites the database file
+with `VACUUM`.
+
+The exception is an install that rotated its key through the old settings page.
+That rotated value is the only one the stored ciphertext will open, and it lives
+only in the database. Read it out and set `SECRET_KEY` to it **before** starting
+0.3.0:
+
+```bash
+sqlite3 data/vexa.db "SELECT secret_key FROM app_settings WHERE id = 1;"
+```
+
+If you start first, nothing is lost: the boot log names the mismatch and the
+column is left alone until you fix the environment.
+
+Any backup taken before this upgrade still holds the key, and no upgrade can
+reach a copy someone already has. Rotate once you are running, with the instance
+stopped:
+
+```bash
+docker compose stop vexa
+docker compose run --rm vexa node dist/recovery.cjs rotate-key "$NEW_KEY"
+# set SECRET_KEY to the new value, then
+docker compose up -d vexa
+```
+
+**Every admin API token changes.** The token is now derived from `SECRET_KEY`
+instead of being it, so a cron job or script that sent `SECRET_KEY` as
+`X-API-Key` gets a 401. Read the new 64-character token from
+`Settings > API Key` and update them.
+
 ### `event_rollup_daily` backfill (from the release that introduced it)
 
 The dashboard aggregates (`getAggregateStats`, `getDomainSummary`,

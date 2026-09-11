@@ -221,13 +221,13 @@ published.
 
 ```bash
 helm install vexa-insight oci://ghcr.io/vexamail/charts/vexa-insight \
-  --version 0.2.2
+  --version 0.3.0
 ```
 
 Verify the signature before installing:
 
 ```bash
-cosign verify ghcr.io/vexamail/charts/vexa-insight:0.2.2 \
+cosign verify ghcr.io/vexamail/charts/vexa-insight:0.3.0 \
   --certificate-identity-regexp '^https://github.com/VexaMail/vexa-insight/' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```

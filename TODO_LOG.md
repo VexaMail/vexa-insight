@@ -6,6 +6,28 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **0.3.0 cut and verified against the built image.** The
+      release opened as 0.2.3 and became a minor bump: two of its changes break
+      existing deployments, and on 0.x a breaking change takes the minor.
+  - Gates: `pnpm run check:ci` green (107 test files, 623 tests,
+    `check-migrations: OK`, `check-chart-version: OK (0.3.0)`), `pnpm run build`
+    exit 0, `pnpm run smoke` exit 0.
+  - Manual pass against the image, not the dev server: install through
+    `POST /api/install` with the one-time token, demo seed (21 rows), restart,
+    reports still served. `app_settings.secret_key` was `CHANGE_ME` and
+    `installed_at` set; the 32-byte key appeared zero times in the raw
+    `vexa.db`, and so did the mailbox password.
+  - The token split was verified both ways: `SECRET_KEY` sent as `X-API-Key`
+    returns 401, the derived 64-character token returns 200.
+  - Rotation was exercised end to end: `recovery.cjs rotate-key` re-encrypted
+    the stored mailbox password, the container restarted under the new key, the
+    old API token went 401 and the new one 200, and `GET /admin/settings` (which
+    loads the config and decrypts every stored password) returned 200 with no
+    decryption error in the log.
+  - Booting the same volume with no `SECRET_KEY` produced both intended
+    diagnostics — the missing-key error and the scheduler-start explanation —
+    and left the database untouched.
+
 - [x] 2026-09-11 — **The admin API token is no longer the encryption root.** The
       settings page rendered `SECRET_KEY` into a browser as the API key, and
       every cron job and script held the same string that decrypts the stored
