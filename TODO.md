@@ -13,40 +13,20 @@
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
 audit, the fixes, the launch steps and the 2026-09-10 purge of the pre-rewrite
 history are logged in `TODO_LOG.md`, along with the 2026-09-10 readiness audit
-that closed seven pull requests. Nothing launch-related is pending; the
-follow-ups it produced live as GitHub issues #25 to #29. Reopened 2026-09-11: an
-X-launch readiness pass found the blockers below. The launch plan itself is
-private, at `career/launches/vexa-insight/plan.md` in the portfolio repo.
+that closed seven pull requests; the follow-ups it produced live as GitHub
+issues #25 to #29. A second pass on 2026-09-11, auditing the claims a public
+launch would actually make, found six more and closed them — see `TODO_LOG.md`.
+The launch plan itself is private, at `career/launches/vexa-insight/plan.md` in
+the portfolio repo.
 
-- [ ] README overclaims against its own egress table. `README.md:23` promises
-      "install in 30 seconds, no third party touches your data"; the table at
-      `README.md:89` lists MaxMind GeoIP lookups, outbound webhooks and hostname
-      resolution. The 30-second figure is unmeasured. Found 2026-09-11 while
-      auditing launch claims. Smallest next step: drop both claims and describe
-      the real network behaviour in the lede.
-
-- [ ] No trial path without a real mailbox. `README.md:28` sends Docker users
-      straight to connecting an IMAP account, while sample data needs a source
-      checkout (`scripts/seed-demo.ts`). Anyone evaluating this in five minutes
-      has no DMARC mailbox ready. Found 2026-09-11. Smallest next step: a tested
-      synthetic-data path for the advertised Docker install — a verified
-      synthetic report upload is enough.
-
-- [ ] Bug template invites reporters to leak their own DMARC data.
-      `.github/ISSUE_TEMPLATE/bug_report.md` asks for screenshots with no
-      redaction guidance, so reporters will paste real domains and sender IPs
-      into a public tracker. Found 2026-09-11. Smallest next step: require
-      synthetic reproductions and explicitly prohibit raw reports, credentials,
-      monitored domains and sender addresses.
-
-- [ ] Cut a release carrying the security fixes before promoting the project. 18
-      commits sit between `v0.2.2` (published 2026-09-10, the tag the README
-      quick start resolves to) and HEAD, including the OIDC-subject binding
-      (#18), the key-rotation secret carry (#21) and migration-integrity
-      verification (#22). A visitor running the advertised image today gets none
-      of them. Found 2026-09-11. Smallest next step: tag a release, then record
-      its image and chart digests and source SHA wherever the launch links to
-      them.
+- [ ] Cut and verify the 0.2.3 release. Everything logged for 2026-09-11 ships
+      only once a tag exists: the README quick start, the Compose file and the
+      Helm chart all resolve to the published artifact, and `v0.2.2` predates
+      the OIDC-subject binding (#18), the key-rotation secret carry (#21), the
+      migration-integrity check (#22) and the at-rest key fix. Smallest next
+      step: `pnpm run check:ci`, `pnpm run build` and `pnpm run smoke`, then a
+      manual install → synthetic ingestion → restart → recovery pass against the
+      built image, then tag.
 
 - [ ] Make the domain score discriminate. Every domain with SPF + DKIM + DMARC
       `p=none` scores exactly 55 (20 + 20 + 15; BIMI, MTA-STS and TLS-RPT are
@@ -60,30 +40,6 @@ private, at `career/launches/vexa-insight/plan.md` in the portfolio repo.
       in `test/computeDomainScore.test.ts`.
 
 ## Security
-
-- [ ] The encryption root key ships inside the database it protects. ADR 0002
-      claims "a leaked database file no longer exposes mailbox credentials
-      unless `SECRET_KEY` leaks with it", but the AES key is derived from
-      `settings.secretKey`, read from the `app_settings.secret_key` column
-      (`src/services/settings-store/getImapAccountsRow.ts:21`). The environment
-      variable only seeds that row once, while it still holds `CHANGE_ME`
-      (`src/services/settings-store/seedSettingsFromEnv.ts:14`). Key and
-      ciphertext therefore live in the same `vexa.db`, so anyone who copies the
-      file recovers the IMAP passwords and the ADR's stated protection does not
-      hold. Found 2026-09-11 while auditing launch claims. Smallest next step:
-      decide whether the key moves out of the database (env-only, refusing to
-      boot without it) or the ADR's Consequences section is rewritten to the
-      real threat model. Do not advertise at-rest protection stronger than what
-      ships.
-
-- [ ] Documented recovery step destroys every stored IMAP credential.
-      `docs/TROUBLESHOOTING.md:146` tells operators to run
-      `DELETE FROM app_settings; DELETE FROM users;` to regenerate a lost
-      install token, with no backup step and no warning. That row holds
-      `secret_key`, so the delete irreversibly destroys the key for every
-      encrypted password still in `imap_accounts`. Found 2026-09-11. Smallest
-      next step: replace it with the supported recovery path and verify restore
-      against a disposable database.
 
 - [!] Purge the pre-rewrite history from the laptop's clone. `main` was
   rewritten and force-pushed on 2026-09-10 to strip client screenshots and

@@ -6,6 +6,54 @@
 
 ### 2026-09
 
+- [x] 2026-09-11 — **The encryption key no longer ships inside the database it
+      protects, and five other launch-blocking claims were corrected.** An audit
+      of what a public launch would assert about this app found that ADR 0002's
+      central promise did not hold as shipped.
+  - Root cause: `SECRET_KEY` was read from `app_settings.secret_key`, seeded
+    there once from the environment on first boot. Key and ciphertext therefore
+    lived in the same `vexa.db`, so a copied database yielded every stored IMAP
+    password — the opposite of what ADR 0002 recorded. The column could not
+    simply be emptied because `isInstalled()` used `secret_key !== 'CHANGE_ME'`
+    as the install marker, welding the key's storage location to the install
+    state.
+  - Result:
+    - Migration `0032` adds `app_settings.installed_at` and backfills it from
+      the old rule, so install state no longer depends on where the key lives.
+      `resolveSecretKey()` prefers a usable stored value (an in-app rotation
+      re-encrypted against it) and otherwise reads the environment;
+      `seedSettingsFromEnv` no longer persists the key, and
+      `clearDuplicatedSecretKey()` drops a stored copy that merely duplicates
+      the environment. An encrypted password with no resolvable key is now a
+      hard error instead of being passed to the mail server as the password. ADR
+      0003 records the decision and ADR 0002 carries the correction.
+    - `docs/TROUBLESHOOTING.md` no longer tells operators to run
+      `DELETE FROM app_settings; DELETE FROM users;` to recover an install
+      token. That row holds `secret_key`, so the delete permanently destroyed
+      every encrypted credential. It now routes to the existing recovery CLI,
+      which touches accounts only, behind an explicit backup step.
+    - The recovery CLI and the demo seeder are bundled into the image
+      (`dist/recovery.cjs`, `dist/seed-demo.cjs`), because the runner has
+      neither pnpm nor tsx and both are needed exactly where the failure
+      happens. That also gives the README a trial path with no mailbox:
+      `docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs`.
+    - The README lede dropped "install in 30 seconds" (never measured) and "no
+      third party touches your data" (contradicted by its own egress table
+      twelve lines below), and gained a table stating what a leaked `vexa.db` is
+      worth under each way of setting the key.
+    - The bug-report template now forbids raw reports, credentials, monitored
+      domains and sender addresses, and asks for synthetic reproductions. It
+      previously asked for screenshots with no redaction guidance, on a public
+      tracker, for an app whose entire subject matter is private mail data.
+    - `docs/06-api-requirements.md` said `GET /api/v1/admin/settings` was
+      public; `requireAdminAuth` has guarded it for some time.
+  - Evidence: `pnpm run check` and `pnpm run test` both pass, with
+    `test/secretKeyResolution.test.ts` and `test/installStateMarker.test.ts`
+    covering the resolution order, the upgrade cleanup and the install marker.
+    `bash scripts/check-migrations.sh` reports OK on migration 0032.
+  - Out of scope: cutting the 0.2.3 release that publishes any of this, which
+    stays open in `TODO.md`.
+
 - [x] 2026-09-11 — **Eleven assistant trailers removed from `main` a second
       time, and the session links removed from eleven pull-request bodies.** The
       readiness-audit work merged on 2026-09-10 reintroduced the
