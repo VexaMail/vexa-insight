@@ -12,7 +12,7 @@ import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
 
 export const metadata: Metadata = {
-  title: 'Sending Sources | Vexa Insight',
+  title: 'Sending Sources',
   description:
     'IP addresses sending email on behalf of your domains, based on DMARC aggregate reports',
 }

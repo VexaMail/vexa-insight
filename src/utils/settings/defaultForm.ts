@@ -1,6 +1,8 @@
+import { APP_NAME } from '@/lib/constants'
 import type { SettingsFormState } from '@/types/settings'
 
 export const DEFAULT_FORM: SettingsFormState = {
+  projectName: APP_NAME,
   apiV1Str: '/api/v1',
   imapAccounts: [],
   ingestionIntervalMinutes: 60,

@@ -27,6 +27,8 @@ and this project adheres to
   `error_summary` column holding the first errors of a run, shown when you hover
   the error count in the run history. Before, the cause lived only in the
   process log and was gone after a restart.
+- **Custom project names** can be set in Settings. The configured name appears
+  in the dashboard sidebar and authenticated page titles.
 
 ### Security
 
@@ -82,7 +84,8 @@ and this project adheres to
 
 - Shared config packages moved to the `syntopica` scope, with the lockfile
   regenerated to match.
-- Dependencies updated (2026-09-12).
+- Dependencies updated (2026-09-12). ||||||| parent of c8586e7 (feat(settings):
+  allow custom project names)
 
 ## [0.3.1] - 2026-09-11
 
