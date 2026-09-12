@@ -194,3 +194,15 @@ remains below is what those passes did not reach.
       ever ships a version that no longer needs it. Re-checked 2026-09-10:
       unchanged — `@lhci/cli` latest is still 0.15.1, pinning
       `lighthouse@12.6.1`; the override stays.
+
+## Daily round
+
+Filed by `~/p/bin/daily`; one bullet per finding, updated in place while it
+repeats.
+
+- [ ] <!-- daily-tasks:REVERTED --> **REVERTED** (first seen 2026-09-12, last
+      seen 2026-09-12): daily dependency upgrade (19 deps, pnpm) reverted:
+      `type-check` failed with 6 errors that are not TS4111. Decisive line:
+      `src/services/imap/fetchEnvelopeMessage.ts(9,3): error TS2322: Type 'false | FetchMessageObject | undefined' is not assignable to type 'false | FetchMessageObject'.`.
+      Re-run:
+      `bash ~/p/bin/daily/ncu-update-repo.sh ~/p/vexa-insight /tmp/logs`.
