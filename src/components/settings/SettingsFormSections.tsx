@@ -1,5 +1,6 @@
 'use client'
 
+import { ProjectNameSection } from './ProjectNameSection'
 import { SettingsAccessSections } from './SettingsAccessSections'
 import type { SettingsFormSectionsProps } from './SettingsFormSectionsProps'
 import { SettingsIngestionSections } from './SettingsIngestionSections'
@@ -9,6 +10,12 @@ export function SettingsFormSections({ settings }: SettingsFormSectionsProps) {
   const { apiKey, form, setForm } = settings
   return (
     <>
+      <ProjectNameSection
+        projectName={form.projectName}
+        onProjectNameChange={(projectName) => {
+          setForm((prev) => ({ ...prev, projectName }))
+        }}
+      />
       <SettingsAccessSections
         apiKey={apiKey}
         form={form}

@@ -4,7 +4,7 @@ import { PageContainer, PageHeader } from '@/components/shell'
 import { UploadForm } from '@/components/upload'
 
 export const metadata: Metadata = {
-  title: 'Upload | Vexa Insight',
+  title: 'Upload',
   description: 'Upload DMARC Reports',
 }
 

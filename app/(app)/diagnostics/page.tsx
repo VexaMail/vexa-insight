@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'Diagnostics | Vexa Insight',
+  title: 'Diagnostics',
 }
 
 export const dynamic = 'force-dynamic'

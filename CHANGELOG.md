@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- **Custom project names** can be set in Settings. The configured name appears
+  in the dashboard sidebar and authenticated page titles.
+
 ## [0.3.1] - 2026-09-11
 
 ### Fixed

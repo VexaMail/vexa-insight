@@ -11,7 +11,7 @@ import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
 
 export const metadata: Metadata = {
-  title: 'Sending Source Detail | Vexa Insight',
+  title: 'Sending Source Detail',
   description: 'Authentication health and activity for a single sending source',
 }
 

@@ -6,6 +6,7 @@ export function buildSettingsUpdatePayload(
   form: SettingsFormState,
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {
+    projectName: form.projectName,
     imapAccounts: form.imapAccounts.map(toImapAccountPayload),
     ingestionIntervalMinutes: form.ingestionIntervalMinutes,
     ingestionDaysBack: form.ingestionDaysBack,
