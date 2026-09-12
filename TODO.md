@@ -206,3 +206,9 @@ repeats.
       `src/services/imap/fetchEnvelopeMessage.ts(9,3): error TS2322: Type 'false | FetchMessageObject | undefined' is not assignable to type 'false | FetchMessageObject'.`.
       Re-run:
       `bash ~/p/bin/daily/ncu-update-repo.sh ~/p/vexa-insight /tmp/logs`.
+- [ ] <!-- daily-tasks:BROKEN --> **BROKEN** (first seen 2026-09-12, last seen
+      2026-09-12): dependencies moved forward (19 deps, pnpm) with type-check
+      failing, 2 errors. Fix forward; the round never downgrades. Decisive line:
+      `src/services/imap/fetchEnvelopeMessage.ts(9,3): error TS2322: Type 'false | FetchMessageObject | undefined' is not assignable to type 'false | FetchMessageObject'.`.
+      Re-run:
+      `bash ~/p/bin/daily/ncu-update-repo.sh ~/p/vexa-insight /tmp/logs`.
