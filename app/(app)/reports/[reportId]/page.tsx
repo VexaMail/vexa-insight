@@ -27,7 +27,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ reportId: string }>
 }): Promise<Metadata> {
-  return { title: `Report ${(await params).reportId} | Vexa Insight` }
+  return { title: `Report ${(await params).reportId}` }
 }
 
 export default async function ReportDetailPage({

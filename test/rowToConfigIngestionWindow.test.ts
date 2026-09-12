@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { rowToConfig } from '../src/lib/config/rowToConfig'
-import type { SettingsRow } from '../src/lib/config/SettingsRow'
+import type { SettingsRow } from '../src/types/config'
 import { DEFAULT_DAYS_BACK } from '../src/utils/install/defaultDaysBack'
 
 describe('rowToConfig ingestion window', () => {
   const baseRow: SettingsRow = {
+    installedAt: null,
+    projectName: 'Custom DMARC Monitor',
     apiV1Str: '/api/v1',
     ingestionIntervalMinutes: 60,
     ingestionDaysBack: 30,
@@ -34,6 +36,10 @@ describe('rowToConfig ingestion window', () => {
 
   it('keeps a configured window', () => {
     expect(configFor(7).ingestionDaysBack).toBe(7)
+  })
+
+  it('uses the configured project name', () => {
+    expect(configFor(7).projectName).toBe('Custom DMARC Monitor')
   })
 
   // A stored 0 used to mean "no limit", which made every scheduled run walk

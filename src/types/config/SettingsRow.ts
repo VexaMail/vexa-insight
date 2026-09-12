@@ -1,4 +1,6 @@
 export type SettingsRow = {
+  installedAt: Date | null
+  projectName: string
   apiV1Str: string
   ingestionIntervalMinutes: number
   ingestionDaysBack: number

@@ -9,7 +9,7 @@ import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
 
 export const metadata: Metadata = {
-  title: 'Reports | Vexa Insight',
+  title: 'Reports',
   description: 'DMARC Reports',
 }
 
