@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { imapAccountSchema } from './imapAccountSchema'
 
 export const settingsUpdateSchema = z.object({
+  projectName: z.string().trim().min(1).max(80).optional(),
   apiV1Str: z.string().min(1).optional(),
   imapAccounts: z.array(imapAccountSchema).optional(),
   ingestionIntervalMinutes: z.number().int().min(1).max(1440).optional(),

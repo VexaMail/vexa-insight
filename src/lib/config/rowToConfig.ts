@@ -1,9 +1,8 @@
 import { APP_NAME } from '@/lib/constants'
 import { deriveApiToken } from '@/services/crypto'
-import type { AppConfig, ImapAccountConfig } from '@/types/config'
+import type { AppConfig, ImapAccountConfig, SettingsRow } from '@/types/config'
 import { parseIngestionDaysBack } from '@/utils/install'
 import type { ImapRow } from './ImapRow'
-import type { SettingsRow } from './SettingsRow'
 
 function rowToConfig(
   row: SettingsRow,
@@ -31,7 +30,7 @@ function rowToConfig(
       markAsReadAfterProcess: r.markAsReadAfterProcess,
     }))
   return {
-    projectName: APP_NAME,
+    projectName: row.projectName.trim() || APP_NAME,
     apiV1Str: row.apiV1Str,
     databaseUrl,
     imapAccounts,

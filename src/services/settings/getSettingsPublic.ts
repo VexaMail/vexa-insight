@@ -21,6 +21,7 @@ function getSettingsPublic(): SettingsPublic | null {
     markAsReadAfterProcess: r.markAsReadAfterProcess,
   }))
   return {
+    projectName: row.projectName,
     apiV1Str: row.apiV1Str,
     imapAccounts,
     ingestionIntervalMinutes: row.ingestionIntervalMinutes,

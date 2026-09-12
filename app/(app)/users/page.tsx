@@ -4,7 +4,7 @@ import { getSession } from '@/services/auth'
 import { getUsers } from '@/services/users'
 import { redirect } from 'next/navigation'
 
-export const metadata = { title: 'Users | Vexa Insight' }
+export const metadata = { title: 'Users' }
 
 export const dynamic = 'force-dynamic'
 

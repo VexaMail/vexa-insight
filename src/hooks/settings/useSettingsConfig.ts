@@ -8,6 +8,7 @@ import {
   saveSettings,
   toSavedFormState,
 } from '@/utils/settings'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useApiKeyActions } from './useApiKeyActions'
 import { useImapAccountsForm } from './useImapAccountsForm'
@@ -15,6 +16,7 @@ import { useImapAccountsForm } from './useImapAccountsForm'
 export function useSettingsConfig(
   initialData: SettingsConfigFormProps['initialData'],
 ) {
+  const router = useRouter()
   // Read-only since ADR 0010: the key is the environment's, and the page has
   // no way to change it.
   const apiKey = initialData?.apiToken ?? ''
@@ -39,6 +41,7 @@ export function useSettingsConfig(
     try {
       const saved = await saveSettings(form, apiKey)
       setForm(toSavedFormState(saved))
+      router.refresh()
       setSaveStatus('success')
       setMessage('Settings saved.')
     } catch (error) {
