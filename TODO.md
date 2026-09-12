@@ -206,3 +206,9 @@ repeats.
       `src/services/imap/fetchEnvelopeMessage.ts(9,3): error TS2322: Type 'false | FetchMessageObject | undefined' is not assignable to type 'false | FetchMessageObject'.`.
       Re-run:
       `bash ~/p/bin/daily/ncu-update-repo.sh ~/p/vexa-insight /tmp/logs`.
+- [ ] Forward fix (2026-09-12): imapflow 2.0 changed two return types:
+      `fetchOne()` now resolves `FetchMessageObject | false | undefined`
+      (src/services/imap/fetchEnvelopeMessage.ts, TS2322: return false when
+      undefined) and `downloadMany()` resolves `DownloadManyResult`
+      (src/services/imap/downloadDmarcAttachments.ts, TS2345: read `.parts`/the
+      keyed map instead of the old array). Then `pnpm type-check`.
