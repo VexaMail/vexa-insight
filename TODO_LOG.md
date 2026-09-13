@@ -6,6 +6,22 @@
 
 ### 2026-09
 
+- [x] 2026-09-13 — **`main` was failing `pnpm run type-check` after the
+      2026-09-12 dependency bump.** Two IMAP call sites stopped matching the
+      current `imapflow` types under `exactOptionalPropertyTypes`.
+  - `client.fetchOne` can now resolve to `undefined`, so the `??` chain in
+    `fetchEnvelopeMessage` widened its return past `FetchMessageObject | false`.
+    The miss is now normalized to `false` explicitly.
+  - `client.downloadMany` declares its parts' `content` and `meta` as
+    optional-and-possibly-undefined, which the narrower `DownloadedPartsResult`
+    rejected. Both members widened; `parseDmarcAttachmentsFromParts` already
+    guards on `!partData?.content`, so behavior is unchanged.
+  - Evidence: `pnpm run check:ci` green (107 test files, 623 tests,
+    `check-migrations: OK`, `check-chart-version: OK (0.3.1)`). Commit
+    `ccbd4cb`.
+  - Found incidentally while investigating a DMARC failure spike; the repository
+    gate caught it, CI had not run since the bump.
+
 - [x] 2026-09-11 — **The release workflow could push a Helm chart but not sign
       it.** The 0.3.0 Release run failed on `Sign chart with cosign (keyless)`
       with `UNAUTHORIZED: unauthenticated` against
