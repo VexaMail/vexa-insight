@@ -4,8 +4,8 @@
 export type DownloadedPartsResult = {
   [partId: string]:
     | {
-        content?: Buffer | null
-        meta?: { filename?: string }
+        content?: Buffer | null | undefined
+        meta?: { filename?: string | undefined } | undefined
       }
     | undefined
 }

@@ -6,12 +6,13 @@ export async function fetchEnvelopeMessage(
   uidStr: string,
   providedEnvMsg: FetchMessageObject | undefined,
 ): Promise<FetchMessageObject | false> {
-  return (
-    providedEnvMsg ??
-    (await client.fetchOne(
-      uidStr,
-      { envelope: true, bodyStructure: true, uid: true },
-      { uid: true },
-    ))
+  if (providedEnvMsg !== undefined) return providedEnvMsg
+
+  const fetched = await client.fetchOne(
+    uidStr,
+    { envelope: true, bodyStructure: true, uid: true },
+    { uid: true },
   )
+
+  return fetched ?? false
 }
