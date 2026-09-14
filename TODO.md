@@ -212,3 +212,7 @@ repeats.
       undefined) and `downloadMany()` resolves `DownloadManyResult`
       (src/services/imap/downloadDmarcAttachments.ts, TS2345: read `.parts`/the
       keyed map instead of the old array). Then `pnpm type-check`.
+
+## Shared package scope migration (2026-09-14)
+
+- [ ] After the owner publishes the renamed shared packages, regenerate the lockfile and run the existing repository quality gate. Source references now use the new scope; the lockfile is intentionally unchanged because the packages are not available offline.

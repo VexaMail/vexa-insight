@@ -1,1 +1,1 @@
-export { default } from '@busirocket/prettier-config/frontend'
+export { default } from '@syntopica/prettier-config/frontend'
