@@ -1,3 +1,4 @@
+import { invalidateConfigCache } from '@/lib/config'
 import { appSettings, getDb } from '@/lib/db'
 import { getConfig } from '@/services/config'
 import { SETTINGS_ID } from '@/services/settings-store'
@@ -21,9 +22,11 @@ function updateSettings(payload: SettingsUpdatePayload): void {
     .where(eq(appSettings.id, SETTINGS_ID))
     .run()
 
-  if (payload.imapAccounts === undefined) return
+  if (payload.imapAccounts !== undefined) {
+    syncImapAccounts(db, payload.imapAccounts, getConfig().secretKey)
+  }
 
-  syncImapAccounts(db, payload.imapAccounts, getConfig().secretKey)
+  invalidateConfigCache()
 }
 
 export { updateSettings }

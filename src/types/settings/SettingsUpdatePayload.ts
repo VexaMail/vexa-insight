@@ -3,6 +3,7 @@ import type { ImapAccountUpdate } from './ImapAccountUpdate'
  * Payload for PUT /api/v1/admin/settings. Omit or leave blank to keep current.
  */
 export type SettingsUpdatePayload = {
+  projectName?: string | undefined
   apiV1Str?: string | undefined
   imapAccounts?: ImapAccountUpdate[] | undefined
   ingestionIntervalMinutes?: number | undefined

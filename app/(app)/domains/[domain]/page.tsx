@@ -17,7 +17,7 @@ export async function generateMetadata({
 }: {
   readonly params: Promise<{ domain: string }>
 }): Promise<Metadata> {
-  return { title: `Domain ${(await params).domain} | Vexa Insight` }
+  return { title: `Domain ${(await params).domain}` }
 }
 
 export default async function DomainDetailPage({

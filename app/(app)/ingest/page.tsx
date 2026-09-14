@@ -13,7 +13,7 @@ import type { IngestPageProps } from '@/types/ingest'
 import { adminOnlyApiKey, buildIngestInitialState } from '@/utils/ingest'
 
 export const metadata: Metadata = {
-  title: 'Ingest | Vexa Insight',
+  title: 'Ingest',
   description: 'DMARC Ingestion Management',
 }
 

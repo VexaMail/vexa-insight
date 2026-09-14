@@ -18,7 +18,7 @@ import { getPollStatusSafe } from '@/services/job'
 import type { DashboardPageProps } from '@/types/dashboard'
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Vexa Insight',
+  title: 'Dashboard',
 }
 
 export const dynamic = 'force-dynamic'

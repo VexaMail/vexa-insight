@@ -4,6 +4,7 @@ import type { ImapAccountPublic } from './ImapAccountPublic'
  * Settings shape returned by GET /api/v1/admin/settings (secrets masked).
  */
 export type SettingsPublic = {
+  projectName: string
   apiV1Str: string
   imapAccounts: ImapAccountPublic[]
   ingestionIntervalMinutes: number

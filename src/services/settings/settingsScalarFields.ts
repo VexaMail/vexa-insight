@@ -5,6 +5,7 @@ import type { SettingsUpdatePayload } from '@/types/settings'
  * `secretKey` and `imapAccounts` are excluded: both need extra handling.
  */
 export const settingsScalarFields: readonly (keyof SettingsUpdatePayload)[] = [
+  'projectName',
   'apiV1Str',
   'ingestionIntervalMinutes',
   'ingestionDaysBack',

@@ -2,7 +2,10 @@ import { SettingsConfigForm } from '@/components/settings'
 import { PageContainer, PageHeader } from '@/components/shell'
 import { requirePageSession } from '@/services/auth'
 import { getSettingsForAdmin } from '@/services/settings'
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = { title: 'Settings' }
 
 export const dynamic = 'force-dynamic'
 

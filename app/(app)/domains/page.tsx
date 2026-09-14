@@ -7,7 +7,7 @@ import { getDomainsSummaryAll } from '@/services/reports'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Domains | Vexa Insight',
+  title: 'Domains',
   description: 'DMARC Domains',
 }
 
