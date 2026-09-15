@@ -160,6 +160,33 @@ the portfolio repo.
 
 ## Future Ideas
 
+- [ ] **Ingest forensic (RUF) reports, not only aggregates.** Raised by the
+      owner 2026-09-16. Both nubenode.com and cristiandeluxe.dev publish
+      `ruf=mailto:sysadmin@nubenode.com`, the very mailbox Insight already
+      polls, and three real ones sit in its `INBOX.DMARC` right now, ignored:
+      OpenDMARC at `box.fidei.email`, 2026-09-11,
+      `multipart/report; report-type= feedback-report` with a
+      `message/feedback-report` part (`Feedback-Type: auth-failure`,
+      `Auth-Failure: dmarc`, `Source-IP: 172.234.253.10 (sea.lore.kernel.org)`,
+      `Reported-Domain: cristiandeluxe.dev`,
+      `Original-Mail-From: linux-kernel+bounces-...@vger.kernel.org`) and a
+      `text/rfc822-headers` part carrying From, To, Subject, Message-ID, List-Id
+      and the chain of `Authentication-Results` (dmarc=pass at kernel.org,
+      dmarc=fail at the receiver). That is the story an aggregate can never
+      tell: one identified message, relayed by a mailing list, losing alignment
+      downstream. `dmarcCandidateConstants` skips both parts today, so the mails
+      are neither parsed nor trashed. README already lists RUF under Phase 2 and
+      the PowerDMARC-parity decision of 2026-07-26 covers it (their forensic
+      view exists). Scope: parse RFC 6591 ARF (`message/feedback-report`
+      fields + the rfc822-headers part), one `forensic_events` row per report
+      keyed by Message-ID, shown per domain next to the aggregate timeline, and
+      run the same post-process (trash after ingest). Keep what is stored
+      minimal — the headers part quotes third-party addresses, so store the
+      fields above, not the raw part. Volume is tiny (Google and Microsoft never
+      send RUF), so this is a parser and a table, not a pipeline. Fixture: the
+      three messages above, exportable with
+      `doveadm fetch -u sysadmin@nubenode.com text mailbox INBOX.DMARC`.
+
 Product/design work, deliberately not started autonomously: each one changes
 what the diagnostics page _is_, so it wants a brief on the intended reading
 order and information hierarchy before any code.
@@ -215,4 +242,7 @@ repeats.
 
 ## Shared package scope migration (2026-09-14)
 
-- [ ] After the owner publishes the renamed shared packages, regenerate the lockfile and run the existing repository quality gate. Source references now use the new scope; the lockfile is intentionally unchanged because the packages are not available offline.
+- [ ] After the owner publishes the renamed shared packages, regenerate the
+      lockfile and run the existing repository quality gate. Source references
+      now use the new scope; the lockfile is intentionally unchanged because the
+      packages are not available offline.
