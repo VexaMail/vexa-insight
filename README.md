@@ -54,7 +54,7 @@ installer, and connect your DMARC mailbox.
 synthetic data — no mailbox, no credentials, no real domains:
 
 ```bash
-docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
 ```
 
 Still worth using on an instance you intend to throw away. The seeder marks its
@@ -292,7 +292,7 @@ pnpm run seed:demo            # idempotent — skips if already seeded
 pnpm run seed:demo --force    # wipe demo data and reseed
 
 # container (demo instances only, see the warning below)
-docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo node dist/seed-demo.cjs
+docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa node dist/seed-demo.cjs
 ```
 
 Refuses to run with `NODE_ENV=production` unless `VEXA_FORCE_SEED_DEMO=1` is

@@ -12,6 +12,7 @@
  */
 import { runMigrations } from '@/lib/db'
 import { runSeedDemo } from '@/services/seed'
+import { formatSeedNextSteps } from '@/utils/seed/formatters/formatSeedNextSteps'
 
 export function main(): void {
   const force = process.argv.includes('--force')
@@ -22,9 +23,7 @@ export function main(): void {
   if (!summary) return
   console.log('[seed:demo] Done.')
   console.log(JSON.stringify(summary, null, 2))
-  console.log(
-    '\nNext steps:\n  pnpm dev\n  open http://localhost:3000 and sign in.\n',
-  )
+  console.log(formatSeedNextSteps(process.env.NODE_ENV === 'production'))
 }
 
 try {

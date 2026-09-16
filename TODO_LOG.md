@@ -6,6 +6,25 @@
 
 ### 2026-09
 
+- [x] 2026-09-16 — **The documented first-run path told a container user to run
+      `pnpm dev`, and the demo-seed command named a container the README never
+      creates.** Both found by running the published image end to end as a
+      stranger would, before the public launch.
+  - `docker exec -e VEXA_FORCE_SEED_DEMO=1 vexa-demo ...` appeared twice in
+    `README.md` (lines 57 and 295) while Quick start creates a container named
+    `vexa`, so following the README top to bottom returns
+    `No such container: vexa-demo`. Both call sites now say `vexa`.
+  - `scripts/seed-demo.ts` printed `Next steps: pnpm dev` unconditionally. A
+    reader who arrived through `docker exec` has no checkout to run it in. The
+    message now comes from `formatSeedNextSteps`, which tells a container user
+    to reload the dashboard and leaves the checkout path unchanged.
+  - Evidence: `docker pull ghcr.io/vexamail/vexa-insight:latest` anonymously
+    (digest `sha256:a1e044e2`), quick start booted, the install token printed
+    exactly as documented, the seeder ran to
+    `domains: 3, ips: 8, rawReports: 21, events: 261`. `pnpm run check:ci` green
+    (107 test files, 623 tests, `check-migrations: OK`,
+    `check-chart-version: OK (0.3.1)`).
+
 - [x] 2026-09-13 — **`main` was failing `pnpm run type-check` after the
       2026-09-12 dependency bump.** Two IMAP call sites stopped matching the
       current `imapflow` types under `exactOptionalPropertyTypes`.
