@@ -8,6 +8,28 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-09-16
+
+### Fixed
+
+- **The documented first run works as written.** Quick start creates a container
+  named `vexa`, but both demo-seed commands exec'd into `vexa-demo`, so
+  following the README top to bottom returned `No such container: vexa-demo`.
+  The seeder also printed `Next steps: pnpm dev` regardless of how it was
+  reached, which a reader who arrived through `docker exec` has no checkout to
+  run. The message now depends on where the seeder ran.
+- **Type-check passes against the current `imapflow` types.** Two IMAP call
+  sites stopped matching after the 2026-09-12 dependency bump under
+  `exactOptionalPropertyTypes`: `fetchOne` can resolve to `undefined`, and
+  `downloadMany` declares its parts' `content` and `meta` as optional. Both
+  normalized; behavior is unchanged.
+
+### Changed
+
+- Shared config packages moved to the `syntopica` scope, with the lockfile
+  regenerated to match.
+- Dependencies updated (2026-09-12).
+
 ## [0.3.1] - 2026-09-11
 
 ### Fixed
@@ -499,7 +521,10 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
   `Authorization: Bearer`).
 - `/install` permanently locked after the first user exists.
 
-[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.2
+[0.3.1]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.1
+[0.3.0]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.0
 [0.2.2]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.2
 [0.2.1]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.1
 [0.2.0]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.2.0
