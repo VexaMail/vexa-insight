@@ -70,6 +70,30 @@ the loopback bind, and an opt-in Watchtower auto-update layer.
 
 ---
 
+## Project status
+
+Early but not a demo. One person maintains it, and it runs the published image
+in production on that person's own hosting estate, where as of 2026-09-16 it
+holds **55 domains, 3,810 aggregate reports from 14 reporting organizations, and
+63,329 messages** ingested continuously since July 2026, in a 51 MB SQLite file.
+
+What that record does not yet show, stated so you can weigh it:
+
+- Every event on that instance carries disposition `none`. The estate is in
+  monitoring mode, so the tool has surfaced unaligned mail but has not yet been
+  used to defend a move to `quarantine`.
+- It has been operated by one person on one estate. The install path is
+  exercised against the published image on every release, but not yet by
+  strangers on infrastructure nobody here has seen. If it confuses you, that is
+  worth an issue — that is the gap this stage is for.
+- Forensic (RUF) report ingestion is planned, not built.
+
+The full write-up, including what it cost to build and one release that shipped
+a signature nobody could verify, is at
+<https://cristiandeluxe.dev/work/vexa-insight/>.
+
+---
+
 ## Why self-host vs SaaS DMARC?
 
 |                                  | Vexa Mail Insight (self-hosted)         | SaaS DMARC tools                                 |
