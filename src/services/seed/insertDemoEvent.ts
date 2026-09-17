@@ -11,6 +11,12 @@ import { randomIntInRange } from './randomIntInRange'
 export function insertDemoEvent(input: DemoEventInput): DemoEventTotals {
   const spfPass = randomChance(0.85)
   const dkimPass = randomChance(0.78)
+  const spfAligned = spfPass && randomChance(0.9)
+  const dkimAligned = dkimPass && randomChance(0.9)
+  // DMARC passes on one aligned identifier, so only a message that aligns on
+  // neither can be acted on. Picking a disposition at random instead produced
+  // rejected mail with SPF and DKIM both passing.
+  const dmarcPass = spfAligned || dkimAligned
   const count = randomIntInRange(1, 500)
   getDb()
     .insert(normalizedEvents)
@@ -21,9 +27,9 @@ export function insertDemoEvent(input: DemoEventInput): DemoEventTotals {
       spfResult: spfPass ? 'pass' : 'fail',
       dkimResult: dkimPass ? 'pass' : 'fail',
       spfAuthResult: pickRandom(AUTH_RESULTS),
-      spfAligned: spfPass && randomChance(0.9),
-      dkimAligned: dkimPass && randomChance(0.9),
-      disposition: pickRandom(DISPOSITIONS),
+      spfAligned,
+      dkimAligned,
+      disposition: dmarcPass ? 'none' : pickRandom(DISPOSITIONS),
       count,
       reportBeginDate: input.reportBeginDate,
       reportEndDate: input.reportEndDate,
