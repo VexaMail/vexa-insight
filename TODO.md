@@ -222,6 +222,16 @@ remains below is what those passes did not reach.
       unchanged — `@lhci/cli` latest is still 0.15.1, pinning
       `lighthouse@12.6.1`; the override stays.
 
+- [ ] Two DB-backed tests fail only under the full parallel suite. `pnpm test`
+      spawns 107 workers and `test/recoveryCommands.test.ts` ("creates an admin
+      and refuses to create it twice") plus `test/secretKeyResolution.test.ts`
+      time out intermittently -- 5.6 s and 12.1 s for work that takes under a
+      second alone. Both pass every time when run on their own
+      (`pnpm vitest run <file>`, checked twice on 2026-09-17), and a clean
+      checkout fails the same way, so this is worker contention on SQLite, not a
+      regression. Smallest next step: give the DB-backed files their own
+      `poolOptions` or a shared worker, rather than raising the timeout.
+
 ## Daily round
 
 Filed by `~/p/bin/daily`; one bullet per finding, updated in place while it
