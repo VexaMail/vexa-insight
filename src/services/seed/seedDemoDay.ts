@@ -7,7 +7,7 @@ import type { SeedDemoDayResult } from './SeedDemoDayResult'
 import { upsertDemoRollup } from './upsertDemoRollup'
 
 export function seedDemoDay(args: SeedDemoDayArgs): SeedDemoDayResult {
-  const { dayStart, dayEnd, domainId, ipIds, now } = args
+  const { dayStart, dayEnd, domainId, sources, now } = args
   const rawReportId = insertDemoRawReport(args)
 
   const reportBeginDate = Math.floor(dayStart.getTime() / 1000)
@@ -17,11 +17,12 @@ export function seedDemoDay(args: SeedDemoDayArgs): SeedDemoDayResult {
   let dayTotal = 0
   let dayPassed = 0
   for (let e = 0; e < eventCount; e++) {
-    const ipId = pickRandom(ipIds)
+    const seeded = pickRandom(sources)
     const event = insertDemoEvent({
       rawReportId,
       domainId,
-      ipId,
+      ipId: seeded.id,
+      source: seeded.source,
       reportBeginDate,
       reportEndDate,
       now,

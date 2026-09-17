@@ -1,7 +1,7 @@
 import { DAY_MS } from './dayMs'
 import { DAYS_BACK } from './daysBack'
 import { DEMO_DOMAINS } from './demoDomains'
-import { SOURCE_IPS } from './demoSourceIps'
+import { DEMO_SOURCES } from './demoSources'
 import { ensureDemoDomain } from './ensureDemoDomain'
 import { ensureDemoIp } from './ensureDemoIp'
 import { isDemoAlreadySeeded } from './isDemoAlreadySeeded'
@@ -36,8 +36,11 @@ export function runSeedDemo({ force }: RunSeedDemoArgs): SeedSummary | null {
   const domainIds = DEMO_DOMAINS.map((domain) => ensureDemoDomain(domain, now))
   summary.domains = domainIds.length
 
-  const ipIds = SOURCE_IPS.map((ip) => ensureDemoIp(ip, now))
-  summary.ips = ipIds.length
+  const sources = DEMO_SOURCES.map((source) => ({
+    id: ensureDemoIp(source.ip, now),
+    source,
+  }))
+  summary.ips = sources.length
 
   for (let day = DAYS_BACK - 1; day >= 0; day--) {
     const dayStart = new Date(now.getTime() - day * DAY_MS)
@@ -52,7 +55,7 @@ export function runSeedDemo({ force }: RunSeedDemoArgs): SeedSummary | null {
         dayEnd,
         domainName,
         domainId,
-        ipIds,
+        sources,
         now,
       })
       summary.rawReports += result.rawReports
