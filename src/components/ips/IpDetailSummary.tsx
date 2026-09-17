@@ -30,10 +30,6 @@ export default function IpDetailSummary({
           <IpDetailStat key={stat.label} {...stat} />
         ))}
       </div>
-
-      <p className="text-muted-foreground/60 text-xs italic">
-        Detailed event timeline is planned for a future release.
-      </p>
     </div>
   )
 }
