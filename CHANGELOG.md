@@ -8,6 +8,30 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-09-17
+
+### Fixed
+
+- **The seeded demo no longer contradicts itself.** The demo seeder picked each
+  message's disposition uniformly at random, independent of the alignment it had
+  just generated, so roughly a third of fully aligned mail came out quarantined
+  or rejected. A sending source showed `REJECT` beside `SPF: PASS` and
+  `DKIM: PASS`, and its disposition split disagreed with the compliance figure
+  on the dashboard. DMARC passes on one aligned identifier, so only a message
+  that aligns on neither can be acted on, and the seeder now works that way.
+  Covered by a test that fails on the previous behaviour.
+- **The demo estate has healthy senders in it.** Every source drew from one
+  global distribution, which put the sources page at eight sources and zero
+  healthy: a screen that reads as a broken product rather than a populated one.
+  Each source now carries its own sending behaviour and a volume that matches
+  its role, so a fresh seed shows well-configured senders holding most of the
+  traffic, a newsletter tool with no DKIM, a forwarder that breaks SPF and keeps
+  DKIM, and one unauthorized source, which is the only one the policy acts on.
+  Addresses stay inside the RFC 5737 documentation ranges.
+- **The sending-source page stopped promising what it already ships.** Its
+  summary card still read "Detailed event timeline is planned for a future
+  release", directly above the Event Timeline card that ships it.
+
 ## [0.3.2] - 2026-09-16
 
 ### Fixed
