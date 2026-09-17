@@ -19,6 +19,7 @@ jobs:
   release:
     name: Build, SBOM, GitHub Release
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       version: ${{ steps.version.outputs.value }}
     steps:
@@ -80,6 +81,10 @@ jobs:
     name: Build, push, sign, attest container image
     needs: release
     runs-on: ubuntu-latest
+    # The arm64 half builds under QEMU. On 2026-09-17 its `pnpm install`
+    # stopped producing output for four hours and the run only ended because
+    # it was cancelled by hand; without a limit a hang costs the default six.
+    timeout-minutes: 45
     permissions:
       contents: read
       packages: write
@@ -161,6 +166,7 @@ jobs:
     name: Package, push and sign Helm chart
     needs: release
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       packages: write
