@@ -1,3 +1,4 @@
+import { ipLogsQueryDefaults } from '@/constants/ips'
 import {
   domains,
   getDb,
@@ -7,16 +8,19 @@ import {
 } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { IpLogRow } from '@/types/IpLogRow'
-import type { IpDateRange } from '@/types/filters'
-import { desc, eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
+import type { GetIpLogsParams } from './GetIpLogsParams'
 import { ipEventConditions } from './ipEventConditions'
+import { ipLogsFilterConditions } from './ipLogsFilterConditions'
+import { ipLogsOrderBy } from './ipLogsOrderBy'
 
-export async function getIpLogs(
-  ip: string,
-  dateRange?: IpDateRange,
-  limit: number = 50,
-  offset: number = 0,
-): Promise<IpLogRow[]> {
+export async function getIpLogs({
+  ip,
+  dateRange,
+  limit = 50,
+  offset = 0,
+  query = ipLogsQueryDefaults,
+}: GetIpLogsParams): Promise<IpLogRow[]> {
   const db = getDb()
   const allowedIds = await getAllowedDomainIds()
   if (allowedIds !== null && allowedIds.length === 0) return []
@@ -40,14 +44,17 @@ export async function getIpLogs(
     .innerJoin(domains, eq(normalizedEvents.domainId, domains.id))
     .innerJoin(rawReports, eq(normalizedEvents.rawReportId, rawReports.id))
     .where(
-      ipEventConditions({
-        ip,
-        allowedIds,
-        dateRange,
-        dateColumn: normalizedEvents.reportBeginDate,
-      }),
+      and(
+        ipEventConditions({
+          ip,
+          allowedIds,
+          dateRange,
+          dateColumn: normalizedEvents.reportBeginDate,
+        }),
+        ipLogsFilterConditions(query),
+      ),
     )
-    .orderBy(desc(normalizedEvents.reportBeginDate))
+    .orderBy(...ipLogsOrderBy(query.sort))
     .limit(limit)
     .offset(offset)
 

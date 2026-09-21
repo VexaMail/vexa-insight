@@ -1,4 +1,4 @@
-import { LazyXmlViewer } from '@/components/reports'
+import { XmlViewer } from '@/components/reports'
 import type { ProcessedEmailContentProps } from '@/types/ingest'
 import { Loader2 } from 'lucide-react'
 
@@ -25,7 +25,7 @@ export function ProcessedEmailContent({
           </div>
         )}
         {fileContent !== null && fileContent !== '' && (
-          <LazyXmlViewer rawXml={fileContent} />
+          <XmlViewer rawXml={fileContent} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { ChevronRight } from 'lucide-react'
 import { useXmlViewerCollapsible } from '../../hooks/reports/useXmlViewerCollapsible'
-import { LazyXmlViewer } from './LazyXmlViewer'
+import { XmlViewer } from './XmlViewer'
 import { XmlViewerActions } from './XmlViewerActions'
 import type { XmlViewerCollapsibleProps } from './XmlViewerCollapsibleProps'
 import { XmlViewerEmpty } from './XmlViewerEmpty'
@@ -33,7 +33,7 @@ export function XmlViewerCollapsible({
         ) : null}
       </summary>
       <div className="border-t border-zinc-200 p-4 dark:border-zinc-700">
-        {isOpen ? <LazyXmlViewer rawXml={rawXml} /> : null}
+        {isOpen ? <XmlViewer rawXml={rawXml} /> : null}
       </div>
     </details>
   )

@@ -1,19 +1,25 @@
+import { ipDomainsQueryDefaults } from '@/constants/ips'
 import { domains, getDb, ipAddresses, normalizedEvents } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
 import type { IpRelatedDomainRow } from '@/types/IpRelatedDomainRow'
-import type { IpDateRange } from '@/types/filters'
-import { desc, eq, sql } from 'drizzle-orm'
+import { and, eq, like, sql } from 'drizzle-orm'
+import type { GetIpDomainsParams } from './GetIpDomainsParams'
+import { ipDomainsOrderBy } from './ipDomainsOrderBy'
 import { ipEventConditions } from './ipEventConditions'
+import { toIpRelatedDomainRow } from './toIpRelatedDomainRow'
 
-export async function getIpDomains(
-  ip: string,
-  dateRange?: IpDateRange,
-  limit: number = 25,
-  offset: number = 0,
-): Promise<IpRelatedDomainRow[]> {
+export async function getIpDomains({
+  ip,
+  dateRange,
+  limit = 25,
+  offset = 0,
+  query = ipDomainsQueryDefaults,
+}: GetIpDomainsParams): Promise<IpRelatedDomainRow[]> {
   const db = getDb()
   const allowedIds = await getAllowedDomainIds()
   if (allowedIds !== null && allowedIds.length === 0) return []
+
+  const search = query.search.trim()
 
   const rows = await db
     .select({
@@ -34,23 +40,20 @@ export async function getIpDomains(
     )
     .innerJoin(domains, eq(normalizedEvents.domainId, domains.id))
     .where(
-      ipEventConditions({
-        ip,
-        allowedIds,
-        dateRange,
-        dateColumn: normalizedEvents.reportEndDate,
-      }),
+      and(
+        ipEventConditions({
+          ip,
+          allowedIds,
+          dateRange,
+          dateColumn: normalizedEvents.reportEndDate,
+        }),
+        search === '' ? undefined : like(domains.name, `%${search}%`),
+      ),
     )
     .groupBy(domains.id)
-    .orderBy(desc(sql`msg_count`), desc(sql`last_seen`))
+    .orderBy(...ipDomainsOrderBy(query.sort))
     .limit(limit)
     .offset(offset)
 
-  return rows.map((r) => ({
-    domainId: r.domainId,
-    domain: r.domain,
-    messageCount: r.messageCount,
-    firstSeenAt: r.firstSeenAt ? r.firstSeenAt : null,
-    lastSeenAt: r.lastSeenAt ? r.lastSeenAt : null,
-  }))
+  return rows.map(toIpRelatedDomainRow)
 }

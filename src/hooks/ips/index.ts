@@ -1,3 +1,6 @@
 export { useFilterCombobox } from './useFilterCombobox'
+export { useIpEventLogs } from './useIpEventLogs'
 export { useIpRelatedDomains } from './useIpRelatedDomains'
 export { useIpRelatedReports } from './useIpRelatedReports'
+export { useIpSectionList } from './useIpSectionList'
+export { useIpSectionSearch } from './useIpSectionSearch'

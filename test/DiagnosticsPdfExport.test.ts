@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { DiagnosticsView, ExportPdfButton } from '@/components/diagnostics'
 import { AppShell } from '@/components/shell'
 import type { DnsDiagnostics, DomainScore } from '@/types/diagnostics'
+import { makeDomainScore } from './setup/makeDomainScore'
 
 const PRINT_HIDDEN = 'print:hidden'
 
@@ -48,7 +49,7 @@ describe('diagnostics PDF export', () => {
     }
   }
 
-  const score: DomainScore = { grade: 'A', percentage: 92 }
+  const score: DomainScore = makeDomainScore('A', 92)
 
   function renderDiagnosticsView(): string {
     return renderToStaticMarkup(

@@ -70,7 +70,6 @@
     "check:security": "pnpm secrets:check && pnpm audit:check"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-popover": "^1.1.23",
@@ -105,15 +104,15 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@syntopica/eslint-config": "^0.8.0",
-    "@syntopica/prettier-config": "^0.2.0",
-    "@syntopica/quality-config": "^0.11.1",
-    "@syntopica/tsconfig": "^0.3.0",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
     "@next/eslint-plugin-next": "^16.3.5",
+    "@syntopica/eslint-config": "^0.8.0",
+    "@syntopica/prettier-config": "^0.2.0",
+    "@syntopica/quality-config": "^0.11.1",
+    "@syntopica/tsconfig": "^0.3.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

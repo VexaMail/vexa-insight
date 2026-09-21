@@ -85,9 +85,9 @@ describe('IP views honour the per-user domain allow-list', () => {
     expect(summary.ips[0]?.totalMessages).toBe(18)
 
     expect((await getIpDetail(SHARED_IP))?.totalMessages).toBe(18)
-    expect(await getIpDomains(SHARED_IP)).toHaveLength(3)
+    expect(await getIpDomains({ ip: SHARED_IP })).toHaveLength(3)
     expect(await getIpReports(SHARED_IP)).toHaveLength(3)
-    expect(await getIpLogs(SHARED_IP)).toHaveLength(9)
+    expect(await getIpLogs({ ip: SHARED_IP })).toHaveLength(9)
   })
 
   it('counts only the allowed domains for a restricted caller', async () => {
@@ -110,13 +110,13 @@ describe('IP views honour the per-user domain allow-list', () => {
 
     expect((await getIpDetail(SHARED_IP))?.totalMessages).toBe(6)
 
-    const relatedDomains = await getIpDomains(SHARED_IP)
+    const relatedDomains = await getIpDomains({ ip: SHARED_IP })
     expect(relatedDomains).toHaveLength(1)
     expect(relatedDomains[0]?.domain).toBe('example0.com')
     expect(relatedDomains[0]?.messageCount).toBe(6)
 
     expect(await getIpReports(SHARED_IP)).toHaveLength(1)
-    expect(await getIpLogs(SHARED_IP)).toHaveLength(3)
+    expect(await getIpLogs({ ip: SHARED_IP })).toHaveLength(3)
   })
 
   it('ranks top senders by the allowed slice only', async () => {
@@ -153,9 +153,9 @@ describe('IP views honour the per-user domain allow-list', () => {
     vi.mocked(getAllowedDomainIds).mockResolvedValue([allowed])
 
     expect(await getIpDetail(OTHER_IP)).toBeNull()
-    expect(await getIpDomains(OTHER_IP)).toEqual([])
+    expect(await getIpDomains({ ip: OTHER_IP })).toEqual([])
     expect(await getIpReports(OTHER_IP)).toEqual([])
-    expect(await getIpLogs(OTHER_IP)).toEqual([])
+    expect(await getIpLogs({ ip: OTHER_IP })).toEqual([])
     expect((await getTopIpSenders()).map((r) => r.ip)).toEqual([SHARED_IP])
   })
 
@@ -174,9 +174,9 @@ describe('IP views honour the per-user domain allow-list', () => {
 
     expect((await getIpsSummary()).ips).toEqual([])
     expect(await getIpDetail(SHARED_IP)).toBeNull()
-    expect(await getIpDomains(SHARED_IP)).toEqual([])
+    expect(await getIpDomains({ ip: SHARED_IP })).toEqual([])
     expect(await getIpReports(SHARED_IP)).toEqual([])
-    expect(await getIpLogs(SHARED_IP)).toEqual([])
+    expect(await getIpLogs({ ip: SHARED_IP })).toEqual([])
     expect(await getTopIpSenders()).toEqual([])
   })
 })

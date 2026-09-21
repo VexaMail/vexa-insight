@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { buildDiagnosticsAdminGuides } from '../src/services/diagnostics/buildDiagnosticsAdminGuides'
 import { GRADE_A_SCORE } from './setup/gradeAScore'
 import { makeBrokenDnsDiagnostics } from './setup/makeBrokenDnsDiagnostics'
+import { makeDomainScore } from './setup/makeDomainScore'
 import { makeHealthyDnsDiagnostics } from './setup/makeHealthyDnsDiagnostics'
 import { makeQuietDiagnosticStats } from './setup/makeQuietDiagnosticStats'
 
@@ -25,7 +26,7 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
       const guides = buildDiagnosticsAdminGuides(
         makeHealthyDnsDiagnostics(),
         makeQuietDiagnosticStats(),
-        { grade, percentage: 38 },
+        makeDomainScore(grade, 38),
       )
 
       expect(guides[0]?.id).toBe(LOW_SCORE_GUIDE)
@@ -40,7 +41,7 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
       const guides = buildDiagnosticsAdminGuides(
         makeBrokenDnsDiagnostics(),
         makeQuietDiagnosticStats(),
-        { grade, percentage: 70 },
+        makeDomainScore(grade, 70),
       )
 
       expect(guides.map((guide) => guide.id)).not.toContain(LOW_SCORE_GUIDE)
@@ -51,7 +52,7 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
     const guides = buildDiagnosticsAdminGuides(
       makeBrokenDnsDiagnostics(),
       makeQuietDiagnosticStats(),
-      { grade: 'B', percentage: 82 },
+      makeDomainScore('B', 82),
     )
 
     expect(guides.map((guide) => guide.id)).toEqual([
@@ -85,7 +86,7 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
     const guides = buildDiagnosticsAdminGuides(
       makeBrokenDnsDiagnostics(),
       noisyStats,
-      { grade: 'F', percentage: 12 },
+      makeDomainScore('F', 12),
     )
 
     expect(guides).toHaveLength(6)

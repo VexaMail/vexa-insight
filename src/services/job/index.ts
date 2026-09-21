@@ -1,4 +1,5 @@
 export * from './applyEmailProgressToItem'
+export * from './getIngestActivity'
 export * from './getJobRunHistory'
 export * from './getPollStatus'
 export * from './getPollStatusFromDb'

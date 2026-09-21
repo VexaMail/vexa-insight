@@ -7,15 +7,35 @@ import { scoreSpf } from './scoreSpf'
 import { scoreTlsRpt } from './scoreTlsRpt'
 import { scoreToGrade } from './scoreToGrade'
 
+/**
+ * SPF, DKIM and DMARC carry the whole 100-point core, because they are what
+ * decides whether a spoofed message is rejected. MTA-STS, TLS-RPT and BIMI are
+ * optional hardening and only add on top, capped at 100.
+ */
 export function computeDomainScore(dns: DnsDiagnostics): DomainScore {
-  const score =
-    scoreSpf(dns) +
-    scoreDkim(dns) +
-    scoreDmarc(dns) +
-    scoreBimi(dns) +
-    scoreMtaSts(dns) +
-    scoreTlsRpt(dns)
-  const grade = scoreToGrade(score)
+  const checks = [
+    scoreSpf(dns),
+    scoreDkim(dns),
+    scoreDmarc(dns),
+    scoreMtaSts(dns),
+    scoreTlsRpt(dns),
+    scoreBimi(dns),
+  ]
 
-  return { grade, percentage: score }
+  const coreScore = checks
+    .filter((check) => check.weight === 'core')
+    .reduce((total, check) => total + check.earned, 0)
+  const bonusScore = checks
+    .filter((check) => check.weight === 'bonus')
+    .reduce((total, check) => total + check.earned, 0)
+
+  const percentage = Math.min(coreScore + bonusScore, 100)
+
+  return {
+    grade: scoreToGrade(percentage),
+    percentage,
+    coreScore,
+    bonusScore,
+    checks,
+  }
 }

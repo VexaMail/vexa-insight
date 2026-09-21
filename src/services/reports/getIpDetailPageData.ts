@@ -12,9 +12,9 @@ export async function getIpDetailPageData(
   const [summaryResult, domainsResult, reportsResult, logsResult] =
     await Promise.allSettled([
       getIpDetail(ip, dateRange),
-      getIpDomains(ip, dateRange),
+      getIpDomains({ ip, dateRange }),
       getIpReports(ip, dateRange),
-      getIpLogs(ip, dateRange),
+      getIpLogs({ ip, dateRange }),
     ])
 
   const data = summaryResult.status === 'fulfilled' ? summaryResult.value : null

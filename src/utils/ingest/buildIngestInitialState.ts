@@ -1,5 +1,6 @@
 import type { PollStatus } from '@/types/dashboard'
 import type { IngestState } from '@/types/IngestState'
+import { resolveInitialIngestTab } from './resolveInitialIngestTab'
 
 /** Seeds the ingest store from the server-rendered poll status. */
 export function buildIngestInitialState(
@@ -8,6 +9,10 @@ export function buildIngestInitialState(
 ): Partial<IngestState> {
   return {
     selectedJobId: effectiveJobId ?? null,
+    activeTab: resolveInitialIngestTab(
+      displayPollStatus.isRunning,
+      displayPollStatus.progressItems.items.length,
+    ),
     isRunning: displayPollStatus.isRunning,
     lastCheck: displayPollStatus.lastCheck,
     currentProcessed: displayPollStatus.currentProcessed,

@@ -1,27 +1,21 @@
-'use client'
-
-import { useXmlViewer } from '@/hooks/reports'
-import Editor from '@monaco-editor/react'
+import { splitXmlLines } from '@/utils/reports'
+import { XmlLineRow } from './XmlLineRow'
 import type { XmlViewerProps } from './XmlViewerProps'
 
-export default function XmlViewer({ rawXml }: Readonly<XmlViewerProps>) {
-  const { editorTheme } = useXmlViewer()
-
+/**
+ * Read-only, syntax-coloured view of the report XML. Plain DOM rather than an
+ * embedded editor: the editor mounted inside a <details> mis-measured itself,
+ * which is what put a stray input box over the document and made scrolling skip
+ * lines.
+ */
+export function XmlViewer({ rawXml }: Readonly<XmlViewerProps>) {
   return (
-    <div className="h-[600px] w-full overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-      <Editor
-        height="100%"
-        defaultLanguage="xml"
-        value={rawXml}
-        theme={editorTheme}
-        options={{
-          readOnly: true,
-          minimap: { enabled: false },
-          scrollBeyondLastLine: false,
-          fontSize: 14,
-          wordWrap: 'on',
-        }}
-      />
+    <div className="max-h-[600px] overflow-auto rounded-md border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900/40">
+      <pre className="w-max min-w-full py-3 font-mono text-[13px] leading-5">
+        {splitXmlLines(rawXml).map((line) => (
+          <XmlLineRow key={line.number} line={line} />
+        ))}
+      </pre>
     </div>
   )
 }

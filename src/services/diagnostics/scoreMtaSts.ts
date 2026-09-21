@@ -1,9 +1,33 @@
-import type { DnsDiagnostics } from '@/types/diagnostics'
+import { domainScoreWeights } from '@/constants/diagnostics'
+import type { DnsDiagnostics, DomainScoreCheck } from '@/types/diagnostics'
 
-export function scoreMtaSts(dns: DnsDiagnostics): number {
+export function scoreMtaSts(dns: DnsDiagnostics): DomainScoreCheck {
+  const base = {
+    id: 'mtaSts',
+    label: 'MTA-STS',
+    max: domainScoreWeights.mtaSts,
+    weight: 'bonus',
+  } as const
+
   if (!dns.mtaSts.valid) {
-    return 0
+    return {
+      ...base,
+      earned: 0,
+      detail: 'Optional. Not published; adds TLS enforcement for inbound mail.',
+    }
   }
 
-  return dns.mtaSts.policyFileAccessible ? 10 : 5
+  if (!dns.mtaSts.policyFileAccessible) {
+    return {
+      ...base,
+      earned: 3,
+      detail: 'Record published but the policy file is unreachable.',
+    }
+  }
+
+  return {
+    ...base,
+    earned: domainScoreWeights.mtaSts,
+    detail: 'Record and policy file both served.',
+  }
 }

@@ -1,7 +1,6 @@
 // ReportsPagination removed – use UnifiedPagination from @/components/ui instead
 export * from './AlignmentIndicator'
 export * from './AuthenticationSummary'
-export * from './LazyXmlViewer'
 export * from './ReportHeader'
 export * from './ReportKpiCards'
 export * from './ReportMetadata'
@@ -12,4 +11,5 @@ export * from './ReportTransportSecurityPrimer'
 export * from './ReportTransportSecurityPrimerProps'
 export * from './SourceSeverityDot'
 export * from './SpfDkimBadge'
+export * from './XmlViewer'
 export * from './XmlViewerCollapsible'

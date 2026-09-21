@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { IngestActivityChart } from '@/components/charts'
 import {
   CronsSection,
   IngestStoreProvider,
@@ -28,6 +29,7 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
     pollStatus,
     displayPollStatus,
     jobRuns,
+    activity,
     settings,
     serializedEmails,
     isHistoricalJobContext,
@@ -40,6 +42,8 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
         title="Ingest"
         description="Track ingestion jobs, processed emails, and scheduled crons."
       />
+      <IngestActivityChart data={activity} />
+
       <IngestStoreProvider
         initialState={buildIngestInitialState(
           displayPollStatus,

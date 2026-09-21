@@ -6,6 +6,43 @@
 
 ### 2026-09
 
+- [x] 2026-09-21 — **Four dashboard complaints from real use: every domain
+      scored 55%, the IP detail lists could not be searched or sorted and could
+      repeat a row, the raw XML view was broken, and `/ingest` opened on an
+      empty historical view.**
+  - Scoring: SPF 20 + DKIM 20 + DMARC p=none 15 was 55 for every ordinary
+    domain, with 30 of the 100 points locked behind MTA-STS, TLS-RPT and BIMI.
+    The core is now SPF 25 + DKIM 25 + DMARC 50 (policy graded, minus 10 for
+    `pct<100`, minus 5 without `rua`), hardening is a bonus of at most 10 on top
+    and the total is capped at 100. Grades moved to A>=90, B>=75, C>=60, D>=40.
+    `DomainScoreBadge` now shows a per-check breakdown with the points and the
+    next action. agropex.es reads 65% (C) instead of 55%.
+  - IP detail: related domains, related reports and the event timeline ordered
+    on a non-unique key, so `LIMIT/OFFSET` paging could show a row twice or skip
+    it. Every listing now ends its ORDER BY on the row id, and the client
+    de-duplicates on append. Related domains gained search and a sort selector;
+    the event timeline gained search over domain and report id, disposition, SPF
+    and DKIM filters and a sort selector. Filters run server-side over the whole
+    range, not over the loaded page.
+  - Raw XML: the Monaco editor mounted inside a `<details>` mis-measured itself,
+    which is what produced the floating input box over the document and the
+    skipping scroll. Replaced with a plain numbered, tokenised `<pre>`;
+    `@monaco-editor/react` is gone from the dependencies.
+  - Ingest: landing on `/ingest` resolved the newest finished run and scoped the
+    page to it, so the poll tab said "you are viewing a historical run" and
+    Processed Emails was empty whenever the last poll found no mail. The page
+    now opens on Job Runs when nothing is live, lists the latest emails across
+    runs unless a `jobId` is requested, and shows a new daily ingestion chart
+    (emails processed, reports ingested, errors, failed runs) from the new
+    `getIngestActivity`.
+  - Evidence: `pnpm run check:ci` green (114 test files, 650 tests,
+    `check-migrations: OK`, `check-chart-version: OK (0.3.3)`), `pnpm run build`
+    clean, and `/diagnostics/agropex.es` rendered locally showing the 65% score
+    with its breakdown. `/ingest` could not be rendered on this machine: the
+    local `data/vexa.db` holds an IMAP password encrypted with a `SECRET_KEY`
+    this checkout does not have, which is a pre-existing local-environment gap;
+    that page's changes are covered by unit tests instead.
+
 - [x] 2026-09-16 — **The documented first-run path told a container user to run
       `pnpm dev`, and the demo-seed command named a container the README never
       creates.** Both found by running the published image end to end as a

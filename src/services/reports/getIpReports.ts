@@ -42,7 +42,8 @@ export async function getIpReports(
       ),
     )
     .groupBy(rawReports.id)
-    .orderBy(desc(rawReports.endDate))
+    // The report id breaks ties so that paging cannot repeat or skip a report.
+    .orderBy(desc(rawReports.endDate), desc(rawReports.id))
     .limit(limit)
     .offset(offset)
 
