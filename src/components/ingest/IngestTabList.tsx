@@ -11,6 +11,14 @@ export function IngestTabList({
   return (
     <div className="border-border/50 flex space-x-1 border-b">
       <IngestTabButton
+        active={activeTab === 'jobRuns'}
+        onClick={() => {
+          onSelect('jobRuns')
+        }}
+      >
+        Job Runs
+      </IngestTabButton>
+      <IngestTabButton
         active={activeTab === 'pollResults'}
         onClick={() => {
           onSelect('pollResults')
@@ -22,14 +30,6 @@ export function IngestTabList({
             Running
           </span>
         ) : null}
-      </IngestTabButton>
-      <IngestTabButton
-        active={activeTab === 'jobRuns'}
-        onClick={() => {
-          onSelect('jobRuns')
-        }}
-      >
-        Job Runs
       </IngestTabButton>
       <IngestTabButton
         active={activeTab === 'emails'}
