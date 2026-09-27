@@ -71,6 +71,16 @@ describe('checkInstall', () => {
     )
   })
 
+  it('downgrades https to http when the app listens on all interfaces', async () => {
+    const checkInstall = await importCheckInstall()
+
+    await checkInstall(buildRequest('https://0.0.0.0:3002/domains', '/domains'))
+
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      'http://0.0.0.0:3002/api/install/check',
+    )
+  })
+
   it('keeps https for a real remote hostname', async () => {
     const checkInstall = await importCheckInstall()
 
