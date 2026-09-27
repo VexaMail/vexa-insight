@@ -8,6 +8,22 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+## GitHub pass (2026-09-28)
+
+- [ ] **Issue #28 has a volunteer waiting 16 days for an answer.**
+      `QIU-Guanzong`, 2026-09-12 18:27 UTC on "app_settings.project_name is
+      stored but never read": "I'd like to take this one and wire the project
+      name through settings, the app shell, and page metadata. I'll follow the
+      existing settings validation and test patterns." Nobody replied. Assign it
+      to them with one line, or say it is taken.
+- [ ] **Six Dependabot PRs open with review requested:** #35
+      docker/build-push-action 7.1.0 to 7.3.0, #36 actions/upload-artifact 5.0.0
+      to 7.0.1, #37 anchore/sbom-action 0.24.0 to 0.24.2, #38
+      github/codeql-action/analyze 4.37.9 to 4.38.0, #39 docker/metadata-action
+      6.0.0 to 6.2.0 (all 2026-09-17), #46 undici 7.29.1 to 8.10.2 (2026-09-21,
+      a major). The 09-21 batch (#40-#45, #47-#49) was already closed as
+      superseded. Merge the action bumps; test #46 first.
+
 ## Open-source launch
 
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
