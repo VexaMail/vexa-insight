@@ -238,8 +238,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       imapflow:
-        specifier: ^2.0.5
-        version: 2.0.5
+        specifier: ^2.0.6
+        version: 2.0.6
       jsonrepair:
         specifier: ^3.15.0
         version: 3.15.0
@@ -4153,8 +4153,8 @@ packages:
   image-ssim@0.2.0:
     resolution: {integrity: sha512-W7+sO6/yhxy83L0G7xR8YAc5Z5QFtYEXXRV6EaE8tuYBZJnA3gVgp3q7X7muhLZVodeb9UfvjSbwt9VJwjIYAg==}
 
-  imapflow@2.0.5:
-    resolution: {integrity: sha512-YG666DWbx0iXDpS4UghDmai1I0XF4w0eZYNEX2iMk3L98GGKxjogIe4RrKgqWzR0RNKJtOXwUgTDbPJIBgbReg==}
+  imapflow@2.0.6:
+    resolution: {integrity: sha512-CBkIFs1za9CW3TIe/x9DSVibN4iEXIMStfOyJIOPCys2MO5Y/9efVF9L//Bb/2RKSFWlnbYRqRBLU3RUm+yJZg==}
     engines: {node: '>=20.0.0'}
 
   immediate@3.0.6:
@@ -9835,7 +9835,7 @@ snapshots:
 
   image-ssim@0.2.0: {}
 
-  imapflow@2.0.5:
+  imapflow@2.0.6:
     dependencies:
       '@zone-eu/mailsplit': 5.4.17
       encoding-japanese: 2.4.0
