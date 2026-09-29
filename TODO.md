@@ -25,7 +25,20 @@
       github/codeql-action/analyze 4.37.9 to 4.38.0, #39 docker/metadata-action
       6.0.0 to 6.2.0 (all 2026-09-17), #46 undici 7.29.1 to 8.10.2 (2026-09-21,
       a major). The 09-21 batch (#40-#45, #47-#49) was already closed as
-      superseded. Merge the action bumps; test #46 first.
+      superseded. Merge the action bumps; test #46 first. **2026-09-29 (mail
+      pass):** #46 is closed; Dependabot opened ten more on 2026-09-28 (#50-#59:
+      next and @next/eslint-plugin-next 16.3.6, undici 8.11.2, imapflow 2.0.6,
+      jsdom, prettier, knip, oxlint, jscpd, typescript-eslint), so 15 are open
+      and each one mails info@busirocket.com several times (213 GitHub mails in
+      its Proyectos folder). Merge or close them in one sitting, and group
+      Dependabot updates in `.github/dependabot.yml` so a weekly run is one PR,
+      not ten.
+
+- [ ] **QIU-Guanzong's PR #34 "feat(settings): honor configured project name"
+      has waited 17 days without a review** (opened 2026-09-12 18:51 UTC,
+      `mergeable: CONFLICTING`, 0 comments on 2026-09-29). It is the
+      contribution for issue #28 we assigned to them. Review it, or ask them to
+      rebase on `main` first.
 
 ## Open-source launch
 
