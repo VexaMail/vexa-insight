@@ -12,9 +12,13 @@ import fs from 'node:fs'
  * the last line is not a "succeeded"/"ERROR" terminator.
  */
 export function readSelfUpdateLog(): SelfUpdateLogTail {
+  let fd: number | undefined
   try {
-    const stat = fs.statSync(SELF_UPDATE_LOG_PATH)
-    const raw = fs.readFileSync(SELF_UPDATE_LOG_PATH, 'utf8')
+    // One descriptor for both calls, so the size and mtime describe the same
+    // file the contents came from even if the log is rotated in between.
+    fd = fs.openSync(SELF_UPDATE_LOG_PATH, 'r')
+    const stat = fs.fstatSync(fd)
+    const raw = fs.readFileSync(fd, 'utf8')
     const allLines = raw.split('\n')
     const lines = allLines
       .slice(-SELF_UPDATE_LOG_TAIL_LINES)
@@ -31,5 +35,7 @@ export function readSelfUpdateLog(): SelfUpdateLogTail {
     }
   } catch {
     return { lines: [], modifiedAt: null, running: false }
+  } finally {
+    if (fd !== undefined) fs.closeSync(fd)
   }
 }
