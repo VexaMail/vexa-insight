@@ -39,7 +39,11 @@ minimumReleaseAgeExclude:
   - oxlint@1.84.0
 
 allowBuilds:
-  better-sqlite3: true
+  # better-sqlite3 13 ships prebuilt binaries for every platform we target and
+  # sets gypfile: false, but pnpm 12 still runs an implicit `node-gyp rebuild`
+  # for any package with a binding.gyp when builds are allowed - and pnpm 12 no
+  # longer bundles node-gyp, so the install fails. The prebuild is what loads.
+  better-sqlite3: false
   esbuild: true
   # Installs the git hooks in lefthook.yml on `pnpm install`.
   lefthook: true

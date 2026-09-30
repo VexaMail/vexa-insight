@@ -24,6 +24,19 @@ updates:
         patterns:
           - '@types/*'
         dependency-type: 'development'
+      # Everything else that is not a major bump lands as two weekly PRs rather
+      # than one per package; majors still open on their own so each can be
+      # tested separately.
+      production-minor-patch:
+        dependency-type: 'production'
+        update-types:
+          - 'minor'
+          - 'patch'
+      development-minor-patch:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
 
   - package-ecosystem: docker
     directory: '/'
@@ -44,3 +57,7 @@ updates:
     labels:
       - dependencies
       - github-actions
+    groups:
+      github-actions:
+        patterns:
+          - '*'
