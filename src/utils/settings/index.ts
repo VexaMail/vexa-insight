@@ -1,3 +1,5 @@
+export { applySndsSyncResult } from './applySndsSyncResult'
+export { callSndsAdminApi } from './callSndsAdminApi'
 export { createImapFolder } from './createImapFolder'
 export { fetchFolders } from './fetchFolders'
 export { fetchSelfUpdateStatus } from './fetchSelfUpdateStatus'

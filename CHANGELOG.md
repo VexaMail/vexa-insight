@@ -8,6 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- **Microsoft SNDS integration.** Settings has a Microsoft SNDS section that
+  connects a Microsoft account through the SNDS REST API (PKCE sign-in with a
+  pasted `http://localhost` redirect, refresh token stored encrypted). A daily
+  job and a **Sync now** button backfill the last 30 days and the IP status
+  list; SNDS's 404 is treated as "no data", not an error. The IP pages show the
+  latest verdict, recipients, complaint rate and trap hits per IP, and a
+  `snds.reputation_alert` webhook fires for non-green IPs, complaint rates above
+  0.3% and trap hits. See `docs/SNDS.md`.
+
 ## [0.3.3] - 2026-09-17
 
 ### Fixed

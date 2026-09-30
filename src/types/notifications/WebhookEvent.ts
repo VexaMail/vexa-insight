@@ -3,4 +3,5 @@ export type WebhookEvent =
   | 'unauthorized_source.detected'
   | 'update.available'
   | 'auth.fail_rate_spike'
+  | 'snds.reputation_alert'
   | 'test.ping'

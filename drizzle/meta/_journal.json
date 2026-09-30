@@ -239,6 +239,13 @@
       "when": 1789100019737,
       "tag": "0033_unique_wither",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1790788498950,
+      "tag": "0034_snds_integration",
+      "breakpoints": true
     }
   ]
 }

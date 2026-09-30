@@ -81,6 +81,34 @@ describe('secret key rotation', () => {
     ).toBe(AI_KEY)
   })
 
+  it('moves the SNDS refresh token and pending verifier too', async () => {
+    const { reencryptStoredSecrets } = await import('@/services/settings')
+    const { getDb, sndsConnection } = await import('@/lib/db')
+    const { decryptSecret, encryptSecret } = await import('@/services/crypto')
+    const db = getDb()
+    db.delete(sndsConnection).run()
+    db.insert(sndsConnection)
+      .values({
+        id: 1,
+        refreshTokenEncrypted: encryptSecret('snds-refresh', OLD_KEY),
+        pendingVerifierEncrypted: encryptSecret('snds-verifier', OLD_KEY),
+        updatedAt: new Date(),
+      })
+      .run()
+    try {
+      expect(reencryptStoredSecrets(OLD_KEY, NEW_KEY)).toBe(4)
+      const row = db.select().from(sndsConnection).get()
+      expect(decryptSecret(row?.refreshTokenEncrypted ?? '', NEW_KEY)).toBe(
+        'snds-refresh',
+      )
+      expect(decryptSecret(row?.pendingVerifierEncrypted ?? '', NEW_KEY)).toBe(
+        'snds-verifier',
+      )
+    } finally {
+      db.delete(sndsConnection).run()
+    }
+  })
+
   it('leaves everything alone when the key does not change', async () => {
     const { reencryptStoredSecrets } = await import('@/services/settings')
     const { getDb, imapAccounts } = await import('@/lib/db')

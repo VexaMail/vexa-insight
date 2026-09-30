@@ -2,14 +2,15 @@ import { appSettings, getDb, imapAccounts } from '@/lib/db'
 import { decryptApiKey, encryptApiKey } from '@/services/ai'
 import { decryptSecret, encryptSecret, isEncrypted } from '@/services/crypto'
 import { SETTINGS_ID } from '@/services/settings-store'
+import { reencryptSndsSecrets } from '@/services/snds'
 import { eq } from 'drizzle-orm'
 
 /**
  * Re-encrypts every secret that hangs off the instance key so a rotation does
  * not orphan them.
  *
- * The stored IMAP passwords and the AI provider key are both encrypted with a
- * key derived from `SECRET_KEY`. Writing a new key without touching them
+ * The stored IMAP passwords, the AI provider key and the SNDS tokens are all
+ * encrypted with a key derived from `SECRET_KEY`. Writing a new key without touching them
  * leaves ciphertext nobody can read: the next configuration load throws, the
  * mailbox stops being polled, and the only visible symptom is a decryption
  * error far from the settings page where it was caused.
@@ -64,6 +65,8 @@ export function reencryptStoredSecrets(
       moved += 1
     }
   }
+
+  moved += reencryptSndsSecrets(oldSecretKey, newSecretKey)
 
   return moved
 }

@@ -4,8 +4,9 @@ import { AiSettingsSection } from './AiSettingsSection'
 import { GeoIpSection } from './GeoIpSection'
 import IngestionSection from './IngestionSection'
 import IpHostnameSection from './IpHostnameSection'
+import { SndsSection } from './SndsSection'
 
-/** Ingestion cadence, environment, GeoIP, AI and hostname enrichment. */
+/** Ingestion cadence, environment, GeoIP, AI, SNDS and hostname enrichment. */
 export function SettingsIngestionSections({
   apiKey,
   form,
@@ -40,6 +41,8 @@ export function SettingsIngestionSections({
       <GeoIpSection apiKey={apiKey} />
 
       <AiSettingsSection apiKey={apiKey} />
+
+      <SndsSection apiKey={apiKey} />
 
       <IpHostnameSection
         enabled={form.ipHostnameLookupEnabled}

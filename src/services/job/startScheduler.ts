@@ -1,12 +1,15 @@
+import { SNDS_SYNC_CRON } from '@/constants/snds'
 import { getConfig } from '@/services/config'
 import cron from 'node-cron'
 import { getPollStatus } from './getPollStatus'
 import { processIpHostnameLookupJob } from './processIpHostnameLookupJob'
 import { checkAndRecoverStuckJob } from './recoverStuckJob'
 import { runIngestJob } from './runIngestJob'
+import { runScheduledSndsSync } from './runScheduledSndsSync'
 
 /**
- * Starts the in-Node scheduler: runs IMAP fetch+ingest on a cron interval and IP Hostname Lookup.
+ * Starts the in-Node scheduler: runs IMAP fetch+ingest on a cron interval,
+ * IP Hostname Lookup, and the daily Microsoft SNDS sync.
  */
 export function startScheduler(): void {
   const config = getConfig()
@@ -48,4 +51,7 @@ export function startScheduler(): void {
       console.error('[ip-hostname-lookup] Unhandled error in background job', e)
     }
   })
+
+  // MICROSOFT SNDS SCHEDULER (daily; a no-op until SNDS is connected)
+  cron.schedule(SNDS_SYNC_CRON, runScheduledSndsSync)
 }

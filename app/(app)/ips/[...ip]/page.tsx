@@ -1,9 +1,14 @@
 import { DateRangeFilter } from '@/components/filters'
-import { IpDetailPanels, IpDetailSummary } from '@/components/ips'
+import {
+  IpDetailPanels,
+  IpDetailSummary,
+  SndsReputationCard,
+} from '@/components/ips'
 import { BackButton, PageContainer, PageHeader } from '@/components/shell'
 import { parseDateRangeParams } from '@/lib/utils'
 
 import { getIpDetailPageData } from '@/services/reports'
+import { listSndsLatestByIp } from '@/services/snds'
 import { buildIpDateRange } from '@/utils/dates'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -34,6 +39,8 @@ export default async function IpDetailPage(props: PageProps) {
 
   if (!data) return notFound()
 
+  const sndsRows = listSndsLatestByIp().filter((row) => row.ip === decodedIp)
+
   return (
     <PageContainer>
       <PageHeader
@@ -57,6 +64,10 @@ export default async function IpDetailPage(props: PageProps) {
       />
 
       <IpDetailSummary data={data} />
+
+      {sndsRows.length > 0 ? (
+        <SndsReputationCard rows={sndsRows} statusRows={[]} />
+      ) : null}
 
       <IpDetailPanels
         ip={decodedIp}

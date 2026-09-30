@@ -1,11 +1,11 @@
 import { DateRangeFilter } from '@/components/filters'
-import { IpsSummaryKpis, IpsTable } from '@/components/ips'
+import { IpsSummaryKpis, IpsTable, SndsReputationPanel } from '@/components/ips'
 import { PageContainer, PageHeader } from '@/components/shell'
 import { PageSkeleton } from '@/components/ui'
 import { parseDateRangeParams } from '@/lib/utils'
 import { getIpsSummary } from '@/services/reports'
-import type { IpDateRange } from '@/types/filters'
-import { getFromDateFromDays } from '@/utils/dates'
+import { getSndsReputationPanel } from '@/services/snds'
+import { buildIpDateRange } from '@/utils/dates'
 import { computeIpsKpis } from '@/utils/ips'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
@@ -23,25 +23,7 @@ export default async function IpsPage(props: PageProps) {
   const searchParams = await props.searchParams
   const { days, fromDate, toDate } = parseDateRangeParams(searchParams)
 
-  const now = new Date()
-  const derivedFromDate =
-    fromDate ??
-    (days && days !== 9999 ? getFromDateFromDays(now, days) : undefined)
-
-  let fromTs: number | undefined
-  if (fromDate) {
-    fromTs = Math.floor(fromDate.getTime() / 1000)
-  } else if (days && days !== 9999) {
-    fromTs = Math.floor((derivedFromDate ?? now).getTime() / 1000)
-  }
-
-  const dateRange: IpDateRange = {
-    fromDate,
-    toDate,
-    fromTs,
-    toTs: toDate ? Math.floor(toDate.getTime() / 1000) : undefined,
-    hasDateFilter: fromTs != null || toDate != null,
-  }
+  const dateRange = buildIpDateRange(days, fromDate, toDate)
 
   const summary = await getIpsSummary(dateRange)
   const kpis = computeIpsKpis(summary.ips)
@@ -67,6 +49,7 @@ export default async function IpsPage(props: PageProps) {
         }
       />
       <IpsSummaryKpis kpis={kpis} />
+      <SndsReputationPanel panel={getSndsReputationPanel()} />
       <Suspense fallback={<PageSkeleton />}>
         <IpsTable ips={summary.ips} />
       </Suspense>
