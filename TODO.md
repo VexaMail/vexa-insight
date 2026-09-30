@@ -1,44 +1,21 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-09-11. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-09-30. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
-## GitHub pass (2026-09-28)
+## GitHub (2026-09-30)
 
-- [x] **Issue #28 has a volunteer waiting 16 days for an answer.**
-      `QIU-Guanzong`, 2026-09-12 18:27 UTC on "app_settings.project_name is
-      stored but never read": "I'd like to take this one and wire the project
-      name through settings, the app shell, and page metadata. I'll follow the
-      existing settings validation and test patterns." Nobody replied. Assign it
-      to them with one line, or say it is taken. **2026-09-28:** answered and
-      assigned to QIU-Guanzong (comment 5860893947): PRs welcome against `main`,
-      and any other contribution too.
-
-- [ ] **Six Dependabot PRs open with review requested:** #35
-      docker/build-push-action 7.1.0 to 7.3.0, #36 actions/upload-artifact 5.0.0
-      to 7.0.1, #37 anchore/sbom-action 0.24.0 to 0.24.2, #38
-      github/codeql-action/analyze 4.37.9 to 4.38.0, #39 docker/metadata-action
-      6.0.0 to 6.2.0 (all 2026-09-17), #46 undici 7.29.1 to 8.10.2 (2026-09-21,
-      a major). The 09-21 batch (#40-#45, #47-#49) was already closed as
-      superseded. Merge the action bumps; test #46 first. **2026-09-29 (mail
-      pass):** #46 is closed; Dependabot opened ten more on 2026-09-28 (#50-#59:
-      next and @next/eslint-plugin-next 16.3.6, undici 8.11.2, imapflow 2.0.6,
-      jsdom, prettier, knip, oxlint, jscpd, typescript-eslint), so 15 are open
-      and each one mails the maintainer several times (213 GitHub mails in its
-      Proyectos folder). Merge or close them in one sitting, and group
-      Dependabot updates in `.github/dependabot.yml` so a weekly run is one PR,
-      not ten.
-
-- [ ] **QIU-Guanzong's PR #34 "feat(settings): honor configured project name"
-      has waited 17 days without a review** (opened 2026-09-12 18:51 UTC,
-      `mergeable: CONFLICTING`, 0 comments on 2026-09-29). It is the
-      contribution for issue #28 we assigned to them. Review it, or ask them to
-      rebase on `main` first.
+- [ ] **Community PR #34 (project name, issue #28) is ready to merge once the
+      author rebases it and takes it out of draft.** Merged locally onto `main`
+      at 10d2572 on 2026-09-30: `pnpm run check:ci` green (677 tests), the only
+      conflict is `CHANGELOG.md`. Review posted asking for the rebase and noting
+      the default-title change ("Vexa Insight" to "Vexa Mail Insight"). Merge
+      when it comes back; nudge if it is still a draft in two weeks.
 
 ## Open-source launch
 
@@ -260,7 +237,10 @@ the portfolio repo.
       cleaned. Smallest fix: record the Message-ID as seen-but-unparsed so the
       next poll skips it, or narrow `.gz` candidates to `.xml.gz`/`.gz` whose
       content type is not a `tlsrpt` one. Resolves itself once TLS-RPT and ARF
-      ingestion exist.
+      ingestion exist. **2026-09-30, production:** the six Google TLS reports in
+      the mailbox are typed `application/tlsrpt+gzip`, and the server log shows
+      `body_count=0` for them, so they are _not_ downloaded each poll; only a
+      report typed plain `application/gzip` would be.
 
 Product/design work, deliberately not started autonomously: each one changes
 what the diagnostics page _is_, so it wants a brief on the intended reading
@@ -290,6 +270,19 @@ emptied on 2026-09-09 (see `TODO_LOG.md`); the file stays, empty, so
 `lint:prune` keeps a target and any new suppression shows up in review. What
 remains below is what those passes did not reach.
 
+- [ ] **knip and dependency-cruiser findings came back, because neither runs in
+      CI.** Emptied on 2026-08-27; on 2026-09-30 `pnpm run knip` reports 15
+      unused exports (e.g. `tokenizeXmlTag`, `apiErrorMessage`,
+      `DEFAULT_INTERVAL` re-exported from barrels) and `pnpm run deps:graph` 16
+      `no-circular` errors, most through `src/types/imap/index.ts` and
+      `src/utils/imap/*`. Smallest next step: add both to `check:ci`, then clear
+      the findings so the gate starts at zero.
+
+- [ ] **Prune tables that only grow.** Production on 2026-09-30: `sessions`
+      keeps expired rows (12 of 15), `job_poll_events` holds 134k rows back to
+      March. Harmless at 40 MB, but nothing bounds it. Delete expired sessions
+      on login or on a daily tick, and poll events older than ~90 days.
+
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
       dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`
@@ -306,6 +299,10 @@ remains below is what those passes did not reach.
       checkout fails the same way, so this is worker contention on SQLite, not a
       regression. Smallest next step: give the DB-backed files their own
       `poolOptions` or a shared worker, rather than raising the timeout.
+      **2026-09-30:** now hits CI too: `test/migrationLedger.test.ts` ("records
+      a checksum for every migration it applies") timed out at 5 s under
+      coverage on the Dependabot branch run for `development-minor-patch`.
+      Raises the priority: a flaky gate teaches people to re-run red CI.
 
 - [~] The v0.3.3 container image build ran over 100 minutes against 21 for the
   whole v0.3.2 release. Run 35216978334: the GitHub Release and the Helm chart
@@ -318,24 +315,6 @@ remains below is what those passes did not reach.
   `next build`. Smallest next step: if this recurs, split the two platforms into
   parallel jobs so arm64 stops holding the release, or build arm64 on a native
   runner.
-
-## Daily round
-
-Filed by `~/p/bin/daily`; one bullet per finding, updated in place while it
-repeats.
-
-- [ ] <!-- daily-tasks:BROKEN --> **BROKEN** (first seen 2026-09-12, last seen
-      2026-09-12): dependencies moved forward (19 deps, pnpm) with type-check
-      failing, 2 errors. Fix forward; the round never downgrades. Decisive line:
-      `src/services/imap/fetchEnvelopeMessage.ts(9,3): error TS2322: Type 'false | FetchMessageObject | undefined' is not assignable to type 'false | FetchMessageObject'.`.
-      Re-run:
-      `bash ~/p/bin/daily/ncu-update-repo.sh ~/p/vexa-insight /tmp/logs`.
-- [ ] Forward fix (2026-09-12): imapflow 2.0 changed two return types:
-      `fetchOne()` now resolves `FetchMessageObject | false | undefined`
-      (src/services/imap/fetchEnvelopeMessage.ts, TS2322: return false when
-      undefined) and `downloadMany()` resolves `DownloadManyResult`
-      (src/services/imap/downloadDmarcAttachments.ts, TS2345: read `.parts`/the
-      keyed map instead of the old array). Then `pnpm type-check`.
 
 ## Shared package scope migration (2026-09-14)
 

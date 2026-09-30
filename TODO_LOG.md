@@ -6,6 +6,47 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **CI green again after nine days red.** Every install since
+      the 2026-09-21 pnpm 11 to 12 upgrade failed: pnpm 12 runs an implicit
+      `node-gyp rebuild` for better-sqlite3 (it has a `binding.gyp`) and no
+      longer bundles node-gyp (`sh: 1: node-gyp: not found`, exit 127).
+      better-sqlite3 13 ships prebuilds and loads them, so `allowBuilds` now
+      says `false` for it (4e25b8e). The audit then failed on
+      GHSA-vcvr-r3jv-pc5j (critical, `next/og` RCE, fixed in 16.3.6); this app
+      never imports `next/og`, so it was not exploitable. Evidence:
+      `pnpm run check:ci` green locally at every commit, `pnpm run build` green.
+- [x] 2026-09-30 — **All pending Dependabot updates taken, and Dependabot
+      grouped.** 15 separate PRs (#35-#39, #50-#59) became grouped ones once
+      `.github/dependabot.yml` gained `production-minor-patch`,
+      `development-minor-patch` and a single `github-actions` group; the npm
+      updates were applied directly (624316b, ac41441). The `undici: ^7.29.0`
+      override was silently holding the direct `^8` dependency and jsdom's `^8`
+      requirement on the 7 line; dropped, audit clean. Issue #28's volunteer
+      answer (2026-09-28) and the imapflow 2.0 type fixes (already on `main`)
+      closed with it.
+- [x] 2026-09-30 — **Code scanning cleared.** `js/file-system-race` in
+      `readSelfUpdateLog` fixed by reading through one descriptor, with a test
+      (10d2572). The two `js/insufficient-password-hash` alerts on
+      `timingSafeTokenEqual` dismissed as false positives: SHA-256 only
+      equalises lengths before `crypto.timingSafeEqual` on an in-memory token.
+- [x] 2026-09-30 — **Rate limits keyed on a client-chosen address.** Found by
+      the production audit: the login, upload, poll-trigger and AI limits read
+      the first `X-Forwarded-For` entry, which a client writes whenever a proxy
+      appends. `clientIpFromHeaders` now reads `VEXA_TRUSTED_PROXY_HOPS`
+      (default 1) entries from the right (72850dd, 79ebcd7). On the production
+      host Apache's `mod_remoteip` resolves `CF-Connecting-IP` and `mod_proxy`
+      appends it, so the default is right there. Test
+      `getRateLimitKeyFromHeaders` fails on the old code.
+- [x] 2026-09-30 — **Health check sees a stalled scheduler; failed runs keep
+      their error.** `/api/v1/health` gains `ingest: ok|stale|idle` (status code
+      unchanged, Helm readiness uses it); `job_runs.error_summary`
+      (migration 0035) stores the first five errors, shown on hover (b0864fc).
+      The 2026-09-25 production failures could not be diagnosed for lack of
+      exactly this.
+- [x] 2026-09-30 — **Issue #29 closed: the drizzle snapshot drift is gone.**
+      Generating 0035 emitted only the one `ALTER`, and a second `db:generate`
+      reports no changes.
+
 - [x] 2026-09-30 — **SNDS report format confirmed against real data.** The REST
       API answers `report/data/<date>` with CSV (`application/octet-stream`), no
       header row, in the legacy export's column order; `report/status/ip`
