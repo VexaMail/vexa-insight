@@ -8,6 +8,7 @@ export type WebhookEndpointRow = {
   lastDispatchAt: Date | null
   lastStatus: string | null
   lastError: string | null
+  lastAttempts: number | null
   createdAt: Date
   updatedAt: Date
 }

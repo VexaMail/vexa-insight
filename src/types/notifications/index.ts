@@ -1,4 +1,5 @@
 export { ALL_WEBHOOK_EVENTS } from './allWebhookEvents'
+export type { WebhookDeliveryResult } from './WebhookDeliveryResult'
 export type { WebhookEndpointRow } from './WebhookEndpointRow'
 export type { WebhookEvent } from './WebhookEvent'
 export type { WebhookPayload } from './WebhookPayload'

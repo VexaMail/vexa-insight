@@ -1,0 +1,1 @@
+ALTER TABLE `webhook_endpoints` ADD `last_attempts` integer;

@@ -454,7 +454,7 @@ the dashboard totals lag your data. See
 - **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
   dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
   flow.
-- **Phase 2:** Slack / Teams webhook adapters and delivery retries. Failure
+- **Phase 2:** Slack / Teams webhook adapters. Webhook delivery retries, failure
   reports (RUF), SMTP TLS reports (TLS-RPT), generic outbound webhooks,
   Prometheus metrics and the OpenAPI spec already ship.
 - **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation
@@ -483,8 +483,10 @@ Outbound webhooks are configured in Settings, for the events
 `snds.reputation_alert`, `tls.failure_detected`, `failure_report.received` and
 `update.available`. Each endpoint receives a generic JSON envelope (`event`,
 `timestamp`, `source`, `data`) by `POST`, optionally signed with an HMAC-SHA256
-`x-vexa-signature` header when the endpoint has a secret. Delivery is a single
-attempt with a 5s timeout and no retry; the last status and error are stored per
+`x-vexa-signature` header when the endpoint has a secret. Each request has a 5s
+timeout; network errors, timeouts, HTTP 429 and 5xx are retried up to three
+times after 1, 4 and 16 seconds, while other 4xx responses and URLs rejected by
+the SSRF guard are not. The last status, error and attempt count are stored per
 endpoint. Slack and Microsoft Teams expect their own payload shapes, so they
 need a small receiver or relay in front of this envelope, and native adapters
 are Phase 2 on the roadmap.

@@ -10,6 +10,12 @@ and this project adheres to
 
 ### Added
 
+- **Webhook delivery retries** (#27). Network errors, timeouts, HTTP 429 and 5xx
+  are retried three times with exponential backoff (1, 4 and 16 seconds); other
+  4xx responses and URLs the SSRF guard rejects are not retried. The endpoint
+  row gains `lastAttempts` (migration 0039). The test ping still makes a single
+  attempt, since its caller waits for the answer.
+
 - **DMARC failure reports (RUF).** Messages structured as
   `multipart/report; report-type=feedback-report` (RFC 6591 ARF) are now
   ingested even when their subject is the failed message's own, and listed on

@@ -84,10 +84,15 @@ export const POST = withApiAuth(
         { status: 400 },
       )
     }
-    await dispatchWebhookEvent('test.ping', {
-      note: 'Test ping from /api/v1/admin/webhooks/<id> POST',
-      endpointId: numericId,
-    })
+    // One attempt: the caller is waiting on the response.
+    await dispatchWebhookEvent(
+      'test.ping',
+      {
+        note: 'Test ping from /api/v1/admin/webhooks/<id> POST',
+        endpointId: numericId,
+      },
+      [],
+    )
     return NextResponse.json({ data: { dispatched: true } })
   },
 )

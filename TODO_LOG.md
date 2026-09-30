@@ -6,6 +6,12 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **Webhook delivery retries (issue #27).** Transient failures
+      (network, timeout, DNS, 429, 5xx) retried after 1/4/16 s, nothing else;
+      `last_attempts` column (migration 0039); test ping stays single-attempt.
+      Evidence: `test/deliverWebhookWithRetry.test.ts` (500 then 200 delivers in
+      2 attempts, 404 and an SSRF rejection make 1).
+
 - [x] 2026-09-30 — **Failure report (RUF/ARF) ingestion.** Candidates are now
       also picked by MIME structure
       (`multipart/report;     report-type=feedback-report`), since OpenDMARC's

@@ -10,6 +10,7 @@ export const webhookEndpointSchema = {
     lastDispatchAt: { type: 'string', format: 'date-time', nullable: true },
     lastStatus: { type: 'string', nullable: true },
     lastError: { type: 'string', nullable: true },
+    lastAttempts: { type: 'integer', nullable: true },
     createdAt: { type: 'string', format: 'date-time' },
     updatedAt: { type: 'string', format: 'date-time' },
   },

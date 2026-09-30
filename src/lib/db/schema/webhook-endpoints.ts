@@ -12,6 +12,7 @@ export const webhookEndpoints = sqliteTable(
     lastDispatchAt: integer('last_dispatch_at', { mode: 'timestamp' }),
     lastStatus: text('last_status'),
     lastError: text('last_error'),
+    lastAttempts: integer('last_attempts'),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   },
