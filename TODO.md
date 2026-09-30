@@ -225,6 +225,13 @@ the portfolio repo.
       arrival date and reporting org. Redact local parts of third-party
       addresses and store no body; a size limit on the headers kept.
 
+- [ ] **SNDS: keep the "<" of "< 0.1%" complaint rates.** The SNDS CSV reports
+      low complaint rates as `< 0.1%`; the parser stores 0.001 and the card
+      shows "0.10%", which reads as a measured value. Store a flag (or the raw
+      string) and render "< 0.1%".
+- [ ] **SNDS: confirm the IP status CSV format.** The status endpoint has
+      returned no rows so far, so its parser is untested against real data.
+      Check it the first time an IP is listed as blocked, and add a fixture.
 - [ ] **Ingest TLS-RPT reports (RFC 8460).** Raised 2026-09-30: an operator now
       publishes `_smtp._tls` TXT records with `rua=mailto:` pointing at the
       mailbox Insight polls, so these reports arrive and are not parsed. Format:
