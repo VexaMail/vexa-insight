@@ -29,8 +29,8 @@
       pass):** #46 is closed; Dependabot opened ten more on 2026-09-28 (#50-#59:
       next and @next/eslint-plugin-next 16.3.6, undici 8.11.2, imapflow 2.0.6,
       jsdom, prettier, knip, oxlint, jscpd, typescript-eslint), so 15 are open
-      and each one mails info@busirocket.com several times (213 GitHub mails in
-      its Proyectos folder). Merge or close them in one sitting, and group
+      and each one mails the maintainer several times (213 GitHub mails in its
+      Proyectos folder). Merge or close them in one sitting, and group
       Dependabot updates in `.github/dependabot.yml` so a weekly run is one PR,
       not ten.
 
@@ -193,14 +193,13 @@ the portfolio repo.
 ## Future Ideas
 
 - [ ] **Ingest forensic (RUF) reports, not only aggregates.** Raised by the
-      owner 2026-09-16. Both nubenode.com and cristiandeluxe.dev publish
-      `ruf=mailto:sysadmin@nubenode.com`, the very mailbox Insight already
-      polls, and three real ones sit in its `INBOX.DMARC` right now, ignored:
-      OpenDMARC at `box.fidei.email`, 2026-09-11,
-      `multipart/report; report-type= feedback-report` with a
+      owner 2026-09-16. The operator's own domains publish a `ruf=` pointing at
+      the very mailbox Insight already polls, and three real ones sit in its
+      `INBOX.DMARC` right now, ignored: OpenDMARC at `box.fidei.email`,
+      2026-09-11, `multipart/report; report-type= feedback-report` with a
       `message/feedback-report` part (`Feedback-Type: auth-failure`,
-      `Auth-Failure: dmarc`, `Source-IP: 172.234.253.10 (sea.lore.kernel.org)`,
-      `Reported-Domain: cristiandeluxe.dev`,
+      `Auth-Failure: dmarc`, `Source-IP: 192.0.2.10 (list relay)`,
+      `Reported-Domain: example.com`,
       `Original-Mail-From: linux-kernel+bounces-...@vger.kernel.org`) and a
       `text/rfc822-headers` part carrying From, To, Subject, Message-ID, List-Id
       and the chain of `Authentication-Results` (dmarc=pass at kernel.org,
@@ -217,7 +216,7 @@ the portfolio repo.
       fields above, not the raw part. Volume is tiny (Google and Microsoft never
       send RUF), so this is a parser and a table, not a pipeline. Fixture: the
       three messages above, exportable with
-      `doveadm fetch -u sysadmin@nubenode.com text mailbox INBOX.DMARC`. Update
+      `doveadm fetch -u <ingest mailbox> text mailbox INBOX.DMARC`. Update
       2026-09-30: with `fo=1` a receiver sends one of these for any SPF or DKIM
       failure, not only a DMARC failure, so volume on a domain with a broken
       forwarder can be much higher than "tiny"; cap rows per domain per day.
