@@ -7,7 +7,7 @@ export const observabilityPaths = {
     get: {
       summary: 'Health check',
       description:
-        'Returns 200 if the database is reachable, 503 otherwise. Used by Docker HEALTHCHECK.',
+        'Returns 200 if the database is reachable, 503 otherwise. Used by Docker HEALTHCHECK. `ingest` is `stale` when scheduled ingestion runs have stopped arriving, `idle` when none are scheduled; it never changes the status code.',
       security: [],
       responses: {
         '200': {
@@ -16,7 +16,14 @@ export const observabilityPaths = {
             'application/json': {
               schema: dataWrapper({
                 type: 'object',
-                properties: { status: { type: 'string', example: 'ok' } },
+                properties: {
+                  status: { type: 'string', example: 'ok' },
+                  ingest: {
+                    type: 'string',
+                    enum: ['ok', 'stale', 'idle'],
+                    example: 'ok',
+                  },
+                },
               }),
             },
           },

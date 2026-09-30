@@ -29,6 +29,9 @@ export async function getJobRunHistory(
       processed: r.processed,
       ingested: r.ingested,
       errorCount: isStalled ? r.errorCount + 1 : r.errorCount,
+      errorSummary: isStalled
+        ? 'The run never completed: the process stopped or crashed mid-run.'
+        : r.errorSummary,
     }
   })
 }

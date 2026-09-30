@@ -12,7 +12,10 @@ export const jobRunErrorCountColumn: ColumnDef<
     <SortableHeaderButton column={column} label="Errors" />
   ),
   cell: ({ row }) => (
-    <span className="text-muted-foreground text-sm">
+    <span
+      className="text-muted-foreground text-sm"
+      title={row.original.errorSummary ?? undefined}
+    >
       {row.getValue('errorCount')}
     </span>
   ),

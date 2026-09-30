@@ -5,4 +5,5 @@ export type JobRunRow = {
   processed: number
   ingested: number
   errorCount: number
+  errorSummary: string | null
 }

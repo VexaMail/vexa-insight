@@ -1,5 +1,6 @@
 import { SNDS_SYNC_CRON } from '@/constants/snds'
 import { getConfig } from '@/services/config'
+import { hasConfiguredImapAccount } from '@/utils/imap'
 import cron from 'node-cron'
 import { getPollStatus } from './getPollStatus'
 import { processIpHostnameLookupJob } from './processIpHostnameLookupJob'
@@ -16,10 +17,7 @@ export function startScheduler(): void {
 
   // INGEST SCHEDULER (IMAP)
   const minutes = config.ingestionIntervalMinutes
-  const first = config.imapAccounts[0]
-  const hasImap = Boolean(
-    first && first.server && first.username && first.password,
-  )
+  const hasImap = hasConfiguredImapAccount(config)
 
   if (minutes >= 1 && hasImap) {
     const cronExpr = `*/${String(minutes)} * * * *`

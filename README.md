@@ -406,7 +406,8 @@ The following endpoints are stable and meant for automation:
   trigger the self-update flow (source installs with supervisor).
 - `GET /api/v1/metrics` — Prometheus-format metrics.
 - `GET /api/v1/health` — `200` if DB reachable, `503` otherwise (used by Docker
-  `HEALTHCHECK`).
+  `HEALTHCHECK`). The body's `ingest` field is `stale` when scheduled ingestion
+  runs have stopped arriving, so an uptime monitor can alert on it.
 - `GET /api/v1/openapi.json` — machine-readable spec of public endpoints.
 
 Outbound webhooks for "unauthorized source detected" and "ingest job failed" are

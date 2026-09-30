@@ -1,0 +1,1 @@
+export { computeIngestStaleAfterMs } from './computeIngestStaleAfterMs'

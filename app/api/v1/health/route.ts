@@ -1,6 +1,9 @@
-import { checkDb } from '@/services/health'
+import { checkDb, checkIngestFreshness } from '@/services/health'
 import { NextResponse } from 'next/server'
 
+// The status code answers only "is the database reachable", because
+// readiness and liveness probes use it and a stalled scheduler must not take
+// the UI out of service. `ingest` is for monitors that alert on its value.
 export async function GET(): Promise<NextResponse> {
   const ok = await checkDb()
   if (!ok) {
@@ -11,5 +14,6 @@ export async function GET(): Promise<NextResponse> {
       { status: 503 },
     )
   }
-  return NextResponse.json({ data: { status: 'ok' } })
+  const ingest = await checkIngestFreshness()
+  return NextResponse.json({ data: { status: 'ok', ingest } })
 }

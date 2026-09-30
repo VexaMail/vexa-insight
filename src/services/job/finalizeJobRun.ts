@@ -1,5 +1,6 @@
 import type { getDb } from '@/lib/db'
 import { jobRuns } from '@/lib/db'
+import { summarizeRunErrors } from '@/utils/ingest'
 import { eq } from 'drizzle-orm'
 import type { IngestJobTotals } from './IngestJobTotals'
 
@@ -19,6 +20,7 @@ export async function finalizeJobRun(
         processed: totals.processed,
         ingested: totals.ingested,
         errorCount: totals.errors.length,
+        errorSummary: summarizeRunErrors(totals.errors),
         completedAt: new Date(),
       })
       .where(eq(jobRuns.id, jobRunId))

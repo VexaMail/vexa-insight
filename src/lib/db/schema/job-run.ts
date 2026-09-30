@@ -1,4 +1,4 @@
-import { integer, sqliteTable } from 'drizzle-orm/sqlite-core'
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const jobRuns = sqliteTable('job_runs', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -8,4 +8,6 @@ export const jobRuns = sqliteTable('job_runs', {
   ingested: integer('ingested').notNull().default(0),
   errorCount: integer('error_count').notNull().default(0),
   completedAt: integer('completed_at', { mode: 'timestamp' }),
+  /** The first errors of a failed run, so the cause outlives the process log. */
+  errorSummary: text('error_summary'),
 })

@@ -19,6 +19,15 @@ and this project adheres to
   `snds.reputation_alert` webhook fires for non-green IPs, complaint rates above
   0.3% and trap hits. See `docs/SNDS.md`.
 
+- **`/api/v1/health` reports whether ingestion is still running.** A new
+  `ingest` field reads `stale` once no ingest run has started for two intervals
+  plus ten minutes, so an uptime monitor can catch a dead scheduler that still
+  serves pages. The status code is unchanged, so probes are not affected.
+- **Failed ingest runs keep their error text.** `job_runs` gains an
+  `error_summary` column holding the first errors of a run, shown when you hover
+  the error count in the run history. Before, the cause lived only in the
+  process log and was gone after a restart.
+
 ### Security
 
 - **Rate limits can no longer be dodged with a forged `X-Forwarded-For`.** The
