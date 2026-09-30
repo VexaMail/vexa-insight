@@ -1,3 +1,4 @@
+import type { EnforcementReadiness } from '@/types/enforcement'
 import type { ForensicReportRow } from '@/types/forensic'
 import type { DomainSource, DomainSummary } from '@/types/reports'
 import type { TlsDomainSummaryRow, TlsFailureSummaryRow } from '@/types/tlsrpt'
@@ -19,4 +20,5 @@ export type DomainDetailData = {
     failures: TlsFailureSummaryRow[]
   }
   forensic: ForensicReportRow[]
+  enforcement: EnforcementReadiness
 }

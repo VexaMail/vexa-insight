@@ -1,4 +1,5 @@
 import { DispositionChartDisplay } from '@/components/charts'
+import { EnforcementReadinessCard } from '@/components/enforcement'
 import { ForensicReportsSection } from '@/components/forensic'
 import { ReportsTable } from '@/components/reports'
 import { TlsReportsSection } from '@/components/tlsrpt'
@@ -11,7 +12,7 @@ export default function DomainDetail({
   domainName,
   data,
 }: Readonly<DomainDetailProps>) {
-  const { stats, sources, tls, forensic } = data
+  const { stats, sources, tls, forensic, enforcement } = data
 
   return (
     <>
@@ -33,6 +34,7 @@ export default function DomainDetail({
           failed={stats.failedCount}
         />
       </section>
+      <EnforcementReadinessCard readiness={enforcement} />
       <section aria-labelledby="sources-heading">
         <h2
           id="sources-heading"

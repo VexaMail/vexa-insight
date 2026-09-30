@@ -178,10 +178,11 @@ their own entries.
 - [ ] **Source approval workflow.** Mark a sender approved / unknown / threat
       (Cloudflare, Valimail, MxToolbox) so alerts and dashboards stop repeating
       known senders; dmarcian also buckets forwarders separately.
-- [ ] **Guided path to enforcement and policy simulation.** Per domain: what
-      would have been quarantined or rejected under `p=quarantine`/`reject`,
-      which sources must be fixed first, and a readiness verdict (MxToolbox,
-      Proofpoint, DmarcAnalyzerApp, Valimail).
+- [~] **Guided path to enforcement and policy simulation.** Readiness card
+  shipped 2026-09-30 (30-day simulation, legitimate/forwarded/unknown split,
+  verdict). Still to do: read the published policy (`p`, `sp`, `pct`) from the
+  reports so the advice names the next step from where the domain is, and a
+  `pct` simulation.
 - [ ] **Scheduled email digests.** Weekly/monthly summary mail per domain
       (Postmark, dmarc-srg, EasyDMARC, Red Sift). Needs SMTP settings.
 - [ ] **Discord and generic chat adapters** alongside the Slack/Teams issues.

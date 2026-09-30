@@ -1,4 +1,5 @@
 import { FORENSIC_DOMAIN_PAGE_LIMIT } from '@/constants/forensic'
+import { getEnforcementReadiness } from '@/services/enforcement'
 import { getForensicReportsForDomain } from '@/services/forensic'
 import { getDomainSources, getDomainSummary } from '@/services/reports'
 import { getTlsDomainFailures, getTlsDomainSummary } from '@/services/tlsrpt'
@@ -9,9 +10,10 @@ export async function getDomainDetail(
   domainName: string,
 ): Promise<DomainDetailData | null> {
   try {
-    const [summary, sources] = await Promise.all([
+    const [summary, sources, enforcement] = await Promise.all([
       getDomainSummary(domainId),
       getDomainSources(domainId),
+      getEnforcementReadiness(domainId),
     ])
     if (!summary) return null
     return {
@@ -31,6 +33,7 @@ export async function getDomainDetail(
         domainName,
         FORENSIC_DOMAIN_PAGE_LIMIT,
       ),
+      enforcement,
     }
   } catch {
     return null

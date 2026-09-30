@@ -212,6 +212,11 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
   Amazon SES, SendGrid, Mailchimp, Brevo, Klaviyo and about fifty more) from
   their reverse DNS or DKIM signing domain, using a catalog in
   `src/constants/senders/senderCatalog.json` that takes one entry per service.
+- Enforcement readiness per domain: a simulation of what `p=quarantine` or
+  `p=reject` would have stopped over the last 30 days, split into legitimate
+  mail that would be lost, forwarded or mailing-list mail, and unknown senders,
+  with a verdict (not enough data, fix these senders first, or ready) and the
+  sources behind it.
 - Policy dispositions (`none`, `quarantine`, `reject`) and volume by reporting
   organisation (Google, Microsoft, Yahoo and others).
 - Ingestion health: last poll, per-run results and errors, and a health endpoint

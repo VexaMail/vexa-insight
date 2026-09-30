@@ -10,6 +10,13 @@ and this project adheres to
 
 ### Added
 
+- **Enforcement readiness.** The domain page simulates `p=quarantine` or
+  `p=reject` over the last 30 days: how many messages would have been stopped,
+  split into legitimate senders whose mail would be lost (sources that mostly
+  pass, or known services), forwarding and mailing lists, and unknown senders. A
+  verdict says whether there is enough data, which senders to fix first, or that
+  the domain is ready to enforce, with the top failing sources listed.
+
 - **Named senders.** A domain's sources table gains a Sender column naming the
   service behind each IP (for example SendGrid, Amazon SES, Mailchimp, Google
   Workspace) and its kind (mailbox provider, email service, marketing, CRM,
