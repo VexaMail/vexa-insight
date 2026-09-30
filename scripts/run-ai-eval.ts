@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - offline AI prompt eval entrypoint.
+ * Vexa Insight - offline AI prompt eval entrypoint.
  *
  * Runs a production prompt N times on the free Claude Max lane (the Claude Code
  * OAuth token in the macOS Keychain) against real rows in the local database,

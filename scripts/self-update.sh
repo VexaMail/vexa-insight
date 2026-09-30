@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vexa Mail Insight – self-update script.
+# Vexa Insight – self-update script.
 #
 # Pulls the requested git ref, installs deps, builds, backs up the SQLite
 # database, and exits so the supervisor (systemd, PM2, etc.) restarts the

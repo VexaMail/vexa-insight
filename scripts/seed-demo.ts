@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - demo seed entrypoint.
+ * Vexa Insight - demo seed entrypoint.
  *
  * Usage:
  *   pnpm run seed:demo            # idempotent; skips if already seeded

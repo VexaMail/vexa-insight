@@ -1,6 +1,6 @@
-# Updating Vexa Mail Insight
+# Updating Vexa Insight
 
-Vexa Mail Insight is self-hosted. New versions are published as
+Vexa Insight is self-hosted. New versions are published as
 [GitHub Releases](https://github.com/VexaMail/vexa-insight/releases) following
 [Semantic Versioning](https://semver.org/).
 

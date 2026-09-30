@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - migration entrypoint.
+ * Vexa Insight - migration entrypoint.
  *
  * Usage:
  *   pnpm run db:migrate

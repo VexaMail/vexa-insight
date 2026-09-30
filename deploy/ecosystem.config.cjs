@@ -1,4 +1,4 @@
-// Vexa Mail Insight – PM2 ecosystem example.
+// Vexa Insight – PM2 ecosystem example.
 //
 // Install:
 //   pnpm install --frozen-lockfile

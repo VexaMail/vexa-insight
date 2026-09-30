@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-Vexa Mail Insight is in early development (`0.x`). Only the latest `main` branch
-and the most recent tagged release receive security updates.
+Vexa Insight is in early development (`0.x`). Only the latest `main` branch and
+the most recent tagged release receive security updates.
 
 | Version        | Supported          |
 | -------------- | ------------------ |
@@ -18,7 +18,7 @@ and the most recent tagged release receive security updates.
 Report vulnerabilities privately to:
 
 - Email: **me@cristiandeluxe.dev**
-- Subject prefix: `[security] vexa-mail-insight: <short description>`
+- Subject prefix: `[security] vexa-insight: <short description>`
 
 You can also use GitHub's
 [private security advisories](https://github.com/VexaMail/vexa-insight/security/advisories/new)

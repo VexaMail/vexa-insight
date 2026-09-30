@@ -11,9 +11,9 @@ export function buildOpenApiDocument(): Record<string, unknown> {
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Vexa Mail Insight API',
+      title: 'Vexa Insight API',
       description:
-        'Stable HTTP API for the Vexa Mail Insight self-hosted DMARC observability platform.',
+        'Stable HTTP API for the Vexa Insight self-hosted DMARC observability platform.',
       version: APP_VERSION,
       license: {
         name: 'Apache-2.0',

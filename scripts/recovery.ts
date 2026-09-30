@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - account recovery entrypoint.
+ * Vexa Insight - account recovery entrypoint.
  *
  * Usage:
  *   npx tsx scripts/recovery.ts create-admin <username> <password>

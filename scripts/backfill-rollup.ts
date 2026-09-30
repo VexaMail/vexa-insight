@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - event_rollup_daily backfill entrypoint.
+ * Vexa Insight - event_rollup_daily backfill entrypoint.
  *
  * Usage:
  *   pnpm run backfill:rollup

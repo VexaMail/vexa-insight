@@ -8,7 +8,7 @@ export async function deliverWebhook(
 ): Promise<{ status: number | null; error: string | null }> {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
-    'user-agent': 'vexa-mail-insight-webhook/1',
+    'user-agent': 'vexa-insight-webhook/1',
   }
   if (signature) headers['x-vexa-signature'] = signature
   const res = await safeFetch(url, {

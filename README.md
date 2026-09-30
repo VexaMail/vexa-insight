@@ -1,8 +1,13 @@
 <div align="center">
 
-# Vexa Mail Insight
+# Vexa Insight
 
-### Self-hosted DMARC observability. Your data, your server, your dashboard.
+### Open-source, self-hosted DMARC report analyzer and dashboard.
+
+Read the DMARC aggregate reports Google, Microsoft, Yahoo and every other
+receiver send you, see who is sending mail as your domain, and fix SPF and DKIM
+before you move to `p=quarantine` or `p=reject`. One Docker container, one
+SQLite file, and your reports never leave your server.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight/releases)
@@ -14,17 +19,18 @@
 </div>
 
 <p align="center">
-  <img src="docs/screenshots/dashboard-overview.png" alt="Vexa Mail Insight — Sending Sources view with hostname and geo enrichment" width="100%" />
+  <img src="docs/screenshots/dashboard-overview.png" alt="Vexa Insight DMARC dashboard: sending sources with SPF and DKIM pass rates, hostnames and countries" width="100%" />
 </p>
 
-**Vexa Mail Insight** turns raw DMARC aggregate reports (RUA) into a queryable
-security signal: who is sending mail using your domains, how SPF/DKIM are
-performing, where unauthorized senders are coming from. Built with Next.js 16,
-TypeScript, and Drizzle ORM. SQLite by default — **one container, and your
-reports stay on your server**. Nothing is sent to a Vexa service, because there
-isn't one; the outbound calls the app does make are listed under
-[Network egress](#what-still-leaves-your-server) and every optional one is off
-until you configure it.
+**Vexa Insight** turns raw DMARC aggregate reports (RUA XML, zipped or gzipped)
+into answers: which servers send mail using your domains, whether their SPF and
+DKIM results align with DMARC, which of them you do not recognise, and whether
+it is safe to tighten your policy. It polls the mailbox your `rua=` address
+points at over IMAP, or takes files you upload, and keeps everything in SQLite
+on your own server. Nothing is sent to a Vexa service, because there isn't one;
+the outbound calls the app does make are listed under
+[What still leaves your server](#what-still-leaves-your-server), and every
+optional one is off until you configure it.
 
 <p align="center">
   <a href="docs/screenshots/domains.png"><img src="docs/screenshots/domains.png" alt="Domains list with compliance bars and status pills" width="32%" /></a>
@@ -61,6 +67,25 @@ Still worth using on an instance you intend to throw away. The seeder marks its
 own rows and `--force` deletes only those, but the synthetic reports otherwise
 sit in the same tables as real ones and skew every total on the dashboard.
 
+### Start receiving reports
+
+DMARC reports only arrive once your domain asks for them. Publish (or edit) the
+`_dmarc` TXT record so its `rua=` tag points at a mailbox Vexa Insight can read
+over IMAP:
+
+```dns
+_dmarc.example.com.  TXT  "v=DMARC1; p=none; rua=mailto:dmarc-reports@example.com"
+```
+
+`p=none` only monitors, so nothing you send is affected while you look at the
+data. Receivers usually send one report per domain per day, so expect the first
+ones within 24 to 48 hours. If the report mailbox is on a different domain from
+the one being reported on, that domain must also publish an
+[external destination record](https://www.rfc-editor.org/rfc/rfc7489#section-7.1)
+(`example.com._report._dmarc.reports.example.net TXT "v=DMARC1"`). Already have
+a pile of report files? Drop them on the **Upload** page (`.xml`, `.gz`,
+`.zip`).
+
 **Exposing beyond localhost?** Bind to all interfaces (`-p 3000:3000`), set
 `-e VEXA_ALLOW_REMOTE_INSTALL=1`, and put it behind a reverse proxy with TLS —
 see [`docs/UPDATING.md`](docs/UPDATING.md) and the env-var table below.
@@ -96,7 +121,7 @@ a signature nobody could verify, is at
 
 ## Why self-host vs SaaS DMARC?
 
-|                                  | Vexa Mail Insight (self-hosted)         | SaaS DMARC tools                                 |
+|                                  | Vexa Insight (self-hosted)              | SaaS DMARC tools                                 |
 | -------------------------------- | --------------------------------------- | ------------------------------------------------ |
 | **Data location**                | Your server, your control               | Sent to a third party                            |
 | **GDPR / SOC2 / data residency** | You decide — no DPA required            | Vendor risk review, DPA, data export negotiation |
@@ -128,6 +153,18 @@ them is either opt-in or can be turned off:
 For a fully offline deployment, leave AI and GeoIP unconfigured, set
 `VEXA_UPDATE_CHECK_ENABLED=false`, and point ingestion at a local mailbox.
 
+### Compared with parsedmarc
+
+[parsedmarc](https://github.com/domainaware/parsedmarc) is the established
+open-source DMARC report parser, and a good choice if you already run
+Elasticsearch, OpenSearch or Splunk: it parses reports and ships them there for
+Kibana or Grafana dashboards, and it also parses failure (RUF) and SMTP TLS
+(TLS-RPT) reports. Vexa Insight is the option for when you want the dashboard
+without that stack: one container with its own UI, users and SQLite storage,
+plus live DNS diagnostics of your SPF, DKIM, DMARC, MTA-STS and BIMI records. It
+parses aggregate reports only today; failure and TLS-RPT reports are on the
+roadmap.
+
 ---
 
 ## Who is this for?
@@ -144,36 +181,59 @@ For a fully offline deployment, leave AI and GeoIP unconfigured, set
 
 ---
 
-## Highlights
+## Features
 
-- **IMAP ingestion** of DMARC aggregate reports (RUA) with `.zip` and `.gz`
-  support, including zip-bomb protection.
-- **Idempotent processing** keyed on `report_id`; duplicates are skipped.
-- **Three-layer data model:** `RawReport` (audit), `NormalizedEvent`
-  (query/analytics), optional `AggregatedMetric` (future precomputed metrics).
-- **SQLite** — no extra setup, one file to back up.
-- **Dashboard:** KPI cards, authentication trend chart, SPF/DKIM breakdown,
-  disposition metrics, top sending IPs, ingestion health.
-- **First-run web installer** at `/install` with permanent lockout after the
-  first user is created.
-- **CLI recovery** (`scripts/recovery.ts`) for password reset and admin creation
-  when SMTP isn't available.
-- **Hands-off auto-updates** via the bundled Watchtower override compose, or
-  one-click "Apply update now" for source installs running under systemd / PM2.
-- **Apache 2.0** with explicit patent grant — commercially safe.
+**Reports and ingestion**
 
----
+- Pulls DMARC aggregate reports (RUA) from one or more IMAP mailboxes on a
+  schedule, or from files you upload; `.xml`, `.zip` and `.gz`, with zip-bomb
+  protection.
+- Idempotent: each report is stored once, keyed on its `report_id`, however
+  often the mail is fetched.
+- Keeps the original XML for audit next to the normalized rows the dashboard
+  queries, with a built-in viewer.
+- Moves processed mail to Trash or marks it read, if you want the mailbox kept
+  clean.
 
-## What you see (KPIs)
+**Dashboard**
 
-- Authentication pass/fail trend (SPF, DKIM, DMARC alignment) over a
-  configurable date range.
-- Top sending IPs and the geographic distribution of senders.
-- Volume by reporting organization (Gmail, Microsoft, Yahoo, etc.) — anomalies
-  flag possible deliverability incidents.
-- Policy disposition breakdown (`none` / `quarantine` / `reject`).
-- Domain drill-down with source IP analysis and per-report inspection.
-- Ingestion health: last poll, scheduler status, error visibility.
+- DMARC, SPF and DKIM pass rates and alignment over any date range, per domain
+  and overall.
+- Every sending source by IP, with reverse DNS hostname, country and the reports
+  that listed it, so an unknown sender stands out.
+- Policy dispositions (`none`, `quarantine`, `reject`) and volume by reporting
+  organisation (Google, Microsoft, Yahoo and others).
+- Ingestion health: last poll, per-run results and errors, and a health endpoint
+  that flags a stalled scheduler.
+
+**Domain diagnostics**
+
+- Live DNS checks of SPF (lookup count, macros, the full include tree), DKIM key
+  strength, the DMARC record, MTA-STS, TLS-RPT and BIMI, with a security score
+  per domain.
+- Optional AI analysis of those findings through Anthropic, OpenAI, Google or
+  OpenRouter, with your own API key. Off by default.
+
+**Reputation and alerts**
+
+- Microsoft SNDS integration: daily IP reputation, complaint rates and trap hits
+  for your sending IPs, next to the DMARC data. See
+  [`docs/SNDS.md`](docs/SNDS.md).
+- Outbound webhooks for unauthorized senders, authentication fail-rate spikes,
+  failed ingestion, SNDS reputation alerts and available updates, optionally
+  HMAC-signed.
+- Prometheus metrics at `/api/v1/metrics` and an OpenAPI 3.1 spec at
+  `/api/v1/openapi.json`.
+
+**Operations**
+
+- First-run web installer, with a one-time token and permanent lockout after the
+  first admin exists.
+- Recovery CLI for password resets and admin creation without SMTP.
+- Update check against GitHub releases, Watchtower auto-updates for Docker, or
+  one-click "Apply update now" under systemd or PM2.
+- Multi-arch image (`linux/amd64`, `linux/arm64`), signed Helm chart, Apache 2.0
+  licence with an explicit patent grant.
 
 ---
 
@@ -203,7 +263,7 @@ For a fully offline deployment, leave AI and GeoIP unconfigured, set
 
 ## Tech stack
 
-Next.js 16 · React 19 · TypeScript 5 · Drizzle ORM · SQLite (default) · Tailwind
+Next.js 16 · React 19 · TypeScript · Drizzle ORM · SQLite (default) · Tailwind
 CSS 4 · Zod · node-cron · Docker. Tests with Vitest. CI with GitHub Actions.
 Multi-arch image (`linux/amd64`, `linux/arm64`) published to GHCR on every
 release.
@@ -245,13 +305,13 @@ published.
 
 ```bash
 helm install vexa-insight oci://ghcr.io/vexamail/charts/vexa-insight \
-  --version 0.3.1
+  --version 0.3.3
 ```
 
 Verify the signature before installing:
 
 ```bash
-cosign verify ghcr.io/vexamail/charts/vexa-insight:0.3.1 \
+cosign verify ghcr.io/vexamail/charts/vexa-insight:0.3.3 \
   --certificate-identity-regexp '^https://github.com/VexaMail/vexa-insight/' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
@@ -261,18 +321,19 @@ The chart source is in [`deploy/helm/vexa-insight`](deploy/helm/vexa-insight);
 
 ### Environment variables
 
-| Variable                     | Required     | Description                                                                                                                                                                                                                   |
-| ---------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`               | No           | SQLite file path, default `file:./data/vexa.db`.                                                                                                                                                                              |
-| `SECRET_KEY`                 | **Required** | Min 32 characters. Encrypts stored mailbox credentials, and the admin API token is derived from it. Read from the environment only; the installer refuses to run without it. Keep it: losing it loses the stored credentials. |
-| `INGESTION_INTERVAL_MINUTES` | No           | Scheduler interval (default `60`). Seeded into settings on first boot only; afterwards the stored value wins, so change it in Settings.                                                                                       |
-| `INGESTION_DAYS_BACK`        | No           | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page.                                                 |
-| `ENVIRONMENT`                | No           | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                                                                        |
-| `VEXA_IMAP_DEBUG`            | No           | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                                                                              |
-| `VEXA_UPDATE_CHECK_ENABLED`  | No           | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                                                                               |
-| `VEXA_UPDATE_REPO`           | No           | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                                                                    |
-| `VEXA_ALLOW_REMOTE_INSTALL`  | No           | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                                                                |
-| `VEXA_ALLOWED_ORIGINS`       | No           | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.                                                      |
+| Variable                     | Required     | Description                                                                                                                                                                                                                                          |
+| ---------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | No           | SQLite file path, default `file:./data/vexa.db`.                                                                                                                                                                                                     |
+| `SECRET_KEY`                 | **Required** | Min 32 characters. Encrypts stored mailbox credentials, and the admin API token is derived from it. Read from the environment only; the installer refuses to run without it. Keep it: losing it loses the stored credentials.                        |
+| `INGESTION_INTERVAL_MINUTES` | No           | Scheduler interval (default `60`). Seeded into settings on first boot only; afterwards the stored value wins, so change it in Settings.                                                                                                              |
+| `INGESTION_DAYS_BACK`        | No           | Days of mailbox history each run fetches (default `30`, minimum `1`). Seeded like `INGESTION_INTERVAL_MINUTES`. A full-mailbox pass is a one-off action from the ingest page.                                                                        |
+| `ENVIRONMENT`                | No           | Environment label, `development` / `staging` / `production`. Seeded like `INGESTION_INTERVAL_MINUTES`.                                                                                                                                               |
+| `VEXA_IMAP_DEBUG`            | No           | Default `false`. Set to `true` to log the IMAP protocol trace (contains subjects and addresses).                                                                                                                                                     |
+| `VEXA_UPDATE_CHECK_ENABLED`  | No           | Default `true`. Set to `false`/`0`/`off` for airgapped deploys.                                                                                                                                                                                      |
+| `VEXA_UPDATE_REPO`           | No           | Override upstream repo (`owner/repo`) when running a fork.                                                                                                                                                                                           |
+| `VEXA_ALLOW_REMOTE_INSTALL`  | No           | Default `0`. The web installer rejects non-loopback requests unless this is `1`. Required when the installer is reached via a reverse proxy / public hostname.                                                                                       |
+| `VEXA_ALLOWED_ORIGINS`       | No           | Comma-separated origins (e.g. `https://dmarc.example.com`) allowed to invoke Next.js Server Actions. Required when the public hostname differs from the upstream origin.                                                                             |
+| `VEXA_TRUSTED_PROXY_HOPS`    | No           | Default `1`. How many reverse proxies in front of the app append to `X-Forwarded-For`; the client address for rate limits and audit logs is read that many entries from the right. See [`docs/DEPLOY-BEHIND-PROXY.md`](docs/DEPLOY-BEHIND-PROXY.md). |
 
 ---
 
@@ -386,9 +447,9 @@ the dashboard totals lag your data. See
 - **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
   dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
   flow.
-- **Phase 2:** Slack / Teams webhook adapters and delivery retries, forensic
-  reports (RUF). Generic outbound webhooks, Prometheus metrics and the OpenAPI
-  spec already ship.
+- **Phase 2:** Slack / Teams webhook adapters and delivery retries, failure
+  reports (RUF) and SMTP TLS reports (TLS-RPT). Generic outbound webhooks,
+  Prometheus metrics and the OpenAPI spec already ship.
 - **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation
   scoring, threat-intel enrichment, anomaly detection.
 - **Phase 4:** Full Email Authentication Control Center.
@@ -410,14 +471,40 @@ The following endpoints are stable and meant for automation:
   runs have stopped arriving, so an uptime monitor can alert on it.
 - `GET /api/v1/openapi.json` — machine-readable spec of public endpoints.
 
-Outbound webhooks for "unauthorized source detected" and "ingest job failed" are
-configured in Settings. Each endpoint receives a generic JSON envelope (`event`,
-`timestamp`, `source`, `data`) by `POST`, optionally signed with an HMAC-SHA256
-`x-vexa-signature` header when the endpoint has a secret. Delivery is a single
-attempt with a 5s timeout and no retry; the last status and error are stored per
-endpoint. Slack and Microsoft Teams expect their own payload shapes, so they
-need a small receiver or relay in front of this envelope, and native adapters
-are Phase 2 on the roadmap.
+Outbound webhooks are configured in Settings, for the events
+`unauthorized_source.detected`, `auth.fail_rate_spike`, `ingest.failed`,
+`snds.reputation_alert` and `update.available`. Each endpoint receives a generic
+JSON envelope (`event`, `timestamp`, `source`, `data`) by `POST`, optionally
+signed with an HMAC-SHA256 `x-vexa-signature` header when the endpoint has a
+secret. Delivery is a single attempt with a 5s timeout and no retry; the last
+status and error are stored per endpoint. Slack and Microsoft Teams expect their
+own payload shapes, so they need a small receiver or relay in front of this
+envelope, and native adapters are Phase 2 on the roadmap.
+
+---
+
+## FAQ
+
+**What is a DMARC aggregate report?** An XML file that a receiving mail server
+(Gmail, Outlook, Yahoo and so on) sends to the address in your DMARC record's
+`rua=` tag, usually once a day. It lists every IP that sent mail using your
+domain in that period, how many messages, and whether each passed SPF, DKIM and
+DMARC alignment. It is the only way to see mail sent as your domain by servers
+you do not control.
+
+**Is it safe to move from `p=none` to `p=quarantine`?** When every legitimate
+source you see here passes DMARC, through aligned SPF or aligned DKIM, and what
+still fails is either unknown or a forwarder you accept losing. The Sending
+Sources page is built to answer that question per domain.
+
+**Why do mailing-list posts show up as failures?** Lists and forwarders often
+rewrite the message, which breaks DKIM, and send it from their own servers,
+which breaks SPF alignment. A report counts every delivered copy, so one post to
+a large list can appear as thousands of failed messages. Those are not spoofing.
+
+**Does it work without Docker?** Yes: see
+[Source install](#source-install-sqlite-default-no-env-required). It needs
+Node.js 22 or later.
 
 ---
 
@@ -494,6 +581,6 @@ use permitted. No copyleft restrictions. Includes patent grant.
 
 ## Vision
 
-Vexa Mail Insight aims to become the open standard for email authentication
+Vexa Insight aims to become the open standard for email authentication
 observability. We welcome contributors, security researchers, and infrastructure
 teams to use, extend, and improve it.

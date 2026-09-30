@@ -1,4 +1,4 @@
-; Vexa Mail Insight – systemd unit example.
+; Vexa Insight – systemd unit example.
 ;
 ; Install:
 ;   sudo cp deploy/vexa.service /etc/systemd/system/vexa.service
@@ -26,7 +26,7 @@
 ; alone. Remove it only if the host firewall filters the port.
 
 [Unit]
-Description=Vexa Mail Insight (DMARC observability dashboard)
+Description=Vexa Insight (DMARC observability dashboard)
 After=network-online.target
 Wants=network-online.target
 

@@ -1,8 +1,8 @@
 {
-  "name": "vexa-mail-insight",
+  "name": "vexa-insight",
   "version": "0.3.3",
   "private": true,
-  "description": "Open-source DMARC observability platform: ingest, normalize, and visualize email authentication reports (SPF, DKIM, DMARC) with a self-hostable Next.js dashboard.",
+  "description": "Open-source, self-hosted DMARC report analyzer and dashboard: ingests aggregate (RUA) reports over IMAP and shows SPF, DKIM and DMARC alignment by sending source.",
   "license": "Apache-2.0",
   "author": "Cristian Deluxe <me@cristiandeluxe.dev>",
   "homepage": "https://github.com/VexaMail/vexa-insight#readme",

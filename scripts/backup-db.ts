@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Vexa Mail Insight - database snapshot entrypoint.
+ * Vexa Insight - database snapshot entrypoint.
  *
  * Usage:
  *   npx tsx scripts/backup-db.ts [destination]

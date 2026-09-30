@@ -1,4 +1,4 @@
-# Contributing to Vexa Mail Insight
+# Contributing to Vexa Insight
 
 Thanks for your interest in contributing! This document covers everything you
 need to get a development environment running and submit a high-quality PR.

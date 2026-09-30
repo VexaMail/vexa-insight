@@ -22,7 +22,7 @@ export async function dispatchWebhookEvent(
   const payload: WebhookPayload = {
     event,
     timestamp: new Date().toISOString(),
-    source: 'vexa-mail-insight',
+    source: 'vexa-insight',
     data,
   }
   const body = JSON.stringify(payload)

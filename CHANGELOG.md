@@ -37,6 +37,9 @@ and this project adheres to
   web manifest and the container image label, matching the repository name. An
   instance still on the old default name, "Vexa Mail Insight", is renamed by
   migration 0036; a name set in Settings is kept.
+- **Breaking for webhook receivers:** the envelope's `source` field is now
+  `vexa-insight` (was `vexa-mail-insight`), and requests carry the user agent
+  `vexa-insight-webhook/1`. Update any receiver that filters on either value.
 
 ### Security
 
