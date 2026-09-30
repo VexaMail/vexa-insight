@@ -8,13 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-30
+
 ### Added
 
 - **HTTPS delivery of TLS reports.** `POST /api/v1/tlsrpt` accepts
   `application/tlsrpt+json` and `application/tlsrpt+gzip` bodies (RFC 8460
   section 5.2) for a `rua=https://` TLS-RPT record. It is unauthenticated, as
   the RFC requires, so it keeps only reports about domains the instance already
-  monitors and limits each client address to 60 reports an hour.
+  monitors and limits each client address to 60 reports an hour. Behind
+  ModSecurity with the OWASP CRS, rule 920420 refuses these content types, so
+  exclude it for that path.
 
 - **CSV export of a domain's sources.**
   `GET /api/v1/domains/{id}/sources?format=csv` and a Download CSV link on the
@@ -53,7 +57,10 @@ and this project adheres to
   the domain page: arrival, source IP, failure type, header and envelope From
   domains, DKIM domain and selector, List-Id and reporter. Addresses are reduced
   to their domain and no subject or body is stored; a domain keeps at most 500
-  reports a day. A `failure_report.received` webhook fires for each new one.
+  reports a day. A `failure_report.received` webhook fires for each new one. SPF
+  and DKIM results come from the feedback part or, where OpenDMARC leaves them,
+  from the Authentication-Results header the reporting host added to the failed
+  message.
 
 - **SMTP TLS reports (TLS-RPT, RFC 8460).** Reports that senders such as Google
   and Microsoft mail to the `rua=` address of a `_smtp._tls` record are now
@@ -94,6 +101,33 @@ and this project adheres to
 - **Breaking for webhook receivers:** the envelope's `source` field is now
   `vexa-insight` (was `vexa-mail-insight`), and requests carry the user agent
   `vexa-insight-webhook/1`. Update any receiver that filters on either value.
+- **Domain scores rescored.** SPF, DKIM and DMARC now carry the full 100 points
+  (the DMARC policy graded, with penalties for a partial `pct` and a missing
+  `rua`), and MTA-STS, TLS-RPT and BIMI add at most 10 on top, capped. Before,
+  every domain with the three basics on `p=none` scored 55%. The badge shows a
+  per-check breakdown.
+- **IP pages are searchable.** Related domains and the event timeline gained
+  server-side search, filters and sorting.
+- **The raw XML viewer is a numbered, highlighted `<pre>`** instead of the
+  Monaco editor, which drew a stray input box over the document; the editor
+  dependency is gone.
+- **`/ingest` opens on Job Runs** when no run is live, lists the latest emails
+  across runs, and charts daily ingestion volume, errors and failed runs.
+- **`check:ci` also runs knip and dependency-cruiser**, so unused code and
+  import cycles fail the build.
+
+### Fixed
+
+- **RFC 9990 `pass` disposition.** Messages with disposition `pass` dropped out
+  of the IP disposition breakdown and counted as failed in diagnostics; both now
+  treat `pass` like `none`.
+- **Paged IP listings no longer repeat or skip rows.** They ordered on a
+  non-unique key; every `ORDER BY` now ends on the row id.
+- **Install check behind a TLS proxy.** A server bound to `0.0.0.0` fetched
+  `https://0.0.0.0:<port>` for its install check, failed, and redirected every
+  route to `/install`. The bind address is now treated as loopback.
+- **Self-update log read race.** The log is opened once and measured with
+  `fstat`, so a log replaced between two calls cannot be misread.
 
 ### Security
 
@@ -648,7 +682,9 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
   `Authorization: Bearer`).
 - `/install` permanently locked after the first user exists.
 
-[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/VexaMail/vexa-insight/compare/v0.3.3...v0.4.0
+[0.3.3]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.3
 [0.3.2]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.2
 [0.3.1]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.1
 [0.3.0]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.0
