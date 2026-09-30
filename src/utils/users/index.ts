@@ -1,4 +1,3 @@
-export { apiErrorMessage } from './apiErrorMessage'
 export { buildUserPayload } from './buildUserPayload'
 export { deleteUser } from './deleteUser'
 export { describeAllowedDomains } from './describeAllowedDomains'

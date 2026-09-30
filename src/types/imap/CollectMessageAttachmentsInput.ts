@@ -1,5 +1,4 @@
 import type { ImapAccountConfig } from '@/types/config'
-import type { parseDmarcAttachmentsFromParts } from '@/utils/imap'
 import type { ImapFlow } from 'imapflow'
 import type { EnvelopeSummary } from './EnvelopeSummary'
 import type { FetchAttachmentsOptions } from './FetchAttachmentsOptions'
@@ -12,6 +11,6 @@ export type CollectMessageAttachmentsInput = {
   readonly options: FetchAttachmentsOptions
   readonly uidStr: string
   readonly partIds: string[]
-  readonly bodyStructure: Parameters<typeof parseDmarcAttachmentsFromParts>[2]
+  readonly bodyStructure: unknown
   readonly summary: EnvelopeSummary
 }

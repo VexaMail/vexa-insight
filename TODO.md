@@ -268,14 +268,6 @@ emptied on 2026-09-09 (see `TODO_LOG.md`); the file stays, empty, so
 `lint:prune` keeps a target and any new suppression shows up in review. What
 remains below is what those passes did not reach.
 
-- [ ] **knip and dependency-cruiser findings came back, because neither runs in
-      CI.** Emptied on 2026-08-27; on 2026-09-30 `pnpm run knip` reports 15
-      unused exports (e.g. `tokenizeXmlTag`, `apiErrorMessage`,
-      `DEFAULT_INTERVAL` re-exported from barrels) and `pnpm run deps:graph` 16
-      `no-circular` errors, most through `src/types/imap/index.ts` and
-      `src/utils/imap/*`. Smallest next step: add both to `check:ci`, then clear
-      the findings so the gate starts at zero.
-
 - [ ] **Prune tables that only grow.** Production on 2026-09-30: `sessions`
       keeps expired rows (12 of 15), `job_poll_events` holds 134k rows back to
       March. Harmless at 40 MB, but nothing bounds it. Delete expired sessions

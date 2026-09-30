@@ -1,8 +1,6 @@
 export { buildAuthorizationUrl } from './buildAuthorizationUrl'
 export { completeOidcLogin } from './completeOidcLogin'
 export { discoverIssuer } from './discoverIssuer'
-export { exchangeCodeForTokens } from './exchangeCodeForTokens'
-export { fetchUserInfo } from './fetchUserInfo'
 export { generatePkcePair } from './generatePkcePair'
 export { generateState } from './generateState'
 export { OIDC_STATE_COOKIE } from './oidcStateCookieName'

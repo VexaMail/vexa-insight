@@ -10,8 +10,6 @@ export {
   buildAuthorizationUrl,
   completeOidcLogin,
   discoverIssuer,
-  exchangeCodeForTokens,
-  fetchUserInfo,
   generatePkcePair,
   generateState,
   provisionUserFromUserInfo,

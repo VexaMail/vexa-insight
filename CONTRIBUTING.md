@@ -116,7 +116,7 @@ pnpm run check        # type-check + format + lint:fix
 For CI parity (no auto-fix):
 
 ```bash
-pnpm run check:ci     # type-check + lint + format:check + test
+pnpm run check:ci     # type-check + lint + knip + deps:graph + format:check + test
 ```
 
 ## Tests

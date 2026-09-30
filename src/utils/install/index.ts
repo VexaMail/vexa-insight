@@ -1,8 +1,6 @@
 export { ALLOW_REMOTE_INSTALL } from './allowRemoteInstallFlag'
-export { defaultAccount } from './defaultAccount'
 export { DEFAULT_DAYS_BACK } from './defaultDaysBack'
 export { DEFAULT_IMAP_PORT } from './defaultImapPort'
-export { DEFAULT_INTERVAL } from './defaultInterval'
 export { installReducer } from './installReducer'
 export { parseIngestionDaysBack } from './parseIngestionDaysBack'
 export { timingSafeStringEqual } from './timingSafeStringEqual'

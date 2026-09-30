@@ -6,6 +6,14 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **knip and dependency-cruiser at zero and in `check:ci`.**
+      Removed three unused files (`isApplied`, two `MIN_LENGTH` copies) and 15
+      barrel re-exports nobody imported. All 16 `no-circular` errors ran through
+      `CollectMessageAttachmentsInput`, which imported `@/utils/imap` only to
+      type `bodyStructure` as the parser's third parameter, which is `unknown`;
+      typing it `unknown` directly cleared them. `check:ci` now runs
+      `pnpm run knip` and `pnpm run deps:graph`, so findings cannot return
+      unnoticed.
 - [x] 2026-09-30 — **RFC 9990 `pass` disposition counted as no policy applied.**
       `ipDetailSelection.ts` summed only `none`, `quarantine` and `reject`, so
       `pass` messages vanished from the IP disposition breakdown, and
