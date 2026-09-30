@@ -6,6 +6,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { complianceColumn } from './columns/complianceColumn'
 import { createActionsColumn } from './columns/createActionsColumn'
 import { domainNameColumn } from './columns/domainNameColumn'
+import { lastReportColumn } from './columns/lastReportColumn'
 import { messagesColumn } from './columns/messagesColumn'
 import { statusColumn } from './columns/statusColumn'
 import type { GetDomainsColumnsParams } from './GetDomainsColumnsParams'
@@ -18,6 +19,7 @@ export function getDomainsColumns(
     messagesColumn,
     complianceColumn,
     statusColumn,
+    lastReportColumn,
     createActionsColumn(params),
   ]
 }

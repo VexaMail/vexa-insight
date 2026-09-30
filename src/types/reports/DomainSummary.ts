@@ -8,4 +8,6 @@ export type DomainSummary = {
   passedCount: number
   failedCount: number
   passRatePercent: number
+  /** Last UTC day index with report data; only set by the domains list. */
+  lastReportDay?: number | null
 }

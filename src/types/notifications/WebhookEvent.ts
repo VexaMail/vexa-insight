@@ -6,4 +6,5 @@ export type WebhookEvent =
   | 'snds.reputation_alert'
   | 'tls.failure_detected'
   | 'failure_report.received'
+  | 'reports.stopped'
   | 'test.ping'

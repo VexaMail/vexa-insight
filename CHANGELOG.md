@@ -10,6 +10,11 @@ and this project adheres to
 
 ### Added
 
+- **Report coverage gaps.** The domains list gains a Last report column that
+  flags a domain silent for more than three days, and a daily check fires a
+  `reports.stopped` webhook once, on the day a domain that used to get reports
+  crosses that threshold.
+
 - **Enforcement readiness.** The domain page simulates `p=quarantine` or
   `p=reject` over the last 30 days: how many messages would have been stopped,
   split into legitimate senders whose mail would be lost (sources that mostly

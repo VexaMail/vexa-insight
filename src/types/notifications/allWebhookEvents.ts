@@ -8,5 +8,6 @@ export const ALL_WEBHOOK_EVENTS: WebhookEvent[] = [
   'snds.reputation_alert',
   'tls.failure_detected',
   'failure_report.received',
+  'reports.stopped',
   'test.ping',
 ]

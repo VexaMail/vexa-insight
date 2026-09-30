@@ -1,5 +1,6 @@
 import { domains, eventRollupDaily, getDb } from '@/lib/db'
 import { getAllowedDomainIds } from '@/services/auth'
+import { getLastReportDays } from '@/services/gaps'
 import type { DomainsSummaryResponse, DomainSummary } from '@/types/reports'
 import { and, eq, inArray, sql } from 'drizzle-orm'
 import { getRollupDayConditions } from './formatters/rollupDayConditions'
@@ -44,10 +45,14 @@ export async function getDomainsSummaryAll(
     aggregateQuery.where(inArray(domains.id, allowedIds))
   }
 
-  const [rows, overall] = await Promise.all([
+  const [rows, overall, lastDays] = await Promise.all([
     aggregateQuery,
     getAggregateStats(from, to),
+    getLastReportDays(),
   ])
+  const lastDayById = new Map(
+    lastDays.map((d) => [d.domainId, d.lastReportDay]),
+  )
 
   const summaries: DomainSummary[] = rows.map((row) => {
     const total = row.totalMessages
@@ -59,6 +64,7 @@ export async function getDomainsSummaryAll(
       passedCount: passed,
       failedCount: total - passed,
       passRatePercent: total > 0 ? (passed / total) * 100 : 0,
+      lastReportDay: lastDayById.get(row.domainId) ?? null,
     }
   })
 

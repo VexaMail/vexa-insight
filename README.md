@@ -221,6 +221,10 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
   organisation (Google, Microsoft, Yahoo and others).
 - Ingestion health: last poll, per-run results and errors, and a health endpoint
   that flags a stalled scheduler.
+- Report coverage: the domains list shows when each domain last got a report and
+  flags one that has been silent for more than three days, and a
+  `reports.stopped` webhook fires the day it goes silent, so a broken `rua=`
+  record or a lost mailbox rule does not go unnoticed.
 
 **Domain diagnostics**
 
@@ -489,16 +493,16 @@ The following endpoints are stable and meant for automation:
 
 Outbound webhooks are configured in Settings, for the events
 `unauthorized_source.detected`, `auth.fail_rate_spike`, `ingest.failed`,
-`snds.reputation_alert`, `tls.failure_detected`, `failure_report.received` and
-`update.available`. Each endpoint receives a generic JSON envelope (`event`,
-`timestamp`, `source`, `data`) by `POST`, optionally signed with an HMAC-SHA256
-`x-vexa-signature` header when the endpoint has a secret. Each request has a 5s
-timeout; network errors, timeouts, HTTP 429 and 5xx are retried up to three
-times after 1, 4 and 16 seconds, while other 4xx responses and URLs rejected by
-the SSRF guard are not. The last status, error and attempt count are stored per
-endpoint. Slack and Microsoft Teams expect their own payload shapes, so they
-need a small receiver or relay in front of this envelope, and native adapters
-are Phase 2 on the roadmap.
+`snds.reputation_alert`, `tls.failure_detected`, `failure_report.received`,
+`reports.stopped` and `update.available`. Each endpoint receives a generic JSON
+envelope (`event`, `timestamp`, `source`, `data`) by `POST`, optionally signed
+with an HMAC-SHA256 `x-vexa-signature` header when the endpoint has a secret.
+Each request has a 5s timeout; network errors, timeouts, HTTP 429 and 5xx are
+retried up to three times after 1, 4 and 16 seconds, while other 4xx responses
+and URLs rejected by the SSRF guard are not. The last status, error and attempt
+count are stored per endpoint. Slack and Microsoft Teams expect their own
+payload shapes, so they need a small receiver or relay in front of this
+envelope, and native adapters are Phase 2 on the roadmap.
 
 ---
 
