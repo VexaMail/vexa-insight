@@ -1,8 +1,9 @@
+import type { ForensicReportRow } from '@/types/forensic'
 import type { DomainSource, DomainSummary } from '@/types/reports'
 import type { TlsDomainSummaryRow, TlsFailureSummaryRow } from '@/types/tlsrpt'
 
 /**
- * Combined domain detail data (summary + stats + sources + TLS reports).
+ * Combined domain detail data (summary + stats + sources + TLS and failure reports).
  */
 export type DomainDetailData = {
   summary: DomainSummary
@@ -17,4 +18,5 @@ export type DomainDetailData = {
     summary: TlsDomainSummaryRow[]
     failures: TlsFailureSummaryRow[]
   }
+  forensic: ForensicReportRow[]
 }

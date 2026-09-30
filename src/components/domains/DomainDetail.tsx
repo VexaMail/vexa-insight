@@ -1,4 +1,5 @@
 import { DispositionChartDisplay } from '@/components/charts'
+import { ForensicReportsSection } from '@/components/forensic'
 import { ReportsTable } from '@/components/reports'
 import { TlsReportsSection } from '@/components/tlsrpt'
 import type { DomainDetailProps } from './DomainDetailProps'
@@ -10,7 +11,7 @@ export default function DomainDetail({
   domainName,
   data,
 }: Readonly<DomainDetailProps>) {
-  const { stats, sources, tls } = data
+  const { stats, sources, tls, forensic } = data
 
   return (
     <>
@@ -42,6 +43,7 @@ export default function DomainDetail({
         <DomainSourcesTable sources={sources} />
       </section>
       <TlsReportsSection domainName={domainName} {...tls} />
+      <ForensicReportsSection rows={forensic} />
       <section aria-labelledby="reports-heading">
         <h2
           id="reports-heading"

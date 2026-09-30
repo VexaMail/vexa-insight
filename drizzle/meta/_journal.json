@@ -267,6 +267,13 @@
       "when": 1790800104086,
       "tag": "0037_tls_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 1790800708751,
+      "tag": "0038_forensic_reports",
+      "breakpoints": true
     }
   ]
 }

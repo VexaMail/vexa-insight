@@ -12,5 +12,8 @@ export function tagAttachmentSourceMessageId(
     if (attachment.tlsReport) {
       attachment.tlsReport.sourceMessageId = messageId
     }
+    if (attachment.forensicReport) {
+      attachment.forensicReport.sourceMessageId = messageId
+    }
   }
 }

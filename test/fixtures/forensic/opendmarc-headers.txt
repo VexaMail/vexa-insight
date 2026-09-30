@@ -1,0 +1,14 @@
+Received: from relay.lists.example.net (relay.lists.example.net [192.0.2.10])
+	by receiver.example (Postfix) with ESMTP id 18435685BD
+	for <someone@example.org>; Fri, 11 Sep 2026 17:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=example.com; s=default; h=From:To:Subject;
+	bh=AAAA; b=BBBB
+From: Jane Doe <jane@example.com>
+To: dev-list@lists.example.net
+Subject: [PATCH] something private
+Date: Fri, 11 Sep 2026 17:00:40 +0000
+Message-ID: <20260911170040.1234-1-jane@example.com>
+List-Id: <dev-list.lists.example.net>
+
+This body must never be read.

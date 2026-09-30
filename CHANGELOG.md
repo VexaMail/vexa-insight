@@ -10,6 +10,14 @@ and this project adheres to
 
 ### Added
 
+- **DMARC failure reports (RUF).** Messages structured as
+  `multipart/report; report-type=feedback-report` (RFC 6591 ARF) are now
+  ingested even when their subject is the failed message's own, and listed on
+  the domain page: arrival, source IP, failure type, header and envelope From
+  domains, DKIM domain and selector, List-Id and reporter. Addresses are reduced
+  to their domain and no subject or body is stored; a domain keeps at most 500
+  reports a day. A `failure_report.received` webhook fires for each new one.
+
 - **SMTP TLS reports (TLS-RPT, RFC 8460).** Reports that senders such as Google
   and Microsoft mail to the `rua=` address of a `_smtp._tls` record are now
   picked up by IMAP polling and by manual upload (`.json` or `.json.gz`),

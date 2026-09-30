@@ -17,6 +17,7 @@ export const webhookInputSchema = {
           'auth.fail_rate_spike',
           'snds.reputation_alert',
           'tls.failure_detected',
+          'failure_report.received',
           'test.ping',
         ],
       },

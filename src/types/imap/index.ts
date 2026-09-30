@@ -1,6 +1,7 @@
 export * from './AttachmentResult'
 export * from './BatchProgressInput'
 export * from './BodyStructurePart'
+export type { CollectForensicReportInput } from './CollectForensicReportInput'
 export type { CollectMessageAttachmentsInput } from './CollectMessageAttachmentsInput'
 export * from './DownloadedPartsResult'
 export type { EnvelopeSummary } from './EnvelopeSummary'

@@ -8,7 +8,7 @@ export async function fetchEnvelopesForChunk(
   const envMessages: FetchMessageObject[] = []
   for await (const msg of client.fetch(
     fetchQuery,
-    { envelope: true, uid: true },
+    { envelope: true, bodyStructure: true, uid: true },
     { uid: true },
   )) {
     envMessages.push(msg)

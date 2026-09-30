@@ -162,7 +162,7 @@ Kibana or Grafana dashboards, and it also parses failure (RUF) and SMTP TLS
 (TLS-RPT) reports. Vexa Insight is the option for when you want the dashboard
 without that stack: one container with its own UI, users and SQLite storage,
 plus live DNS diagnostics of your SPF, DKIM, DMARC, MTA-STS and BIMI records. It
-parses aggregate and TLS-RPT reports today; failure reports are on the roadmap.
+parses aggregate, failure (RUF) and TLS-RPT reports.
 
 ---
 
@@ -190,6 +190,11 @@ parses aggregate and TLS-RPT reports today; failure reports are on the roadmap.
 - Pulls SMTP TLS reports (TLS-RPT, RFC 8460) from the same mailboxes, gzip or
   plain JSON, and shows successful and failed inbound TLS sessions per reporter
   on each domain page, with failures grouped by cause and receiving MX.
+- Pulls DMARC failure reports (RUF, RFC 6591 ARF), recognised by their MIME
+  structure since they often keep the failed message's subject. Only identifiers
+  are kept (source IP, header and envelope From domains, DKIM domain and
+  selector, List-Id, Message-ID); no subject, body or full address is stored,
+  and each domain is capped at 500 reports a day.
 - Idempotent: each report is stored once, keyed on its `report_id`, however
   often the mail is fetched.
 - Keeps the original XML for audit next to the normalized rows the dashboard
@@ -449,8 +454,8 @@ the dashboard totals lag your data. See
 - **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
   dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
   flow.
-- **Phase 2:** Slack / Teams webhook adapters and delivery retries, failure
-  reports (RUF). SMTP TLS reports (TLS-RPT), generic outbound webhooks,
+- **Phase 2:** Slack / Teams webhook adapters and delivery retries. Failure
+  reports (RUF), SMTP TLS reports (TLS-RPT), generic outbound webhooks,
   Prometheus metrics and the OpenAPI spec already ship.
 - **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation
   scoring, threat-intel enrichment, anomaly detection.
@@ -475,14 +480,14 @@ The following endpoints are stable and meant for automation:
 
 Outbound webhooks are configured in Settings, for the events
 `unauthorized_source.detected`, `auth.fail_rate_spike`, `ingest.failed`,
-`snds.reputation_alert`, `tls.failure_detected` and `update.available`. Each
-endpoint receives a generic JSON envelope (`event`, `timestamp`, `source`,
-`data`) by `POST`, optionally signed with an HMAC-SHA256 `x-vexa-signature`
-header when the endpoint has a secret. Delivery is a single attempt with a 5s
-timeout and no retry; the last status and error are stored per endpoint. Slack
-and Microsoft Teams expect their own payload shapes, so they need a small
-receiver or relay in front of this envelope, and native adapters are Phase 2 on
-the roadmap.
+`snds.reputation_alert`, `tls.failure_detected`, `failure_report.received` and
+`update.available`. Each endpoint receives a generic JSON envelope (`event`,
+`timestamp`, `source`, `data`) by `POST`, optionally signed with an HMAC-SHA256
+`x-vexa-signature` header when the endpoint has a secret. Delivery is a single
+attempt with a 5s timeout and no retry; the last status and error are stored per
+endpoint. Slack and Microsoft Teams expect their own payload shapes, so they
+need a small receiver or relay in front of this envelope, and native adapters
+are Phase 2 on the roadmap.
 
 ---
 

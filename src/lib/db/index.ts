@@ -7,6 +7,7 @@ export {
   auditLog,
   domains,
   eventRollupDaily,
+  forensicReports,
   imapAccounts,
   ipAddresses,
   ipHostnameEnrichments,

@@ -1,11 +1,12 @@
 import { parseDmarcFile } from '@/services/dmarc'
+import { ingestForensicReport } from '@/services/forensic'
 import { ingestTlsReport } from '@/services/tlsrpt'
 import type { AttachmentResult } from '@/types/imap'
 import type { IngestOneAttachmentResult } from '@/types/reports'
 import { ingestParsedReport } from './ingestParsedReport'
 
 /**
- * Ingests one attachment: its TLS report when it carries one, else its DMARC
+ * Ingests one attachment: its failure or TLS report when it carries one, else its DMARC
  * report (parsing the file when att.parsed is absent). Returns the ingested
  * flag or an error.
  */
@@ -13,6 +14,9 @@ export async function ingestOneAttachment(
   att: AttachmentResult,
 ): Promise<IngestOneAttachmentResult> {
   try {
+    if (att.forensicReport) {
+      return { ingested: ingestForensicReport(att.forensicReport).ingested }
+    }
     if (att.tlsReport) {
       return { ingested: ingestTlsReport(att.tlsReport).ingested }
     }

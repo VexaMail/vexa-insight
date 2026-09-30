@@ -6,6 +6,18 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **Failure report (RUF/ARF) ingestion.** Candidates are now
+      also picked by MIME structure
+      (`multipart/report;     report-type=feedback-report`), since OpenDMARC's
+      reports carry the failed message's subject ("FW: ..."), which the subject
+      filter dropped. Envelope fetch now includes BODYSTRUCTURE. Stored in
+      `forensic_reports` (migration 0038) with identifiers only and a
+      500/domain/day cap; shown on the domain page; `failure_report.received`
+      webhook. Evidence: `test/parseForensicReport.test.ts`,
+      `test/ingestForensicReport.test.ts`, and a one-off parse of a real
+      OpenDMARC report from the production mailbox (IPv6 source, kernel List-Id)
+      giving the expected fields.
+
 - [x] 2026-09-30 — **TLS-RPT ingestion (RFC 8460).** IMAP polling and manual
       upload now accept SMTP TLS reports (gzip or plain JSON, detected by
       content), stored in `tls_reports` / `tls_report_policies` /

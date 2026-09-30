@@ -166,9 +166,10 @@ dmarc-report-viewer, parse-dmarc, DmarcAnalyzerApp, pescheckit dmarc-service,
 checkdmarc, Spoofy and others) and 13 commercial ones (dmarcian, Valimail,
 EasyDMARC, Red Sift OnDMARC, PowerDMARC, URIports, Postmark, dmarcreport.com,
 Mimecast, Proofpoint, Cloudflare, Sendmarc, MxToolbox). Already here, not gaps:
-OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT (since
-2026-09-30). Ordered by value over effort; RUF, RFC 9990, Slack/Teams/retries
-(issues #25-#27), table pruning and the agent surface have their own entries.
+OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
+(both since 2026-09-30). Ordered by value over effort; RFC 9990,
+Slack/Teams/retries (issues #25-#27), table pruning and the agent surface have
+their own entries.
 
 - [ ] **Named sender classification.** Map source IP / PTR / DKIM `d=` to a
       service name and type ("Google Workspace", "SendGrid", "Mailchimp") from a
@@ -214,39 +215,6 @@ OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT (since
       Postmaster Tools v2 integration.
 
 ## Future Ideas
-
-- [ ] **Ingest forensic (RUF) reports, not only aggregates.** Raised by the
-      owner 2026-09-16. The operator's own domains publish a `ruf=` pointing at
-      the very mailbox Insight already polls, and three real ones sit in its
-      `INBOX.DMARC` right now, ignored: OpenDMARC at `box.fidei.email`,
-      2026-09-11, `multipart/report; report-type= feedback-report` with a
-      `message/feedback-report` part (`Feedback-Type: auth-failure`,
-      `Auth-Failure: dmarc`, `Source-IP: 192.0.2.10 (list relay)`,
-      `Reported-Domain: example.com`,
-      `Original-Mail-From: linux-kernel+bounces-...@vger.kernel.org`) and a
-      `text/rfc822-headers` part carrying From, To, Subject, Message-ID, List-Id
-      and the chain of `Authentication-Results` (dmarc=pass at kernel.org,
-      dmarc=fail at the receiver). That is the story an aggregate can never
-      tell: one identified message, relayed by a mailing list, losing alignment
-      downstream. `dmarcCandidateConstants` skips both parts today, so the mails
-      are neither parsed nor trashed. README already lists RUF under Phase 2 and
-      the PowerDMARC-parity decision of 2026-07-26 covers it (their forensic
-      view exists). Scope: parse RFC 6591 ARF (`message/feedback-report`
-      fields + the rfc822-headers part), one `forensic_events` row per report
-      keyed by Message-ID, shown per domain next to the aggregate timeline, and
-      run the same post-process (trash after ingest). Keep what is stored
-      minimal — the headers part quotes third-party addresses, so store the
-      fields above, not the raw part. Volume is tiny (Google and Microsoft never
-      send RUF), so this is a parser and a table, not a pipeline. Fixture: the
-      three messages above, exportable with
-      `doveadm fetch -u <ingest mailbox> text mailbox INBOX.DMARC`. Update
-      2026-09-30: with `fo=1` a receiver sends one of these for any SPF or DKIM
-      failure, not only a DMARC failure, so volume on a domain with a broken
-      forwarder can be much higher than "tiny"; cap rows per domain per day.
-      Store per report: domain, source IP, `Auth-Failure` and the SPF/DKIM
-      results, the identifiers (header From, envelope from, DKIM `d=`/`s=`),
-      arrival date and reporting org. Redact local parts of third-party
-      addresses and store no body; a size limit on the headers kept.
 
 - [ ] **SNDS: keep the "<" of "< 0.1%" complaint rates.** The SNDS CSV reports
       low complaint rates as `< 0.1%`; the parser stores 0.001 and the card
