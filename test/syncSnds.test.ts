@@ -110,13 +110,8 @@ describe('syncSnds', () => {
         if (url.endsWith('report/data/2026-10-01')) {
           return Promise.resolve(
             new Response(
-              JSON.stringify([
-                {
-                  ipAddress: '192.0.2.1',
-                  filterResult: 'GREEN',
-                  messageRecipients: 40,
-                },
-              ]),
+              '192.0.2.1,9/30/2026 8:00 AM,10/1/2026 8:00 AM,40,40,40,GREEN,< 0.1%,,,,,@example.com,\n',
+              { headers: { 'Content-Type': 'application/octet-stream' } },
             ),
           )
         }

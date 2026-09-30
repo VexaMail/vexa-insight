@@ -6,6 +6,13 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **SNDS report format confirmed against real data.** The REST
+      API answers `report/data/<date>` with CSV (`application/octet-stream`), no
+      header row, in the legacy export's column order; `report/status/ip`
+      answers 404 when no IP is listed. The first live sync failed with
+      "returned a body that is not JSON"; the parser now reads CSV (quoted cells
+      included) and still accepts JSON. Covered by CSV fixtures in
+      `test/parseSndsDataRows.test.ts` and `test/syncSnds.test.ts`.
 - [x] 2026-09-21 — **Four dashboard complaints from real use: every domain
       scored 55%, the IP detail lists could not be searched or sorted and could
       repeat a row, the raw XML view was broken, and `/ingest` opened on an

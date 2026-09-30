@@ -134,13 +134,6 @@ the portfolio repo.
 
 ## Infrastructure
 
-- [ ] Confirm the SNDS REST API's JSON shape against real data (expected from
-      about 2026-10-02, once the connected IPs have a reported day). The parser
-      in `src/utils/snds/` matches the CSV export's column names loosely and
-      keeps each row's `raw` JSON; check a stored `snds_ip_data.raw` row, narrow
-      the aliases to the real field names and add that payload as a test
-      fixture.
-
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for

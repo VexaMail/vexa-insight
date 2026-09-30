@@ -57,7 +57,11 @@ report date and the flagged IPs.
 
 ## Data mapping
 
-Microsoft documents the CSV export's columns but not the JSON shape of the REST
-API. Vexa matches field names loosely (`IP Address`, `ipAddress` and `ip` all
-work) and keeps each row's original JSON in the `raw` column, so a field it does
-not recognise yet is not lost.
+The REST API answers with CSV (`application/octet-stream`), one line per IP and
+no header row, in the column order of the old CSV export: IP address, activity
+start and end, RCPT commands, DATA commands, message recipients, filter result,
+complaint rate, trap message period start and end, spam trap hits, sample HELO,
+sample MAIL FROM and sample comments. The status report uses first IP, last IP,
+blocked and details. Vexa also accepts a JSON body, matching field names loosely
+(`IP Address`, `ipAddress` and `ip` all work), and keeps each row as it arrived
+in the `raw` column.

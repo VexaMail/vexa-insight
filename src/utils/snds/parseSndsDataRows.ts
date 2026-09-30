@@ -1,17 +1,18 @@
+import { SNDS_DATA_CSV_COLUMNS } from '@/constants/snds'
 import type { SndsDataRow } from '@/types/snds'
-import { extractSndsRecords } from './extractSndsRecords'
 import { parseSndsComplaintRate } from './parseSndsComplaintRate'
 import { pickSndsField } from './pickSndsField'
 import { toSndsInt } from './toSndsInt'
+import { toSndsRecords } from './toSndsRecords'
 import { toSndsText } from './toSndsText'
 
 /**
- * Parses an SNDS data report. Field names follow the CSV export's columns;
- * rows without an IP are dropped, everything else is kept with nulls.
+ * Parses an SNDS data report, which the API sends as CSV (JSON is accepted
+ * too). Rows without an IP are dropped, everything else is kept with nulls.
  */
 export function parseSndsDataRows(body: unknown): SndsDataRow[] {
   const rows: SndsDataRow[] = []
-  for (const record of extractSndsRecords(body)) {
+  for (const record of toSndsRecords(body, SNDS_DATA_CSV_COLUMNS)) {
     const text = (aliases: readonly string[]) =>
       toSndsText(pickSndsField(record, aliases))
     const int = (aliases: readonly string[]) =>

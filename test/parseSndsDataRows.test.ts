@@ -13,6 +13,53 @@ import { describe, expect, it } from 'vitest'
  * spellings it accepts and the values it derives from them.
  */
 describe('SNDS report parsing', () => {
+  // The REST API's real answer: CSV without a header, legacy column order.
+  const CSV_DAY =
+    '192.0.2.10,9/11/2026 8:00 AM,9/12/2026 8:00 AM,422,409,422,GREEN,< 0.1%,,,,,@example.com,\n' +
+    '198.51.100.7,9/11/2026 8:00 AM,9/12/2026 8:00 AM,1200,1100,1300,YELLOW,0.4%,9/11/2026 8:00 AM,9/12/2026 8:00 AM,3,mail.example.com,sender@example.com,"quoted, with a comma"\n'
+
+  it('reads the CSV the API returns', () => {
+    const rows = parseSndsDataRows(CSV_DAY)
+    expect(rows).toHaveLength(2)
+    expect(rows[0]).toMatchObject({
+      ip: '192.0.2.10',
+      activityStart: '9/11/2026 8:00 AM',
+      rcptCommands: 422,
+      dataCommands: 409,
+      messageRecipients: 422,
+      filterResult: 'GREEN',
+      complaintRate: 0.001,
+      trapHits: null,
+      sampleHelo: null,
+      sampleMailFrom: '@example.com',
+    })
+    expect(rows[1]).toMatchObject({
+      ip: '198.51.100.7',
+      filterResult: 'YELLOW',
+      complaintRate: 0.004,
+      trapHits: 3,
+      comments: 'quoted, with a comma',
+    })
+    expect(rows.map(isSndsAlertRow)).toEqual([false, true])
+  })
+
+  it('skips a CSV header row if one is sent', () => {
+    expect(
+      parseSndsDataRows('IP Address,Activity start\n192.0.2.10,x\n'),
+    ).toHaveLength(1)
+    expect(
+      parseSndsStatusRows(
+        'First IP,Last IP,Blocked,Details\n192.0.2.1,192.0.2.1,Yes,Junked\n',
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        firstIp: '192.0.2.1',
+        blocked: 'Yes',
+        details: 'Junked',
+      }),
+    ])
+  })
+
   const LISTED_IP = '203.0.113.1'
 
   it('reads CSV-style column names from a bare array', () => {
