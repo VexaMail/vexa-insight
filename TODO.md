@@ -158,6 +158,61 @@ the portfolio repo.
   estimator fix changed reported bit values, so any reference capture must
   post-date it.
 
+## Competitive gaps (2026-09-30 survey)
+
+Owner goal, 2026-09-30: take every feature worth having from the other DMARC
+tools. Surveyed ~25 open-source projects (parsedmarc, dmarc-srg, cry-inc
+dmarc-report-viewer, parse-dmarc, DmarcAnalyzerApp, pescheckit dmarc-service,
+checkdmarc, Spoofy and others) and 13 commercial ones (dmarcian, Valimail,
+EasyDMARC, Red Sift OnDMARC, PowerDMARC, URIports, Postmark, dmarcreport.com,
+Mimecast, Proofpoint, Cloudflare, Sendmarc, MxToolbox). Already here, not gaps:
+OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT (since
+2026-09-30). Ordered by value over effort; RUF, RFC 9990, Slack/Teams/retries
+(issues #25-#27), table pruning and the agent surface have their own entries.
+
+- [ ] **Named sender classification.** Map source IP / PTR / DKIM `d=` to a
+      service name and type ("Google Workspace", "SendGrid", "Mailchimp") from a
+      bundled catalog, like parsedmarc's `base_reverse_dns_map.csv`, Valimail
+      and dmarcian. Biggest readability gap on the sources tables.
+- [ ] **Source approval workflow.** Mark a sender approved / unknown / threat
+      (Cloudflare, Valimail, MxToolbox) so alerts and dashboards stop repeating
+      known senders; dmarcian also buckets forwarders separately.
+- [ ] **Guided path to enforcement and policy simulation.** Per domain: what
+      would have been quarantined or rejected under `p=quarantine`/`reject`,
+      which sources must be fixed first, and a readiness verdict (MxToolbox,
+      Proofpoint, DmarcAnalyzerApp, Valimail).
+- [ ] **Scheduled email digests.** Weekly/monthly summary mail per domain
+      (Postmark, dmarc-srg, EasyDMARC, Red Sift). Needs SMTP settings.
+- [ ] **Discord and generic chat adapters** alongside the Slack/Teams issues.
+- [ ] **Report coverage gaps.** Last report per domain and per reporter, and an
+      alert when a domain that used to get reports stops (pescheckit).
+- [ ] **DNS change history.** Snapshot SPF/DKIM/DMARC/MTA-STS/BIMI records on a
+      schedule, show a timeline and alert on change (PowerDMARC, EasyDMARC,
+      URIports, Sendmarc).
+- [ ] **Record generator.** Copy-ready DMARC, SPF, `_smtp._tls` and MTA-STS
+      records from a form (Mimecast, Cloudflare, parse-dmarc, YADT).
+- [ ] **CSV/JSON export** of sources and reports (URIports, cry-inc).
+- [ ] **ASN / AS name enrichment** of source IPs (parsedmarc via IPinfo,
+      Open-DMARC-Analyzer), next to the existing country.
+- [ ] **Deeper DNS checks:** DNSSEC, DANE/TLSA and MX STARTTLS/certificate
+      probing, BIMI VMC validation, `_report._dmarc` external authorization, SPF
+      void lookups, RFC 9989 tags (`np`/`psd`/`t`) and removed-tag warnings
+      (checkdmarc, Spoofy, YADT).
+- [ ] **Retention settings** per data type (reports, events, mailbox, logs) with
+      pruning (dmarc-srg, DmarcAnalyzerApp); pairs with table pruning.
+- [ ] **TOTP second factor** for local accounts (dmarcian, YADT).
+- [ ] **HTTPS TLS-RPT receiver** (`rua=https:`), a POST endpoint for senders
+      that deliver over HTTPS (pescheckit, mta-sts-exporter).
+- [ ] **More intake paths:** Microsoft Graph and Gmail API with OAuth (M365
+      blocks basic IMAP auth), IMAP IDLE, `.eml` upload with `message/rfc822`
+      unwrapping (parsedmarc, parse-dmarc).
+- [ ] **Keep raw mail and replay** after parser fixes, with a quarantine for
+      unparsed mail (pescheckit). Reports cannot be re-requested.
+- [ ] **Larger ideas, each needing a brief first:** multi-tenancy and
+      white-label reports for MSPs, hosted MTA-STS policy, hosted/flattened SPF
+      (needs authoritative DNS), blocklist monitoring, lookalike domains, Google
+      Postmaster Tools v2 integration.
+
 ## Future Ideas
 
 - [ ] **Ingest forensic (RUF) reports, not only aggregates.** Raised by the
@@ -206,23 +261,6 @@ the portfolio repo.
       ones. Unverified here: find or build a sample in the new schema, run it
       through `parseDmarcFileToResult`, and add it as a fixture whichever way it
       goes.
-- [ ] **Ingest TLS-RPT reports (RFC 8460).** Raised 2026-09-30: an operator now
-      publishes `_smtp._tls` TXT records with `rua=mailto:` pointing at the
-      mailbox Insight polls, so these reports arrive and are not parsed. Format:
-      JSON, usually gzip, as an attachment typed `application/tlsrpt+json` or
-      `application/tlsrpt+gzip` (filenames like
-      `receiver.example!example.com!<start>!<end>!<id>.json.gz`). Scope: parse
-      `organization-name`, `date-range`, `report-id` and each `policies[]` entry
-      (`policy-type` sts/tlsa/no-policy-found, `policy-domain`,
-      `summary.total-successful-session-count` / `total-failure-session-count`,
-      `failure-details[]` with `result-type`, `sending-mta-ip`,
-      `receiving-mx-hostname`, `failed-session-count`); one row per report and
-      policy, keyed by `report-id`; show success/failure per policy domain and
-      reporting org on the domain page; fire a webhook on any failure count
-      above 0; trash after ingest like aggregates. Detection needs the two
-      content types added to the candidate set and a JSON branch beside
-      `parseDmarcFileToResult`.
-
 - [ ] **Mail the parser does not recognise is re-downloaded on every poll.**
       Checked 2026-09-30 (`processOneMessageUid` ->
       `collectMessageAttachments`): a message whose candidate parts fail to
@@ -233,11 +271,12 @@ the portfolio repo.
       downloaded and decompressed again on every poll until the mailbox is
       cleaned. Smallest fix: record the Message-ID as seen-but-unparsed so the
       next poll skips it, or narrow `.gz` candidates to `.xml.gz`/`.gz` whose
-      content type is not a `tlsrpt` one. Resolves itself once TLS-RPT and ARF
-      ingestion exist. **2026-09-30, production:** the six Google TLS reports in
-      the mailbox are typed `application/tlsrpt+gzip`, and the server log shows
-      `body_count=0` for them, so they are _not_ downloaded each poll; only a
-      report typed plain `application/gzip` would be.
+      content type is not a `tlsrpt` one. TLS-RPT is now parsed (2026-09-30), so
+      what remains is ARF and any other unparsed mail. **2026-09-30,
+      production:** the six Google TLS reports in the mailbox are typed
+      `application/tlsrpt+gzip`, and the server log shows `body_count=0` for
+      them, so they are _not_ downloaded each poll; only a report typed plain
+      `application/gzip` would be.
 
 Product/design work, deliberately not started autonomously: each one changes
 what the diagnostics page _is_, so it wants a brief on the intended reading

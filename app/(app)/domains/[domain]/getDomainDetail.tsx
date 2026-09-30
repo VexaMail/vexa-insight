@@ -1,8 +1,10 @@
 import { getDomainSources, getDomainSummary } from '@/services/reports'
+import { getTlsDomainFailures, getTlsDomainSummary } from '@/services/tlsrpt'
 import type { DomainDetailData } from '@/types/domains'
 
 export async function getDomainDetail(
   domainId: number,
+  domainName: string,
 ): Promise<DomainDetailData | null> {
   try {
     const [summary, sources] = await Promise.all([
@@ -19,6 +21,10 @@ export async function getDomainDetail(
         passRatePercent: summary.passRatePercent,
       },
       sources,
+      tls: {
+        summary: getTlsDomainSummary(domainName),
+        failures: getTlsDomainFailures(domainName),
+      },
     }
   } catch {
     return null

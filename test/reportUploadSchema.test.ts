@@ -41,7 +41,7 @@ describe('reportUploadSchema', () => {
     const parsed = reportUploadSchema.safeParse({ file: fileOf('report.txt') })
     expect(parsed.success).toBe(false)
     expect(parsed.error?.issues[0]?.message).toBe(
-      'Invalid file type. Allowed: .xml, .gz, .gzip, .zip',
+      'Invalid file type. Allowed: .xml, .gz, .gzip, .zip, .json',
     )
   })
 

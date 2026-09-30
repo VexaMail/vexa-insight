@@ -4,8 +4,10 @@ import { parseDmarcFile } from '@/services/dmarc'
 import { ingestParsedReport } from '@/services/reports'
 
 import { checkRateLimit, getRateLimitKey } from '@/utils/rateLimit'
+import { parseTlsReportFileToResult } from '@/utils/tlsrpt'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { ingestUploadedTlsReport } from './ingestUploadedTlsReport'
 import { readUploadedReportFile } from './readUploadedReportFile'
 import { uploadBadRequest } from './uploadBadRequest'
 import { UPLOAD_LIMIT } from './uploadLimit'
@@ -26,6 +28,8 @@ export const POST = withApiAuth(
     }
     const upload = await readUploadedReportFile(request)
     if (!upload.ok) return upload.response
+    const tlsReport = parseTlsReportFileToResult(upload.buffer)
+    if (tlsReport !== null) return ingestUploadedTlsReport(tlsReport)
     let parseResult
     try {
       parseResult = await parseDmarcFile(upload.buffer, upload.name)

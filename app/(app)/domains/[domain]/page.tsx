@@ -30,7 +30,7 @@ export default async function DomainDetailPage({
   const domainRow = await getDomainByName(domainName)
   if (!domainRow) notFound()
 
-  const data = await getDomainDetail(domainRow.id)
+  const data = await getDomainDetail(domainRow.id, domainName)
   if (data == null) notFound()
 
   return (

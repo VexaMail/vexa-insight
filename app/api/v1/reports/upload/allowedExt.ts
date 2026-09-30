@@ -1,1 +1,1 @@
-export const ALLOWED_EXT = /\.(xml|gz|gzip|zip)$/i
+export const ALLOWED_EXT = /\.(xml|gz|gzip|zip|json)$/i

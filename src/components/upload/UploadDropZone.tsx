@@ -38,14 +38,15 @@ export function UploadDropZone({
             Drop your DMARC report here
           </p>
           <p className="text-muted-foreground mt-1 text-xs">
-            Supports .xml, .gz, .gzip, and .zip files
+            Supports DMARC aggregate (.xml, .gz, .gzip, .zip) and TLS-RPT
+            (.json, .json.gz) files
           </p>
         </div>
         <input
           id="upload-file"
           type="file"
           name="file"
-          accept=".xml,.gz,.gzip,.zip"
+          accept=".xml,.gz,.gzip,.zip,.json"
           className="sr-only"
           required
         />

@@ -1,9 +1,12 @@
 import type { AttachmentResult, DownloadedPartsResult } from '@/types/imap'
 import { parseDmarcFileToResult } from '@/utils/dmarc'
+import { parseTlsReportFileToResult } from '@/utils/tlsrpt'
 import { getFilenameForPartId } from './getFilenameForPartId'
 
 /**
- * Parses downloaded MIME parts into valid DMARC AttachmentResults (skips non-DMARC or parse failures).
+ * Parses downloaded MIME parts into AttachmentResults: a DMARC aggregate
+ * report when the part is one, else an SMTP TLS report. Parts that are
+ * neither are skipped.
  */
 export async function parseDmarcAttachmentsFromParts(
   partsResult: DownloadedPartsResult,
@@ -25,6 +28,11 @@ export async function parseDmarcAttachmentsFromParts(
         filename,
         parsed: result,
       })
+      continue
+    }
+    const tlsReport = parseTlsReportFileToResult(partData.content)
+    if (tlsReport !== null) {
+      valid.push({ buffer: partData.content, filename, tlsReport })
     }
   }
   return valid

@@ -10,6 +10,15 @@ and this project adheres to
 
 ### Added
 
+- **SMTP TLS reports (TLS-RPT, RFC 8460).** Reports that senders such as Google
+  and Microsoft mail to the `rua=` address of a `_smtp._tls` record are now
+  picked up by IMAP polling and by manual upload (`.json` or `.json.gz`),
+  detected by content rather than filename. The domain page gains a TLS section
+  with successful and failed inbound sessions per reporter and policy type
+  (`sts`, `tlsa`, `no-policy-found`) and the failures grouped by result type and
+  receiving MX. A new `tls.failure_detected` webhook fires for every policy
+  domain with failed sessions in a newly stored report.
+
 - **Microsoft SNDS integration.** Settings has a Microsoft SNDS section that
   connects a Microsoft account through the SNDS REST API (PKCE sign-in with a
   pasted `http://localhost` redirect, refresh token stored encrypted). A daily

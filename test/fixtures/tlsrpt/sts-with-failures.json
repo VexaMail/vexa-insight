@@ -1,0 +1,55 @@
+{
+  "organization-name": "Receiver Example Inc.",
+  "date-range": {
+    "start-datetime": "2026-09-28T00:00:00Z",
+    "end-datetime": "2026-09-28T23:59:59Z"
+  },
+  "contact-info": "tls-reports@receiver.example",
+  "report-id": "2026-09-28T00:00:00Z_example.com",
+  "policies": [
+    {
+      "policy": {
+        "policy-type": "sts",
+        "policy-string": [
+          "version: STSv1",
+          "mode: enforce",
+          "mx: mx1.example.com",
+          "max_age: 604800"
+        ],
+        "policy-domain": "Example.COM.",
+        "mx-host": ["mx1.example.com"]
+      },
+      "summary": {
+        "total-successful-session-count": 120,
+        "total-failure-session-count": 4
+      },
+      "failure-details": [
+        {
+          "result-type": "certificate-expired",
+          "sending-mta-ip": "192.0.2.10",
+          "receiving-mx-hostname": "mx1.example.com",
+          "receiving-ip": "198.51.100.25",
+          "failed-session-count": 3
+        },
+        {
+          "result-type": "starttls-not-supported",
+          "sending-mta-ip": "192.0.2.11",
+          "receiving-mx-hostname": "mx1.example.com",
+          "failed-session-count": "1",
+          "failure-reason-code": "421-4.7.0"
+        }
+      ]
+    },
+    {
+      "policy": {
+        "policy-type": "no-policy-found",
+        "policy-domain": "sub.example.com",
+        "mx-host": "mx2.example.com"
+      },
+      "summary": {
+        "total-successful-session-count": 7,
+        "total-failure-session-count": 0
+      }
+    }
+  ]
+}

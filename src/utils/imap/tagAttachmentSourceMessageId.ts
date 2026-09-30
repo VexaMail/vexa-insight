@@ -9,5 +9,8 @@ export function tagAttachmentSourceMessageId(
     if (attachment.parsed) {
       attachment.parsed.rawReport.sourceMessageId = messageId
     }
+    if (attachment.tlsReport) {
+      attachment.tlsReport.sourceMessageId = messageId
+    }
   }
 }

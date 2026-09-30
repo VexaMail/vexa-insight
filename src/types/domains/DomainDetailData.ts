@@ -1,7 +1,8 @@
 import type { DomainSource, DomainSummary } from '@/types/reports'
+import type { TlsDomainSummaryRow, TlsFailureSummaryRow } from '@/types/tlsrpt'
 
 /**
- * Combined domain detail data (summary + stats + sources).
+ * Combined domain detail data (summary + stats + sources + TLS reports).
  */
 export type DomainDetailData = {
   summary: DomainSummary
@@ -12,4 +13,8 @@ export type DomainDetailData = {
     passRatePercent: number
   }
   sources: DomainSource[]
+  tls: {
+    summary: TlsDomainSummaryRow[]
+    failures: TlsFailureSummaryRow[]
+  }
 }

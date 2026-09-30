@@ -6,6 +6,15 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **TLS-RPT ingestion (RFC 8460).** IMAP polling and manual
+      upload now accept SMTP TLS reports (gzip or plain JSON, detected by
+      content), stored in `tls_reports` / `tls_report_policies` /
+      `tls_report_failures` (migration 0037), keyed by organisation plus report
+      id. The domain page shows sessions per reporter and policy type and
+      failures by result type and MX; `tls.failure_detected` webhook on failed
+      sessions. Evidence: `test/parseTlsReportJson.test.ts`,
+      `test/ingestTlsReport.test.ts`, `check:ci` 709 tests, `pnpm run build`.
+
 - [x] 2026-09-30 — **First outside contribution merged: PR #34 by @QIU-Guanzong
       (project name in Settings, closes issue #28).** Rebased onto `main` by the
       maintainer, with the author's commit kept (eabd3e9), plus f671dce making

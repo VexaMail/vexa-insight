@@ -6,5 +6,6 @@ export const ALL_WEBHOOK_EVENTS: WebhookEvent[] = [
   'update.available',
   'auth.fail_rate_spike',
   'snds.reputation_alert',
+  'tls.failure_detected',
   'test.ping',
 ]

@@ -4,7 +4,8 @@ import { ALLOWED_EXT } from './allowedExt'
 
 /**
  * Multipart payload of the report upload endpoint. Only the `file` part is
- * accepted; its bytes are parsed later by the DMARC parser.
+ * accepted; its bytes are parsed later as a TLS report or
+ * a DMARC aggregate report.
  */
 export const reportUploadSchema = z.object({
   file: z
@@ -13,6 +14,6 @@ export const reportUploadSchema = z.object({
       error: `File too large. Maximum size is ${String(MAX_FILE_SIZE / 1024 / 1024)} MB`,
     })
     .refine((file) => ALLOWED_EXT.test(file.name), {
-      error: 'Invalid file type. Allowed: .xml, .gz, .gzip, .zip',
+      error: 'Invalid file type. Allowed: .xml, .gz, .gzip, .zip, .json',
     }),
 })
