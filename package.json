@@ -152,7 +152,7 @@
     "knip": "^6.37.0",
     "lefthook": "^2.1.14",
     "oxlint": "^1.84.0",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "prettier-plugin-css-order": "^2.2.0",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
