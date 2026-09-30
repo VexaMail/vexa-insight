@@ -28,7 +28,15 @@ and this project adheres to
   the error count in the run history. Before, the cause lived only in the
   process log and was gone after a restart.
 - **Custom project names** can be set in Settings. The configured name appears
-  in the dashboard sidebar and authenticated page titles.
+  in the dashboard sidebar and authenticated page titles. Contributed by
+  @QIU-Guanzong (#34).
+
+### Changed
+
+- **The app calls itself "Vexa Insight"** in page titles, the sign-in page, the
+  web manifest and the container image label, matching the repository name. An
+  instance still on the old default name, "Vexa Mail Insight", is renamed by
+  migration 0036; a name set in Settings is kept.
 
 ### Security
 

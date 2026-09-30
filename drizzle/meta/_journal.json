@@ -253,6 +253,13 @@
       "when": 1790795721957,
       "tag": "0035_job_run_error_summary",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1790797644487,
+      "tag": "0036_default_project_name_vexa_insight",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,8 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
  */
 export const appSettings = sqliteTable('app_settings', {
   id: integer('id').primaryKey({ autoIncrement: true }),
+  // The default stays the old name: changing it means a table rebuild in
+  // SQLite. The only row is seeded by 0003 and renamed by 0036.
   projectName: text('project_name').notNull().default('Vexa Mail Insight'),
   apiV1Str: text('api_v1_str').notNull().default('/api/v1'),
   ingestionIntervalMinutes: integer('ingestion_interval_minutes')
