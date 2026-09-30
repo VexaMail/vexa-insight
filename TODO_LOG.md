@@ -6,6 +6,14 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **First outside contribution merged: PR #34 by @QIU-Guanzong
+      (project name in Settings, closes issue #28).** Rebased onto `main` by the
+      maintainer, with the author's commit kept (eabd3e9), plus f671dce making
+      "Vexa Insight" the default name: migration 0036 renames instances still on
+      "Vexa Mail Insight" and keeps chosen names. Fork runs needed maintainer
+      approval before CI started. Evidence: all six PR checks green, local
+      `check:ci` 695 tests plus `pnpm run build`; thanks posted on the PR.
+
 - [x] 2026-09-30 — **CI green again after nine days red.** Every install since
       the 2026-09-21 pnpm 11 to 12 upgrade failed: pnpm 12 runs an implicit
       `node-gyp rebuild` for better-sqlite3 (it has a `binding.gyp`) and no

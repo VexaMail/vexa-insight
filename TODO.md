@@ -8,15 +8,6 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
-## GitHub (2026-09-30)
-
-- [ ] **Community PR #34 (project name, issue #28) is ready to merge once the
-      author rebases it and takes it out of draft.** Merged locally onto `main`
-      at 10d2572 on 2026-09-30: `pnpm run check:ci` green (677 tests), the only
-      conflict is `CHANGELOG.md`. Review posted asking for the rebase and noting
-      the default-title change ("Vexa Insight" to "Vexa Mail Insight"). Merge
-      when it comes back; nudge if it is still a draft in two weeks.
-
 ## Open-source launch
 
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
