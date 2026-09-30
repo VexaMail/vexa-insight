@@ -16,6 +16,9 @@ describe('every /api/v1/** route handler enforces auth', () => {
   const publicAllow = new Set([
     'app/api/v1/health/route.ts',
     'app/api/v1/openapi.json/route.ts',
+    // RFC 8460 HTTPS report delivery: senders cannot authenticate. The route
+    // keeps only reports about monitored domains and rate limits each client.
+    'app/api/v1/tlsrpt/route.ts',
   ])
   // Server-Sent Events routes: EventSource cannot set request headers, so
   // these authenticate a single-use ticket from the query string instead. The

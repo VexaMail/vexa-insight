@@ -203,8 +203,6 @@ OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
 - [ ] **Retention settings** per data type (reports, events, mailbox, logs) with
       pruning (dmarc-srg, DmarcAnalyzerApp); pairs with table pruning.
 - [ ] **TOTP second factor** for local accounts (dmarcian, YADT).
-- [ ] **HTTPS TLS-RPT receiver** (`rua=https:`), a POST endpoint for senders
-      that deliver over HTTPS (pescheckit, mta-sts-exporter).
 - [ ] **More intake paths:** Microsoft Graph and Gmail API with OAuth (M365
       blocks basic IMAP auth), IMAP IDLE, `.eml` upload with `message/rfc822`
       unwrapping (parsedmarc, parse-dmarc).

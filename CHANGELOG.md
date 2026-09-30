@@ -10,6 +10,12 @@ and this project adheres to
 
 ### Added
 
+- **HTTPS delivery of TLS reports.** `POST /api/v1/tlsrpt` accepts
+  `application/tlsrpt+json` and `application/tlsrpt+gzip` bodies (RFC 8460
+  section 5.2) for a `rua=https://` TLS-RPT record. It is unauthenticated, as
+  the RFC requires, so it keeps only reports about domains the instance already
+  monitors and limits each client address to 60 reports an hour.
+
 - **CSV export of a domain's sources.**
   `GET /api/v1/domains/{id}/sources?format=csv` and a Download CSV link on the
   domain page return one row per source IP with messages, hostname, country and

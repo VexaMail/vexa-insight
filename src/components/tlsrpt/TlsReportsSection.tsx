@@ -24,8 +24,9 @@ export function TlsReportsSection({
           No TLS reports yet. Publish a TXT record at{' '}
           <code className="font-mono">_smtp._tls.{domainName}</code> with{' '}
           <code className="font-mono">v=TLSRPTv1; rua=mailto:…</code> pointing
-          at a mailbox this instance polls, and senders such as Google and
-          Microsoft will report daily.
+          at a mailbox this instance polls (or{' '}
+          <code className="font-mono">rua=https://…/api/v1/tlsrpt</code>), and
+          senders such as Google and Microsoft will report daily.
         </p>
       ) : (
         <div className="space-y-6">

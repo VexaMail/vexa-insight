@@ -2,6 +2,7 @@ import { APP_VERSION } from '@/constants/app'
 import { adminJobPaths } from './openapi/adminJobPaths'
 import { errorSchema } from './openapi/errorSchema'
 import { observabilityPaths } from './openapi/observabilityPaths'
+import { tlsrptPaths } from './openapi/tlsrptPaths'
 import { webhookEndpointSchema } from './openapi/webhookEndpointSchema'
 import { webhookInputSchema } from './openapi/webhookInputSchema'
 import { webhookPaths } from './openapi/webhookPaths'
@@ -38,6 +39,7 @@ export function buildOpenApiDocument(): Record<string, unknown> {
       ...observabilityPaths,
       ...adminJobPaths,
       ...webhookPaths,
+      ...tlsrptPaths,
     },
   }
 }

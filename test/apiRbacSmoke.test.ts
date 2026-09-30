@@ -19,6 +19,9 @@ import { describe, expect, it } from 'vitest'
  * Intentional exemptions (no RBAC by design):
  *  - app/api/v1/health, app/api/v1/openapi.json: public endpoints (see
  *    PUBLIC_API_ROUTES).
+ *  - app/api/v1/tlsrpt: RFC 8460 HTTPS report delivery, which senders make
+ *    without credentials. It stores only reports about monitored domains and
+ *    rate limits each client address.
  *  - app/api/install/**: pre-auth install flow, gated by loopback origin
  *    plus one-time install token.
  *  - app/api/auth/oidc/**: pre-auth login flow (state/PKCE protected).
@@ -57,6 +60,7 @@ describe('privileged and mutating /api/v1 routes enforce RBAC', () => {
     'app/api/v1/ai/diagnostics-insights/route.ts',
   ])
 
+  const publicReportReceivers = new Set(['app/api/v1/tlsrpt/route.ts'])
   const root = path.resolve(__dirname, '..')
   const routes = walk(path.resolve(root, 'app/api/v1'))
 
@@ -67,7 +71,7 @@ describe('privileged and mutating /api/v1 routes enforce RBAC', () => {
     const usesRequirePermission = src.includes('requirePermission(')
     const usesRequireAdminAuth = src.includes('requireAdminAuth(')
 
-    if (isMutating) {
+    if (isMutating && !publicReportReceivers.has(rel)) {
       it(`${rel} (mutating) enforces a permission or is key-only`, () => {
         expect(
           usesRequirePermission || usesRequireAdminAuth,

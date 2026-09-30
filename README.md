@@ -188,8 +188,10 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
   schedule, or from files you upload; `.xml`, `.zip` and `.gz`, with zip-bomb
   protection.
 - Pulls SMTP TLS reports (TLS-RPT, RFC 8460) from the same mailboxes, gzip or
-  plain JSON, and shows successful and failed inbound TLS sessions per reporter
-  on each domain page, with failures grouped by cause and receiving MX.
+  plain JSON, or takes them over HTTPS at `POST /api/v1/tlsrpt` for a
+  `rua=https://` record, and shows successful and failed inbound TLS sessions
+  per reporter on each domain page, with failures grouped by cause and receiving
+  MX.
 - Pulls DMARC failure reports (RUF, RFC 6591 ARF), recognised by their MIME
   structure since they often keep the failed message's subject. Only identifiers
   are kept (source IP, header and envelope From domains, DKIM domain and
