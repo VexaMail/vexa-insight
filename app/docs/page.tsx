@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 
 export const metadata: Metadata = {
-  title: 'API Reference — Vexa Mail Insight',
+  title: 'API Reference — Vexa Insight',
   description:
-    'Interactive reference for the Vexa Mail Insight HTTP API (OpenAPI 3.1).',
+    'Interactive reference for the Vexa Insight HTTP API (OpenAPI 3.1).',
 }
 
 export const dynamic = 'force-dynamic'

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Vexa Mail Insight',
+    name: 'Vexa Insight',
     short_name: 'Vexa Insight',
     description:
       'DMARC analytics dashboard with policy visibility, diagnostics, and ingestion monitoring.',

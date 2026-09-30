@@ -16,7 +16,7 @@ export function LoginHeader() {
         Sign In
       </h1>
       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-        Welcome back to Vexa Mail Insight
+        Welcome back to Vexa Insight
       </p>
     </div>
   )
