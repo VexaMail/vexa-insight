@@ -4,8 +4,9 @@ import { sql } from 'drizzle-orm'
 /** Event-count aggregates over normalized events, one column per counter. */
 export const diagnosticAuthStatsSelection = {
   totalEvents: sql<number>`cast(coalesce(sum(${normalizedEvents.count}), 0) as integer)`,
+  // RFC 9990 `pass` means no policy was applied, like `none`.
   failedEvents: sql<number>`
-    cast(coalesce(sum(case when ${normalizedEvents.disposition} != 'none' then ${normalizedEvents.count} else 0 end), 0) as integer)
+    cast(coalesce(sum(case when ${normalizedEvents.disposition} not in ('none', 'pass') then ${normalizedEvents.count} else 0 end), 0) as integer)
   `,
   spf_pass_unaligned: sql<number>`
     cast(coalesce(sum(case when ${normalizedEvents.spfAuthResult} = 'pass' and ${normalizedEvents.spfAligned} = 0 then ${normalizedEvents.count} else 0 end), 0) as integer)

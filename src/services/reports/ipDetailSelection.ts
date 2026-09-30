@@ -28,8 +28,9 @@ export const ipDetailSelection = {
     sql<number>`sum(case when ${normalizedEvents.spfAligned} = 1 and ${normalizedEvents.dkimAligned} = 1 then ${normalizedEvents.count} else 0 end)`.as(
       'fully_aligned_count',
     ),
+  // RFC 9990 adds `pass`: the message passed, so no policy was applied.
   dispositionNone:
-    sql<number>`sum(case when ${normalizedEvents.disposition} = 'none' then ${normalizedEvents.count} else 0 end)`.as(
+    sql<number>`sum(case when ${normalizedEvents.disposition} in ('none', 'pass') then ${normalizedEvents.count} else 0 end)`.as(
       'disposition_none',
     ),
   dispositionQuarantine:

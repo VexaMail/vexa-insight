@@ -6,6 +6,19 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **RFC 9990 `pass` disposition counted as no policy applied.**
+      `ipDetailSelection.ts` summed only `none`, `quarantine` and `reject`, so
+      `pass` messages vanished from the IP disposition breakdown, and
+      `diagnosticAuthStatsSelection.ts` counted them as failed (`!= 'none'`).
+      Both now treat `pass` like `none`. Test:
+      `test/rfc9990PassDisposition.test.ts` (0 before the fix, 123 after).
+- [x] 2026-09-30 — **Failure reports keep the reporter's SPF and DKIM results.**
+      The three real OpenDMARC reports ingested in production had empty
+      `spf_result`/`dkim_result`: OpenDMARC writes only `dmarc=fail` in the
+      feedback part and leaves `dkim=fail` in the Authentication-Results its
+      host added to the reported message. `readReporterAuthResults` reads that
+      header, only when its authserv-id is the reporting MTA. Test in
+      `test/parseForensicReport.test.ts`.
 - [x] 2026-09-30 — **Aggregate parser checked against the RFC 9990 schema.** The
       RFC's own example report (`dmarc-2.0` namespace, `np`, `testing`,
       `discovery_method`, a file-level `<extension>`, disposition `pass`) parses

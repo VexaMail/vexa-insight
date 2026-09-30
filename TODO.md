@@ -185,8 +185,9 @@ OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
 - [ ] **Scheduled email digests.** Weekly/monthly summary mail per domain
       (Postmark, dmarc-srg, EasyDMARC, Red Sift). Needs SMTP settings.
 - [ ] **Discord and generic chat adapters** alongside the Slack/Teams issues.
-- [ ] **Report coverage gaps.** Last report per domain and per reporter, and an
-      alert when a domain that used to get reports stops (pescheckit).
+- [~] **Report coverage gaps.** Per domain done 2026-09-30 (Last report column,
+  `reports.stopped` webhook). Still to do: per reporting organisation, so a
+  domain that loses Microsoft but keeps Google is flagged (pescheckit).
 - [ ] **DNS change history.** Snapshot SPF/DKIM/DMARC/MTA-STS/BIMI records on a
       schedule, show a timeline and alert on change (PowerDMARC, EasyDMARC,
       URIports, Sendmarc).
@@ -222,11 +223,6 @@ OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
 - [ ] **SNDS: confirm the IP status CSV format.** The status endpoint has
       returned no rows so far, so its parser is untested against real data.
       Check it the first time an IP is listed as blocked, and add a fixture.
-- [ ] **RFC 9990 `pass` disposition is not shown in the IP disposition
-      breakdown.** RFC 9990 adds `pass` to `policy_evaluated/disposition`. It is
-      stored as is, but `ipDetailSelection.ts` only sums `none`, `quarantine`
-      and `reject`, so those messages drop out of that breakdown. Smallest fix:
-      a fourth bucket, or count `pass` with `none`.
 - [ ] **Mail the parser does not recognise is re-downloaded on every poll.**
       Checked 2026-09-30 (`processOneMessageUid` ->
       `collectMessageAttachments`): a message whose candidate parts fail to
