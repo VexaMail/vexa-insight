@@ -312,7 +312,7 @@ importers:
         version: 0.2.0(prettier-plugin-css-order@2.2.0(postcss@8.5.28)(prettier@3.9.8))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.8))(prettier-plugin-tailwindcss@0.8.1(prettier-plugin-css-order@2.2.0(postcss@8.5.28)(prettier@3.9.8))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.8))(prettier@3.9.8))(prettier@3.9.8)
       '@syntopica/quality-config':
         specifier: ^0.11.1
-        version: 0.11.1(@commitlint/config-conventional@21.2.3)(@typescript/typescript6@6.0.2)(dependency-cruiser@18.4.0)(knip@6.37.0)(oxlint@1.84.0)
+        version: 0.11.1(@commitlint/config-conventional@21.2.3)(@typescript/typescript6@6.0.2)(dependency-cruiser@18.4.0)(knip@6.38.0)(oxlint@1.84.0)
       '@syntopica/tsconfig':
         specifier: ^0.3.0
         version: 0.3.0
@@ -425,8 +425,8 @@ importers:
         specifier: ^30.1.0
         version: 30.1.0
       knip:
-        specifier: ^6.37.0
-        version: 6.37.0
+        specifier: ^6.38.0
+        version: 6.38.0
       lefthook:
         specifier: ^2.1.14
         version: 2.1.14
@@ -4530,8 +4530,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@6.37.0:
-    resolution: {integrity: sha512-NKCYuoGKJ+o2AuoCuV1mDvfMYnSSWfDXqxwmzxeHyd8fftjNRl8TBUg3fbSrtJjhm7Vj6sc1PX3WZnZhECs9EQ==}
+  knip@6.38.0:
+    resolution: {integrity: sha512-umytiMCaZf02MV9SOO1FEDgbDf6h20VZk3ruJE0kh52kkGjYZFRUAXHJWYoLhvhoHGINO/7GXVJmQ2vxTBvl6A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -7815,13 +7815,13 @@ snapshots:
     optionalDependencies:
       prettier-plugin-tailwindcss: 0.8.1(prettier-plugin-css-order@2.2.0(postcss@8.5.28)(prettier@3.9.8))(prettier-plugin-organize-imports@4.3.0(@typescript/typescript6@6.0.2)(prettier@3.9.8))(prettier@3.9.8)
 
-  '@syntopica/quality-config@0.11.1(@commitlint/config-conventional@21.2.3)(@typescript/typescript6@6.0.2)(dependency-cruiser@18.4.0)(knip@6.37.0)(oxlint@1.84.0)':
+  '@syntopica/quality-config@0.11.1(@commitlint/config-conventional@21.2.3)(@typescript/typescript6@6.0.2)(dependency-cruiser@18.4.0)(knip@6.38.0)(oxlint@1.84.0)':
     dependencies:
       typescript: '@typescript/typescript6@6.0.2'
     optionalDependencies:
       '@commitlint/config-conventional': 21.2.3
       dependency-cruiser: 18.4.0
-      knip: 6.37.0
+      knip: 6.38.0
       oxlint: 1.84.0
 
   '@syntopica/tsconfig@0.3.0': {}
@@ -10201,7 +10201,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@6.37.0:
+  knip@6.38.0:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.7)
       formatly: 0.7.1
