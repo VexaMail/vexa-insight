@@ -298,18 +298,6 @@ remains below is what those passes did not reach.
       run in `beforeAll`; 3 of 3 runs pass at the same load. The other two files
       are unchanged.
 
-- [~] The v0.3.3 container image build ran over 100 minutes against 21 for the
-  whole v0.3.2 release. Run 35216978334: the GitHub Release and the Helm chart
-  jobs finished in four minutes each, and "Build, push, sign, attest container
-  image" was still on its build-and-push step at 13:28 UTC having started at
-  11:45. Logs are not retrievable until a job completes, so there is no evidence
-  either way on whether it is progressing. The build is
-  `linux/amd64,linux/arm64` with `type=gha` cache; the arm64 half runs under
-  QEMU and the 0.3.3 source change invalidated the layer that caches
-  `next build`. Smallest next step: if this recurs, split the two platforms into
-  parallel jobs so arm64 stops holding the release, or build arm64 on a native
-  runner.
-
 ## Shared package scope migration (2026-09-14)
 
 - [ ] After the owner publishes the renamed shared packages, regenerate the

@@ -6,6 +6,14 @@
 
 ### 2026-09
 
+- [x] 2026-10-01 — **v0.4.0 released; the slow v0.3.3 image build did not
+      recur.** Release run for `v0.4.0`: GitHub Release with SBOM in 5 minutes,
+      Helm chart in 21 seconds, the `linux/amd64,linux/arm64` image built,
+      signed and attested in 16 minutes, 21 minutes in all. The v0.3.3 image had
+      finished in 17 minutes on its re-run (15:40-15:58 UTC), and every release
+      job has had a time bound since `8842ff0`, so the split into per-platform
+      jobs stays unneeded unless it recurs. Release notes are the CHANGELOG
+      section above the generated PR list; production runs `c902861`.
 - [x] 2026-09-30 — **knip and dependency-cruiser at zero and in `check:ci`.**
       Removed three unused files (`isApplied`, two `MIN_LENGTH` copies) and 15
       barrel re-exports nobody imported. All 16 `no-circular` errors ran through
