@@ -80,6 +80,11 @@ and this project adheres to
 
 ### Security
 
+- **Domain allow-list now applies to `GET /api/v1/domains/{id}/sources`.** The
+  route skipped the per-user domain check its sibling routes get from
+  `getDomainSummary`, so a user restricted to some domains could read another
+  domain's source IPs, hostnames and message counts by id. It now answers 404.
+
 - **Rate limits can no longer be dodged with a forged `X-Forwarded-For`.** The
   login, upload, poll-trigger and AI rate limits keyed on the first
   `X-Forwarded-For` entry, which the client writes whenever a proxy appends to
