@@ -51,6 +51,23 @@ describe('parseForensicReport', () => {
     expect(report.dkimSelector).toBe('s2')
   })
 
+  it("reads SPF and DKIM from the reporter's own Authentication-Results", () => {
+    const headers = [
+      'Authentication-Results: receiver.example;',
+      '\tdkim=fail reason="signature verification failed" header.d=example.com;',
+      '\tdkim-atps=neutral',
+      'Authentication-Results: relay.lists.example.net; spf=pass',
+      HEADERS,
+    ].join('\n')
+    const report = parseForensicReport(
+      FEEDBACK,
+      headerSectionOf(Buffer.from(headers)),
+    )
+    expect(report.dkimResult).toBe('fail')
+    expect(report.spfResult).toBeNull()
+    expect(report.dmarcResult).toBe('fail')
+  })
+
   it('falls back to the From domain when Reported-Domain is missing', () => {
     const feedback = FEEDBACK.replace(/^Reported-Domain:.*$/m, '')
     expect(parseForensicReport(feedback, HEADERS).reportedDomain).toBe(DOMAIN)

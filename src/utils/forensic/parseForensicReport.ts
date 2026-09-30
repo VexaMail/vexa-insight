@@ -6,6 +6,7 @@ import { parseHeaderBlock } from './parseHeaderBlock'
 import { readArrivalDate } from './readArrivalDate'
 import { readAuthResults } from './readAuthResults'
 import { readDkimIdentity } from './readDkimIdentity'
+import { readReporterAuthResults } from './readReporterAuthResults'
 import { readReportingMta } from './readReportingMta'
 import { readSourceIp } from './readSourceIp'
 import { trimAngleBrackets } from './trimAngleBrackets'
@@ -29,16 +30,18 @@ export function parseForensicReport(
   if (reportedDomain === null) {
     throw new TypeError('Invalid failure report: no Reported-Domain or From')
   }
+  const reportingMta = readReportingMta(
+    firstHeader(feedback, 'reporting-mta'),
+    authResults,
+  )
+  const reporterAuthResults = readReporterAuthResults(headers, reportingMta)
 
   return {
     reportedDomain,
     feedbackType: firstHeaderLower(feedback, 'feedback-type') ?? 'auth-failure',
     authFailure: firstHeaderLower(feedback, 'auth-failure'),
     sourceIp: readSourceIp(firstHeader(feedback, 'source-ip')),
-    reportingMta: readReportingMta(
-      firstHeader(feedback, 'reporting-mta'),
-      authResults,
-    ),
+    reportingMta,
     arrivalDate: readArrivalDate(
       firstHeader(feedback, 'arrival-date'),
       firstHeader(headers, 'date'),
@@ -49,7 +52,10 @@ export function parseForensicReport(
       firstHeader(feedback, 'original-mail-from'),
     ),
     ...readDkimIdentity(feedback, headers),
-    ...readAuthResults(authResults),
+    ...readAuthResults(
+      [authResults, reporterAuthResults].filter((v) => v !== null).join('; ') ||
+        null,
+    ),
     originalMessageId: trimAngleBrackets(firstHeader(headers, 'message-id')),
     listId: trimAngleBrackets(firstHeader(headers, 'list-id')),
   }
