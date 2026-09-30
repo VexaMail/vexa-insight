@@ -19,6 +19,11 @@ describe('recovery commands', () => {
     setupTestDb()
     const { runMigrations } = await import('@/lib/db')
     runMigrations()
+    // Load the service graph here, where the hook timeout applies, so the
+    // first test does not pay a cold import on a busy machine.
+    await import('@/services/recovery')
+    await import('@/services/users')
+    await import('@/services/auth')
   })
 
   beforeEach(async () => {

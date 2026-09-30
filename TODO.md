@@ -293,6 +293,10 @@ remains below is what those passes did not reach.
       a checksum for every migration it applies") timed out at 5 s under
       coverage on the Dependabot branch run for `development-minor-patch`.
       Raises the priority: a flaky gate teaches people to re-run red CI.
+      **2026-10-01:** `recoveryCommands` failed on its own at load 33: the first
+      test paid the cold dynamic import of the service graph. The imports now
+      run in `beforeAll`; 3 of 3 runs pass at the same load. The other two files
+      are unchanged.
 
 - [~] The v0.3.3 container image build ran over 100 minutes against 21 for the
   whole v0.3.2 release. Run 35216978334: the GitHub Release and the Helm chart
