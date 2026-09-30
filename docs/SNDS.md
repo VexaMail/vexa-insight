@@ -32,6 +32,11 @@ so the sign-in cannot return to Vexa on its own. The flow is:
 The token redemption is done by the server without an `Origin` header; Microsoft
 refuses a browser-style redemption for this client (`AADSTS90023`).
 
+The browser sends only the query string of the pasted address. A web application
+firewall running the OWASP Core Rule Set (ModSecurity, Coraza) blocks any
+request parameter that names `localhost` as a possible SSRF (rule 934190), which
+would otherwise reject the connect step with a 403.
+
 ## Sync
 
 - Daily at 06:17 server time, and on demand with **Sync now**.

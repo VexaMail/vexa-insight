@@ -7,6 +7,7 @@ import type {
 } from '@/types/settings'
 import type { SndsConnectionPublic } from '@/types/snds'
 import { applySndsSyncResult, callSndsAdminApi } from '@/utils/settings'
+import { toSndsRedirectQuery } from '@/utils/snds'
 import { useState } from 'react'
 
 /**
@@ -47,7 +48,7 @@ export function useSndsConnectFlow(
           apiKey,
           '/callback',
           'POST',
-          { redirectUrl },
+          { redirectUrl: toSndsRedirectQuery(redirectUrl) },
         )
         if (!applySndsSyncResult(result, setConnection, setMessage)) return
         setAuthorizeUrl(null)

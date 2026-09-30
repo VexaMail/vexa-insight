@@ -3,6 +3,7 @@ import {
   isSndsAlertRow,
   parseSndsDataRows,
   parseSndsStatusRows,
+  toSndsRedirectQuery,
 } from '@/utils/snds'
 import { describe, expect, it } from 'vitest'
 
@@ -117,5 +118,14 @@ describe('SNDS report parsing', () => {
       ),
     ).toEqual({ error: 'Denied' })
     expect(extractSndsAuthCode('')).toHaveProperty('error')
+  })
+
+  it('sends only the query string, so a firewall does not see localhost', () => {
+    const query = toSndsRedirectQuery(
+      ' http://localhost/?code=M.C1_abc&state=x ',
+    )
+    expect(query).toBe('code=M.C1_abc&state=x')
+    expect(extractSndsAuthCode(query)).toEqual({ code: 'M.C1_abc' })
+    expect(toSndsRedirectQuery('M.C1_bare')).toBe('M.C1_bare')
   })
 })
