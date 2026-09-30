@@ -200,6 +200,12 @@ the portfolio repo.
 - [ ] **SNDS: confirm the IP status CSV format.** The status endpoint has
       returned no rows so far, so its parser is untested against real data.
       Check it the first time an IP is listed as blocked, and add a fixture.
+- [ ] **Check the aggregate parser against the RFC 9990 report schema.** The
+      final DMARC standard (RFC 9989) comes with a new aggregate report schema
+      (RFC 9990), which parsedmarc already parses next to the draft and 1.0
+      ones. Unverified here: find or build a sample in the new schema, run it
+      through `parseDmarcFileToResult`, and add it as a fixture whichever way it
+      goes.
 - [ ] **Ingest TLS-RPT reports (RFC 8460).** Raised 2026-09-30: an operator now
       publishes `_smtp._tls` TXT records with `rua=mailto:` pointing at the
       mailbox Insight polls, so these reports arrive and are not parsed. Format:
