@@ -26,6 +26,13 @@ VEXA_ALLOWED_ORIGINS=https://dmarc.example.com
   It is only needed when the proxy does not forward the public hostname in
   `Host`/`X-Forwarded-Host` (both configs below do); without either, all
   mutating UI actions return `403`.
+- `VEXA_TRUSTED_PROXY_HOPS` — how many proxies in front of the app append to
+  `X-Forwarded-For` (default `1`). The client address used for rate limits and
+  audit rows is the entry that many places from the right, because everything to
+  its left was sent by the client and can be forged. A single proxy that
+  overwrites the header, like both configs below, needs nothing. Behind a CDN
+  that appends in front of a proxy that also appends (Cloudflare in front of
+  Apache, for instance), set it to `2`.
 
 ## nginx (TLS terminator)
 
@@ -54,8 +61,8 @@ server {
     proxy_set_header Connection           "";
     proxy_set_header Host                 $host;
     proxy_set_header X-Real-IP            $remote_addr;
-    # Overwrite, do not append: the login rate limit keys on the first
-    # X-Forwarded-For entry, and a client-supplied one must never win.
+    # Overwrite, do not append: a single entry is the client address with no
+    # client-supplied value in front of it (see VEXA_TRUSTED_PROXY_HOPS).
     proxy_set_header X-Forwarded-For      $remote_addr;
     proxy_set_header X-Forwarded-Proto    $scheme;
     proxy_set_header X-Forwarded-Host     $host;

@@ -20,6 +20,7 @@ export const envSchema = z.object({
   VERCEL_URL: z.string().optional(),
   VEXA_ALLOW_REMOTE_INSTALL: z.enum(['0', '1']).default('0'),
   VEXA_ALLOWED_ORIGINS: z.string().default(''),
+  VEXA_TRUSTED_PROXY_HOPS: z.string().optional(),
   VEXA_UPDATE_CHECK_ENABLED: z.string().default('true'),
   VEXA_UPDATE_REPO: z.string().optional(),
   VEXA_LOG_FORMAT: z.enum(['json', 'text']).optional(),

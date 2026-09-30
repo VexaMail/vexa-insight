@@ -1,10 +1,7 @@
+import { clientIpFromHeaders } from '@/utils/security'
 import type { NextRequest } from 'next/server'
 
-/** The first forwarded address, else the real-ip header, else "unknown". */
+/** The client address your proxies recorded, else "unknown". */
 export function requestClientIp(request: NextRequest): string {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    'unknown'
-  )
+  return clientIpFromHeaders(request.headers) ?? 'unknown'
 }

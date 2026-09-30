@@ -1,5 +1,6 @@
 export { buildProdContentSecurityPolicy } from './buildProdContentSecurityPolicy'
 export { buildProdCspDirectives } from './buildProdCspDirectives'
 export { buildSecurityHeaders } from './buildSecurityHeaders'
+export { clientIpFromHeaders } from './clientIpFromHeaders'
 export { createCspNonce } from './createCspNonce'
 export { getAllowedOriginsFromEnv } from './getAllowedOriginsFromEnv'

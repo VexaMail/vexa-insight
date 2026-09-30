@@ -19,6 +19,16 @@ and this project adheres to
   `snds.reputation_alert` webhook fires for non-green IPs, complaint rates above
   0.3% and trap hits. See `docs/SNDS.md`.
 
+### Security
+
+- **Rate limits can no longer be dodged with a forged `X-Forwarded-For`.** The
+  login, upload, poll-trigger and AI rate limits keyed on the first
+  `X-Forwarded-For` entry, which the client writes whenever a proxy appends to
+  the header rather than overwriting it, so every login attempt could claim a
+  fresh address. The client address is now taken from the right, one entry per
+  trusted proxy; set `VEXA_TRUSTED_PROXY_HOPS` when more than one proxy appends.
+  Audit rows record the same address.
+
 ## [0.3.3] - 2026-09-17
 
 ### Fixed

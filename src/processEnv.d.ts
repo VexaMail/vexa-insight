@@ -20,6 +20,7 @@ declare namespace NodeJS {
     SECRET_KEY?: string
     VEXA_ALLOWED_ORIGINS?: string
     VEXA_IMAP_DEBUG?: string
+    VEXA_TRUSTED_PROXY_HOPS?: string
     VEXA_UPDATE_CHECK_ENABLED?: string
     VEXA_UPDATE_REPO?: string
   }
