@@ -1,4 +1,4 @@
-import { DEFAULT_TRUSTED_PROXY_HOPS } from '@/constants/security'
+import { DEFAULT_TRUSTED_PROXY_HOPS } from './defaultTrustedProxyHops'
 
 /**
  * How many reverse proxies you run in front of the app, each of which appends
