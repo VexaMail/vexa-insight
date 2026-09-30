@@ -1,6 +1,7 @@
 import { withApiAuth } from '@/services/api'
 import { getDomainSources, getDomainSummary } from '@/services/reports'
 import { parseIdParam } from '@/utils/api'
+import { domainSourcesCsv } from '@/utils/csv'
 import { daysFilterQuerySchema } from '@/validators/query'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -31,6 +32,14 @@ export const GET = withApiAuth(
       url.searchParams.get('days') ?? undefined,
     )
     const sources = await getDomainSources(domainId, daysFilter)
+    if (url.searchParams.get('format') === 'csv') {
+      return new NextResponse(domainSourcesCsv(sources), {
+        headers: {
+          'content-type': 'text/csv; charset=utf-8',
+          'content-disposition': `attachment; filename="domain-${String(domainId)}-sources.csv"`,
+        },
+      })
+    }
     return NextResponse.json({ data: sources })
   },
 )

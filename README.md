@@ -485,6 +485,8 @@ The following endpoints are stable and meant for automation:
   refresh upstream release info.
 - `GET /api/v1/admin/apply-update` / `POST /api/v1/admin/apply-update` — read or
   trigger the self-update flow (source installs with supervisor).
+- `GET /api/v1/domains/{id}/sources` — a domain's source IPs with counts,
+  hostname, country and named sender; `?format=csv` returns them as CSV.
 - `GET /api/v1/metrics` — Prometheus-format metrics.
 - `GET /api/v1/health` — `200` if DB reachable, `503` otherwise (used by Docker
   `HEALTHCHECK`). The body's `ingest` field is `stale` when scheduled ingestion

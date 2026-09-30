@@ -5,4 +5,6 @@ import type { DomainSource } from '@/types/reports'
  */
 export type DomainSourcesTableProps = {
   sources: DomainSource[]
+  /** Where the same list downloads as CSV, when offered. */
+  csvHref?: string
 }

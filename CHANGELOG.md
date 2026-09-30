@@ -10,6 +10,12 @@ and this project adheres to
 
 ### Added
 
+- **CSV export of a domain's sources.**
+  `GET /api/v1/domains/{id}/sources?format=csv` and a Download CSV link on the
+  domain page return one row per source IP with messages, hostname, country and
+  named sender. Cells that would start a spreadsheet formula are prefixed with
+  `'`.
+
 - **Report coverage gaps.** The domains list gains a Last report column that
   flags a domain silent for more than three days, and a daily check fires a
   `reports.stopped` webhook once, on the day a domain that used to get reports

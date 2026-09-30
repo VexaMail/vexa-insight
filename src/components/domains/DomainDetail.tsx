@@ -4,6 +4,7 @@ import { ForensicReportsSection } from '@/components/forensic'
 import { ReportsTable } from '@/components/reports'
 import { TlsReportsSection } from '@/components/tlsrpt'
 import type { DomainDetailProps } from './DomainDetailProps'
+import { DomainSection } from './DomainSection'
 import DomainSourcesTable from './DomainSourcesTable'
 import DomainStatsCard from './DomainStatsCard'
 
@@ -22,39 +23,24 @@ export default function DomainDetail({
         failedCount={stats.failedCount}
         passRatePercent={stats.passRatePercent}
       />
-      <section aria-labelledby="disposition-heading">
-        <h2
-          id="disposition-heading"
-          className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-50"
-        >
-          Pass vs fail
-        </h2>
+      <DomainSection id="disposition" title="Pass vs fail">
         <DispositionChartDisplay
           passed={stats.passedCount}
           failed={stats.failedCount}
         />
-      </section>
+      </DomainSection>
       <EnforcementReadinessCard readiness={enforcement} />
-      <section aria-labelledby="sources-heading">
-        <h2
-          id="sources-heading"
-          className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-50"
-        >
-          Sources (IP, count)
-        </h2>
-        <DomainSourcesTable sources={sources} />
-      </section>
+      <DomainSection id="sources" title="Sources (IP, count)">
+        <DomainSourcesTable
+          sources={sources}
+          csvHref={`/api/v1/domains/${String(domainId)}/sources?format=csv`}
+        />
+      </DomainSection>
       <TlsReportsSection domainName={domainName} {...tls} />
       <ForensicReportsSection rows={forensic} />
-      <section aria-labelledby="reports-heading">
-        <h2
-          id="reports-heading"
-          className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-50"
-        >
-          Associated Reports
-        </h2>
+      <DomainSection id="reports" title="Associated Reports">
         <ReportsTable domainId={domainId} domainName={domainName} />
-      </section>
+      </DomainSection>
     </>
   )
 }

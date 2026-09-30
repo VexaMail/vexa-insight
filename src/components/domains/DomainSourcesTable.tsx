@@ -7,6 +7,7 @@ import { getDomainSourcesColumns } from './domainSourcesColumns'
 
 export default function DomainSourcesTable({
   sources,
+  csvHref,
 }: Readonly<DomainSourcesTableProps>) {
   const { localHostnames, refreshingIps, handleRefresh } =
     useDomainSourcesRefresh()
@@ -27,6 +28,14 @@ export default function DomainSourcesTable({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {csvHref ? (
+        <a
+          href={csvHref}
+          className="text-muted-foreground hover:text-foreground mb-2 inline-block text-sm underline"
+        >
+          Download CSV
+        </a>
+      ) : null}
       <DataTable
         columns={columns}
         data={sources}

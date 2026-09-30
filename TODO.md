@@ -193,7 +193,8 @@ their own entries.
       URIports, Sendmarc).
 - [ ] **Record generator.** Copy-ready DMARC, SPF, `_smtp._tls` and MTA-STS
       records from a form (Mimecast, Cloudflare, parse-dmarc, YADT).
-- [ ] **CSV/JSON export** of sources and reports (URIports, cry-inc).
+- [~] **CSV/JSON export.** Domain sources CSV shipped 2026-09-30. Still to do:
+  reports list, IP list and failure/TLS reports.
 - [ ] **ASN / AS name enrichment** of source IPs (parsedmarc via IPinfo,
       Open-DMARC-Analyzer), next to the existing country.
 - [ ] **Deeper DNS checks:** DNSSEC, DANE/TLSA and MX STARTTLS/certificate
