@@ -134,6 +134,13 @@ the portfolio repo.
 
 ## Infrastructure
 
+- [ ] Confirm the SNDS REST API's JSON shape against real data (expected from
+      about 2026-10-02, once the connected IPs have a reported day). The parser
+      in `src/utils/snds/` matches the CSV export's column names loosely and
+      keeps each row's `raw` JSON; check a stored `snds_ip_data.raw` row, narrow
+      the aliases to the real field names and add that payload as a test
+      fixture.
+
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for
@@ -217,7 +224,44 @@ the portfolio repo.
       fields above, not the raw part. Volume is tiny (Google and Microsoft never
       send RUF), so this is a parser and a table, not a pipeline. Fixture: the
       three messages above, exportable with
-      `doveadm fetch -u sysadmin@nubenode.com text mailbox INBOX.DMARC`.
+      `doveadm fetch -u sysadmin@nubenode.com text mailbox INBOX.DMARC`. Update
+      2026-09-30: with `fo=1` a receiver sends one of these for any SPF or DKIM
+      failure, not only a DMARC failure, so volume on a domain with a broken
+      forwarder can be much higher than "tiny"; cap rows per domain per day.
+      Store per report: domain, source IP, `Auth-Failure` and the SPF/DKIM
+      results, the identifiers (header From, envelope from, DKIM `d=`/`s=`),
+      arrival date and reporting org. Redact local parts of third-party
+      addresses and store no body; a size limit on the headers kept.
+
+- [ ] **Ingest TLS-RPT reports (RFC 8460).** Raised 2026-09-30: an operator now
+      publishes `_smtp._tls` TXT records with `rua=mailto:` pointing at the
+      mailbox Insight polls, so these reports arrive and are not parsed. Format:
+      JSON, usually gzip, as an attachment typed `application/tlsrpt+json` or
+      `application/tlsrpt+gzip` (filenames like
+      `receiver.example!example.com!<start>!<end>!<id>.json.gz`). Scope: parse
+      `organization-name`, `date-range`, `report-id` and each `policies[]` entry
+      (`policy-type` sts/tlsa/no-policy-found, `policy-domain`,
+      `summary.total-successful-session-count` / `total-failure-session-count`,
+      `failure-details[]` with `result-type`, `sending-mta-ip`,
+      `receiving-mx-hostname`, `failed-session-count`); one row per report and
+      policy, keyed by `report-id`; show success/failure per policy domain and
+      reporting org on the domain page; fire a webhook on any failure count
+      above 0; trash after ingest like aggregates. Detection needs the two
+      content types added to the candidate set and a JSON branch beside
+      `parseDmarcFileToResult`.
+
+- [ ] **Mail the parser does not recognise is re-downloaded on every poll.**
+      Checked 2026-09-30 (`processOneMessageUid` ->
+      `collectMessageAttachments`): a message whose candidate parts fail to
+      parse is left where it is, not moved or trashed, and no per-message error
+      is raised (`parseDmarcFileToResult` returns null). So nothing is lost, but
+      because only parsed messages are recorded as processed, a TLS-RPT
+      `.json.gz` (accepted by the `.gz` extension and `application/gzip`) is
+      downloaded and decompressed again on every poll until the mailbox is
+      cleaned. Smallest fix: record the Message-ID as seen-but-unparsed so the
+      next poll skips it, or narrow `.gz` candidates to `.xml.gz`/`.gz` whose
+      content type is not a `tlsrpt` one. Resolves itself once TLS-RPT and ARF
+      ingestion exist.
 
 Product/design work, deliberately not started autonomously: each one changes
 what the diagnostics page _is_, so it wants a brief on the intended reading
