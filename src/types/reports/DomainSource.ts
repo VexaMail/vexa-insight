@@ -1,3 +1,5 @@
+import type { SenderIdentity } from '@/types/senders'
+
 /**
  * Source IP with message count for a domain.
  */
@@ -7,4 +9,5 @@ export type DomainSource = {
   countryCode?: string | undefined
   countryName?: string | undefined
   hostname?: string | undefined
+  sender?: SenderIdentity | undefined
 }

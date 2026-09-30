@@ -1,0 +1,301 @@
+[
+  {
+    "name": "Google Groups",
+    "category": "mailing-list",
+    "domains": ["googlegroups.com"]
+  },
+  {
+    "name": "Google Workspace / Gmail",
+    "category": "mailbox-provider",
+    "domains": ["google.com", "googlemail.com", "gmail.com", "1e100.net"]
+  },
+  {
+    "name": "Microsoft 365 / Outlook",
+    "category": "mailbox-provider",
+    "domains": [
+      "outlook.com",
+      "protection.outlook.com",
+      "onmicrosoft.com",
+      "hotmail.com",
+      "microsoft.com"
+    ]
+  },
+  {
+    "name": "Yahoo / AOL",
+    "category": "mailbox-provider",
+    "domains": ["yahoo.com", "yahoodns.net", "aol.com", "yahoo.net"]
+  },
+  {
+    "name": "iCloud Mail",
+    "category": "mailbox-provider",
+    "domains": ["icloud.com", "me.com", "mail.apple.com"]
+  },
+  {
+    "name": "Zoho Mail",
+    "category": "mailbox-provider",
+    "domains": ["zoho.com", "zohomail.com", "zoho.eu", "zohomail.eu"]
+  },
+  {
+    "name": "Fastmail",
+    "category": "mailbox-provider",
+    "domains": ["messagingengine.com", "fastmail.com"]
+  },
+  {
+    "name": "Proton Mail",
+    "category": "mailbox-provider",
+    "domains": ["protonmail.ch", "proton.me", "protonmail.com"]
+  },
+  {
+    "name": "Yandex Mail",
+    "category": "mailbox-provider",
+    "domains": ["yandex.net", "yandex.ru"]
+  },
+  {
+    "name": "GMX / Web.de",
+    "category": "mailbox-provider",
+    "domains": ["gmx.net", "gmx.com", "web.de"]
+  },
+  {
+    "name": "Amazon SES",
+    "category": "email-service",
+    "domains": ["amazonses.com"]
+  },
+  {
+    "name": "SendGrid",
+    "category": "email-service",
+    "domains": ["sendgrid.net", "sendgrid.com"]
+  },
+  {
+    "name": "Mailgun",
+    "category": "email-service",
+    "domains": ["mailgun.org", "mailgun.net", "mailgun.info"]
+  },
+  {
+    "name": "Postmark",
+    "category": "email-service",
+    "domains": ["mtasv.net", "postmarkapp.com"]
+  },
+  {
+    "name": "SparkPost",
+    "category": "email-service",
+    "domains": ["sparkpostmail.com", "sparkpost.com"]
+  },
+  {
+    "name": "Mandrill (Mailchimp Transactional)",
+    "category": "email-service",
+    "domains": ["mandrillapp.com"]
+  },
+  {
+    "name": "Mailjet",
+    "category": "email-service",
+    "domains": ["mailjet.com"]
+  },
+  {
+    "name": "Brevo (Sendinblue)",
+    "category": "email-service",
+    "domains": [
+      "sendinblue.com",
+      "brevo.com",
+      "sender-sib.com",
+      "sp1-brevo.net",
+      "mailin.fr"
+    ]
+  },
+  {
+    "name": "Resend",
+    "category": "email-service",
+    "domains": ["resend.com", "resend.dev"]
+  },
+  {
+    "name": "Elastic Email",
+    "category": "email-service",
+    "domains": ["elasticemail.com"]
+  },
+  {
+    "name": "SMTP2GO",
+    "category": "email-service",
+    "domains": ["smtp2go.com", "smtpcorp.com"]
+  },
+  {
+    "name": "Mailchimp",
+    "category": "marketing",
+    "domains": [
+      "mcsv.net",
+      "mcdlv.net",
+      "rsgsv.net",
+      "mcsignup.com",
+      "mailchimpapp.net",
+      "mailchimp.com"
+    ]
+  },
+  {
+    "name": "Klaviyo",
+    "category": "marketing",
+    "domains": ["klaviyomail.com", "klaviyo.com"]
+  },
+  {
+    "name": "Constant Contact",
+    "category": "marketing",
+    "domains": ["constantcontact.com", "ctctcdn.com", "confirmedcc.com"]
+  },
+  {
+    "name": "Campaign Monitor",
+    "category": "marketing",
+    "domains": ["createsend.com", "cmail19.com", "cmail20.com"]
+  },
+  {
+    "name": "MailerLite",
+    "category": "marketing",
+    "domains": ["mlsend.com", "mailerlite.com"]
+  },
+  {
+    "name": "ActiveCampaign",
+    "category": "marketing",
+    "domains": ["acems1.com", "acemsa1.com", "activecampaign.com"]
+  },
+  {
+    "name": "Shopify",
+    "category": "marketing",
+    "domains": ["shopifyemail.com", "shopify.com"]
+  },
+  {
+    "name": "Substack",
+    "category": "marketing",
+    "domains": ["substack.com"]
+  },
+  {
+    "name": "HubSpot",
+    "category": "crm",
+    "domains": ["hubspotemail.net", "hubspot.com", "hs-analytics.net"]
+  },
+  {
+    "name": "Salesforce",
+    "category": "crm",
+    "domains": ["salesforce.com", "exacttarget.com", "exct.net", "force.com"]
+  },
+  {
+    "name": "Zendesk",
+    "category": "support",
+    "domains": ["zendesk.com"]
+  },
+  {
+    "name": "Freshdesk",
+    "category": "support",
+    "domains": ["freshdesk.com", "freshemail.io"]
+  },
+  {
+    "name": "Intercom",
+    "category": "support",
+    "domains": ["intercom-mail.com", "intercom.io"]
+  },
+  {
+    "name": "Help Scout",
+    "category": "support",
+    "domains": ["helpscout.net"]
+  },
+  {
+    "name": "Atlassian",
+    "category": "support",
+    "domains": ["atlassian.net", "atlassian.com"]
+  },
+  {
+    "name": "GitHub",
+    "category": "support",
+    "domains": ["github.com", "github.net"]
+  },
+  {
+    "name": "Proofpoint",
+    "category": "security-gateway",
+    "domains": ["pphosted.com", "ppe-hosted.com", "proofpoint.com"]
+  },
+  {
+    "name": "Mimecast",
+    "category": "security-gateway",
+    "domains": ["mimecast.com", "mimecast-offshore.com"]
+  },
+  {
+    "name": "Barracuda",
+    "category": "security-gateway",
+    "domains": ["barracudanetworks.com", "cudamail.com"]
+  },
+  {
+    "name": "Cisco Secure Email",
+    "category": "security-gateway",
+    "domains": ["iphmx.com"]
+  },
+  {
+    "name": "Trend Micro Email Security",
+    "category": "security-gateway",
+    "domains": ["tmes.trendmicro.com", "tmes.trendmicro.eu"]
+  },
+  {
+    "name": "Sophos Email",
+    "category": "security-gateway",
+    "domains": ["sophos.com"]
+  },
+  {
+    "name": "Cloudflare Email Routing",
+    "category": "mailing-list",
+    "domains": ["cloudflare-email.net", "cloudflare-email.com"]
+  },
+  {
+    "name": "Linux kernel lists (vger)",
+    "category": "mailing-list",
+    "domains": ["vger.kernel.org", "kernel.org"]
+  },
+  {
+    "name": "Google Cloud (Compute Engine)",
+    "category": "hosting",
+    "domains": ["googleusercontent.com"]
+  },
+  {
+    "name": "Dinahosting",
+    "category": "hosting",
+    "domains": ["dinaserver.com"]
+  },
+  {
+    "name": "Arsys",
+    "category": "hosting",
+    "domains": ["servidoresdns.net", "arsys.es"]
+  },
+  {
+    "name": "Raiola Networks",
+    "category": "hosting",
+    "domains": ["raiolanetworks.com", "raiolanetworks.es"]
+  },
+  {
+    "name": "GoDaddy",
+    "category": "hosting",
+    "domains": ["secureserver.net"]
+  },
+  {
+    "name": "IONOS",
+    "category": "hosting",
+    "domains": ["kundenserver.de", "ionos.com", "ionos.de", "perfora.net"]
+  },
+  {
+    "name": "OVHcloud",
+    "category": "hosting",
+    "domains": ["ovh.net", "mail.ovh.net"]
+  },
+  {
+    "name": "Hostinger",
+    "category": "hosting",
+    "domains": ["hostinger.com"]
+  },
+  {
+    "name": "Gandi",
+    "category": "hosting",
+    "domains": ["gandi.net"]
+  },
+  {
+    "name": "Namecheap Private Email",
+    "category": "hosting",
+    "domains": ["privateemail.com", "registrar-servers.com"]
+  },
+  {
+    "name": "Rackspace",
+    "category": "hosting",
+    "domains": ["emailsrvr.com"]
+  }
+]

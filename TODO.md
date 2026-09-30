@@ -171,10 +171,10 @@ OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
 Slack/Teams/retries (issues #25-#27), table pruning and the agent surface have
 their own entries.
 
-- [ ] **Named sender classification.** Map source IP / PTR / DKIM `d=` to a
-      service name and type ("Google Workspace", "SendGrid", "Mailchimp") from a
-      bundled catalog, like parsedmarc's `base_reverse_dns_map.csv`, Valimail
-      and dmarcian. Biggest readability gap on the sources tables.
+- [~] **Named sender classification.** Done 2026-09-30 for a domain's sources
+  table (PTR first, then DKIM `d=`; 56-service JSON catalog). Still to do: the
+  same column on `/ips` and the IP detail page, and a way to name the operator's
+  own servers (they show as Unknown; ties into the source approval item below).
 - [ ] **Source approval workflow.** Mark a sender approved / unknown / threat
       (Cloudflare, Valimail, MxToolbox) so alerts and dashboards stop repeating
       known senders; dmarcian also buckets forwarders separately.

@@ -10,6 +10,13 @@ and this project adheres to
 
 ### Added
 
+- **Named senders.** A domain's sources table gains a Sender column naming the
+  service behind each IP (for example SendGrid, Amazon SES, Mailchimp, Google
+  Workspace) and its kind (mailbox provider, email service, marketing, CRM,
+  support tool, security gateway, hosting, mailing list), matched on reverse DNS
+  first and DKIM signing domain second. The catalog is a JSON file of 56
+  services, open to additions.
+
 - **Webhook delivery retries** (#27). Network errors, timeouts, HTTP 429 and 5xx
   are retried three times with exponential backoff (1, 4 and 16 seconds); other
   4xx responses and URLs the SSRF guard rejects are not retried. The endpoint

@@ -208,6 +208,10 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
   and overall.
 - Every sending source by IP, with reverse DNS hostname, country and the reports
   that listed it, so an unknown sender stands out.
+- Sources named after the service behind them (Google Workspace, Microsoft 365,
+  Amazon SES, SendGrid, Mailchimp, Brevo, Klaviyo and about fifty more) from
+  their reverse DNS or DKIM signing domain, using a catalog in
+  `src/constants/senders/senderCatalog.json` that takes one entry per service.
 - Policy dispositions (`none`, `quarantine`, `reject`) and volume by reporting
   organisation (Google, Microsoft, Yahoo and others).
 - Ingestion health: last poll, per-run results and errors, and a health endpoint
