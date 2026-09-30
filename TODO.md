@@ -167,9 +167,8 @@ checkdmarc, Spoofy and others) and 13 commercial ones (dmarcian, Valimail,
 EasyDMARC, Red Sift OnDMARC, PowerDMARC, URIports, Postmark, dmarcreport.com,
 Mimecast, Proofpoint, Cloudflare, Sendmarc, MxToolbox). Already here, not gaps:
 OIDC SSO, audit log, DB snapshots, per-user domain access, SNDS, TLS-RPT and RUF
-(both since 2026-09-30). Ordered by value over effort; RFC 9990,
-Slack/Teams/retries (issues #25-#27), table pruning and the agent surface have
-their own entries.
+(both since 2026-09-30). Ordered by value over effort; Slack/Teams (issues #25,
+#26), table pruning and the agent surface have their own entries.
 
 - [~] **Named sender classification.** Done 2026-09-30 for a domain's sources
   table (PTR first, then DKIM `d=`; 56-service JSON catalog). Still to do: the
@@ -225,12 +224,11 @@ their own entries.
 - [ ] **SNDS: confirm the IP status CSV format.** The status endpoint has
       returned no rows so far, so its parser is untested against real data.
       Check it the first time an IP is listed as blocked, and add a fixture.
-- [ ] **Check the aggregate parser against the RFC 9990 report schema.** The
-      final DMARC standard (RFC 9989) comes with a new aggregate report schema
-      (RFC 9990), which parsedmarc already parses next to the draft and 1.0
-      ones. Unverified here: find or build a sample in the new schema, run it
-      through `parseDmarcFileToResult`, and add it as a fixture whichever way it
-      goes.
+- [ ] **RFC 9990 `pass` disposition is not shown in the IP disposition
+      breakdown.** RFC 9990 adds `pass` to `policy_evaluated/disposition`. It is
+      stored as is, but `ipDetailSelection.ts` only sums `none`, `quarantine`
+      and `reject`, so those messages drop out of that breakdown. Smallest fix:
+      a fourth bucket, or count `pass` with `none`.
 - [ ] **Mail the parser does not recognise is re-downloaded on every poll.**
       Checked 2026-09-30 (`processOneMessageUid` ->
       `collectMessageAttachments`): a message whose candidate parts fail to

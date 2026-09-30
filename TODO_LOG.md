@@ -6,6 +6,20 @@
 
 ### 2026-09
 
+- [x] 2026-09-30 — **Aggregate parser checked against the RFC 9990 schema.** The
+      RFC's own example report (`dmarc-2.0` namespace, `np`, `testing`,
+      `discovery_method`, a file-level `<extension>`, disposition `pass`) parses
+      with no change: domain, metadata, one event with DKIM aligned and SPF not.
+      Pinned as `test/fixtures/dmarc/rfc9990-example.xml` in
+      `test/rfc9990Schema.test.ts`. Follow-up on the `pass` disposition in the
+      IP breakdown is in `TODO.md`.
+
+- [x] 2026-09-30 — **Security: domain allow-list on the sources endpoint.**
+      `GET /api/v1/domains/{id}/sources` skipped `getAllowedDomainIds`; a
+      restricted user could read other domains' sources by id. Now 404, like its
+      siblings. Evidence: `test/domainSourcesRouteAccess.test.ts` fails on the
+      old route and passes on the new; deployed 442c15a.
+
 - [x] 2026-09-30 — **Webhook delivery retries (issue #27).** Transient failures
       (network, timeout, DNS, 429, 5xx) retried after 1/4/16 s, nothing else;
       `last_attempts` column (migration 0039); test ping stays single-attempt.
