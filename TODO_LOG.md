@@ -4,6 +4,12 @@
 
 ## 2026
 
+### 2026-10
+
+- 2026-10-06 [x] After the owner publishes the renamed shared packages,
+  regenerate the — Lockfile regenerated for @syntopica (5006c46); 0 @busirocket
+  entries; gate extended (2f54e16).
+
 ### 2026-09
 
 - [x] 2026-10-01 — **v0.4.0 released; the slow v0.3.3 image build did not
