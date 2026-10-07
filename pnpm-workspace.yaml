@@ -37,6 +37,7 @@ minimumReleaseAgeExclude:
   - jscpd-windows-x64-msvc@5.3.1
   - jscpd@5.3.1
   - oxlint@1.84.0
+  - eslint-plugin-code-policy@0.8.0
 
 allowBuilds:
   # better-sqlite3 13 ships prebuilt binaries for every platform we target and

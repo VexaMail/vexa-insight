@@ -268,6 +268,11 @@ emptied on 2026-09-09 (see `TODO_LOG.md`); the file stays, empty, so
 `lint:prune` keeps a target and any new suppression shows up in review. What
 remains below is what those passes did not reach.
 
+- [ ] Burn down the 210 `code-policy/no-inline-types-in-runtime-files`
+      (`anonymousTypeLiteral`) findings that `eslint-plugin-code-policy@0.8.0`
+      added to `eslint-suppressions.json` on 2026-10-07: name each inline object
+      type in `src/types/<area>/`, then `pnpm lint:prune`.
+
 - [ ] **Prune tables that only grow.** Production on 2026-09-30: `sessions`
       keeps expired rows (12 of 15), `job_poll_events` holds 134k rows back to
       March. Harmless at 40 MB, but nothing bounds it. Delete expired sessions

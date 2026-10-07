@@ -1,1 +1,877 @@
-{}
+{
+  "app/(app)/diagnostics/[domain]/page.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "app/(app)/domains/[domain]/page.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "app/(app)/layout.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/(app)/reports/[reportId]/page.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "app/api/install/check/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/install/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/admin/trigger-poll/parseFullRescanFlag.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/domains/[domainId]/dns/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/domains/[domainId]/reports/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/domains/[domainId]/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/domains/[domainId]/sources/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/domains/[domainId]/stats/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/ips/[ip]/hostname/refresh/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/ips/[ip]/hostname/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/job-runs/[id]/poll-status/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/reports/[reportId]/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/api/v1/users/[id]/route.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "app/error.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/layout.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "app/login/layout.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ai/groupInsightsByTone.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/charts/GradientBarShape.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/dkim/DkimSelectorCard.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/dkim/DkimSelectorChecks.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/dkim/DkimSelectorIssues.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/diagnostics/dns/MxRecordList.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/enforcement/enforcementVerdictCopy.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/EngineStatusIndicator.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/JobRunStatusBadge.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ingest/StepIcon.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/install/InstallAdminFields.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/install/InstallTokenField.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpDetailEmptyState.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ips/IpEventTimelineItem.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportSourceRow.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/reports/ReportsSearchInput.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/reports/SourceAlignmentCell.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/reports/SourceIpCell.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/settings/GeoIpSection.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/settings/SettingsSaveBar.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/settings/SndsSection.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/shell/AppShell.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/shell/AppSidebar.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/shell/VexaLogo.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/ui/DataTableHeaderRows.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/upload/RecentUploadsCard.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/upload/UploadDropZone.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/upload/UploadStatusMessage.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/users/UserCredentialFields.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/users/UserDomainAccessFields.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/users/UserPasswordField.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/components/users/UserRoleField.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/contexts/shell/ThemeContext.tsx": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/formatters/formatRelativeDate.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/ai/useAiDiagnosticsInsightsPanel.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/ai/useAiReportInsightsPanel.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/ai/useDiagnosticsInsights.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/hooks/ai/useReportInsights.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/hooks/charts/useDispositionChart.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/charts/useSpfDkimChart.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/charts/useTrendChart.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/useKpiCards.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/useLatestReportsTable.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/usePassRateRing.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/usePollStatusLive.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/useTopDomainsTable.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/hooks/dashboard/useTopIpSendersFetch.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/dashboard/useVolumeByOrgTable.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/ingest/useProcessedEmailsTable.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/ips/useIpRelatedReports.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/reports/useFetchedOptions.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/reports/useReportsFetch.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/reports/useReportsFilterOptions.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/settings/useSndsConnectFlow.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/hooks/shell/useSidebarVersionStatus.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/charts/fetchDispositionSummary.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/charts/fetchSpfDkimBreakdown.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/charts/fetchTrendData.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/lib/config/configCacheState.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/db/readAppliedChecksum.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/db/runMigrations.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/lib/formatters/dateRange.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/evals/callMaxOAuthLane.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/maxOAuth/readMaxOAuthCredentials.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/maxOAuth/refreshMaxOAuthToken.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/prompts/buildDiagnosticsAnalysisPrompt.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/prompts/buildReportAnalysisPrompt.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/anthropic/fetchAnthropicModels.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/gemini/fetchGeminiModels.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/openai/fetchOpenAiModels.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/providers/openrouter/fetchOpenRouterModels.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/settings/encryptApiKey.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/ai/use-cases/diagnosticsAggregate/queryTopOrgs.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/api/requireAdminAccess.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/api/requireAdminAuth.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/auth/oidc/generatePkcePair.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/auth/oidc/oidcDiscoveryCache.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/auth/requirePermission.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/parseDkimPublicKey.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/parseDkimVersion.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/resolveMxSafe.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/diagnostics/withDiagnosticsCache.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 3
+    }
+  },
+  "src/services/gaps/getLastReportDays.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/geoip/insertNewIpRows.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/imap/buildUidToMidMap.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/install/checkInstall.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/install/installTokenStorePrivate.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/services/ip-hostname/executeDns.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/services/job/repairStuckEvents.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/job/runIngestJob.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/notifications/deliverWebhookWithRetry.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/services/reports/getDomainByName.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/reports/groupEventIdsByReport.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/reports/mappers/attachRelatedDomains.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/reports/reportSources/queryPrimaryDkimByIp.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/services/reports/runIngestTransaction.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/reports/toDomainSource.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/reports/toIpRelatedDomainRow.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/security/requireSameOrigin.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/security/sameOriginRejection.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/settings/encryptLegacyImapPasswords.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/snds/backfillSndsDays.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/snds/completeSndsAuthorization.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/services/snds/postSndsTokenRequest.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/services/users/createUser.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/ai/fetchProviderModels.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/csv/toCsv.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/dates/getDurationHours.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/diagnostics/uniqueMxRecords.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/extractXmlFromZipImpl.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/dmarc/finalizeZipExtraction.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/enforcement/computeEnforcementReadiness.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/enforcement/enforcementVerdict.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/forensic/parseHeaderBlock.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/forensic/readAuthResults.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/forensic/readDkimIdentity.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/geoip/parseProgressLine.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/geoip/progressMap.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/buildDmarcSearchQuery.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/hasTrashUse.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/isNoConnectionError.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/imap/isWalkableBodyPart.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/ingest/computeProgressRateAndEta.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/ingest/fetchPollStatusData.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/ingest/isActiveJobRun.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/install/parseAccountsList.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/install/postInstall.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 4
+    }
+  },
+  "src/utils/rateLimit/store.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/security/buildSecurityHeaders.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/senders/classifySender.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/attachGeoIpStreamHandlers.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/callSndsAdminApi.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/createImapFolder.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/fetchAiSettings.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/fetchFolders.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/fetchGeoIpSettings.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/fetchGeoIpStreamTicket.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/fetchSelfUpdateStatus.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/fetchUpdateStatus.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/settings/postUpdateCheck.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/putAiSettings.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/saveGeoIpLicenseKey.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/saveSettings.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/startSelfUpdate.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/settings/testImapConnection.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 3
+    }
+  },
+  "src/utils/snds/createPkcePair.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/snds/extractSndsAuthCode.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/utils/snds/isSndsAlertRow.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/ui/fetchAllItemIds.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/users/fetchUsers.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/utils/users/submitUser.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/validators/ai/validateProviderApiKey.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 1
+    }
+  },
+  "src/validators/install/validateAdmin.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/validators/install/validateInstallBody.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  },
+  "src/validators/install/validateSettings.ts": {
+    "code-policy/no-inline-types-in-runtime-files": {
+      "count": 2
+    }
+  }
+}
