@@ -110,7 +110,7 @@
     "@lhci/cli": "^0.15.1",
     "@next/eslint-plugin-next": "^16.3.7",
     "@syntopica/eslint-config": "^0.9.0",
-    "@syntopica/prettier-config": "^0.2.0",
+    "@syntopica/prettier-config": "^0.3.0",
     "@syntopica/quality-config": "^0.11.1",
     "@syntopica/tsconfig": "^0.3.0",
     "@tailwindcss/postcss": "^4.3.3",
