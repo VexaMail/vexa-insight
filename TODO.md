@@ -8,6 +8,15 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+## Open Dependabot PRs (2026-10-13)
+
+- [ ] Three Dependabot PRs open on VexaMail/vexa-insight: #71
+      production-minor-patch (13 updates), #72 development-minor-patch (19
+      updates), #73 github-actions group (6 updates). Source:
+      notifications@github.com to info@busirocket.com, 2026-10-11 and 2026-10-12
+      (threads "build(deps): bump the production-minor-patch group"). Next: let
+      CI run, merge or rebase each.
+
 ## Open-source launch
 
 Public since 2026-09-09 (`v0.2.1`, image on GHCR pullable anonymously). The
