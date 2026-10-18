@@ -15,3 +15,4 @@ drizzle/meta/_journal.json
 # Git worktrees checked out inside the repo carry their own copy of the tree;
 # eslint.config.ts ignores them for the same reason.
 .worktrees/**
+.claude/**
