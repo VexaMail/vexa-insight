@@ -113,9 +113,9 @@ describe('diagnostics PDF export', () => {
 
     expect(findTag(markup, /<aside[^>]*>/)).toContain(PRINT_HIDDEN)
     expect(findTag(markup, /<header[^>]*>/)).toContain(PRINT_HIDDEN)
-    expect(
-      findTag(markup, /<button[^>]*aria-label="Switch to [^"]*"[^>]*>/),
-    ).toContain(PRINT_HIDDEN)
+    expect(findTag(markup, /<div[^>]*aria-label="Theme"[^>]*>/)).toContain(
+      PRINT_HIDDEN,
+    )
   })
 
   it('releases the inner scroll container so the report can paginate', () => {
