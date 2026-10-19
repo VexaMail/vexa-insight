@@ -13,6 +13,8 @@ export default function DomainDetail({
   data,
   tab,
   dnsSlot,
+  coverageSlot,
+  historySlot,
 }: Readonly<DomainDetailProps>) {
   const stages = deriveEnforcementStages(data.policy, data.enforcement.verdict)
   return (
@@ -30,6 +32,8 @@ export default function DomainDetail({
           <DomainSourcesTab domainId={domainId} data={data} />
         ) : null}
         {tab === 'dns' ? dnsSlot : null}
+        {tab === 'reports' ? coverageSlot : null}
+        {tab === 'history' ? historySlot : null}
         {tab === 'reports' ? (
           <DomainReportsTab
             domainId={domainId}

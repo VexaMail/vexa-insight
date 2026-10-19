@@ -5,5 +5,6 @@ export const DOMAIN_DETAIL_TABS: readonly DomainDetailTabDef[] = [
   { key: 'sources', label: 'Sources' },
   { key: 'dns', label: 'DNS' },
   { key: 'reports', label: 'Reports' },
+  { key: 'history', label: 'History' },
   { key: 'transport', label: 'TLS / RUF' },
 ]
