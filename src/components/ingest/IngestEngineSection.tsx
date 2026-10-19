@@ -1,5 +1,6 @@
 import type { IngestEngineSectionProps } from '@/types/ingest'
 import { buildIngestInitialState } from '@/utils/ingest'
+import { ConfigureMailboxAction } from './ConfigureMailboxAction'
 import CronsSection from './CronsSection'
 import { IngestHealthFacts } from './IngestHealthFacts'
 import { IngestHealthPanel } from './IngestHealthPanel'
@@ -20,6 +21,7 @@ export function IngestEngineSection({
   jobId,
   intervalMinutes,
   initialApiKey,
+  canConfigure,
 }: Readonly<IngestEngineSectionProps>) {
   return (
     <IngestStoreProvider
@@ -31,7 +33,13 @@ export function IngestEngineSection({
         isHistoricalJobContext={isHistoricalJobContext}
         jobId={jobId}
         healthPill={<IngestOverallPill health={health} />}
-        healthFacts={<IngestHealthFacts health={health} activity={activity} />}
+        healthFacts={
+          <IngestHealthFacts
+            health={health}
+            activity={activity}
+            canConfigure={canConfigure}
+          />
+        }
         healthChecks={<IngestHealthPanel health={health} />}
         jobRunsNode={
           <JobRunHistoryTable
@@ -42,6 +50,11 @@ export function IngestEngineSection({
         }
         processedEmailsNode={
           <ProcessedEmailsTable key="emails" emails={emails} />
+        }
+        idleAction={
+          health.mailboxes.length === 0 ? (
+            <ConfigureMailboxAction canConfigure={canConfigure} />
+          ) : undefined
         }
       />
     </IngestStoreProvider>

@@ -45,6 +45,7 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
           session.user.role,
           data.settings?.apiToken,
         )}
+        canConfigure={session.user.role === 'admin'}
       />
       <IngestActivityChart data={data.activity} />
     </PageContainer>

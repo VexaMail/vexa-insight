@@ -11,7 +11,7 @@ export function IngestErrorsRow({
   const summary = summarizeIngestActivity(activity)
   return (
     <IngestFactRow
-      label="Ingestion errors"
+      label="Errors, last run"
       aside={`${summary.failedRuns.toLocaleString('en-US')} failed runs in ${String(summary.days)} days`}
     >
       <span className="tabular-nums">{runs.lastErrorCount}</span>

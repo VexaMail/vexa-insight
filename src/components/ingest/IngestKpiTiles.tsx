@@ -10,7 +10,8 @@ export function IngestKpiTiles({
   activity,
 }: Readonly<IngestKpiTilesProps>) {
   const summary = summarizeIngestActivity(activity)
-  const span = `last ${String(summary.days)} days`
+  const days = String(summary.days)
+  const span = `Last ${days} days`
   const { runs } = health
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -18,7 +19,7 @@ export function IngestKpiTiles({
         variant="feature"
         label="Emails processed"
         value={summary.processed.toLocaleString('en-US')}
-        hint={`Fetched from the mailboxes, ${span}`}
+        hint={`${span} · fetched from the mailboxes`}
         accent="info"
         icon={<Mail />}
         trend={summary.processedTrend}
@@ -28,7 +29,7 @@ export function IngestKpiTiles({
         variant="feature"
         label="Reports ingested"
         value={summary.ingested.toLocaleString('en-US')}
-        hint={`Stored as new reports, ${span}`}
+        hint={`${span} · stored as new reports`}
         accent="info"
         icon={<FileText />}
         trend={summary.ingestedTrend}
@@ -37,7 +38,7 @@ export function IngestKpiTiles({
         variant="feature"
         label="Failed runs, 24 h"
         value={String(runs.failedRuns24h)}
-        hint={`Of ${String(runs.runs24h)} runs; ${summary.failedRuns.toLocaleString('en-US')} failed, ${span}`}
+        hint={`Last 24 hours · of ${String(runs.runs24h)} runs; ${summary.failedRuns.toLocaleString('en-US')} failed in ${days} days`}
         tone={runs.failedRuns24h > 0 ? 'danger' : 'neutral'}
         accent={runs.failedRuns24h > 0 ? 'danger' : 'success'}
         icon={<TriangleAlert />}
