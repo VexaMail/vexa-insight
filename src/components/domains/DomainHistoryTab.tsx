@@ -1,6 +1,6 @@
 import { EmptyState, Panel } from '@/components/ui'
 import type { DomainHistoryTabProps } from '@/types/domains'
-import { History } from 'lucide-react'
+import { History, ListChecks } from 'lucide-react'
 import { TimelineDayBars } from './TimelineDayBars'
 import { TimelineEventItem } from './TimelineEventItem'
 
@@ -23,6 +23,7 @@ export function DomainHistoryTab({
       </Panel>
       <Panel
         flush
+        icon={<ListChecks />}
         title="What changed"
         description="DNS record changes, sources seen for the first time, operator verdicts and issue actions, newest first."
       >

@@ -2,6 +2,7 @@ import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ComplianceBar } from './ComplianceBar'
 import { DomainHealthPill } from './DomainHealthPill'
+import { DomainNameCell } from './DomainNameCell'
 import { DomainPolicyChip } from './DomainPolicyChip'
 import type { DomainsPhoneListProps } from './DomainsPhoneListProps'
 import { LastReportLabel } from './LastReportLabel'
@@ -22,9 +23,7 @@ export function DomainsPhoneList({
           >
             <span className="min-w-0 flex-1 space-y-2">
               <span className="flex items-center justify-between gap-2">
-                <span className="text-foreground truncate text-sm font-medium">
-                  {row.domainName}
-                </span>
+                <DomainNameCell domainName={row.domainName} />
                 <DomainHealthPill {...row} />
               </span>
               {row.totalMessages > 0 ? (

@@ -1,49 +1,43 @@
 import { StatTile } from '@/components/ui'
 import { complianceTone } from '@/utils/domains'
+import { Globe, Mail, ShieldCheck } from 'lucide-react'
+import { DomainsAttentionTiles } from './DomainsAttentionTiles'
 import type { DomainsKpiStripProps } from './DomainsKpiStripProps'
 
 /** Totals of the domains list: volume, compliance and what needs a look. */
 export function DomainsKpiStrip({
   kpis,
   staleDays,
+  dailyVolume,
 }: Readonly<DomainsKpiStripProps>) {
   const rate = kpis.messages > 0 ? (kpis.passed / kpis.messages) * 100 : null
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatTile
+        variant="feature"
+        icon={<Globe />}
         label="Domains"
         value={kpis.domains.toLocaleString('en-US')}
         hint={`${String(kpis.withData)} with report data`}
       />
       <StatTile
+        variant="feature"
+        icon={<Mail />}
         label="Messages"
         value={kpis.messages.toLocaleString('en-US')}
-        hint="All reports"
+        hint="All reports · bars: last 30 days"
+        trend={dailyVolume}
+        trendKind="bars"
       />
       <StatTile
+        variant="feature"
+        icon={<ShieldCheck />}
         label="Compliance"
         value={rate === null ? 'n/a' : `${rate.toFixed(1)}%`}
         tone={complianceTone(rate)}
-        hint={`DMARC pass, all reports`}
+        hint={`DMARC pass of ${kpis.messages.toLocaleString('en-US')}, all reports`}
       />
-      <StatTile
-        label="Need attention"
-        value={kpis.needAttention.toLocaleString('en-US')}
-        tone={kpis.needAttention > 0 ? 'warning' : 'success'}
-        hint="Below 95% compliance"
-      />
-      <StatTile
-        label="Silent"
-        value={kpis.silent.toLocaleString('en-US')}
-        tone={kpis.silent > 0 ? 'warning' : 'success'}
-        hint={`No report for over ${String(staleDays)} days`}
-      />
-      <StatTile
-        label="Enforcing"
-        value={kpis.enforcing.toLocaleString('en-US')}
-        tone={kpis.enforcing > 0 ? 'info' : 'neutral'}
-        hint={`of ${String(kpis.withPolicy)} at p=quarantine or reject`}
-      />
+      <DomainsAttentionTiles kpis={kpis} staleDays={staleDays} />
     </div>
   )
 }

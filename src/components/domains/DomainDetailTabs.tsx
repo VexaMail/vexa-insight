@@ -14,6 +14,7 @@ export function DomainDetailTabs({
   const items = DOMAIN_DETAIL_TABS.map((tab) => ({
     key: tab.key,
     label: tab.label,
+    icon: tab.icon,
     href: domainTabHref(
       domainName,
       tab.key,

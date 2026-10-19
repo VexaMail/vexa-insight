@@ -10,7 +10,6 @@ import type {
 import { getDomainHealth } from '@/utils/domains'
 import type { Row } from '@tanstack/react-table'
 import { useRouter, useSearchParams } from 'next/navigation'
-import type { ChangeEvent } from 'react'
 import { useMemo, useState } from 'react'
 
 export function useDomainsTable({
@@ -48,16 +47,11 @@ export function useDomainsTable({
     router.push(`/domains/${row.original.domainName}`)
   }
 
-  function handleStatusSelectChange(event: ChangeEvent<HTMLSelectElement>) {
-    handleStatusChange(event.target.value)
-  }
-
   return {
     filtered,
     statusFilter,
     handleRowClick,
     handleStatusChange,
-    handleStatusSelectChange,
     handleNavigate,
   }
 }

@@ -14,7 +14,7 @@ export function DomainDecisionRow({
   const { enforcement } = data
   const atRisk = enforcement.failingSourcesByKind.legitimate > 0
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.25fr)]">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,0.85fr)_minmax(0,1.4fr)_minmax(0,0.9fr)_minmax(0,1.15fr)]">
       <ComplianceTile summary={data.summary} trend={data.trend} />
       <PolicyTile
         policy={data.policy}
@@ -38,6 +38,7 @@ export function DomainDecisionRow({
       />
       <InsightsTile
         insights={data.insights}
+        summary={data.summary}
         diagnosticsHref={`/diagnostics/${encodeURIComponent(domainName)}`}
       />
     </div>
