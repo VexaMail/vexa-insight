@@ -15,7 +15,7 @@ export function ModelComboboxSearch({
       <input
         ref={inputRef}
         type="text"
-        className="placeholder:text-muted-foreground h-8 w-full bg-transparent text-sm outline-none"
+        className="placeholder:text-muted-foreground h-8 w-full bg-transparent text-base outline-none sm:text-sm"
         placeholder="Search models…"
         value={query}
         onChange={(e) => {

@@ -1,6 +1,10 @@
 'use client'
 
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import type { IngestionIntervalFieldProps } from './IngestionIntervalFieldProps'
 
 export function IngestionIntervalField({
@@ -11,7 +15,7 @@ export function IngestionIntervalField({
     <div>
       <label
         htmlFor="settings-ingestion-interval"
-        className="text-foreground mb-1.5 block text-xs font-medium"
+        className={SETTINGS_LABEL_CLASS_NAME}
       >
         Interval (minutes)
       </label>
@@ -24,7 +28,7 @@ export function IngestionIntervalField({
         onChange={(e) => {
           onChange(parseInt(e.target.value, 10) || 60)
         }}
-        className="bg-secondary border-border/50 text-xs"
+        className={SETTINGS_INPUT_CLASS_NAME}
       />
     </div>
   )

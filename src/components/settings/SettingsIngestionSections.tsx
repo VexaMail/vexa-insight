@@ -1,12 +1,11 @@
 import type { SettingsIngestionSectionsProps } from '@/types/settings'
-import AdvancedSection from './AdvancedSection'
 import { AiSettingsSection } from './AiSettingsSection'
 import { GeoIpSection } from './GeoIpSection'
 import IngestionSection from './IngestionSection'
 import IpHostnameSection from './IpHostnameSection'
 import { SndsSection } from './SndsSection'
 
-/** Ingestion cadence, environment, GeoIP, AI, SNDS and hostname enrichment. */
+/** Ingestion cadence and the enrichment sources: hostnames, GeoIP, SNDS, AI. */
 export function SettingsIngestionSections({
   apiKey,
   form,
@@ -25,25 +24,6 @@ export function SettingsIngestionSections({
         }}
       />
 
-      <AdvancedSection
-        corsOrigins={form.backendCorsOrigins}
-        environment={
-          form.environment as 'development' | 'staging' | 'production'
-        }
-        onCorsChange={(v) => {
-          setForm((prev) => ({ ...prev, backendCorsOrigins: v }))
-        }}
-        onEnvironmentChange={(v) => {
-          setForm((prev) => ({ ...prev, environment: v }))
-        }}
-      />
-
-      <GeoIpSection apiKey={apiKey} />
-
-      <AiSettingsSection apiKey={apiKey} />
-
-      <SndsSection apiKey={apiKey} />
-
       <IpHostnameSection
         enabled={form.ipHostnameLookupEnabled}
         refreshIntervalHours={form.ipHostnameRefreshIntervalHours}
@@ -58,6 +38,12 @@ export function SettingsIngestionSections({
           setForm((prev) => ({ ...prev, [key]: value }))
         }}
       />
+
+      <GeoIpSection apiKey={apiKey} />
+
+      <SndsSection apiKey={apiKey} />
+
+      <AiSettingsSection apiKey={apiKey} />
     </>
   )
 }

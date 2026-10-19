@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui'
+import { SETTINGS_CONTROL_CLASS_NAME } from '@/constants/settings'
 import { Check } from 'lucide-react'
 import type { SndsConnectFormProps } from './SndsConnectFormProps'
 
@@ -33,7 +34,7 @@ export function SndsConnectForm({
           type="text"
           autoComplete="off"
           placeholder="http://localhost/?code=..."
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className={SETTINGS_CONTROL_CLASS_NAME}
           value={redirectUrl}
           onChange={(e) => {
             onChange(e.target.value)
@@ -42,6 +43,7 @@ export function SndsConnectForm({
         <Button
           type="button"
           variant="secondary"
+          className="h-10 shrink-0"
           disabled={isBusy || !redirectUrl.trim()}
           onClick={onSubmit}
         >

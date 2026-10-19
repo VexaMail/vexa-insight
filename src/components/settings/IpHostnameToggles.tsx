@@ -10,10 +10,10 @@ export function IpHostnameToggles({
   onChange,
 }: IpHostnameTogglesProps) {
   return (
-    <div className="col-span-1 flex flex-col gap-3 pt-2 sm:col-span-2 sm:flex-row sm:gap-6">
+    <div className="col-span-full flex flex-col gap-1 sm:flex-row sm:gap-6">
       <IpHostnameToggle
         id="ip-manual-refresh"
-        label="Allow Manual Refresh"
+        label="Allow manual refresh"
         labelClassName="text-foreground text-sm"
         checked={manualRefreshEnabled}
         onToggle={(checked) => {
@@ -22,7 +22,7 @@ export function IpHostnameToggles({
       />
       <IpHostnameToggle
         id="ip-allow-private"
-        label="Allow Private IPs"
+        label="Allow private IPs"
         labelClassName="text-foreground text-sm"
         checked={allowPrivateIps}
         onToggle={(checked) => {

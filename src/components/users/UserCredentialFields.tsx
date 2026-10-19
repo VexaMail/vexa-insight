@@ -1,4 +1,5 @@
 import { Input } from '@/components/ui'
+import { USER_INPUT_CLASS_NAME } from '@/constants/users'
 import { UserPasswordField } from './UserPasswordField'
 
 /** Username and password of the user being created or edited. */
@@ -18,11 +19,15 @@ export function UserCredentialFields({
   return (
     <>
       <div className="space-y-2">
-        <label htmlFor="user-username" className="text-sm font-medium">
+        <label
+          htmlFor="user-username"
+          className="text-foreground block text-sm font-medium"
+        >
           Username
         </label>
         <Input
           id="user-username"
+          className={USER_INPUT_CLASS_NAME}
           value={username}
           onChange={(e) => {
             onUsernameChange(e.target.value)

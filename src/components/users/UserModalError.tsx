@@ -4,7 +4,10 @@ import type { UserModalErrorProps } from './UserModalErrorProps'
 export function UserModalError({ message }: Readonly<UserModalErrorProps>) {
   if (message === '') return null
   return (
-    <div className="text-destructive bg-destructive/10 mb-4 rounded p-2 text-sm">
+    <div
+      role="alert"
+      className="border-danger/30 bg-danger/10 text-danger rounded-md border px-3 py-2 text-sm"
+    >
       {message}
     </div>
   )

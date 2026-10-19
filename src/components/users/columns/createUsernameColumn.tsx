@@ -1,3 +1,4 @@
+import { StatusPill } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -11,13 +12,17 @@ export function createUsernameColumn(
     accessorKey: 'username',
     header: 'Username',
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <UserIcon className="text-muted-foreground h-4 w-4" />
-        <span className="font-medium">{row.original.username}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="bg-accent text-muted-foreground flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
+          <UserIcon className="h-3.5 w-3.5" aria-hidden />
+        </span>
+        <span className="text-foreground truncate font-medium">
+          {row.original.username}
+        </span>
         {row.original.id === currentUserId && (
-          <span className="bg-primary/20 text-primary ml-2 rounded-full px-2 py-0.5 text-[10px]">
+          <StatusPill tone="neutral" className="h-5 px-1.5 text-[11px]">
             You
-          </span>
+          </StatusPill>
         )}
       </div>
     ),

@@ -1,4 +1,5 @@
 import { SECRET_KEY_REQUIRED_MESSAGE } from '@/constants/install'
+import { TriangleAlert } from 'lucide-react'
 
 /**
  * Stands in for the installer form when the environment has no `SECRET_KEY`.
@@ -11,10 +12,17 @@ export function InstallSecretKeyNotice() {
   return (
     <div
       role="alert"
-      className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100"
+      className="border-warning/30 bg-warning/10 text-foreground flex gap-3 rounded-md border p-4 text-sm"
     >
-      <p className="font-semibold">SECRET_KEY is missing</p>
-      <p className="mt-2">{SECRET_KEY_REQUIRED_MESSAGE}</p>
+      <TriangleAlert className="text-warning mt-0.5 h-4 w-4 shrink-0" />
+      <div>
+        <p className="font-semibold">
+          <code className="font-mono">SECRET_KEY</code> is missing
+        </p>
+        <p className="text-muted-foreground mt-1.5">
+          {SECRET_KEY_REQUIRED_MESSAGE}
+        </p>
+      </div>
     </div>
   )
 }

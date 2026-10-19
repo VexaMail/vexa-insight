@@ -1,58 +1,54 @@
 'use client'
 
-import { m as motion } from 'framer-motion'
+import { StatusPill } from '@/components/ui'
+import { Database } from 'lucide-react'
 import { useGeoIp } from '../../hooks/settings/useGeoIp'
 import { GeoIpDatabaseCard } from './GeoIpDatabaseCard'
 import { GeoIpLicenseKeyField } from './GeoIpLicenseKeyField'
 import { GeoIpSectionIntro } from './GeoIpSectionIntro'
+import { SettingsSection } from './SettingsSection'
 
 export function GeoIpSection({ apiKey }: Readonly<{ apiKey: string }>) {
-  const {
-    licenseKey,
-    setLicenseKey,
-    hasLicenseKey,
-    lastUpdate,
-    errorStatus,
-    isLoading,
-    isUpdatingDb,
-    message,
-    progressData,
-    etaText,
-    handleSaveKey,
-    handleUpdateDb,
-  } = useGeoIp(apiKey)
+  const geoIp = useGeoIp(apiKey)
+  const { licenseKey, hasLicenseKey, isUpdatingDb, message } = geoIp
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="border-border/50 bg-background/50 space-y-4 rounded-lg border p-6 backdrop-blur-sm"
+    <SettingsSection
+      anchorId="geoip"
+      headingId="settings-geoip-heading"
+      icon={<Database />}
+      title="GeoIP"
+      description="Country and network names for source IPs, from a local MaxMind database."
+      actions={
+        <StatusPill tone={hasLicenseKey ? 'success' : 'unknown'} dot>
+          {hasLicenseKey ? 'Key saved' : 'No key'}
+        </StatusPill>
+      }
     >
-      <GeoIpSectionIntro />
-
-      <div className="flex max-w-xl flex-col gap-4 pt-2">
+      <div className="flex max-w-xl flex-col gap-4">
+        <GeoIpSectionIntro />
         <GeoIpLicenseKeyField
           licenseKey={licenseKey}
           hasLicenseKey={hasLicenseKey}
-          isLoading={isLoading}
-          onChange={setLicenseKey}
-          onSave={handleSaveKey}
+          isLoading={geoIp.isLoading}
+          onChange={geoIp.setLicenseKey}
+          onSave={geoIp.handleSaveKey}
         />
-
         <GeoIpDatabaseCard
-          errorStatus={errorStatus}
-          lastUpdate={lastUpdate}
+          errorStatus={geoIp.errorStatus}
+          lastUpdate={geoIp.lastUpdate}
           isUpdatingDb={isUpdatingDb}
           canUpdate={hasLicenseKey || licenseKey !== ''}
-          progressData={progressData}
-          etaText={etaText}
-          onUpdate={handleUpdateDb}
+          progressData={geoIp.progressData}
+          etaText={geoIp.etaText}
+          onUpdate={geoIp.handleUpdateDb}
         />
-
         {message !== '' && !isUpdatingDb && (
-          <p className="text-foreground text-sm font-medium">{message}</p>
+          <p className="text-foreground text-sm font-medium" role="status">
+            {message}
+          </p>
         )}
       </div>
-    </motion.section>
+    </SettingsSection>
   )
 }

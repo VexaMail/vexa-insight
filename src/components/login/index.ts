@@ -1,5 +1,6 @@
+export { AuthScreen } from './AuthScreen'
+export { AuthWordmark } from './AuthWordmark'
 export { LoginErrorBanner } from './LoginErrorBanner'
-export { LoginHeader } from './LoginHeader'
 export { LoginPasswordField } from './LoginPasswordField'
 export { LoginSubmitButton } from './LoginSubmitButton'
 export { LoginUsernameField } from './LoginUsernameField'

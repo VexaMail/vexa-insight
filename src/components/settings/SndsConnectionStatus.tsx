@@ -5,7 +5,7 @@ export function SndsConnectionStatus({
   connection,
 }: SndsConnectionStatusProps) {
   if (!connection?.connected) {
-    return <p className="text-muted-foreground text-sm">Not connected.</p>
+    return null
   }
   return (
     <dl className="text-muted-foreground grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
@@ -25,7 +25,7 @@ export function SndsConnectionStatus({
       {connection.lastSyncError ? (
         <>
           <dt>Last error</dt>
-          <dd className="text-destructive">{connection.lastSyncError}</dd>
+          <dd className="text-danger">{connection.lastSyncError}</dd>
         </>
       ) : null}
     </dl>

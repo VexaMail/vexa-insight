@@ -1,6 +1,10 @@
 'use client'
 
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import { DEFAULT_DAYS_BACK } from '@/utils/install'
 import type { IngestionDaysBackFieldProps } from './IngestionDaysBackFieldProps'
 
@@ -12,7 +16,7 @@ export function IngestionDaysBackField({
     <div>
       <label
         htmlFor="settings-ingestion-days"
-        className="text-foreground mb-1.5 block text-xs font-medium"
+        className={SETTINGS_LABEL_CLASS_NAME}
       >
         Days back
       </label>
@@ -26,7 +30,7 @@ export function IngestionDaysBackField({
           const n = parseInt(e.target.value, 10)
           onChange(Number.isFinite(n) && n >= 1 ? n : DEFAULT_DAYS_BACK)
         }}
-        className="bg-secondary border-border/50 text-xs"
+        className={SETTINGS_INPUT_CLASS_NAME}
       />
     </div>
   )

@@ -26,7 +26,7 @@ export function ImapAccountLabelRow({
             onClick={() => {
               dispatch({ type: 'REMOVE_ACCOUNT', index })
             }}
-            className="cursor-pointer text-sm text-red-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-red-400"
+            className="text-danger focus-visible:ring-ring cursor-pointer rounded-sm text-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
           >
             Remove
           </button>

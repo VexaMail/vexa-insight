@@ -12,7 +12,7 @@ export function ImapAccountFields({
   dispatch,
 }: ImapAccountFieldsProps) {
   return (
-    <div className="space-y-3 rounded border border-zinc-100 p-3 dark:border-zinc-600">
+    <div className="border-border bg-secondary space-y-3 rounded-md border p-4">
       <ImapAccountLabelRow
         value={account.label}
         index={index}

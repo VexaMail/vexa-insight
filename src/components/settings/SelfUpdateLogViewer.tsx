@@ -19,9 +19,7 @@ export default function SelfUpdateLogViewer({
         <div
           key={`${String(index)}-${line.slice(0, 16)}`}
           className={
-            line.startsWith('ERROR')
-              ? 'text-destructive'
-              : 'text-muted-foreground'
+            line.startsWith('ERROR') ? 'text-danger' : 'text-muted-foreground'
           }
         >
           {line}

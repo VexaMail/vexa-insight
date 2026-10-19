@@ -17,7 +17,7 @@ export default function UpdateStatusMetaGrid({
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       <div>
-        <p className="text-muted-foreground text-[11px] tracking-wide uppercase">
+        <p className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
           Installed
         </p>
         <p className="text-foreground font-mono text-sm">
@@ -25,7 +25,7 @@ export default function UpdateStatusMetaGrid({
         </p>
       </div>
       <div>
-        <p className="text-muted-foreground text-[11px] tracking-wide uppercase">
+        <p className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
           Latest released
         </p>
         <p className="text-foreground font-mono text-sm">{latestLabel}</p>
@@ -36,7 +36,7 @@ export default function UpdateStatusMetaGrid({
         ) : null}
       </div>
       <div>
-        <p className="text-muted-foreground text-[11px] tracking-wide uppercase">
+        <p className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
           Last checked
         </p>
         <p className="text-foreground text-sm">{lastCheckedLabel}</p>

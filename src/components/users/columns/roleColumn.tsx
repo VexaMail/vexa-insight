@@ -1,19 +1,20 @@
+import { StatusPill } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { User } from '@/types/users'
 import type { ColumnDef } from '@tanstack/react-table'
-import { Shield, ShieldAlert } from 'lucide-react'
+import { Shield, ShieldCheck } from 'lucide-react'
 
 export const roleColumn: ColumnDef<typeof dataTableFeatures, User> = {
   accessorKey: 'role',
   header: 'Role',
   cell: ({ row }) => (
-    <span className="flex items-center gap-1.5 text-xs">
+    <StatusPill tone={row.original.role === 'admin' ? 'info' : 'neutral'}>
       {row.original.role === 'admin' ? (
-        <ShieldAlert className="text-warning h-4 w-4" />
+        <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
       ) : (
-        <Shield className="text-muted-foreground h-4 w-4" />
+        <Shield className="h-3.5 w-3.5" aria-hidden />
       )}
-      {row.original.role.toUpperCase()}
-    </span>
+      <span className="capitalize">{row.original.role}</span>
+    </StatusPill>
   ),
 }

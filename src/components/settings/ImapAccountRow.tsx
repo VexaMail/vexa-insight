@@ -21,7 +21,7 @@ export function ImapAccountRow({
   const fields = { account, index, onUpdate }
 
   return (
-    <div className="bg-surface-1 border-border/30 overflow-hidden rounded-lg border">
+    <div className="bg-secondary border-border overflow-hidden rounded-md border">
       <ImapAccountRowHeader
         displayLabel={
           account.label || account.username || `Account ${String(index + 1)}`
@@ -31,7 +31,7 @@ export function ImapAccountRow({
         onToggleExpand={onToggleExpand}
       />
       {isExpanded ? (
-        <div className="border-border/30 space-y-3 border-t p-4">
+        <div className="border-border space-y-4 border-t p-4">
           <ImapAccountRowToolbar
             accountId={account.id}
             index={index}
@@ -42,7 +42,7 @@ export function ImapAccountRow({
           <ImapAccountLabelField {...fields} />
           <ImapAccountServerFields {...fields} />
           <ImapAccountCredentialFields {...fields} />
-          <div className="border-border/20 mt-4 grid gap-4 border-t pt-2 sm:grid-cols-2">
+          <div className="border-border grid gap-4 border-t pt-4 sm:grid-cols-2">
             <ImapFetchOptions {...fields} />
             <ImapPostProcessing {...fields} apiKey={apiKey} />
           </div>

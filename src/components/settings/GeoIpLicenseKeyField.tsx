@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui'
+import { SETTINGS_CONTROL_CLASS_NAME } from '@/constants/settings'
 import { Save } from 'lucide-react'
 import type { GeoIpLicenseKeyFieldProps } from './GeoIpLicenseKeyFieldProps'
 
@@ -12,7 +13,10 @@ export function GeoIpLicenseKeyField({
 }: GeoIpLicenseKeyFieldProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="maxmind-license-key" className="text-sm font-medium">
+      <label
+        htmlFor="maxmind-license-key"
+        className="text-foreground text-sm font-medium"
+      >
         MaxMind License Key
       </label>
       <div className="flex gap-2">
@@ -22,7 +26,7 @@ export function GeoIpLicenseKeyField({
           placeholder={
             hasLicenseKey ? '••••••••••••••••' : 'Enter license key...'
           }
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className={SETTINGS_CONTROL_CLASS_NAME}
           value={licenseKey}
           onChange={(e) => {
             onChange(e.target.value)
@@ -31,6 +35,7 @@ export function GeoIpLicenseKeyField({
         <Button
           type="button"
           variant="secondary"
+          className="h-10 shrink-0"
           disabled={isLoading || !licenseKey.trim()}
           onClick={onSave}
         >

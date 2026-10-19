@@ -1,4 +1,8 @@
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import { imapAccountFieldId } from '@/utils/settings'
 import type { ImapAccountCredentialFieldsProps } from './ImapAccountCredentialFieldsProps'
 
@@ -9,10 +13,10 @@ export function ImapAccountCredentialFields({
 }: Readonly<ImapAccountCredentialFieldsProps>) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <div className="space-y-1.5">
+      <div className="min-w-0">
         <label
           htmlFor={imapAccountFieldId(index, 'username')}
-          className="text-foreground text-xs font-medium"
+          className={SETTINGS_LABEL_CLASS_NAME}
         >
           Username
         </label>
@@ -24,13 +28,13 @@ export function ImapAccountCredentialFields({
             onUpdate(index, { username: e.target.value })
           }}
           placeholder="user@example.com"
-          className="bg-card border-border/50 text-xs"
+          className={SETTINGS_INPUT_CLASS_NAME}
         />
       </div>
-      <div className="space-y-1.5">
+      <div className="min-w-0">
         <label
           htmlFor={imapAccountFieldId(index, 'password')}
-          className="text-foreground text-xs font-medium"
+          className={SETTINGS_LABEL_CLASS_NAME}
         >
           Password / App Password
         </label>
@@ -42,7 +46,7 @@ export function ImapAccountCredentialFields({
             onUpdate(index, { passwordNew: e.target.value })
           }}
           placeholder={account.passwordMasked ? '••••••••' : 'Password'}
-          className="bg-card border-border/50 text-xs"
+          className={SETTINGS_INPUT_CLASS_NAME}
           autoComplete="off"
         />
       </div>

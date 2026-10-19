@@ -1,4 +1,5 @@
 import { Button, Input } from '@/components/ui'
+import { SETTINGS_INPUT_CLASS_NAME } from '@/constants/settings'
 import type { FolderPickerCreateFormProps } from './FolderPickerCreateFormProps'
 
 export function FolderPickerCreateForm({
@@ -10,7 +11,7 @@ export function FolderPickerCreateForm({
   onCancel,
 }: FolderPickerCreateFormProps) {
   return (
-    <div className="space-y-1.5">
+    <div className="min-w-0">
       <Input
         aria-label="New folder path"
         type="text"
@@ -19,7 +20,7 @@ export function FolderPickerCreateForm({
           onPathChange(e.target.value)
         }}
         placeholder="e.g. Processed or INBOX/Processed"
-        className="bg-card border-border/50 text-xs"
+        className={SETTINGS_INPUT_CLASS_NAME}
       />
       {createError != null && createError !== '' && (
         <p className="text-danger text-xs">{createError}</p>

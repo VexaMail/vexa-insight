@@ -30,8 +30,8 @@ export default function SelfUpdatePanel({
   if (!isSourceInstallMethod(capability.installMethod)) return null
 
   return (
-    <div className="border-border/50 bg-background/40 space-y-3 rounded-md border p-3">
-      <div className="flex items-start gap-3">
+    <div className="border-border bg-secondary space-y-3 rounded-md border p-3">
+      <div className="flex flex-col items-start gap-3 sm:flex-row">
         <SelfUpdateIntro supervisor={capability.supervisor} />
         <Button
           type="button"
@@ -59,7 +59,7 @@ export default function SelfUpdatePanel({
 
       <SelfUpdateLogViewer lines={log.lines} running={log.running} />
 
-      {error ? <p className="text-destructive text-xs">{error}</p> : null}
+      {error ? <p className="text-danger text-xs">{error}</p> : null}
     </div>
   )
 }

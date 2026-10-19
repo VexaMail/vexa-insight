@@ -35,7 +35,10 @@ export default function InstallForm({ isPartial = false }: InstallFormProps) {
       )}
 
       {state.message !== '' && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+        <p
+          role="alert"
+          className="border-danger/30 bg-danger/10 text-danger rounded-md border px-3 py-2 text-sm"
+        >
           {state.message}
         </p>
       )}

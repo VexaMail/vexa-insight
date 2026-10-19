@@ -1,4 +1,8 @@
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import { imapAccountFieldId } from '@/utils/settings'
 import type { ImapAccountCredentialFieldsProps } from './ImapAccountCredentialFieldsProps'
 
@@ -8,10 +12,10 @@ export function ImapAccountLabelField({
   onUpdate,
 }: Readonly<ImapAccountCredentialFieldsProps>) {
   return (
-    <div className="space-y-1.5">
+    <div className="min-w-0">
       <label
         htmlFor={imapAccountFieldId(index, 'label')}
-        className="text-foreground text-xs font-medium"
+        className={SETTINGS_LABEL_CLASS_NAME}
       >
         Account Label
       </label>
@@ -23,7 +27,7 @@ export function ImapAccountLabelField({
           onUpdate(index, { label: e.target.value })
         }}
         placeholder="e.g. Primary Inbox"
-        className="bg-card border-border/50 text-xs"
+        className={SETTINGS_INPUT_CLASS_NAME}
       />
     </div>
   )
