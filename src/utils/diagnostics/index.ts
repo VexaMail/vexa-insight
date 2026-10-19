@@ -1,4 +1,5 @@
 export { diagnosticsSectionDomId } from './diagnosticsSectionDomId'
+export { isPublicDnsName } from './isPublicDnsName'
 export { parseMtaStsPolicyText } from './parseMtaStsPolicyText'
 export { resolveDiagnosticsQueryWindow } from './resolveDiagnosticsQueryWindow'
 export { scrollToDiagnosticsSection } from './scrollToDiagnosticsSection'

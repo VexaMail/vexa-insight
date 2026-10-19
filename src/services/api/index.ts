@@ -1,6 +1,7 @@
 export { buildOpenApiDocument } from './buildOpenApiDocument'
 export { consumeStreamTicket } from './consumeStreamTicket'
 export { issueStreamTicket } from './issueStreamTicket'
+export { rejectWhenRateLimited } from './rejectWhenRateLimited'
 export { requireAdminAccess } from './requireAdminAccess'
 export { requireAdminAuth } from './requireAdminAuth'
 export { withApiAuth } from './withApiAuth'

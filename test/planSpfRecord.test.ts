@@ -51,3 +51,14 @@ describe('planSpfRecord', () => {
     expect(plan.withinLimit).toBe(false)
   })
 })
+
+describe('findNonPublicSpfTargets', () => {
+  it('flags includes that only resolve on a private network', async () => {
+    const { findNonPublicSpfTargets } = await import('@/services/diagnostics')
+    expect(
+      findNonPublicSpfTargets(
+        'v=spf1 include:_spf.example.net include:mail.corp include:intranet redirect=10.0.0.1',
+      ),
+    ).toEqual(['mail.corp', 'intranet', '10.0.0.1'])
+  })
+})

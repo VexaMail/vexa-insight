@@ -1,5 +1,6 @@
 export * from './buildDiagnosticsAdminGuides'
 export * from './computeDomainScore'
+export * from './findNonPublicSpfTargets'
 export * from './getDiagnosticStats'
 export * from './getDomainDnsRecords'
 export * from './loadDomainDiagnostics'
