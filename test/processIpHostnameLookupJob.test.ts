@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { resolveAndPersist, warn } = vi.hoisted(() => ({
+const { resolveAndPersist, warn, error } = vi.hoisted(() => ({
   resolveAndPersist: vi.fn(),
   warn: vi.fn(),
+  error: vi.fn(),
 }))
 
 vi.mock('@/services/config', () => ({
@@ -28,7 +29,7 @@ vi.mock('@/services/ip-hostname/resolveAndPersist', () => ({
 }))
 
 vi.mock('@/utils/log', () => ({
-  log: { debug: vi.fn(), info: vi.fn(), warn, error: vi.fn() },
+  log: { debug: vi.fn(), info: vi.fn(), warn, error },
 }))
 
 const { processIpHostnameLookupJob } =
@@ -38,6 +39,7 @@ describe('processIpHostnameLookupJob', () => {
   beforeEach(() => {
     resolveAndPersist.mockReset()
     warn.mockReset()
+    error.mockReset()
   })
 
   it('logs the IP and the error of each failed lookup', async () => {
@@ -63,5 +65,33 @@ describe('processIpHostnameLookupJob', () => {
       ip: '192.0.2.1',
       error: 'queryPtr ETIMEOUT',
     })
+  })
+
+  it('logs a lookup exception through the repo logger', async () => {
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined)
+    resolveAndPersist
+      .mockRejectedValueOnce(new Error('database is locked'))
+      .mockResolvedValueOnce({
+        hostname: 'mail.example.com',
+        status: 'success',
+        error: null,
+        resolvedAt: new Date(),
+      })
+
+    const result = await processIpHostnameLookupJob()
+
+    expect(result).toEqual({ processed: 1, skipped: 0, errors: 1 })
+    expect(error).toHaveBeenCalledTimes(1)
+    expect(error).toHaveBeenCalledWith(
+      '[ip-hostname-lookup] lookup exception',
+      {
+        ip: '192.0.2.1',
+        error: 'Error: database is locked',
+      },
+    )
+    expect(consoleError).not.toHaveBeenCalled()
+    consoleError.mockRestore()
   })
 })

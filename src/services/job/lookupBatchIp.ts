@@ -15,7 +15,10 @@ export async function lookupBatchIp(ip: string): Promise<boolean> {
     })
     return false
   } catch (e) {
-    console.error(`[processIpHostnameLookupJob] Exception processing ${ip}:`, e)
+    log.error('[ip-hostname-lookup] lookup exception', {
+      ip,
+      error: String(e),
+    })
     return false
   }
 }
