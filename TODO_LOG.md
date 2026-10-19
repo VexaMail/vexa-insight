@@ -8,6 +8,18 @@
 
 ### 2026-10
 
+- [x] 2026-10-19 — **Production findings from the nova pass fixed.**
+  - Result: records without a usable source IP are skipped and counted instead
+    of failing the whole report (7250569); `ip_hostname_enrichments` timestamps
+    default to unix seconds, with migration 0040 rebuilding the table and
+    converting the text values (d2d0045); scheduler run lines carry a timestamp
+    and each failed hostname lookup logs its IP and error (8d69c62); the
+    standalone output no longer traces the project root (85deafa); expired
+    sessions and poll events older than 90 days are pruned daily (4bda7a4).
+  - Evidence: `pnpm run check:ci` exit 0 on the integrated main, 144 test files
+    and 767 tests passed, `check-migrations: OK`; each change reviewed
+    separately.
+
 - 2026-10-06 [x] After the owner publishes the renamed shared packages,
   regenerate the — Lockfile regenerated for @syntopica (5006c46); 0 @busirocket
   entries; gate extended (2f54e16).

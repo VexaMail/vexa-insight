@@ -138,34 +138,25 @@ the portfolio repo.
 
 ## Production findings (2026-10-19)
 
-Read-only pass over the live instance (deployed `c902861`, v0.4.0).
+Left over from the fixes for the read-only pass over the live instance.
 
-- [ ] **One record without `source_ip` drops the whole report, unrecoverably.**
-      `recordToEvent` defaults a missing `source_ip` to `''`, `upsertIpsBatch`
-      filters empty IPs out, and `resolveEventIpIds` then throws
-      `Missing ipAddressId for ` for the entire report. By then
-      `finalizeProcessedMessage` has already recorded the Message-ID and moved
-      the mail to Trash, so the valid records are never ingested and the next
-      poll skips it. Production: three daily reports from one reporter failed
-      this way (job runs 1559, 1582, 1730). Smallest fix: skip (and count) the
-      records with no usable IP in the parser, with a test using a fixture whose
-      `<source_ip>` is empty; longer term, finalize the message only after
-      ingest succeeds.
-- [ ] **`ip_hostname_enrichments` timestamps default to text.** `created_at` and
-      `updated_at` are `integer({ mode: 'timestamp' })` defaulting to SQL
-      `CURRENT_TIMESTAMP`, which stores `'YYYY-MM-DD HH:MM:SS'` text: all 3,149
-      production rows have a text `created_at`, which Drizzle reads back as an
-      Invalid Date. Nothing reads it yet. Fix: default to `(unixepoch())` in a
-      new migration and backfill the text values.
-- [ ] **App log lacks timestamps and failure detail.** The persistent-app log
-      prints `[ip-hostname-lookup] run: processed=0 skipped=0 errors=1` with no
-      time and no IP or reason: `processIpHostnameLookupJob` counts a `failed`
-      outcome without logging it. Add a timestamp to the job log line and log
-      the IP and error for each failed lookup.
-- [ ] **The standalone build ships the whole repository.** `app/` on nova is 224
-      MB and holds `src/`, `test/`, `docs/`, `TODO_LOG.md` and the lockfile next
-      to `server.js`: file tracing pulls the project root in. Narrow it with
-      `outputFileTracingExcludes` and check `app/` drops to the runtime only.
+- [ ] **Finalize a message only after its report ingests.**
+      `finalizeProcessedMessage` records the Message-ID and moves the mail to
+      Trash at download time, before ingest. Any ingest error therefore loses
+      the report once the server expunges Trash (30 days). Records without a
+      usable IP no longer trigger this (7250569), but any other ingest throw
+      still does.
+- [ ] **In-app GeoIP update probably fails in the standalone build.**
+      `src/services/geoip/updateDb.ts` forks
+      `node_modules/geoip-lite/scripts/updatedb.js`, which the standalone output
+      does not contain (true before 85deafa too). Add it with
+      `outputFileTracingIncludes` and test the update on a standalone build.
+- [ ] **`backfillReportEvents` aligns events to XML records by index.** Since
+      ingest skips records without a usable IP, that alignment breaks for such
+      reports. It has no caller today; apply `withUsableSourceIps` to the
+      re-parsed result before it is run again.
+- [ ] **Guard the standalone output size.** Nothing fails if `src/`, `test/` or
+      `.git` reappear in `.next/standalone`; add a check after the build.
 
 ## Pending Decisions
 
@@ -312,13 +303,6 @@ remains below is what those passes did not reach.
       (`anonymousTypeLiteral`) findings that `eslint-plugin-code-policy@0.8.0`
       added to `eslint-suppressions.json` on 2026-10-07: name each inline object
       type in `src/types/<area>/`, then `pnpm lint:prune`.
-
-- [ ] **Prune tables that only grow.** Production on 2026-09-30: `sessions`
-      keeps expired rows (12 of 15), `job_poll_events` holds 134k rows back to
-      March. Harmless at 40 MB, but nothing bounds it. Delete expired sessions
-      on login or on a daily tick, and poll events older than ~90 days.
-      Re-checked 2026-10-19: 14 of 17 sessions expired, 144k poll events, DB 46
-      MB.
 
 - [ ] Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release
       exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which
