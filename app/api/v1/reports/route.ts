@@ -1,8 +1,8 @@
 import { withApiAuth } from '@/services/api'
 import {
-  getLatestReports,
   getReports,
   getReportsByDomainId,
+  getReportsInDateRange,
 } from '@/services/reports'
 import {
   dateRangeQuerySchema,
@@ -43,16 +43,15 @@ export const GET = withApiAuth(
       Object.fromEntries(searchParams),
     )
     if (from ?? to) {
-      const items = await getLatestReports({
-        limit: pageSize,
+      const data = await getReportsInDateRange({
+        page,
+        pageSize,
         from,
         to,
         org,
         domain,
       })
-      return NextResponse.json({
-        data: { items, total: items.length, page, pageSize },
-      })
+      return NextResponse.json({ data })
     }
 
     const data = await getReports(page, pageSize, org, domain)
