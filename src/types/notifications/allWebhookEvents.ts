@@ -9,5 +9,6 @@ export const ALL_WEBHOOK_EVENTS: WebhookEvent[] = [
   'tls.failure_detected',
   'failure_report.received',
   'reports.stopped',
+  'dns.record_changed',
   'test.ping',
 ]

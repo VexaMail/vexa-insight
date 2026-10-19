@@ -1,7 +1,9 @@
+import { DNS_SNAPSHOT_CRON } from '@/constants/dns-history'
 import { REPORT_COVERAGE_CRON } from '@/constants/gaps'
 import { RETENTION_PRUNE_CRON } from '@/constants/retention'
 import { SNDS_SYNC_CRON } from '@/constants/snds'
 import { getConfig } from '@/services/config'
+import { runScheduledDnsSnapshot } from '@/services/dns-history'
 import { runScheduledCoverageCheck } from '@/services/gaps'
 import { runScheduledPrune } from '@/services/retention'
 import { hasConfiguredImapAccount } from '@/utils/imap'
@@ -16,7 +18,7 @@ import { runScheduledSndsSync } from './runScheduledSndsSync'
 /**
  * Starts the in-Node scheduler: runs IMAP fetch+ingest on a cron interval,
  * IP Hostname Lookup, the daily Microsoft SNDS sync, the daily check for
- * domains whose reports stopped and the daily prune of tables that only grow.
+ * domains whose reports stopped, the daily DNS snapshot and the daily prune of tables that only grow.
  */
 export function startScheduler(): void {
   const config = getConfig()
@@ -61,6 +63,9 @@ export function startScheduler(): void {
 
   // REPORT COVERAGE (daily; webhooks only)
   cron.schedule(REPORT_COVERAGE_CRON, runScheduledCoverageCheck)
+
+  // DNS HISTORY (daily; stores changed records, webhooks on change)
+  cron.schedule(DNS_SNAPSHOT_CRON, runScheduledDnsSnapshot)
 
   // RETENTION (daily; expired sessions, poll events past 90 days)
   cron.schedule(RETENTION_PRUNE_CRON, runScheduledPrune)

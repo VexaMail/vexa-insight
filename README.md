@@ -235,6 +235,9 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
 - Live DNS checks of SPF (lookup count, macros, the full include tree), DKIM key
   strength, the DMARC record, MTA-STS, TLS-RPT and BIMI, with a security score
   per domain.
+- DNS change history: SPF, DMARC, MX, MTA-STS, TLS-RPT, BIMI and the DKIM
+  selectors that answer are looked up daily, and every change is stored with its
+  old and new value; a `dns.record_changed` webhook fires for each one.
 - Optional AI analysis of those findings through Anthropic, OpenAI, Google or
   OpenRouter, with your own API key. Off by default.
 
@@ -491,6 +494,9 @@ The following endpoints are stable and meant for automation:
   trigger the self-update flow (source installs with supervisor).
 - `GET /api/v1/domains/{id}/sources` — a domain's source IPs with counts,
   hostname, country and named sender; `?format=csv` returns them as CSV.
+- `GET /api/v1/domains/{id}/dns/history` — stored changes of a domain's tracked
+  DNS records, newest first; `POST /api/v1/domains/{id}/dns/check` looks them up
+  now and stores what changed.
 - `GET /api/v1/metrics` — Prometheus-format metrics.
 - `GET /api/v1/health` — `200` if DB reachable, `503` otherwise (used by Docker
   `HEALTHCHECK`). The body's `ingest` field is `stale` when scheduled ingestion
@@ -500,15 +506,15 @@ The following endpoints are stable and meant for automation:
 Outbound webhooks are configured in Settings, for the events
 `unauthorized_source.detected`, `auth.fail_rate_spike`, `ingest.failed`,
 `snds.reputation_alert`, `tls.failure_detected`, `failure_report.received`,
-`reports.stopped` and `update.available`. Each endpoint receives a generic JSON
-envelope (`event`, `timestamp`, `source`, `data`) by `POST`, optionally signed
-with an HMAC-SHA256 `x-vexa-signature` header when the endpoint has a secret.
-Each request has a 5s timeout; network errors, timeouts, HTTP 429 and 5xx are
-retried up to three times after 1, 4 and 16 seconds, while other 4xx responses
-and URLs rejected by the SSRF guard are not. The last status, error and attempt
-count are stored per endpoint. Slack and Microsoft Teams expect their own
-payload shapes, so they need a small receiver or relay in front of this
-envelope, and native adapters are Phase 2 on the roadmap.
+`reports.stopped`, `dns.record_changed` and `update.available`. Each endpoint
+receives a generic JSON envelope (`event`, `timestamp`, `source`, `data`) by
+`POST`, optionally signed with an HMAC-SHA256 `x-vexa-signature` header when the
+endpoint has a secret. Each request has a 5s timeout; network errors, timeouts,
+HTTP 429 and 5xx are retried up to three times after 1, 4 and 16 seconds, while
+other 4xx responses and URLs rejected by the SSRF guard are not. The last
+status, error and attempt count are stored per endpoint. Slack and Microsoft
+Teams expect their own payload shapes, so they need a small receiver or relay in
+front of this envelope, and native adapters are Phase 2 on the roadmap.
 
 ---
 

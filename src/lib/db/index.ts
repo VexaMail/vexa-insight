@@ -6,6 +6,7 @@ export { runMigrations } from './runMigrations'
 export {
   appSettings,
   auditLog,
+  dnsSnapshots,
   domains,
   eventRollupDaily,
   forensicReports,

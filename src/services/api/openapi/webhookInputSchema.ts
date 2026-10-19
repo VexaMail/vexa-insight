@@ -19,6 +19,7 @@ export const webhookInputSchema = {
           'tls.failure_detected',
           'failure_report.received',
           'reports.stopped',
+          'dns.record_changed',
           'test.ping',
         ],
       },

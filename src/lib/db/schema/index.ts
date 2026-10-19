@@ -1,5 +1,6 @@
 export { appSettings } from './app-settings'
 export { auditLog } from './audit-log'
+export { dnsSnapshots } from './dns-snapshots'
 export { domains } from './domain'
 export { eventRollupDaily } from './event-rollup-daily'
 export { forensicReports } from './forensic-report'
