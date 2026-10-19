@@ -150,14 +150,14 @@ the portfolio repo.
 
 Owner goal, 2026-10-19: a more professional, futuristic look, and workflows that
 let an operator reach every fact and troubleshoot like a devops engineer.
-Source: a ChatGPT critique and mockups of the production screens, plus a
-PowerDMARC comparison; both live outside git in
-`.codeality-ui/propose/2026-10-19-0329/` (`critique-full.md`,
-`critique-powerdmarc.md`, `f1/mockup-2..5.png`, `gaps.md`). Direction: an
-"operations console" (home = what needs attention, drill-down symptom -> domain
--> source -> report -> DNS -> verify), dark and light themes equally finished.
-Brief: `docs/ui-brief.md`. Finish line: every item below shipped or moved with a
-reason, then one ChatGPT coherence pass over all screens in both themes.
+Source: an external design critique and mockups of the production screens, plus
+a competitor comparison; both live outside git in
+`.codeality-ui/propose/2026-10-19-0329/` (critique, competitor notes,
+`f1/mockup-2..5.png`, `gaps.md`). Direction: an "operations console" (home =
+what needs attention, drill-down symptom -> domain -> source -> report -> DNS ->
+verify), dark and light themes equally finished. Brief: `docs/ui-brief.md`.
+Finish line: every item below shipped or moved with a reason, then one external
+coherence review over all screens in both themes.
 
 **Foundation**
 
@@ -213,7 +213,7 @@ reason, then one ChatGPT coherence pass over all screens in both themes.
 - [ ] Domains list, Upload, Settings, Users, Login, Install, Docs restyled to
       the same system.
 
-**New features (PowerDMARC and ChatGPT ideas, marked new)**
+**New features (marked new)**
 
 - [ ] Issues queue with acknowledge / snooze (new table).
 - [ ] Change detection: a domain or source that starts failing (new endpoint,
