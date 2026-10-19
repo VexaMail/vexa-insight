@@ -1,22 +1,25 @@
 import { alignmentModeLabel } from '@/utils/domains'
 import type { PolicyTagsProps } from './PolicyTagsProps'
 
-/** The other published tags: sp, pct and the alignment modes. */
+/** The other published tags, in record notation: sp, pct, adkim, aspf. */
 export function PolicyTags({ policy }: Readonly<PolicyTagsProps>) {
   const tags = [
-    ['sp', policy.subdomainPolicy ?? 'same as p'],
-    ['pct', policy.pct === null ? '100' : String(policy.pct)],
-    ['adkim', alignmentModeLabel(policy.adkim)],
-    ['aspf', alignmentModeLabel(policy.aspf)],
-  ]
+    ['sp', policy.subdomainPolicy ?? policy.policy ?? '?', 'Subdomain policy'],
+    ['pct', policy.pct === null ? '100' : String(policy.pct), 'Share applied'],
+    ['adkim', policy.adkim ?? 'r', alignmentModeLabel(policy.adkim)],
+    ['aspf', policy.aspf ?? 'r', alignmentModeLabel(policy.aspf)],
+  ] as const
   return (
-    <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-      {tags.map(([tag, value]) => (
-        <div key={tag} className="flex min-w-0 justify-between gap-2">
-          <dt className="text-muted-foreground font-mono">{tag}</dt>
-          <dd className="text-foreground truncate font-mono">{value}</dd>
-        </div>
+    <ul className="flex flex-wrap gap-1.5" aria-label="Other published tags">
+      {tags.map(([tag, value, title]) => (
+        <li
+          key={tag}
+          title={`${tag}: ${title}`}
+          className="border-border bg-secondary/60 text-muted-foreground rounded border px-1.5 py-0.5 font-mono text-[11px]"
+        >
+          {tag}=<span className="text-foreground">{value}</span>
+        </li>
       ))}
-    </dl>
+    </ul>
   )
 }

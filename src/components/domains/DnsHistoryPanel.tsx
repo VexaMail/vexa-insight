@@ -2,7 +2,7 @@ import { EmptyState, Panel, StatusPill } from '@/components/ui'
 import type { DnsHistoryPanelProps } from '@/types/domains'
 import { formatUnixDateTime } from '@/utils/domains'
 import { describeDnsRecordKind } from '@/utils/timeline'
-import { History } from 'lucide-react'
+import { History, X } from 'lucide-react'
 import { DnsCheckNowButton } from './DnsCheckNowButton'
 
 /** Every stored value of the tracked records, newest first. */
@@ -33,7 +33,10 @@ export function DnsHistoryPanel({
                 <span className="text-foreground text-sm font-medium">
                   {describeDnsRecordKind(entry.recordKind)}
                 </span>
-                <StatusPill tone={entry.value === null ? 'danger' : 'info'}>
+                <StatusPill
+                  tone={entry.value === null ? 'danger' : 'info'}
+                  icon={entry.value === null ? <X /> : null}
+                >
                   {entry.value === null ? 'Removed' : 'Value'}
                 </StatusPill>
                 <span className="text-muted-foreground ml-auto font-mono text-xs">

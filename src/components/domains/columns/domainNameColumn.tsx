@@ -4,6 +4,7 @@ import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
 import type { ColumnDef } from '@tanstack/react-table'
+import { DomainNameCell } from '../DomainNameCell'
 
 export const domainNameColumn: ColumnDef<
   typeof dataTableFeatures,
@@ -13,9 +14,5 @@ export const domainNameColumn: ColumnDef<
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Domain" />
   ),
-  cell: ({ row }) => (
-    <span className="text-foreground text-sm font-medium">
-      {row.getValue('domainName')}
-    </span>
-  ),
+  cell: ({ row }) => <DomainNameCell domainName={row.original.domainName} />,
 }
