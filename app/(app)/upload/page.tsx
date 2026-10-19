@@ -14,7 +14,6 @@ export default function UploadPage() {
   return (
     <PageContainer className="space-y-6">
       <PageHeader
-        eyebrow="Operate"
         title="Upload"
         description="Add a report by hand: one a receiver sent somewhere other than the polled mailboxes, or an old one to backfill."
       />

@@ -12,12 +12,13 @@ export function IngestionLastRun({ health }: Readonly<IngestionLastRunProps>) {
         {formatDateTime(health.lastRunAtMs)}
       </span>
       {health.lastRunSuccess ? (
-        <StatusPill tone="success" icon={<Check />}>
+        <StatusPill tone="success" variant="solid" icon={<Check />}>
           Success
         </StatusPill>
       ) : (
         <StatusPill
           tone="danger"
+          variant="solid"
           icon={<X />}
           title={health.lastRunError ?? 'The run ended with errors.'}
         >

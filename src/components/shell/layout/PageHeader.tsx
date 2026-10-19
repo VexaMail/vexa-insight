@@ -1,26 +1,23 @@
 import { PageEyebrow } from './PageEyebrow'
 import type { PageHeaderProps } from './PageHeaderProps'
 
+/**
+ * The top of every list page: title and description on the left, the period
+ * picker and the page's actions on the right, bottom-aligned with the title
+ * block. The shell renders the breadcrumb above it.
+ */
 export function PageHeader({
   eyebrow,
   title,
   description,
-  back,
   actions,
+  period,
   meta,
 }: Readonly<PageHeaderProps>) {
-  const hasTopRow = back !== undefined || actions !== undefined
-
+  const hasControls = actions !== undefined || period !== undefined
   return (
-    <header className="space-y-4">
-      {hasTopRow ? (
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">{back}</div>
-          {actions}
-        </div>
-      ) : null}
-
-      <div className="space-y-3">
+    <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="min-w-0 space-y-2">
         {eyebrow ? <PageEyebrow>{eyebrow}</PageEyebrow> : null}
         <h1 className="text-foreground font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           {title}
@@ -32,6 +29,12 @@ export function PageHeader({
         ) : null}
         {meta}
       </div>
+      {hasControls ? (
+        <div className="flex shrink-0 flex-wrap items-center gap-2 md:justify-end">
+          {period}
+          {actions}
+        </div>
+      ) : null}
     </header>
   )
 }

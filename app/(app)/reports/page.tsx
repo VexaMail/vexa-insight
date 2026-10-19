@@ -37,10 +37,9 @@ export default async function ReportsPage(props: PageProps) {
   return (
     <PageContainer className="space-y-6">
       <PageHeader
-        eyebrow="Evidence"
         title="Reports"
         description="Aggregate reports received from receivers. Each one is evidence for a domain: who sent as it, and whether SPF or DKIM aligned."
-        actions={
+        period={
           <DateRangeFilter
             currentDays={days}
             from={fromDate}

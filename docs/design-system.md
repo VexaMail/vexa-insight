@@ -42,6 +42,29 @@ such as `bg-zinc-800`, `text-gray-500` or `bg-white`.
 Status colour means state, never decoration. A domain with too little data is
 `unknown`, not green.
 
+### Contrast
+
+Measured WCAG 2 ratios of the token pairs (normal text needs 4.5:1):
+
+| Pair                               | Light     | Dark       |
+| ---------------------------------- | --------- | ---------- |
+| `muted-foreground` on `card`       | 6.3       | 8.5        |
+| `muted-foreground` on `secondary`  | 5.6       | 7.9        |
+| `muted-foreground` on `accent`     | 5.3       | 7.4        |
+| `unknown` on `card`                | 5.4       | 6.7        |
+| `success` / `warning` on `card`    | 5.3 / 5.7 | 9.4 / 10.1 |
+| `info` / `danger` on `card`        | 5.5 / 5.5 | 7.0 / 5.3  |
+| label on `primary` (filled button) | 4.95      | 9.9        |
+
+Secondary text is `text-muted-foreground` at full strength. Do not fade it
+further with an opacity suffix (`/70`, `/50`) for anything a reader needs: a
+date, a hostname, a description, an icon-only action. Opacity is for decoration
+only (a sort arrow at rest, a placeholder illustration).
+
+Light and dark keep the same emphasis ranking: the dark soft pill tints at 15%
+instead of 10% so it does not sink into the navy surface, and borders and inputs
+are a step lighter in dark so neutral filters and outline buttons stay visible.
+
 ## Type
 
 - Geist for interface text, Geist Mono (`font-mono`) for IPs, report ids,
@@ -73,13 +96,83 @@ Status colour means state, never decoration. A domain with too little data is
 | Component        | Use it for                                                                             |
 | ---------------- | -------------------------------------------------------------------------------------- |
 | `Panel`          | Any card: optional title, description, icon, actions, `flush` for edge-to-edge tables. |
-| `StatTile`       | A KPI: label, figure, `hint` (denominator, window, delta), `tone`, optional `href`.    |
-| `StatusPill`     | Every state label (`tone`, optional `dot`).                                            |
+| `StatTile`       | A KPI: label, figure, `badge`, `hint` (denominator, window), `tone`, `trend`, `href`.  |
+| `StatusPill`     | Every state label (`tone`, `variant`, optional `dot`, `icon`). See Badges.             |
 | `EntityHeader`   | Top of a detail page: kind, identifier, copy control, chips, actions.                  |
 | `TabNav`         | Tabs as links (`?tab=`), so sections can be shared.                                    |
 | `CopyIconButton` | Copy an IP, hostname, record or id.                                                    |
 | `DataTable`      | Sortable, filterable tables.                                                           |
 | `EmptyState`     | Nothing to show, with what to do next.                                                 |
+| `DropdownMenu`   | A button that opens a short menu of actions or links; arrow keys, Home/End, Escape.    |
+| `PageHeader`     | Top of every list page (from `@/components/shell`). See Page header.                   |
+
+### Badges
+
+One rule decides whether a `StatusPill` is filled:
+
+- **Solid** (`variant="solid"`) answers the row's question with something to act
+  on: a severity that asks for action (Critical, High, Medium, Warning), or the
+  pass/fail verdict of a check (SPF, DKIM, DMARC result, a domain's Passing /
+  Warning / Critical band, a DNS check, a diagnostics grade, a run that
+  succeeded or failed, an upload accepted or rejected).
+- **Soft** (default) describes: states (Open, Acknowledged, Snoozed, Silent,
+  Running), categories and classifications, policies (`p=none`), freshness,
+  counts, roles, settings states, and severities that only inform (Low, Info,
+  Pass in a findings list).
+- "Not enough data" (`unknown`) is always soft, even where a verdict would be
+  solid.
+
+Use `severityPillVariant(tone)` for severities and `verdictPillVariant(tone)`
+for verdicts (`@/utils/ui`) rather than choosing per screen.
+
+### Buttons
+
+One primary per header:
+
+| Role                                 | Button                                                                |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| The one action that runs or saves    | `default` (filled green): Run diagnostics, Trigger now, Save, Upload  |
+| Going to a related screen, exploring | `outline`: Open domain, DNS diagnostics, Investigate, Export, Actions |
+| In-card and tertiary navigation      | `ghost` or `link`: View all, Full diagnostics                         |
+| Removing or overwriting data         | `destructive`                                                         |
+
+Never fill a button in `info` blue or any status colour; a status colour on a
+button is reserved for the outline of a card-foot link. A screen with nothing to
+run has no filled button.
+
+### Page header
+
+Every list page starts with `PageHeader`: title, one-sentence description, then
+on the right the `period` slot (the date-range picker, always first) and
+`actions`. The breadcrumb comes from the shell, so pages never render their own.
+List pages leave out `eyebrow`; the mono uppercase kind label belongs to
+`EntityHeader` on detail pages ("DOMAIN", "SENDING SOURCE").
+
+### Stat tiles
+
+`StatTile` is the only KPI card. Both variants share `p-4`, `min-h-[112px]`, a
+`text-sm` label, a `font-mono text-2xl tabular-nums` figure and a `text-xs`
+muted hint. A verdict pill goes in `badge` (beside the figure), never inside
+`value` or `hint`; a trend goes in `trend`. `variant="feature"` adds the icon
+square; use it for page KPI strips.
+
+### Dates and numbers
+
+All display formatters live in `src/formatters` (exported from `@/utils/format`)
+and print in UTC with a fixed en-US locale, so the server render and hydration
+agree:
+
+| What              | Format                            | Formatter                             |
+| ----------------- | --------------------------------- | ------------------------------------- |
+| A day             | `Oct 16, 2026`                    | `formatDate`                          |
+| A moment          | `Oct 16, 2026 08:12 UTC`          | `formatDateTime`                      |
+| A time of day     | `08:12 UTC`                       | `formatClockTime`                     |
+| Elapsed time      | `3 days ago`, absolute in `title` | `formatRelativeDate`, `formatTimeAgo` |
+| A share or a rate | `91.3%`, `0.0%`, `100.0%`         | `formatPercent`                       |
+| A count           | `24,612`                          | `toLocaleString('en-US')`             |
+
+Progress bars, chart axis ticks and the diagnostics score (points out of 100)
+are not shares and keep whole numbers. API responses keep ISO 8601.
 
 `glass-card` / `glass-card-hover` are the surface classes behind `Panel` and
 `StatTile`; use the components rather than the classes in new code.

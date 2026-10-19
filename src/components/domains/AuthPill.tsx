@@ -1,5 +1,6 @@
 import { StatusPill } from '@/components/ui'
 import { describeAuthRate } from '@/utils/domains'
+import { verdictPillVariant } from '@/utils/ui'
 import type { AuthPillProps } from './AuthPillProps'
 import { ToneIcon } from './ToneIcon'
 
@@ -10,6 +11,7 @@ export function AuthPill({ label, pass, total }: Readonly<AuthPillProps>) {
   return (
     <StatusPill
       tone={display.tone}
+      variant={verdictPillVariant(display.tone)}
       icon={
         display.tone === 'success' || display.tone === 'danger' ? icon : null
       }

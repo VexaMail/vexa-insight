@@ -10,7 +10,7 @@ export function DomainSubtitle({ policy }: Readonly<DomainSubtitleProps>) {
       <p className="text-muted-foreground text-base sm:text-lg">
         {policySubtitle(policy)}
       </p>
-      <p className="text-muted-foreground/80 text-xs">
+      <p className="text-muted-foreground text-xs">
         {last && policy ? (
           <>
             Last report period ended{' '}

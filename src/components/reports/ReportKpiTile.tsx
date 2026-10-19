@@ -1,7 +1,7 @@
 import { StatTile } from '@/components/ui'
 import { REPORT_KPI_ICONS } from '@/constants/reports'
 import type { ReportKpiTileProps } from '@/types/reports'
-import { ReportKpiValue } from './ReportKpiValue'
+import { ReportKpiVerdict } from './ReportKpiVerdict'
 
 /** One report KPI as a feature tile: icon square, figure, pill, sparkline. */
 export function ReportKpiTile({ tile }: Readonly<ReportKpiTileProps>) {
@@ -10,7 +10,8 @@ export function ReportKpiTile({ tile }: Readonly<ReportKpiTileProps>) {
     <StatTile
       variant="feature"
       label={tile.label}
-      value={<ReportKpiValue value={tile.value} verdict={tile.verdict} />}
+      value={tile.value}
+      badge={tile.verdict ? <ReportKpiVerdict verdict={tile.verdict} /> : null}
       hint={tile.hint}
       tone={tile.tone}
       accent={tile.accent ?? tile.tone}

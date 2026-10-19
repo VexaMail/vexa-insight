@@ -25,8 +25,6 @@ export function IpMenu({
           className={cn(
             'border-border bg-card text-foreground hover:bg-accent focus-visible:ring-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-3.5 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
             block && 'w-full',
-            trigger === 'investigate' &&
-              'border-info/50 text-info hover:bg-info/10',
             trigger === 'filter' && 'min-h-9 px-2.5 text-xs',
           )}
         >
