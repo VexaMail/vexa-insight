@@ -138,33 +138,13 @@ the portfolio repo.
 
 ## Production findings (2026-10-19)
 
-Left over from the fixes for the read-only pass over the live instance.
-
-- [ ] **Finalize a message only after its report ingests.**
-      `finalizeProcessedMessage` records the Message-ID and moves the mail to
-      Trash at download time, before ingest. Any ingest error therefore loses
-      the report once the server expunges Trash (30 days). Records without a
-      usable IP no longer trigger this (7250569), but any other ingest throw
-      still does.
-- [ ] **In-app GeoIP update probably fails in the standalone build.**
-      `src/services/geoip/updateDb.ts` forks
-      `node_modules/geoip-lite/scripts/updatedb.js`, which the standalone output
-      does not contain (true before 85deafa too). Add it with
-      `outputFileTracingIncludes` and test the update on a standalone build.
-- [ ] **`backfillReportEvents` aligns events to XML records by index.** Since
-      ingest skips records without a usable IP, that alignment breaks for such
-      reports. It has no caller today; apply `withUsableSourceIps` to the
-      re-parsed result before it is run again.
-- [ ] **The reports list only shows 25 reports under a date filter.** With the
-      default "Last 30 days", `GET /api/v1/reports` takes the
-      `getLatestReports({ limit: pageSize, from, to })` branch and answers
-      `total: items.length`, so the table reads "Page 1 of 1" and older reports
-      in the range, including ones with DMARC failures, cannot be reached.
-      Verified 2026-10-19 on the live instance. Fix: give the date-filtered
-      branch real paging (offset plus a count query), with a test over more than
-      one page.
-- [ ] **Guard the standalone output size.** Nothing fails if `src/`, `test/` or
-      `.git` reappear in `.next/standalone`; add a check after the build.
+- [ ] **`backfillDiagnosticFields` can never select an event.** It picks events
+      whose `spfAuthResult` is null, but that column is now NOT NULL, so the
+      public backfill entry point is dead code. Either drop it or select on a
+      column that can still be empty.
+- [ ] **Changing the date filter keeps the current page.** On page 3, switching
+      to a shorter range can land on an empty page. Reset the reports table to
+      page 1 when the date filter changes.
 
 ## Pending Decisions
 

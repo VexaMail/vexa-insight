@@ -8,6 +8,18 @@
 
 ### 2026-10
 
+- [x] 2026-10-19 — **Remaining production findings closed.**
+  - Result: the date-filtered reports list pages and counts every report in the
+    range (`getReportsInDateRange`); a report message is recorded and moved only
+    after all its reports ingest, and is otherwise left in place for the next
+    poll with one error line; the standalone output ships the GeoIP updater
+    script, and CI fails if it ships `src/`, `test/`, `docs/` or `.git` again;
+    `backfillReportEvents` filters unusable source IPs before aligning; hostname
+    lookup exceptions go through the logger.
+  - Evidence: `pnpm run check:ci` exit 0 on the integrated main (149 files, 781
+    tests); `test/reportsDateRangePaging.test.ts`,
+    `test/finalizeAfterIngest.test.ts`; each change reviewed separately.
+
 - [x] 2026-10-19 — **Reports show their DMARC outcome at a glance.**
   - Result: every row of the reports table, the domain page's report table and
     the dashboard's Latest Reports carries a green check when all its messages
