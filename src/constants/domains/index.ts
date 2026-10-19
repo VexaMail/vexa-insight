@@ -1,5 +1,6 @@
 export { DAILY_VOLUME_DAYS } from './dailyVolumeDays'
 export { DOMAIN_DETAIL_TABS } from './domainDetailTabs'
+export { DOMAIN_HEALTH_LABELS } from './domainHealthLabels'
 export { DOMAIN_STATUS_OPTIONS } from './domainStatusOptions'
 export { ENFORCEMENT_STAGE_DEFS } from './enforcementStageDefs'
 export { FAILURE_REASON_LABELS } from './failureReasonLabels'
