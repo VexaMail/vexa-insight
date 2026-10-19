@@ -1,3 +1,5 @@
+import { Panel } from '@/components/ui'
+import { Lock } from 'lucide-react'
 import { TlsFailuresTable } from './TlsFailuresTable'
 import type { TlsReportsSectionProps } from './TlsReportsSectionProps'
 import { TlsSummaryTable } from './TlsSummaryTable'
@@ -12,13 +14,11 @@ export function TlsReportsSection({
   failures,
 }: TlsReportsSectionProps) {
   return (
-    <section aria-labelledby="tls-heading">
-      <h2
-        id="tls-heading"
-        className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-50"
-      >
-        TLS reports (inbound mail)
-      </h2>
+    <Panel
+      icon={<Lock />}
+      title="TLS reports (inbound mail)"
+      description="Sessions other servers opened to your MX over TLS, as they reported them."
+    >
       {summary.length === 0 ? (
         <p className="text-muted-foreground text-sm">
           No TLS reports yet. Publish a TXT record at{' '}
@@ -29,11 +29,11 @@ export function TlsReportsSection({
           senders such as Google and Microsoft will report daily.
         </p>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TlsSummaryTable rows={summary} />
           {failures.length > 0 && <TlsFailuresTable rows={failures} />}
         </div>
       )}
-    </section>
+    </Panel>
   )
 }

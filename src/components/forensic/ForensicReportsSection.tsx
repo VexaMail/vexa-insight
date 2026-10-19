@@ -1,3 +1,5 @@
+import { Panel } from '@/components/ui'
+import { MailWarning } from 'lucide-react'
 import type { ForensicReportsSectionProps } from './ForensicReportsSectionProps'
 import { ForensicReportsTable } from './ForensicReportsTable'
 
@@ -7,13 +9,11 @@ import { ForensicReportsTable } from './ForensicReportsTable'
  */
 export function ForensicReportsSection({ rows }: ForensicReportsSectionProps) {
   return (
-    <section aria-labelledby="forensic-heading">
-      <h2
-        id="forensic-heading"
-        className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-50"
-      >
-        Failure reports (RUF)
-      </h2>
+    <Panel
+      icon={<MailWarning />}
+      title="Failure reports (RUF)"
+      description="One row per failing message a receiver reported. Identifiers only, never content."
+    >
       {rows.length === 0 ? (
         <p className="text-muted-foreground text-sm">
           No failure reports yet. Add <code className="font-mono">ruf=</code>{' '}
@@ -24,6 +24,6 @@ export function ForensicReportsSection({ rows }: ForensicReportsSectionProps) {
       ) : (
         <ForensicReportsTable rows={rows} />
       )}
-    </section>
+    </Panel>
   )
 }

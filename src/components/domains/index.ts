@@ -1,5 +1,7 @@
 export { default as DomainDetail } from './DomainDetail'
+export { DomainDetailHeader } from './DomainDetailHeader'
+export { DomainDnsTab } from './DomainDnsTab'
+export { DomainsKpiStrip } from './DomainsKpiStrip'
 export * from './DomainSourcesTable'
 export * from './DomainsTable'
 export { default as DomainsTable } from './DomainsTable'
-export * from './DomainStatsCard'

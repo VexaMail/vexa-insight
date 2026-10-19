@@ -7,14 +7,12 @@ export const sourceCountColumn: ColumnDef<typeof dataTableFeatures, SourceRow> =
   {
     accessorKey: 'count',
     header: ({ column }) => (
-      <SortableHeaderButton column={column} label="Count" />
+      <SortableHeaderButton column={column} label="Volume" descendingFirst />
     ),
-    cell: ({ row }) => {
-      const val = row.original.count
-      return (
-        <span className="text-zinc-600 dark:text-zinc-400">
-          {val.toLocaleString()}
-        </span>
-      )
-    },
+    cell: ({ row }) => (
+      <span className="text-foreground block text-right font-mono text-sm tabular-nums">
+        {row.original.count.toLocaleString('en-US')}
+      </span>
+    ),
+    enableGlobalFilter: false,
   }

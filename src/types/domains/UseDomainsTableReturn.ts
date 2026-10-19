@@ -1,12 +1,11 @@
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
-import type { DomainSummary } from '@/types/reports'
 import type { Row } from '@tanstack/react-table'
 
 import type { ChangeEvent } from 'react'
 import type { DomainsTableRow } from './DomainsTableRow'
 
 export type UseDomainsTableReturn = {
-  readonly filtered: DomainSummary[]
+  readonly filtered: DomainsTableRow[]
   readonly statusFilter: string
   readonly handleRowClick: (
     row: Row<typeof dataTableFeatures, DomainsTableRow>,
@@ -15,4 +14,6 @@ export type UseDomainsTableReturn = {
   readonly handleStatusSelectChange: (
     event: ChangeEvent<HTMLSelectElement>,
   ) => void
+  /** Keeps the prev/next navigator on the filtered list. */
+  readonly handleNavigate: () => void
 }

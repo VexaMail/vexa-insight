@@ -1,3 +1,3 @@
-import type { DomainSourcesTableProps } from '@/types/domains'
+import type { DomainSourceRow } from '@/types/domains'
 
-export type SourceRow = DomainSourcesTableProps['sources'][0]
+export type SourceRow = DomainSourceRow

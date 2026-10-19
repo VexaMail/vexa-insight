@@ -1,43 +1,26 @@
-import { formatRelativeDate } from '@/utils/format'
+import { ForensicReportTableRow } from './ForensicReportTableRow'
 import type { ForensicReportsTableProps } from './ForensicReportsTableProps'
 
 /** Recent failure reports: one identified message each. */
 export function ForensicReportsTable({ rows }: ForensicReportsTableProps) {
+  const head = 'px-3 py-2 font-medium'
   return (
-    <div className="overflow-x-auto">
+    <div className="border-border overflow-x-auto rounded-md border">
       <table className="w-full text-sm">
-        <thead className="text-muted-foreground text-left">
+        <thead className="text-muted-foreground border-border border-b text-left text-xs">
           <tr>
-            <th className="py-2 pr-4 font-medium">Arrived</th>
-            <th className="py-2 pr-4 font-medium">Source IP</th>
-            <th className="py-2 pr-4 font-medium">Failed</th>
-            <th className="py-2 pr-4 font-medium">From / envelope</th>
-            <th className="py-2 pr-4 font-medium">DKIM</th>
-            <th className="py-2 pr-4 font-medium">List</th>
-            <th className="py-2 font-medium">Reporter</th>
+            <th className={head}>Arrived</th>
+            <th className={head}>Source IP</th>
+            <th className={head}>Failed</th>
+            <th className={head}>From / envelope</th>
+            <th className={head}>DKIM</th>
+            <th className={head}>List</th>
+            <th className={head}>Reporter</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-border text-foreground divide-y">
           {rows.map((row) => (
-            <tr key={row.id}>
-              <td className="py-2 pr-4 whitespace-nowrap">
-                {formatRelativeDate(row.arrivalDate).absolute}
-              </td>
-              <td className="py-2 pr-4 font-mono">{row.sourceIp ?? '-'}</td>
-              <td className="py-2 pr-4 font-mono">
-                {row.authFailure ?? row.dmarcResult ?? '-'}
-              </td>
-              <td className="py-2 pr-4">
-                {row.headerFromDomain ?? '-'} / {row.envelopeFromDomain ?? '-'}
-              </td>
-              <td className="py-2 pr-4 font-mono">
-                {row.dkimDomain
-                  ? `${row.dkimDomain}${row.dkimSelector ? ` (${row.dkimSelector})` : ''}`
-                  : '-'}
-              </td>
-              <td className="py-2 pr-4">{row.listId ?? '-'}</td>
-              <td className="py-2">{row.reportingMta ?? '-'}</td>
-            </tr>
+            <ForensicReportTableRow key={row.id} row={row} />
           ))}
         </tbody>
       </table>

@@ -1,8 +1,8 @@
-import type { DomainSummary } from '@/types/reports'
+import type { DomainListRow } from './DomainListRow'
 
 /**
  * Props for the domains table component.
  */
 export type DomainsTableProps = {
-  domains: DomainSummary[]
+  domains: DomainListRow[]
 }

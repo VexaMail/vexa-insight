@@ -14,6 +14,8 @@ export type EnforcementReadiness = {
   passingMessages: number
   failingMessages: number
   failingByKind: Record<FailingTrafficKind, number>
+  /** Failing sources in each reading, not capped like `topFailingSources`. */
+  failingSourcesByKind: Record<FailingTrafficKind, number>
   legitimateFailureRate: number
   verdict: EnforcementVerdict
   topFailingSources: FailingSource[]

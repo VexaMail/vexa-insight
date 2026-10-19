@@ -15,7 +15,12 @@ export function ComplianceBar({ passRate }: ComplianceBarProps) {
           style={{ width: `${String(passRate)}%` }}
         />
       </div>
-      <span className={cn('w-12 text-right text-xs font-semibold', textColor)}>
+      <span
+        className={cn(
+          'w-14 text-right font-mono text-xs font-semibold tabular-nums',
+          textColor,
+        )}
+      >
         {passRate.toFixed(1)}%
       </span>
     </div>

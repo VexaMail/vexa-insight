@@ -1,20 +1,25 @@
 import type { EnforcementReadiness } from '@/types/enforcement'
 import type { ForensicReportRow } from '@/types/forensic'
-import type { DomainSource, DomainSummary } from '@/types/reports'
+import type { DomainSummary } from '@/types/reports'
 import type { TlsDomainSummaryRow, TlsFailureSummaryRow } from '@/types/tlsrpt'
+import type { ComplianceTrend } from './ComplianceTrend'
+import type { DomainInsights } from './DomainInsights'
+import type { DomainSourceRow } from './DomainSourceRow'
+import type { PublishedDmarcPolicy } from './PublishedDmarcPolicy'
 
 /**
- * Combined domain detail data (summary + stats + sources + TLS and failure reports).
+ * Everything the domain page shows: totals, policy, readiness, sources with
+ * their auth results, and the TLS and failure reports.
  */
 export type DomainDetailData = {
   summary: DomainSummary
-  stats: {
-    totalMessages: number
-    passedCount: number
-    failedCount: number
-    passRatePercent: number
-  }
-  sources: DomainSource[]
+  policy: PublishedDmarcPolicy | null
+  trend: ComplianceTrend
+  insights: DomainInsights
+  /** Sources over the window the sources tab asked for. */
+  sources: DomainSourceRow[]
+  /** The sources tab window in days, undefined for all reports. */
+  sourceDays: number | undefined
   tls: {
     summary: TlsDomainSummaryRow[]
     failures: TlsFailureSummaryRow[]

@@ -4,29 +4,34 @@ import type { TlsFailuresTableProps } from './TlsFailuresTableProps'
 /** Failed TLS sessions per failure result type and receiving MX. */
 export function TlsFailuresTable({ rows }: TlsFailuresTableProps) {
   return (
-    <div className="overflow-x-auto">
+    <div className="border-border overflow-x-auto rounded-md border">
       <table className="w-full text-sm">
-        <thead className="text-muted-foreground text-left">
+        <caption className="text-muted-foreground px-3 py-2 text-left text-xs">
+          Failed sessions by result type and receiving MX
+        </caption>
+        <thead className="text-muted-foreground border-border border-y text-left text-xs">
           <tr>
-            <th className="py-2 pr-4 font-medium">Result type</th>
-            <th className="py-2 pr-4 font-medium">Receiving MX</th>
-            <th className="py-2 pr-4 text-right font-medium">
+            <th className="px-3 py-2 font-medium">Result type</th>
+            <th className="px-3 py-2 font-medium">Receiving MX</th>
+            <th className="px-3 py-2 text-right font-medium">
               Failed sessions
             </th>
-            <th className="py-2 font-medium">Last seen</th>
+            <th className="px-3 py-2 font-medium">Last seen</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-border divide-y">
           {rows.map((row) => (
             <tr key={`${row.resultType}|${row.receivingMxHostname ?? ''}`}>
-              <td className="py-2 pr-4 font-mono">{row.resultType}</td>
-              <td className="py-2 pr-4 font-mono">
+              <td className="text-danger px-3 py-2 font-mono">
+                {row.resultType}
+              </td>
+              <td className="text-foreground px-3 py-2 font-mono">
                 {row.receivingMxHostname ?? '-'}
               </td>
-              <td className="py-2 pr-4 text-right tabular-nums">
-                {row.failedSessionCount.toLocaleString()}
+              <td className="text-foreground px-3 py-2 text-right font-mono tabular-nums">
+                {row.failedSessionCount.toLocaleString('en-US')}
               </td>
-              <td className="py-2">
+              <td className="text-muted-foreground px-3 py-2 whitespace-nowrap">
                 {formatRelativeDate(row.lastEndDate).absolute}
               </td>
             </tr>

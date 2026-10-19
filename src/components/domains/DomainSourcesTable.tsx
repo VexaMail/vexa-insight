@@ -1,49 +1,61 @@
 'use client'
 
-import { DataTable } from '@/components/ui'
+import { DataTable, EmptyState } from '@/components/ui'
+import { useDomainSourcesTable } from '@/hooks/domains'
 import type { DomainSourcesTableProps } from '@/types/domains'
-import { useDomainSourcesRefresh } from '../../hooks/domains/useDomainSourcesRefresh'
 import { getDomainSourcesColumns } from './domainSourcesColumns'
+import { SourcesPhoneList } from './SourcesPhoneList'
+import { SourcesToolbar } from './SourcesToolbar'
 
 export default function DomainSourcesTable({
   sources,
   csvHref,
+  days,
 }: Readonly<DomainSourcesTableProps>) {
-  const { localHostnames, refreshingIps, handleRefresh } =
-    useDomainSourcesRefresh()
+  const state = useDomainSourcesTable(sources)
 
   if (sources.length === 0) {
     return (
-      <p className="text-zinc-500 dark:text-zinc-400">
-        No source data for this domain.
-      </p>
+      <EmptyState>No source data for this domain in this window.</EmptyState>
     )
   }
 
   const columns = getDomainSourcesColumns({
-    localHostnames,
-    refreshingIps,
-    onRefresh: (sourceIp) => void handleRefresh(sourceIp),
+    localHostnames: state.localHostnames,
+    refreshingIps: state.refreshingIps,
+    onRefresh: (sourceIp) => void state.handleRefresh(sourceIp),
   })
+  const toolbar = (
+    <SourcesToolbar
+      classFilter={state.classFilter}
+      country={state.country}
+      days={days}
+      countryOptions={state.countryOptions}
+      csvHref={csvHref}
+      onClassChange={state.setClass}
+      onCountryChange={state.setCountry}
+      onDaysChange={state.setDays}
+    />
+  )
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-      {csvHref ? (
-        <a
-          href={csvHref}
-          className="text-muted-foreground hover:text-foreground mb-2 inline-block text-sm underline"
-        >
-          Download CSV
-        </a>
-      ) : null}
-      <DataTable
-        columns={columns}
-        data={sources}
-        initialSorting={[
-          { id: 'count', desc: true },
-          { id: 'sourceIp', desc: false },
-        ]}
-      />
-    </div>
+    <>
+      <div className="space-y-3 md:hidden">
+        {toolbar}
+        <SourcesPhoneList rows={state.rows} />
+      </div>
+      <div className="hidden md:block">
+        <DataTable
+          columns={columns}
+          data={state.rows}
+          defaultPageSize={25}
+          initialSorting={[
+            { id: 'count', desc: true },
+            { id: 'sourceIp', desc: false },
+          ]}
+          toolbarActions={toolbar}
+        />
+      </div>
+    </>
   )
 }

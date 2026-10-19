@@ -14,8 +14,8 @@ export const messagesColumn: ColumnDef<
     <SortableHeaderButton column={column} label="Messages" descendingFirst />
   ),
   cell: ({ row }) => (
-    <span className="text-muted-foreground text-sm">
-      {row.original.totalMessages.toLocaleString()}
+    <span className="text-foreground block text-right font-mono text-sm tabular-nums">
+      {row.original.totalMessages.toLocaleString('en-US')}
     </span>
   ),
 }

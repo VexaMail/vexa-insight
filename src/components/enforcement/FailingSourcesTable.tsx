@@ -1,40 +1,28 @@
-import { FAILING_KIND_LABEL } from './failingKindLabel'
+import { FailingSourceRow } from './FailingSourceRow'
 import type { FailingSourcesTableProps } from './FailingSourcesTableProps'
 
 /** The sources with the most DMARC-failing mail and how each is read. */
 export function FailingSourcesTable({ sources }: FailingSourcesTableProps) {
   return (
-    <div className="overflow-x-auto">
+    <div className="border-border overflow-x-auto rounded-md border">
       <table className="w-full text-sm">
-        <thead className="text-muted-foreground text-left">
+        <caption className="text-muted-foreground px-3 py-2 text-left text-xs">
+          Top failing sources in the window
+        </caption>
+        <thead className="text-muted-foreground border-border border-y text-left text-xs">
           <tr>
-            <th className="py-2 pr-4 font-medium">Source</th>
-            <th className="py-2 pr-4 font-medium">Sender</th>
-            <th className="py-2 pr-4 font-medium">Reading</th>
-            <th className="py-2 pr-4 text-right font-medium">Failing</th>
-            <th className="py-2 text-right font-medium">Pass rate</th>
+            <th className="px-3 py-2 font-medium">Source</th>
+            <th className="px-3 py-2 font-medium">Sender</th>
+            <th className="px-3 py-2 font-medium">Reading</th>
+            <th className="px-3 py-2 text-right font-medium">Failing</th>
+            <th className="px-3 py-2 text-right font-medium">
+              DMARC pass rate
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-border divide-y">
           {sources.map((source) => (
-            <tr key={source.sourceIp}>
-              <td className="py-2 pr-4">
-                <span className="font-mono">{source.sourceIp}</span>
-                {source.hostname ? (
-                  <span className="text-muted-foreground block text-xs">
-                    {source.hostname}
-                  </span>
-                ) : null}
-              </td>
-              <td className="py-2 pr-4">{source.sender?.name ?? 'Unknown'}</td>
-              <td className="py-2 pr-4">{FAILING_KIND_LABEL[source.kind]}</td>
-              <td className="py-2 pr-4 text-right tabular-nums">
-                {source.failingMessages.toLocaleString()}
-              </td>
-              <td className="py-2 text-right tabular-nums">
-                {(source.passRate * 100).toFixed(0)}%
-              </td>
-            </tr>
+            <FailingSourceRow key={source.sourceIp} source={source} />
           ))}
         </tbody>
       </table>

@@ -1,45 +1,40 @@
-import { IpDisplay } from '@/components/ips'
-import { SortableHeaderButton } from '@/components/ui'
+import { IpFlag } from '@/components/ips'
+import { CopyIconButton, SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
-import type { GetDomainSourcesColumnsParams } from '../GetDomainSourcesColumnsParams'
+import Link from 'next/link'
 import type { SourceRow } from '../SourceRow'
 
-/** The sortable source IP column, with the locally refreshed hostname. */
-export function createSourceIpColumn({
-  localHostnames,
-  refreshingIps,
-  onRefresh,
-}: GetDomainSourcesColumnsParams): ColumnDef<
+/** The sortable source IP column: flag, link to the source, copy control. */
+export function createSourceIpColumn(): ColumnDef<
   typeof dataTableFeatures,
   SourceRow
 > {
   return {
     accessorKey: 'sourceIp',
     header: ({ column }) => (
-      <SortableHeaderButton column={column} label="Source IP" />
+      <SortableHeaderButton column={column} label="IP address" />
     ),
     cell: ({ row }) => {
-      const countryCode = row.original.countryCode
-      const countryName = row.original.countryName || 'Unknown'
-      const sourceIp = row.getValue<string>('sourceIp')
-      const isRefreshing = refreshingIps.has(sourceIp)
-      const localHostname = localHostnames[sourceIp]
-      const displayHostname = localHostname ?? row.original.hostname
-
+      const { sourceIp, countryCode, countryName } = row.original
       return (
-        <IpDisplay
-          ip={sourceIp}
-          countryCode={countryCode ?? null}
-          countryName={countryName}
-          hostname={displayHostname ?? null}
-          layout="stacked"
-          showHostname={true}
-          isRefreshing={isRefreshing}
-          onRefresh={() => {
-            onRefresh(sourceIp)
-          }}
-        />
+        <div className="flex min-w-0 items-center gap-2">
+          <IpFlag
+            countryCode={countryCode ?? null}
+            countryName={countryName ?? null}
+          />
+          <Link
+            href={`/ips/${encodeURIComponent(sourceIp)}`}
+            className="text-info hover:text-primary font-mono text-sm whitespace-nowrap"
+          >
+            {sourceIp}
+          </Link>
+          <CopyIconButton
+            value={sourceIp}
+            label="IP address"
+            className="h-7 w-7"
+          />
+        </div>
       )
     },
   }

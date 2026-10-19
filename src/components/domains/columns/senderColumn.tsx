@@ -14,15 +14,15 @@ export const senderColumn: ColumnDef<typeof dataTableFeatures, SourceRow> = {
   cell: ({ row }) => {
     const sender = row.original.sender
     if (!sender) {
-      return <span className="text-zinc-400 dark:text-zinc-500">Unknown</span>
+      return <span className="text-muted-foreground text-sm">Unknown</span>
     }
     return (
       <div
-        className="flex flex-col"
+        className="flex max-w-[9rem] flex-col"
         title={`Matched on ${sender.matchedOn === 'hostname' ? 'reverse DNS' : 'DKIM domain'}`}
       >
-        <span className="text-zinc-900 dark:text-zinc-50">{sender.name}</span>
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+        <span className="text-foreground text-sm">{sender.name}</span>
+        <span className="text-muted-foreground text-xs">
           {formatSenderCategory(sender.category)}
         </span>
       </div>

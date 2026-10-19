@@ -2,9 +2,10 @@ import { ENFORCEMENT_THRESHOLDS } from '@/constants/enforcement'
 import type {
   EnforcementReadiness,
   EnforcementSourceInput,
-  FailingTrafficKind,
 } from '@/types/enforcement'
+import { countFailingSourcesByKind } from './countFailingSourcesByKind'
 import { enforcementVerdict } from './enforcementVerdict'
+import { sumFailingMessagesByKind } from './sumFailingMessagesByKind'
 import { toFailingSource } from './toFailingSource'
 
 /**
@@ -20,14 +21,7 @@ export function computeEnforcementReadiness(
     .map(toFailingSource)
     .filter((s) => s.failingMessages > 0)
     .sort((a, b) => b.failingMessages - a.failingMessages)
-  const failingByKind: Record<FailingTrafficKind, number> = {
-    legitimate: 0,
-    forwarded: 0,
-    unknown: 0,
-  }
-  for (const source of failing) {
-    failingByKind[source.kind] += source.failingMessages
-  }
+  const failingByKind = sumFailingMessagesByKind(failing)
   const totalMessages = sources.reduce((n, s) => n + s.messages, 0)
   const passingMessages = sources.reduce((n, s) => n + s.passingMessages, 0)
   const legitimateFailureRate =
@@ -39,6 +33,7 @@ export function computeEnforcementReadiness(
     passingMessages,
     failingMessages: totalMessages - passingMessages,
     failingByKind,
+    failingSourcesByKind: countFailingSourcesByKind(failing),
     legitimateFailureRate,
     verdict: enforcementVerdict({
       totalMessages,
