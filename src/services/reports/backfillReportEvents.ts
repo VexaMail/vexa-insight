@@ -1,5 +1,5 @@
 import { getDb, normalizedEvents, rawReports } from '@/lib/db'
-import { parseDmarcXml } from '@/utils/dmarc'
+import { parseDmarcXml, withUsableSourceIps } from '@/utils/dmarc'
 import { eq } from 'drizzle-orm'
 import type { BackfillReportCounts } from './BackfillReportCounts'
 import { replaceEventDkimResults } from './replaceEventDkimResults'
@@ -7,8 +7,9 @@ import { replaceEventPolicyOverrides } from './replaceEventPolicyOverrides'
 
 /**
  * Re-parses one raw report and patches the diagnostic fields of its events.
- * Events are matched by index: the original ingest loop processes records in
- * the same order as the XML, so index alignment is reliable.
+ * Events are matched by index: ingest stores records in XML order after
+ * dropping those without a usable source IP, so the re-parsed result is
+ * filtered the same way (withUsableSourceIps) before aligning by index.
  */
 export async function backfillReportEvents(
   rawReportId: number,
@@ -23,7 +24,9 @@ export async function backfillReportEvents(
 
   if (!raw?.rawXml) return { processed: 0, skipped: eventIds.length }
 
-  const parsed = parseDmarcXml(Buffer.from(raw.rawXml, 'utf-8'))
+  const parsed = withUsableSourceIps(
+    parseDmarcXml(Buffer.from(raw.rawXml, 'utf-8')),
+  )
   let processed = 0
   let skipped = 0
 
