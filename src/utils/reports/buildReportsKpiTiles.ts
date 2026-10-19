@@ -3,6 +3,7 @@ import type {
   ReportsWindowSummary,
   ReportsWindowTrends,
 } from '@/types/reports'
+import { formatPercent, formatScopeLabel } from '@/utils/format'
 import { describeOutOf } from './describeOutOf'
 import { failingShareTone } from './failingShareTone'
 import { percentOf } from './percentOf'
@@ -15,12 +16,13 @@ export function buildReportsKpiTiles(
 ): ReportKpiTileDefinition[] {
   const share = percentOf(summary.failingMessages, summary.messages)
   const domains = summary.domains.toLocaleString('en-US')
+  const scope = formatScopeLabel(windowLabel)
   return [
     {
       id: 'reports',
       label: 'Reports in window',
       value: summary.reports.toLocaleString('en-US'),
-      hint: `Aggregate reports, ${windowLabel}`,
+      hint: `${scope} · aggregate reports`,
       tone: 'neutral',
       accent: 'info',
       trend: trends.reports,
@@ -30,7 +32,7 @@ export function buildReportsKpiTiles(
       id: 'reporters',
       label: 'Reporters',
       value: summary.reporters.toLocaleString('en-US'),
-      hint: `Receivers reporting on ${domains} ${summary.domains === 1 ? 'domain' : 'domains'}`,
+      hint: `${scope} · reporting on ${domains} ${summary.domains === 1 ? 'domain' : 'domains'}`,
       tone: 'neutral',
       accent: 'info',
       trend: trends.reporters,
@@ -39,7 +41,7 @@ export function buildReportsKpiTiles(
       id: 'messages',
       label: 'Messages',
       value: summary.messages.toLocaleString('en-US'),
-      hint: 'Reported deliveries, not sends',
+      hint: `${scope} · reported deliveries, not sends`,
       tone: 'neutral',
       accent: 'info',
       trend: trends.messages,
@@ -48,8 +50,8 @@ export function buildReportsKpiTiles(
     {
       id: 'failing',
       label: 'Failing share',
-      value: summary.messages === 0 ? 'No data' : `${String(share)}%`,
-      hint: `${describeOutOf(summary.failingMessages, summary.messages, 'message')} fail DMARC`,
+      value: summary.messages === 0 ? 'No data' : formatPercent(share),
+      hint: `${scope} · ${describeOutOf(summary.failingMessages, summary.messages, 'message')} fail DMARC`,
       tone: failingShareTone(share, summary.messages),
       trend: trends.failingShare,
     },

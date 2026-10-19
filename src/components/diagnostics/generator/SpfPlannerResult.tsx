@@ -16,6 +16,7 @@ export function SpfPlannerResult({ plan }: Readonly<SpfPlannerResultProps>) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <StatusPill
           tone={plan.withinLimit ? 'success' : 'danger'}
+          variant="solid"
           icon={plan.withinLimit ? <Check /> : <X />}
         >
           {plan.withinLimit ? 'Within the limit' : 'Over the limit'}

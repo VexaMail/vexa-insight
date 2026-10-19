@@ -33,7 +33,9 @@ export function StatusPill({
           aria-hidden
           className={cn(
             'h-1.5 w-1.5 rounded-full',
-            STATUS_TONE_DOT_CLASSES[tone],
+            variant === 'solid'
+              ? 'bg-current opacity-80'
+              : STATUS_TONE_DOT_CLASSES[tone],
           )}
         />
       ) : null}

@@ -41,7 +41,7 @@ export function ReadinessTile({
       </p>
       <Link
         href={reviewHref}
-        className="bg-info text-info-foreground hover:bg-info/90 focus-visible:ring-ring mt-auto inline-flex min-h-9 w-fit items-center gap-2 rounded-md px-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
+        className="border-info/50 text-info hover:bg-info/10 focus-visible:ring-ring mt-auto inline-flex min-h-9 w-fit items-center gap-2 rounded-md border px-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
       >
         Review {atRisk > 0 ? 'senders' : 'failing sources'}
         <ArrowRight className="h-4 w-4" aria-hidden />

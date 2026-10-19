@@ -11,7 +11,7 @@ export function IngestFreshnessTile({ health }: Readonly<IngestHealthProps>) {
       variant="feature"
       label="Newest report"
       value={describeAge(reports.lastIngestedAt, now)}
-      hint={`Period ends ${describeAge(reports.lastPeriodEnd, now)}`}
+      hint={`Latest arrival · its period ends ${describeAge(reports.lastPeriodEnd, now)}`}
       accent={freshnessVerdict(reports, now).tone}
       icon={<Hourglass />}
     />

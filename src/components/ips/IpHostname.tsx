@@ -18,7 +18,7 @@ export function IpHostname({
           {hostname}
         </span>
       ) : (
-        <span className="text-muted-foreground/50 text-sm italic">Unknown</span>
+        <span className="text-muted-foreground text-sm italic">Unknown</span>
       )}
       {onRefresh != null && (
         <IpHostnameRefresh

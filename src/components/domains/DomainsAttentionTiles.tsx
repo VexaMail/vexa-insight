@@ -15,7 +15,7 @@ export function DomainsAttentionTiles({
         label="Need attention"
         value={kpis.needAttention.toLocaleString('en-US')}
         tone={kpis.needAttention > 0 ? 'warning' : 'success'}
-        hint="Below 95% compliance"
+        hint="All reports · below 95% compliance"
       />
       <StatTile
         variant="feature"
@@ -23,7 +23,7 @@ export function DomainsAttentionTiles({
         label="Silent"
         value={kpis.silent.toLocaleString('en-US')}
         tone={kpis.silent > 0 ? 'warning' : 'success'}
-        hint={`No report for over ${String(staleDays)} days`}
+        hint={`As of today · no report for over ${String(staleDays)} days`}
       />
       <StatTile
         variant="feature"
@@ -31,7 +31,7 @@ export function DomainsAttentionTiles({
         label="Enforcing"
         value={kpis.enforcing.toLocaleString('en-US')}
         tone={kpis.enforcing > 0 ? 'info' : 'neutral'}
-        hint={`of ${String(kpis.withPolicy)} at p=quarantine or reject`}
+        hint={`Latest report · of ${String(kpis.withPolicy)} with a policy`}
       />
     </>
   )

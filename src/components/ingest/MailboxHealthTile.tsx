@@ -1,3 +1,4 @@
+import { MAILBOX_SETTINGS_HREF } from '@/constants/ingest'
 import type { IngestHealthProps } from '@/types/ingest'
 import { mailboxesVerdict } from '@/utils/ingest'
 import { Inbox } from 'lucide-react'
@@ -17,7 +18,7 @@ export function MailboxHealthTile({ health }: Readonly<IngestHealthProps>) {
         <p className="text-muted-foreground text-xs">
           Nothing is polled until an IMAP mailbox is added.{' '}
           <Link
-            href="/settings"
+            href={MAILBOX_SETTINGS_HREF}
             className="text-primary font-medium hover:underline"
           >
             Add one in Settings

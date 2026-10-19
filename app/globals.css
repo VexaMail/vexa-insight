@@ -15,30 +15,30 @@
   --card-foreground: 209 32% 14%;
   --popover: 0 0% 100%;
   --popover-foreground: 209 32% 14%;
-  --primary: 167 100% 28%;
+  --primary: 167 100% 25%;
   --primary-foreground: 0 0% 100%;
   --secondary: 203 31% 95%;
   --secondary-foreground: 209 32% 14%;
   --muted: 203 31% 95%;
-  --muted-foreground: 207 14% 41%;
+  --muted-foreground: 207 16% 38%;
   --accent: 202 28% 92%;
   --accent-foreground: 209 32% 14%;
-  --destructive: 355 69% 51%;
+  --destructive: 355 69% 47%;
   --destructive-foreground: 0 0% 100%;
-  --border: 201 24% 89%;
-  --input: 201 24% 85%;
-  --ring: 167 100% 28%;
+  --border: 201 24% 87%;
+  --input: 201 22% 80%;
+  --ring: 167 100% 25%;
   --radius: 0.625rem;
 
-  --success: 167 100% 28%;
+  --success: 167 100% 24%;
   --success-foreground: 0 0% 100%;
-  --danger: 355 69% 51%;
+  --danger: 355 69% 47%;
   --danger-foreground: 0 0% 100%;
-  --warning: 36 100% 35%;
+  --warning: 34 100% 30%;
   --warning-foreground: 0 0% 100%;
-  --info: 213 74% 47%;
+  --info: 213 74% 44%;
   --info-foreground: 0 0% 100%;
-  --unknown: 207 10% 50%;
+  --unknown: 207 12% 42%;
   --unknown-foreground: 0 0% 100%;
 
   --surface-1: 203 31% 95%;
@@ -46,13 +46,13 @@
   --surface-3: 201 24% 89%;
 
   --sidebar-background: 0 0% 100%;
-  --sidebar-foreground: 207 14% 41%;
-  --sidebar-primary: 167 100% 28%;
+  --sidebar-foreground: 207 16% 38%;
+  --sidebar-primary: 167 100% 25%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 166 60% 93%;
   --sidebar-accent-foreground: 167 100% 24%;
   --sidebar-border: 201 24% 89%;
-  --sidebar-ring: 167 100% 28%;
+  --sidebar-ring: 167 100% 25%;
 
   --chart-pass: 167 100% 32%;
   --chart-fail: 355 69% 51%;
@@ -76,13 +76,13 @@
   --secondary: 214 32% 12.5%;
   --secondary-foreground: 193 31% 94%;
   --muted: 214 32% 12.5%;
-  --muted-foreground: 205 16% 61%;
+  --muted-foreground: 205 20% 70%;
   --accent: 213 30% 14.5%;
   --accent-foreground: 193 31% 94%;
   --destructive: 358 86% 64%;
   --destructive-foreground: 212 37% 7%;
-  --border: 212 28% 17%;
-  --input: 212 28% 20%;
+  --border: 212 26% 21%;
+  --input: 212 26% 26%;
   --ring: 161 66% 50%;
 
   --success: 161 66% 50%;
@@ -93,7 +93,7 @@
   --warning-foreground: 212 37% 7%;
   --info: 208 89% 63%;
   --info-foreground: 212 37% 7%;
-  --unknown: 205 12% 55%;
+  --unknown: 205 14% 62%;
   --unknown-foreground: 212 37% 7%;
 
   --surface-1: 214 32% 12.5%;
@@ -101,7 +101,7 @@
   --surface-3: 212 28% 17%;
 
   --sidebar-background: 216 45% 6.5%;
-  --sidebar-foreground: 205 16% 61%;
+  --sidebar-foreground: 205 20% 70%;
   --sidebar-primary: 161 66% 50%;
   --sidebar-primary-foreground: 212 37% 7%;
   --sidebar-accent: 163 45% 14%;
@@ -114,7 +114,7 @@
   --chart-spf: 198 93% 60%;
   --chart-dkim: 248 100% 77%;
   --chart-grid: 212 28% 15%;
-  --chart-axis: 205 16% 61%;
+  --chart-axis: 205 18% 66%;
 
   --glow: 161 66% 50%;
 }

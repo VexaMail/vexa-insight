@@ -17,7 +17,7 @@ export function ReportHeaderActions({
           <ArrowRight aria-hidden="true" />
         </Link>
       </Button>
-      <Button asChild className="h-10">
+      <Button asChild variant="outline" className="h-10">
         <Link href={`/domains/${encoded}`}>
           <Globe aria-hidden="true" />
           Open domain

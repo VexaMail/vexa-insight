@@ -18,4 +18,6 @@ export type CronsSectionProps = {
   readonly jobRunsNode?: ReactNode
   /** The server-rendered processed emails table to display in the tabs. */
   readonly processedEmailsNode?: ReactNode
+  /** Shown instead of run now and rescan while idle. */
+  readonly idleAction?: ReactNode
 }

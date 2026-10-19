@@ -29,7 +29,7 @@ export function TriageKpiTile({
             </span>
           ) : null}
           <span
-            className={variant === 'feature' ? 'truncate' : ''}
+            className={variant === 'feature' ? 'line-clamp-2' : ''}
             title={model.context}
           >
             {model.context}

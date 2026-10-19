@@ -15,6 +15,7 @@ export default function CronsSection({
   healthChecks,
   jobRunsNode,
   processedEmailsNode,
+  idleAction,
 }: Readonly<CronsSectionProps>) {
   const { viewModel, abortStatus, handleAbort } = useCronsSection({
     ingestionIntervalMinutes,
@@ -42,6 +43,7 @@ export default function CronsSection({
         statusText={viewModel.statusText}
         healthPill={healthPill}
         healthFacts={healthFacts}
+        idleAction={idleAction}
       />
       {healthChecks}
       <CronsTabsCard

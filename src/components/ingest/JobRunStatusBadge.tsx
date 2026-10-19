@@ -16,7 +16,7 @@ export function JobRunStatusBadge({
   }
 
   return (
-    <StatusPill tone={success ? 'success' : 'danger'} dot>
+    <StatusPill tone={success ? 'success' : 'danger'} variant="solid" dot>
       {success ? 'Succeeded' : 'Failed'}
     </StatusPill>
   )

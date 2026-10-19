@@ -1,4 +1,5 @@
 import type { KpiTileModel, TriageKpis, TriageWindow } from '@/types/dashboard'
+import { formatScopeLabel } from '@/utils/format'
 import { changeDirection } from './changeDirection'
 import { countDelta } from './countDelta'
 import { formatCount } from './formatters/formatCount'
@@ -17,7 +18,7 @@ export function reportsTile(
     accent: 'info',
     delta: countDelta(kpis.reports),
     direction: changeDirection(pct, null),
-    context: `aggregate reports, ${window.label}`,
+    context: `${formatScopeLabel(window.label)} · aggregate reports`,
     href: '/reports',
     trend: kpis.series.reports,
     trendKind: 'bars',

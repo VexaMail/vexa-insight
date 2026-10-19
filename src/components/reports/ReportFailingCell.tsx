@@ -1,5 +1,6 @@
 import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
 import type { ReportOutcomePillProps } from '@/types/reports'
+import { formatPercent } from '@/utils/format'
 import { failingShareTone, percentOf } from '@/utils/reports'
 
 /** Messages failing DMARC in one report, and their share of its total. */
@@ -18,7 +19,9 @@ export function ReportFailingCell({
       >
         {failing.toLocaleString('en-US')}
       </span>
-      <span className="text-muted-foreground text-xs">{share}%</span>
+      <span className="text-muted-foreground text-xs">
+        {formatPercent(share)}
+      </span>
     </span>
   )
 }

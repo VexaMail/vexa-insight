@@ -13,7 +13,7 @@ export function domainsTile(
     accent: 'info',
     delta: kpis.addedDomains > 0 ? `+${String(kpis.addedDomains)}` : null,
     direction: 'neutral',
-    context: `${formatCount(kpis.reportingDomains)} reporting, ${window.label}`,
+    context: `All domains · ${formatCount(kpis.reportingDomains)} reporting, ${window.label}`,
     href: '/domains',
     trend: kpis.series.reportingDomains,
     trendKind: 'bars',

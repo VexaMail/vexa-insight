@@ -17,7 +17,7 @@ export function IpHostnameRefresh({
     <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition-opacity group-hover/hostname:opacity-100">
       {lastLookup != null && (
         <span
-          className="text-muted-foreground/70 text-[10px]"
+          className="text-muted-foreground text-[10px]"
           title={`Hostname last fetched on ${lastLookup.absolute}`}
         >
           Updated {lastLookup.relative}

@@ -5,6 +5,7 @@ export type StatTileBodyProps = Pick<
   | 'label'
   | 'value'
   | 'hint'
+  | 'badge'
   | 'tone'
   | 'icon'
   | 'trend'

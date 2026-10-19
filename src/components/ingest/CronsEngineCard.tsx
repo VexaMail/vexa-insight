@@ -24,6 +24,7 @@ export function CronsEngineCard({
   statusText,
   healthPill,
   healthFacts,
+  idleAction,
 }: CronsEngineCardProps) {
   return (
     <Panel
@@ -52,6 +53,7 @@ export function CronsEngineCard({
           runRequested={runRequested}
           abortStatus={abortStatus}
           onAbort={onAbort}
+          idleAction={idleAction}
         />
       </div>
     </Panel>

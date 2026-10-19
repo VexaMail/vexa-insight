@@ -1,3 +1,4 @@
+import { isLastReportStale } from '@/utils/domains'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ComplianceBar } from './ComplianceBar'
@@ -27,7 +28,10 @@ export function DomainsPhoneList({
                 <DomainHealthPill {...row} />
               </span>
               {row.totalMessages > 0 ? (
-                <ComplianceBar passRate={row.passRatePercent} />
+                <ComplianceBar
+                  passRate={row.passRatePercent}
+                  muted={isLastReportStale(row.lastReportDay)}
+                />
               ) : null}
               <span className="flex flex-wrap items-center gap-2 text-xs">
                 <DomainPolicyChip policy={row.policy} />
