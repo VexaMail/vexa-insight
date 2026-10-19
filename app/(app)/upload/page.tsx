@@ -12,10 +12,11 @@ export const dynamic = 'force-dynamic'
 
 export default function UploadPage() {
   return (
-    <PageContainer>
+    <PageContainer className="space-y-6">
       <PageHeader
+        eyebrow="Operate"
         title="Upload"
-        description="Upload DMARC aggregate reports for analysis."
+        description="Add a report by hand: one a receiver sent somewhere other than the polled mailboxes, or an old one to backfill."
       />
       <UploadForm />
     </PageContainer>

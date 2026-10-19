@@ -1,6 +1,7 @@
 import type { UploadReportResponse, UploadReportResult } from '@/types/upload'
 import { uploadFailureMessage } from './uploadFailureMessage'
 import { uploadSuccessMessage } from './uploadSuccessMessage'
+import { uploadedReportId } from './uploadedReportId'
 
 /** Posts one DMARC report file and reduces the response to a UI message. */
 export async function uploadReportFile(
@@ -19,10 +20,19 @@ export async function uploadReportFile(
       return {
         status: 'error',
         message: uploadFailureMessage(json, res.status),
+        reportId: null,
       }
     }
-    return { status: 'success', message: uploadSuccessMessage(json) }
+    return {
+      status: 'success',
+      message: uploadSuccessMessage(json),
+      reportId: uploadedReportId(json),
+    }
   } catch {
-    return { status: 'error', message: 'Upload failed.' }
+    return {
+      status: 'error',
+      message: 'Upload failed: the server could not be reached.',
+      reportId: null,
+    }
   }
 }

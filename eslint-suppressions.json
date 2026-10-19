@@ -209,21 +209,6 @@
       "count": 1
     }
   },
-  "src/components/upload/RecentUploadsCard.tsx": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/components/upload/UploadDropZone.tsx": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/components/upload/UploadStatusMessage.tsx": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
   "src/components/users/UserCredentialFields.tsx": {
     "code-policy/no-inline-types-in-runtime-files": {
       "count": 1
