@@ -1,5 +1,3 @@
-export { default as DispositionChart } from './DispositionChart'
 export { default as DispositionChartDisplay } from './DispositionChartDisplay'
 export { default as IngestActivityChart } from './IngestActivityChart'
-export { default as SpfDkimChart } from './SpfDkimChart'
-export { default as TrendChart } from './TrendChart'
+export { PassRateTrendChart } from './PassRateTrendChart'
