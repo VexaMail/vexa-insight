@@ -1,34 +1,40 @@
+import { IconTile } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import type { HeaderFactProps } from './HeaderFactProps'
 
-/** A small fact card beside the domain title: last report, total messages. */
+/** A fact card beside the domain title, e.g. when the last report came in. */
 export function HeaderFact({
   icon,
   label,
   value,
+  hint,
   title,
   href,
 }: Readonly<HeaderFactProps>) {
   const body = (
     <>
-      <span className="bg-primary/10 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full [&_svg]:h-4 [&_svg]:w-4">
-        {icon}
-      </span>
-      <span className="min-w-0">
-        <span className="text-muted-foreground block text-xs">{label}</span>
-        <span className="text-foreground block font-mono text-lg font-semibold tabular-nums">
+      <IconTile>{icon}</IconTile>
+      <span className="min-w-0 flex-1">
+        <span className="text-muted-foreground block truncate text-sm">
+          {label}
+        </span>
+        <span className="text-foreground mt-1 block text-xl leading-none font-semibold tracking-tight">
           {value}
         </span>
+        {hint ? (
+          <span className="text-muted-foreground mt-2 block truncate text-xs">
+            {hint}
+          </span>
+        ) : null}
       </span>
       {href ? (
-        <ChevronRight className="text-muted-foreground ml-auto h-4 w-4" />
+        <ChevronRight className="text-muted-foreground h-4 w-4 shrink-0" />
       ) : null}
     </>
   )
-  const className =
-    'flex min-w-0 flex-1 items-center gap-3 px-3 py-3 sm:px-4 lg:min-w-[11rem]'
+  const className = 'flex min-w-0 items-center gap-3.5 p-4 lg:w-60'
   if (!href) {
     return (
       <div className={cn('glass-card', className)} title={title}>

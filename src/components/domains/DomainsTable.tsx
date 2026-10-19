@@ -13,7 +13,7 @@ export default function DomainsTable({ domains }: Readonly<DomainsTableProps>) {
     filtered,
     statusFilter,
     handleRowClick,
-    handleStatusSelectChange,
+    handleStatusChange,
     handleNavigate,
   } = useDomainsTable({ domains })
   const setScope = useListState((s) => s.setScope)
@@ -33,7 +33,7 @@ export default function DomainsTable({ domains }: Readonly<DomainsTableProps>) {
       <div className="md:hidden">
         <DomainStatusSelect
           value={statusFilter}
-          onChange={handleStatusSelectChange}
+          onChange={handleStatusChange}
         />
       </div>
       <DomainsPhoneList rows={filtered} onNavigate={handleNavigate} />
@@ -46,7 +46,7 @@ export default function DomainsTable({ domains }: Readonly<DomainsTableProps>) {
           toolbarActions={
             <DomainStatusSelect
               value={statusFilter}
-              onChange={handleStatusSelectChange}
+              onChange={handleStatusChange}
             />
           }
         />

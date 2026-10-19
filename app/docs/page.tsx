@@ -1,6 +1,5 @@
-import { DocsHeader } from '@/components/docs'
+import { ApiReferenceScript, DocsHeader } from '@/components/docs'
 import type { Metadata } from 'next'
-import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: 'API Reference — Vexa Insight',
@@ -15,7 +14,7 @@ export default function DocsPage() {
     <div className="bg-background min-h-dvh">
       <DocsHeader />
       <main>
-        <div id="api-reference" data-url="/api/v1/openapi.json">
+        <div id="vexa-api-reference">
           <p className="text-muted-foreground mx-auto max-w-7xl px-4 py-10 text-sm sm:px-6">
             Loading the interactive reference. If it does not appear, read the
             raw specification at{' '}
@@ -28,10 +27,7 @@ export default function DocsPage() {
             .
           </p>
         </div>
-        <Script
-          src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"
-          strategy="afterInteractive"
-        />
+        <ApiReferenceScript />
       </main>
     </div>
   )

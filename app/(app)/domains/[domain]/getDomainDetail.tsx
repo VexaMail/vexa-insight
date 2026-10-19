@@ -1,6 +1,11 @@
+import { DAILY_VOLUME_DAYS } from '@/constants/domains'
 import { ENFORCEMENT_WINDOW_DAYS } from '@/constants/enforcement'
 import { FORENSIC_DOMAIN_PAGE_LIMIT } from '@/constants/forensic'
-import { getComplianceTrend, getPublishedPolicies } from '@/services/domains'
+import {
+  getComplianceTrend,
+  getDailyVolume,
+  getPublishedPolicies,
+} from '@/services/domains'
 import { getEnforcementReadiness } from '@/services/enforcement'
 import { getForensicReportsForDomain } from '@/services/forensic'
 import { getDomainSummary } from '@/services/reports'
@@ -15,6 +20,7 @@ export async function getDomainDetail(
   sourceDays: number | undefined,
 ): Promise<DomainDetailData | null> {
   try {
+    const volume = getDailyVolume([domainId], DAILY_VOLUME_DAYS)
     const [summary, allSources, windowSources, enforcement, policies, trend] =
       await Promise.all([
         getDomainSummary(domainId),
@@ -24,12 +30,14 @@ export async function getDomainDetail(
         getPublishedPolicies([domainId]),
         getComplianceTrend(domainId, ENFORCEMENT_WINDOW_DAYS),
       ])
+    const dailyVolume = await volume
     if (!summary) return null
     return {
       summary,
       policy: policies.get(domainId) ?? null,
       trend,
       insights: buildDomainInsights(allSources),
+      dailyVolume,
       sources: windowSources ?? allSources,
       sourceDays,
       tls: {
