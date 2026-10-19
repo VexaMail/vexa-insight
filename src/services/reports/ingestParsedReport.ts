@@ -39,7 +39,7 @@ export async function ingestParsedReport(
   const ipAddressIds = await resolveEventIpIds(report.events)
 
   const result = runIngestTransaction(db, report, { domainId, ipAddressIds })
-  if (result.ingested) notifyUnauthorizedSources(report)
+  if (result.ingested) await notifyUnauthorizedSources(report)
 
   return result
 }

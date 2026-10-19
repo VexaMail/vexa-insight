@@ -1,3 +1,4 @@
+export { alertRules } from './alert-rules'
 export { appSettings } from './app-settings'
 export { auditLog } from './audit-log'
 export { dnsSnapshots } from './dns-snapshots'

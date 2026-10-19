@@ -247,8 +247,13 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
   for your sending IPs, next to the DMARC data. See
   [`docs/SNDS.md`](docs/SNDS.md).
 - Outbound webhooks for unauthorized senders, authentication fail-rate spikes,
-  failed ingestion, SNDS reputation alerts and available updates, optionally
-  HMAC-signed.
+  failed ingestion, SNDS reputation alerts, DNS record changes and available
+  updates, optionally HMAC-signed. A source marked legitimate or a forwarder for
+  a domain is left out of the unauthorized-sender alert.
+- Alert rules, checked daily: a domain's DMARC pass rate falling by a number of
+  points against the previous window, or staying under a floor, fires
+  `auth.fail_rate_spike`; each rule sets its window, minimum volume and domain
+  (`/api/v1/admin/alert-rules`).
 - Prometheus metrics at `/api/v1/metrics` and an OpenAPI 3.1 spec at
   `/api/v1/openapi.json`.
 

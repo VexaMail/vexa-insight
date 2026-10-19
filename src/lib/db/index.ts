@@ -4,6 +4,7 @@ export { MIGRATIONS_TABLE } from './migrationsTable'
 export { resolveDbFilePath } from './resolveDbFilePath'
 export { runMigrations } from './runMigrations'
 export {
+  alertRules,
   appSettings,
   auditLog,
   dnsSnapshots,

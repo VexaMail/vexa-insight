@@ -309,6 +309,13 @@
       "when": 1792376546730,
       "tag": "0043_source_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "6",
+      "when": 1792376887698,
+      "tag": "0044_alert_rules",
+      "breakpoints": true
     }
   ]
 }
