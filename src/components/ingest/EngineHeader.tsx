@@ -18,7 +18,7 @@ export function EngineHeader({
   idleAction,
 }: EngineHeaderProps) {
   return (
-    <div className="flex min-w-0 flex-col gap-2 md:pt-1">
+    <div className="order-first flex min-w-0 flex-col gap-2 md:order-none md:pt-1">
       {isRunning || runRequested ? (
         <EngineStopButton
           abortStatus={abortStatus}
