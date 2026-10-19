@@ -10,13 +10,14 @@ export function IpRateTile({
   trend,
   icon,
   label,
+  variant,
 }: Readonly<IpRateTileProps>) {
   return (
     <StatTile
-      variant="feature"
+      variant={variant}
       label={label ?? check.label}
       tone={check.verdict.tone}
-      icon={icon}
+      icon={variant === 'feature' ? icon : null}
       trend={trend}
       trendKind="bars"
       value={`${check.rate.toFixed(1)}%`}

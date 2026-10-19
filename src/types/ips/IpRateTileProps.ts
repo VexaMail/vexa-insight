@@ -9,4 +9,5 @@ export type IpRateTileProps = {
   readonly icon: ReactNode
   /** Shorter label than the check's own, for a narrow tile. */
   readonly label?: string
+  readonly variant: 'compact' | 'feature'
 }

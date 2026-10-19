@@ -6,17 +6,23 @@ import { IpDetailKpis } from './IpDetailKpis'
 import { IpDetailTabContent } from './IpDetailTabContent'
 import { IpOperatorReview } from './IpOperatorReview'
 
-/** A sending source's page: header, KPIs, facts, tabs, active tab, review. */
+/**
+ * A source's page: header, KPIs, facts, tabs, active tab, review. Below `lg`
+ * the seen dates and dispositions move under the active tab, so a phone
+ * reaches the authentication results without scrolling past metadata.
+ */
 export function IpDetailView({
   ctx,
   tab,
   actions,
 }: Readonly<IpDetailViewProps>) {
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <IpDetailHeader ctx={ctx} actions={actions} />
       <IpDetailKpis ctx={ctx} />
-      <IpDetailFacts ctx={ctx} />
+      <div className="max-lg:order-1">
+        <IpDetailFacts ctx={ctx} />
+      </div>
       <div className="space-y-4">
         <TabNav
           items={Object.values(ctx.tabs)}
@@ -25,11 +31,13 @@ export function IpDetailView({
         />
         <IpDetailTabContent ctx={ctx} tab={tab} />
       </div>
-      <IpOperatorReview
-        ip={ctx.ip}
-        domains={ctx.domains ?? []}
-        reviews={ctx.reviews}
-      />
+      <div className="max-lg:order-2">
+        <IpOperatorReview
+          ip={ctx.ip}
+          domains={ctx.domains ?? []}
+          reviews={ctx.reviews}
+        />
+      </div>
     </div>
   )
 }

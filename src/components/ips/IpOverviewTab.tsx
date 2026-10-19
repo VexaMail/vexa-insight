@@ -11,7 +11,7 @@ export function IpOverviewTab({ ctx }: Readonly<IpDetailContextProps>) {
   return (
     <div className="grid items-start gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <IpSourceInfoPanel ctx={ctx} />
-      <div className="flex min-w-0 flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4 max-lg:order-first">
         <IpAuthResultsPanel ctx={ctx} />
         <div className="grid gap-4 sm:grid-cols-2">
           <IpRelatedDomainCard ctx={ctx} />
