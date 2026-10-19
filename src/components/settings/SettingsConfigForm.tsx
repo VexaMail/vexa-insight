@@ -19,7 +19,7 @@ export default function SettingsConfigForm({
 
   return (
     <div
-      className={`grid gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] ${className}`}
+      className={`grid gap-6 lg:grid-cols-[13rem_minmax(0,64rem)] ${className}`}
     >
       <SettingsSectionNav activeId={activeId} />
       <div className="min-w-0 space-y-4">

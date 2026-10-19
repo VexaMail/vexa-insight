@@ -21,7 +21,7 @@ export async function IssuesScreen({
     ...(toDate ? { to: toDate } : {}),
   }
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div className="max-w-console mx-auto w-full space-y-6">
       <PageHeader
         title="Issues"
         description="Every problem derived from report data and ingestion runs. Acknowledge what you are handling, snooze what can wait, and open the evidence behind each row."

@@ -80,7 +80,8 @@ are a step lighter in dark so neutral filters and outline buttons stay visible.
 ## Layout and density
 
 - Sidebar 224px from `lg`; below that a drawer opened from the top bar.
-- Content `max-w-7xl`, gaps of 16px between panels (`gap-4`), 24px between page
+- Content `max-w-console` (1920px: a 1920px screen is used edge to edge, wider
+  screens centre it), gaps of 16px between panels (`gap-4`), 24px between page
   sections (`space-y-6`).
 - Table rows 40-44px; controls at least 40px tall; touch targets 44px on phone.
 - Phone (390px): one column, no horizontal page scroll, tables become row

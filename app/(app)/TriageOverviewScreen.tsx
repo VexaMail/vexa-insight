@@ -31,7 +31,7 @@ export async function TriageOverviewScreen({
   )
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div className="max-w-console mx-auto w-full space-y-6">
       <DashboardFilterInitializer days={days} from={fromDate} to={toDate} />
       <TriageHeader
         days={days}

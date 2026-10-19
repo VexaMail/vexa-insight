@@ -123,6 +123,7 @@
    Tailwind v4 theme inline — register semantic tokens
    ────────────────────────────────────────────────────────────────────────────── */
 @theme inline {
+  --container-console: 120rem;
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
