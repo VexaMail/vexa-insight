@@ -14,6 +14,7 @@ export function ReportKpiValue({
     <span className="inline-flex flex-wrap items-center gap-2">
       {value}
       <StatusPill
+        variant="solid"
         tone={verdict.tone}
         icon={<Icon />}
         className="font-sans tracking-normal"

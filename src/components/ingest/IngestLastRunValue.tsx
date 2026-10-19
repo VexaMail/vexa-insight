@@ -12,11 +12,11 @@ export function IngestLastRunValue({
     <span className="flex flex-wrap items-center gap-2">
       <span className="tabular-nums">{formatUtcTime(runs.lastRunAt)}</span>
       {runs.lastRunSuccess ? (
-        <StatusPill tone="success" icon={<Check />}>
+        <StatusPill variant="solid" tone="success" icon={<Check />}>
           Success
         </StatusPill>
       ) : (
-        <StatusPill tone="danger" icon={<X />}>
+        <StatusPill variant="solid" tone="danger" icon={<X />}>
           Failed
         </StatusPill>
       )}

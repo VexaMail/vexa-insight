@@ -44,9 +44,11 @@ export function IngestHealthFacts({
         label="Mailbox freshness"
         aside={`Last report ${describeAge(reports.lastIngestedAt, now)}`}
       >
-        <span className="tabular-nums">
-          {`${String(countReachableMailboxes(mailboxes))} of ${String(mailboxes.length)} mailboxes`}
-        </span>
+        {mailboxes.length > 0 ? (
+          <span className="tabular-nums">
+            {`${String(countReachableMailboxes(mailboxes))} of ${String(mailboxes.length)} mailboxes`}
+          </span>
+        ) : null}
         <StatusPill tone={mailboxState.tone} dot>
           {mailboxState.label}
         </StatusPill>

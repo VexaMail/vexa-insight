@@ -13,6 +13,7 @@ export function UploadResultRow({ upload }: Readonly<UploadResultRowProps>) {
           {upload.name}
         </span>
         <StatusPill
+          variant="solid"
           tone={accepted ? 'success' : 'danger'}
           icon={accepted ? <Check /> : <X />}
         >

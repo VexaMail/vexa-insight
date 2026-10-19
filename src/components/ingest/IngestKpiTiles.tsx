@@ -36,8 +36,8 @@ export function IngestKpiTiles({
       <StatTile
         variant="feature"
         label="Failed runs, 24 h"
-        value={`${String(runs.failedRuns24h)} of ${String(runs.runs24h)}`}
-        hint={`${summary.failedRuns.toLocaleString('en-US')} failed, ${span}`}
+        value={String(runs.failedRuns24h)}
+        hint={`Of ${String(runs.runs24h)} runs; ${summary.failedRuns.toLocaleString('en-US')} failed, ${span}`}
         tone={runs.failedRuns24h > 0 ? 'danger' : 'neutral'}
         accent={runs.failedRuns24h > 0 ? 'danger' : 'success'}
         icon={<TriangleAlert />}

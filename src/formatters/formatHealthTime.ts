@@ -1,6 +1,8 @@
-import { format } from 'date-fns'
-
-/** Absolute timestamp behind a relative age, for its tooltip. */
+/**
+ * "2026-10-19 08:12 UTC": a fixed UTC format, so the server render, the
+ * browser and every viewer's time zone print the same minute.
+ */
 export function formatHealthTime(date: Date | null): string | undefined {
-  return date ? format(date, 'yyyy-MM-dd HH:mm') : undefined
+  if (!date) return undefined
+  return `${date.toISOString().slice(0, 16).replace('T', ' ')} UTC`
 }
