@@ -24,7 +24,7 @@ export function DomainSourcesTab({
             <p className="text-muted-foreground text-sm">
               Every IP that sent mail as {domainName} in {window}, with its
               aligned SPF, DKIM and DMARC results and its classification. Hover
-              a badge for the authentication result.
+              or tap a badge for the authentication result.
             </p>
           </div>
           <SourcesExportMenu domainId={domainId} days={data.sourceDays} />

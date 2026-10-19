@@ -13,7 +13,7 @@ export function DomainHistoryTab({
       <Panel
         icon={<History />}
         title="DMARC pass rate, last 90 days"
-        description="One bar per day with reports; hover a bar for its rate and volume."
+        description="One bar per day with reports; hover or tap a bar for its rate and volume."
       >
         {timeline.days.length === 0 ? (
           <EmptyState>No reports in the last 90 days.</EmptyState>
