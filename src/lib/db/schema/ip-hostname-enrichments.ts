@@ -25,10 +25,10 @@ export const ipHostnameEnrichments = sqliteTable(
     resolverProvider: text('resolver_provider'),
     createdAt: integer('created_at', { mode: 'timestamp' })
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`(unixepoch())`),
     updatedAt: integer('updated_at', { mode: 'timestamp' })
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`(unixepoch())`),
   },
   (table) => [
     uniqueIndex('ip_hostname_ip_idx').on(table.ip),
