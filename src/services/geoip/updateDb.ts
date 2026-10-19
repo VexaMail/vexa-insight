@@ -4,6 +4,7 @@ import { createProgressChunkHandler } from './createProgressChunkHandler'
 import { ensureGeoipDataDir } from './ensureGeoipDataDir'
 import { geoipUpdaterPath } from './geoipUpdaterPath'
 import { loadGeoIpUpdateTarget } from './loadGeoIpUpdateTarget'
+import { traceGeoipUpdater } from './traceGeoipUpdater'
 import type { UpdateGeoIpDbOptions } from './UpdateGeoIpDbOptions'
 
 export async function updateGeoIpDb(
@@ -12,6 +13,7 @@ export async function updateGeoIpDb(
   const { onProgress } = options
   const target = await loadGeoIpUpdateTarget(options.licenseKey)
   const dataDir = ensureGeoipDataDir()
+  traceGeoipUpdater()
 
   const child = fork(
     geoipUpdaterPath(),
