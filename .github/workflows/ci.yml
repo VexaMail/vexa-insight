@@ -70,6 +70,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      # Fails if the standalone output carries the repository, or ships the
+      # GeoIP updater without the modules it requires.
+      - name: Check standalone output
+        run: pnpm run check:standalone
+
   docker-smoke:
     name: Docker smoke test
     runs-on: ubuntu-latest

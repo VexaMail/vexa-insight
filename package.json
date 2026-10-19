@@ -55,6 +55,7 @@
     "check:ci": "pnpm run lint:fast && pnpm run type-check && pnpm run lint && pnpm run knip && pnpm run deps:graph && pnpm run format:check && pnpm run test && pnpm run check:migrations && pnpm run check:chart",
     "check:migrations": "bash scripts/check-migrations.sh",
     "check:chart": "bash scripts/check-chart-version.sh",
+    "check:standalone": "bash scripts/check-standalone.sh",
     "perf:check": "pnpm build && lhci autorun --config=.lighthouserc.json",
     "smoke": "bash scripts/smoke.sh",
     "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && lefthook install || echo 'prepare: not a git repository, skipping hook install'",
