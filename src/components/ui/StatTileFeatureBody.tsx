@@ -21,7 +21,7 @@ export function StatTileFeatureBody({
     <div className="flex items-start gap-3.5">
       {icon ? <IconTile tone={lead}>{icon}</IconTile> : null}
       <div className="min-w-0 flex-1">
-        <p className="text-muted-foreground truncate text-sm font-medium">
+        <p className="text-muted-foreground line-clamp-2 min-w-0 text-sm font-medium">
           {label}
         </p>
         <div className="mt-1.5 flex items-end justify-between gap-2">

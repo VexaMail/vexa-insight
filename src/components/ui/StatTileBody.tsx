@@ -14,7 +14,7 @@ export function StatTileBody({
   return (
     <>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-muted-foreground truncate text-sm font-medium">
+        <p className="text-muted-foreground line-clamp-2 min-w-0 text-sm font-medium">
           {label}
         </p>
         {icon ? (
