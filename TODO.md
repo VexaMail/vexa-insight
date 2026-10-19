@@ -146,6 +146,93 @@ the portfolio repo.
       to a shorter range can land on an empty page. Reset the reports table to
       page 1 when the date filter changes.
 
+## UI redesign (2026-10-19)
+
+Owner goal, 2026-10-19: a more professional, futuristic look, and workflows that
+let an operator reach every fact and troubleshoot like a devops engineer.
+Source: a ChatGPT critique and mockups of the production screens, plus a
+PowerDMARC comparison; both live outside git in
+`.codeality-ui/propose/2026-10-19-0329/` (`critique-full.md`,
+`critique-powerdmarc.md`, `f1/mockup-2..5.png`, `gaps.md`). Direction: an
+"operations console" (home = what needs attention, drill-down symptom -> domain
+-> source -> report -> DNS -> verify), dark and light themes equally finished.
+Brief: `docs/ui-brief.md`. Finish line: every item below shipped or moved with a
+reason, then one ChatGPT coherence pass over all screens in both themes.
+
+**Foundation**
+
+- [ ] Design tokens for the console palette in both themes (dark canvas
+      `#0B1118`, surface `#121C25`, border `#243441`, accent `#2DD4A0`; light
+      canvas `#F5F8FA`, surface `#FFFFFF`, border `#DBE4E9`, accent `#008F71`),
+      semantic status colours (healthy, needs review, critical, unknown), Geist
+      Mono for IPs, ids and DNS, 120-180 ms motion, denser cards and tables.
+- [ ] Shell: grouped sidebar (Operate / Investigate / Admin), a real phone
+      layout (drawer navigation, no persistent 240px sidebar; today `/ips/<ip>`
+      at 390px splits the IP over three lines and overlaps labels), global
+      search as a command palette (domain, IP, report id; `Cmd+K`).
+- [ ] One detail-page pattern for domain, source, report and diagnostics:
+      identity header with copy buttons, status chips, KPI strip, tabs.
+- [ ] Global filters (date range, domain) kept in the URL across navigation, so
+      every cross-link opens with the same context.
+
+**Metric correctness (before restyling the numbers)**
+
+- [ ] Dashboard shows "Compliance 96.8%" and "Global pass rate 83%" at once, and
+      24,802 emails vs 24,699 on `/ips`; define each metric's denominator and
+      window, reconcile, and label them.
+- [ ] Report 14435 shows DKIM aligned 100% with compliance 0%, and `/ips/<ip>`
+      shows DKIM pass 100% with fully aligned 0%: separate SPF auth, SPF
+      aligned, DKIM auth, DKIM aligned and DMARC result everywhere, with the
+      record evidence (header_from, envelope_from, DKIM `d=`).
+
+**Screens**
+
+- [ ] Home / triage: "Action required" queue, "What changed since your last
+      visit", pass-rate trend as a rate (not volume), ingestion health with
+      trigger, lowest-compliance domains, top failing sources, enforcement
+      summary (domains per `p=none|quarantine|reject`). Separate new/regressed
+      from long-standing issues.
+- [ ] Domain detail: decision header (compliance, published policy, enforcement
+      stage Observe -> Identify -> Fix -> Quarantine -> Reject, senders at risk,
+      forwarders), tabs Sources / DNS / Reports / TLS-RUF, sources filtered by
+      classification, compliance trend vs previous period.
+- [ ] Sending source detail: identity (PTR, FCrDNS, country, ASN), separated
+      auth/alignment results, related domains, report evidence, timeline, tabs,
+      operator classification.
+- [ ] Diagnostics: findings table (severity, check, observed, recommendation,
+      action), status tiles per protocol, next best actions, re-run check, copy
+      record, explanations moved to a side panel. Supersedes the three
+      diagnostics items under Future Ideas.
+- [ ] Sending sources list: classify instead of 951 "Needs review" (DMARC pass,
+      authenticated not aligned, forwarded, failed, unknown).
+- [ ] Reports list and detail: per-row volume, fail rate and signal type; detail
+      linked to the domain, source and DNS state; RUA grouping views (source,
+      result, receiver, host, country, raw reports).
+- [ ] Ingest: separate scheduler, mailbox connectivity, processing and data
+      freshness (last run, last success, last mail seen, last report parsed).
+- [ ] Domains list, Upload, Settings, Users, Login, Install, Docs restyled to
+      the same system.
+
+**New features (PowerDMARC and ChatGPT ideas, marked new)**
+
+- [ ] Issues queue with acknowledge / snooze (new table).
+- [ ] Change detection: a domain or source that starts failing (new endpoint,
+      state snapshot).
+- [ ] Alert rules on top of the existing webhooks: compliance drop, new source
+      over a volume, DNS change, ingestion stalled, new RUF (new table).
+- [ ] Source classification by observed flow, with reason and confidence (new
+      endpoint); operator review "Mark as legitimate sender" that never claims
+      to change DNS or receiver behaviour (extends the Source approval item
+      under Competitive gaps).
+- [ ] Re-run one DNS check on demand (new endpoint).
+- [ ] SPF lookup budget and change planner (new endpoint).
+- [ ] IP network context: ASN, PTR/FCrDNS, optional DNSBL lookups (new endpoint;
+      ASN is also under Competitive gaps).
+- [ ] Domain health timeline correlating DNS, compliance, sources and ingest.
+- [ ] Remediation verification history (new table).
+- Already tracked under Competitive gaps, part of this redesign: DNS change
+  history, record generator, CSV/JSON export, report coverage per reporter.
+
 ## Pending Decisions
 
 - [!] Decide whether ingested DMARC mail should be deleted outright or keep the

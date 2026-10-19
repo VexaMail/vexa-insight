@@ -83,3 +83,6 @@ TODO_HISTORY_INDEX.jsonl
 
 # Bundled maintenance entrypoints, produced by pnpm run build:backfill
 /dist
+
+# codeality-ui runs: screenshots of real reports and a session cookie
+.codeality-ui/
