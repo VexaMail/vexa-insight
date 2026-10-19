@@ -12,12 +12,17 @@ export const lastReportColumn: ColumnDef<
   DomainsTableRow
 > = {
   id: 'lastReport',
-  accessorFn: (row) => row.lastReportDay ?? -1,
+  accessorFn: (row) => row.policy?.reportedAt ?? -1,
   header: ({ column }) => (
-    <SortableHeaderButton column={column} label="Last report" />
+    <span title="End of the newest report period">
+      <SortableHeaderButton column={column} label="Last report" />
+    </span>
   ),
   cell: ({ row }) => (
-    <LastReportLabel lastReportDay={row.original.lastReportDay} />
+    <LastReportLabel
+      reportedAt={row.original.policy?.reportedAt}
+      lastReportDay={row.original.lastReportDay}
+    />
   ),
   enableGlobalFilter: false,
 }

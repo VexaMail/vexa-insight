@@ -1,20 +1,20 @@
 import { StatusPill } from '@/components/ui'
-import { DAY_SECONDS } from '@/utils/dates'
 import { isLastReportStale } from '@/utils/domains'
 import { formatRelativeDate } from '@/utils/format'
 import type { LastReportLabelProps } from './LastReportLabelProps'
 
-/** When the domain last got a report, flagged once it has gone silent. */
+/** When the newest report period ended, flagged once the domain went silent. */
 export function LastReportLabel({
+  reportedAt,
   lastReportDay,
 }: Readonly<LastReportLabelProps>) {
-  if (lastReportDay == null) {
+  if (reportedAt == null) {
     return <span className="text-muted-foreground text-sm">Never</span>
   }
-  const { relative, absolute } = formatRelativeDate(lastReportDay * DAY_SECONDS)
+  const { relative, absolute } = formatRelativeDate(reportedAt)
   return (
     <span className="text-muted-foreground flex items-center gap-2 text-sm whitespace-nowrap">
-      <span title={absolute}>{relative}</span>
+      <span title={`Newest report period ended ${absolute}`}>{relative}</span>
       {isLastReportStale(lastReportDay) ? (
         <StatusPill tone="warning">Silent</StatusPill>
       ) : null}
