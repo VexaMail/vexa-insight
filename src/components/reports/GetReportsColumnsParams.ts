@@ -9,5 +9,4 @@ export type GetReportsColumnsParams = {
   sortDir: SortDir
   filtered: ReportRow[]
   domainName: string | undefined
-  setScope: (ids: string[]) => void
 }

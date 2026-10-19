@@ -24,7 +24,7 @@ export function RelatedDomainLink({
               onClick={(e) => {
                 e.stopPropagation()
               }}
-              className="hover:text-foreground max-w-[120px] truncate transition-colors hover:underline"
+              className="hover:text-foreground max-w-[200px] truncate transition-colors hover:underline"
             >
               {domainName}
             </Link>

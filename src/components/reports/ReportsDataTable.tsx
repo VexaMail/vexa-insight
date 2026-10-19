@@ -1,7 +1,6 @@
 'use client'
 
 import { DataTable } from '@/components/ui'
-import { useListState } from '@/hooks/core'
 import { getReportsColumns } from './reportsColumns'
 import type { ReportsDataTableProps } from './ReportsDataTableProps'
 
@@ -13,27 +12,22 @@ export function ReportsDataTable({
   filtered,
   domainName,
   loading,
-  onRowClick,
 }: Readonly<ReportsDataTableProps>) {
-  const setScope = useListState((s) => s.setScope)
-
   const columns = getReportsColumns({
     dispatch,
     sortKey,
     sortDir,
     filtered,
     domainName,
-    setScope,
   })
 
   return (
-    <div className={loading ? 'opacity-50' : ''}>
+    <div className={loading ? 'hidden opacity-50 xl:block' : 'hidden xl:block'}>
       <DataTable
         columns={columns}
         data={filtered}
         hideToolbar={true}
         hidePagination={true}
-        onRowClick={onRowClick}
       />
     </div>
   )
