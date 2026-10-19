@@ -7,7 +7,9 @@ import path from 'node:path'
  */
 export function isGitCheckout(cwd: string = process.cwd()): boolean {
   try {
-    const target = path.join(cwd, '.git')
+    // Without the ignore comment Turbopack traces the build checkout's .git
+    // into the standalone output, and this check then answers true there.
+    const target = path.join(/*turbopackIgnore: true*/ cwd, '.git')
     return fs.existsSync(target)
   } catch {
     return false

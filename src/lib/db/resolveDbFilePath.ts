@@ -21,7 +21,10 @@ function resolveDbFilePath(databaseUrl: string): string {
   if (withoutAuthority.startsWith('/')) {
     return withoutAuthority
   }
-  return path.resolve(process.cwd(), withoutAuthority)
+  // The database path is runtime configuration, so Turbopack cannot scope this
+  // call statically and would trace the whole project into the standalone
+  // output. Nothing under the project root is read through it at build time.
+  return path.resolve(/*turbopackIgnore: true*/ process.cwd(), withoutAuthority)
 }
 
 export { resolveDbFilePath }
