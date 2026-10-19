@@ -1,31 +1,32 @@
 import type { SettingsAccessSectionsProps } from '@/types/settings'
+import AdvancedSection from './AdvancedSection'
 import ApiKeySection from './ApiKeySection'
-import ImapAccountsSection from './ImapAccountsSection'
 import UpdateStatusSection from './UpdateStatusSection'
 
-/** Instance status, API key and the IMAP accounts that feed ingestion. */
+/** API key, instance updates and the advanced server options. */
 export function SettingsAccessSections({
   apiKey,
   form,
-  onImapUpdate,
-  onImapAdd,
-  onImapRemove,
-  onTestConnection,
+  setForm,
   onCopyApiKey,
 }: SettingsAccessSectionsProps) {
   return (
     <>
-      <UpdateStatusSection apiKey={apiKey} />
-
       <ApiKeySection apiKey={apiKey} onCopy={onCopyApiKey} />
 
-      <ImapAccountsSection
-        accounts={form.imapAccounts}
-        apiKey={apiKey}
-        onUpdate={onImapUpdate}
-        onAdd={onImapAdd}
-        onRemove={onImapRemove}
-        onTestConnection={onTestConnection}
+      <UpdateStatusSection apiKey={apiKey} />
+
+      <AdvancedSection
+        corsOrigins={form.backendCorsOrigins}
+        environment={
+          form.environment as 'development' | 'staging' | 'production'
+        }
+        onCorsChange={(v) => {
+          setForm((prev) => ({ ...prev, backendCorsOrigins: v }))
+        }}
+        onEnvironmentChange={(v) => {
+          setForm((prev) => ({ ...prev, environment: v }))
+        }}
       />
     </>
   )

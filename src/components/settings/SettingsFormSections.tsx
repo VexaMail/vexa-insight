@@ -1,11 +1,12 @@
 'use client'
 
+import ImapAccountsSection from './ImapAccountsSection'
 import { ProjectNameSection } from './ProjectNameSection'
 import { SettingsAccessSections } from './SettingsAccessSections'
 import type { SettingsFormSectionsProps } from './SettingsFormSectionsProps'
 import { SettingsIngestionSections } from './SettingsIngestionSections'
 
-/** The access and ingestion cards, wired to the settings form state. */
+/** Every settings section, in the order the section index lists them. */
 export function SettingsFormSections({ settings }: SettingsFormSectionsProps) {
   const { apiKey, form, setForm } = settings
   return (
@@ -16,22 +17,26 @@ export function SettingsFormSections({ settings }: SettingsFormSectionsProps) {
           setForm((prev) => ({ ...prev, projectName }))
         }}
       />
-      <SettingsAccessSections
+      <ImapAccountsSection
+        accounts={form.imapAccounts}
         apiKey={apiKey}
-        form={form}
-        onImapUpdate={settings.handleImapUpdate}
-        onImapAdd={settings.handleImapAdd}
-        onImapRemove={settings.handleImapRemove}
+        onUpdate={settings.handleImapUpdate}
+        onAdd={settings.handleImapAdd}
+        onRemove={settings.handleImapRemove}
         onTestConnection={(id) => {
           void settings.handleTestConnection(id)
         }}
-        onCopyApiKey={settings.handleCopyApiKey}
       />
-
       <SettingsIngestionSections
         apiKey={apiKey}
         form={form}
         setForm={setForm}
+      />
+      <SettingsAccessSections
+        apiKey={apiKey}
+        form={form}
+        setForm={setForm}
+        onCopyApiKey={settings.handleCopyApiKey}
       />
     </>
   )

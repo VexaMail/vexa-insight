@@ -1,3 +1,3 @@
-/** Shared input styling for the installer form fields. */
+/** Shared input styling for the installer form fields; 16px text on phones. */
 export const INSTALL_INPUT_CLASS_NAME =
-  'w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-zinc-400 dark:focus:ring-zinc-400'
+  'border-input bg-background text-foreground focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-base shadow-sm transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-sm'

@@ -1,5 +1,6 @@
 'use client'
 
+import { SETTINGS_CONTROL_CLASS_NAME } from '@/constants/settings'
 import type { AiApiKeyFieldProps } from './AiApiKeyFieldProps'
 
 /** The stored key is never sent back, so a masked hint stands in for it. */
@@ -13,7 +14,10 @@ export function AiApiKeyField({
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="ai-api-key" className="text-sm font-medium">
+      <label
+        htmlFor="ai-api-key"
+        className="text-foreground text-sm font-medium"
+      >
         API Key
       </label>
       <input
@@ -24,7 +28,7 @@ export function AiApiKeyField({
             ? `Current: ${apiKeyMasked}`
             : (providerPlaceholder ?? 'Enter API key...')
         }
-        className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className={SETTINGS_CONTROL_CLASS_NAME}
         value={value}
         onChange={(e) => {
           onChange(e.target.value)

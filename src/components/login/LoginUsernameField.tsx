@@ -13,6 +13,7 @@ export function LoginUsernameField() {
         id="username"
         name="username"
         type="text"
+        autoComplete="username"
         required
         className={LOGIN_INPUT_CLASS_NAME}
       />

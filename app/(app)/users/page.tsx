@@ -25,7 +25,7 @@ export default async function UsersPage() {
     <PageContainer>
       <PageHeader
         title="Users"
-        description="Manage system access, roles, and domain restrictions. Only Admins can access this section."
+        description="Accounts, their roles and the domains each one can see. Admins only."
       />
       <UsersClient
         initialUsers={serializedUsers}

@@ -33,7 +33,7 @@ export function InstallTokenField({
       />
       <p
         id="install-token-help"
-        className="mt-1 text-xs text-zinc-500 dark:text-zinc-400"
+        className="text-muted-foreground mt-1.5 text-xs"
       >
         Printed to the server console on startup.
       </p>

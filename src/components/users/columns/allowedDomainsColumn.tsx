@@ -5,7 +5,7 @@ import { AllowedDomainsCell } from '../AllowedDomainsCell'
 
 export const allowedDomainsColumn: ColumnDef<typeof dataTableFeatures, User> = {
   accessorKey: 'allowedDomains',
-  header: 'Domains Access',
+  header: () => <span className="whitespace-nowrap">Domain access</span>,
   cell: ({ row }) => (
     <AllowedDomainsCell allowedDomains={row.original.allowedDomains} />
   ),

@@ -1,6 +1,8 @@
 'use client'
 
-import Image from 'next/image'
+import { AuthScreen } from '@/components/login'
+import { Button, CopyIconButton } from '@/components/ui'
+import { RotateCcw } from 'lucide-react'
 
 export default function ErrorPage({
   error,
@@ -10,35 +12,30 @@ export default function ErrorPage({
   reset: () => void
 }>) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
-      <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div className="mb-4 flex justify-center">
-          <Image
-            src="/vexa-insight-icon.svg"
-            alt="Vexa Insight"
-            width={48}
-            height={48}
-            className="h-12 w-12"
-          />
-        </div>
-        <p className="font-display text-destructive text-sm font-semibold tracking-widest uppercase">
-          Error
-        </p>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-          Something went wrong
-        </h1>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          The page could not be rendered. The details are in the server log
-          {error.digest ? ` under digest ${error.digest}` : ''}.
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 mt-6 inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors"
-        >
+    <AuthScreen
+      eyebrow="Error"
+      title="Something went wrong"
+      description="The page could not be rendered. The details are in the server log."
+    >
+      <div className="space-y-4">
+        {error.digest ? (
+          <div className="border-border bg-secondary flex items-center justify-between gap-2 rounded-md border py-1 pr-1 pl-3">
+            <div className="min-w-0">
+              <p className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
+                Log digest
+              </p>
+              <p className="text-foreground truncate font-mono text-sm">
+                {error.digest}
+              </p>
+            </div>
+            <CopyIconButton value={error.digest} label="error digest" />
+          </div>
+        ) : null}
+        <Button type="button" onClick={reset} className="h-10 w-full">
+          <RotateCcw />
           Try again
-        </button>
+        </Button>
       </div>
-    </div>
+    </AuthScreen>
   )
 }

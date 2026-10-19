@@ -8,7 +8,7 @@ export function ForgotPasswordButton() {
       onClick={() => {
         alert(PASSWORD_RECOVERY_MESSAGE)
       }}
-      className="bg-transparent p-0 text-xs text-blue-600 hover:underline dark:text-blue-400"
+      className="text-primary focus-visible:ring-ring cursor-pointer rounded-sm bg-transparent p-0 text-xs hover:underline focus-visible:ring-2 focus-visible:outline-none"
     >
       Forgot password?
     </button>

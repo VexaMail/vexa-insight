@@ -1,4 +1,8 @@
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import { imapAccountFieldId } from '@/utils/settings'
 import type { ImapAccountCredentialFieldsProps } from './ImapAccountCredentialFieldsProps'
 
@@ -9,10 +13,10 @@ export function ImapAccountServerFields({
 }: Readonly<ImapAccountCredentialFieldsProps>) {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
-      <div className="space-y-1.5 sm:col-span-2">
+      <div className="min-w-0 sm:col-span-2">
         <label
           htmlFor={imapAccountFieldId(index, 'server')}
-          className="text-foreground text-xs font-medium"
+          className={SETTINGS_LABEL_CLASS_NAME}
         >
           IMAP Server
         </label>
@@ -24,13 +28,13 @@ export function ImapAccountServerFields({
             onUpdate(index, { server: e.target.value })
           }}
           placeholder="imap.example.com"
-          className="bg-card border-border/50 text-xs"
+          className={SETTINGS_INPUT_CLASS_NAME}
         />
       </div>
-      <div className="space-y-1.5">
+      <div className="min-w-0">
         <label
           htmlFor={imapAccountFieldId(index, 'port')}
-          className="text-foreground text-xs font-medium"
+          className={SETTINGS_LABEL_CLASS_NAME}
         >
           Port
         </label>
@@ -44,7 +48,7 @@ export function ImapAccountServerFields({
             onUpdate(index, { port: parseInt(e.target.value, 10) || 993 })
           }}
           placeholder="993"
-          className="bg-card border-border/50 text-xs"
+          className={SETTINGS_INPUT_CLASS_NAME}
         />
       </div>
     </div>

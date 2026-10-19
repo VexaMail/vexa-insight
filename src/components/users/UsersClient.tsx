@@ -33,13 +33,17 @@ export default function UsersClient({
 
   return (
     <div className="space-y-4">
-      <CreateUserButton
-        onClick={() => {
-          setIsCreateOpen(true)
-        }}
+      <DataTable
+        columns={columns}
+        data={users}
+        toolbarActions={
+          <CreateUserButton
+            onClick={() => {
+              setIsCreateOpen(true)
+            }}
+          />
+        }
       />
-
-      <DataTable columns={columns} data={users} />
 
       <UserDialogs
         isCreateOpen={isCreateOpen}

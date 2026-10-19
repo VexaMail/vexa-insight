@@ -28,6 +28,7 @@ export function ImapAccountRowToolbar({
           variant="ghost"
           size="icon"
           className="text-danger hover:text-danger h-7 w-7"
+          aria-label="Remove account"
           onClick={() => {
             onRemove(index)
           }}

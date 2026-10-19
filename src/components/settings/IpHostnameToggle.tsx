@@ -11,7 +11,7 @@ export function IpHostnameToggle({
   onToggle,
 }: IpHostnameToggleProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex min-h-10 items-center gap-2.5">
       <input
         type="checkbox"
         id={id}
@@ -19,7 +19,7 @@ export function IpHostnameToggle({
         onChange={(e) => {
           onToggle(e.target.checked)
         }}
-        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        className="accent-primary focus-visible:ring-ring h-4 w-4 cursor-pointer rounded focus-visible:ring-2"
       />
       <label htmlFor={id} className={labelClassName}>
         {label}

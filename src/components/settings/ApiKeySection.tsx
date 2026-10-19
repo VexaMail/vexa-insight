@@ -1,23 +1,27 @@
 'use client'
 
-import { m as motion } from 'framer-motion'
+import { Key } from 'lucide-react'
 import { ApiKeyCurrentField } from './ApiKeyCurrentField'
-import { ApiKeySectionHeader } from './ApiKeySectionHeader'
 import type { ApiKeySectionProps } from './ApiKeySectionProps'
+import { SettingsSection } from './SettingsSection'
 
 export default function ApiKeySection({ apiKey, onCopy }: ApiKeySectionProps) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="glass-card p-6"
-      aria-labelledby="settings-api-key-heading"
+    <SettingsSection
+      anchorId="api-key"
+      headingId="settings-api-key-heading"
+      icon={<Key />}
+      title="API key"
+      description={
+        <>
+          Derived from <code className="font-mono">SECRET_KEY</code> for API
+          calls, crons and scripts. It is not the encryption key, and it changes
+          when you rotate <code className="font-mono">SECRET_KEY</code> with{' '}
+          <code className="font-mono">recovery.ts rotate-key</code>.
+        </>
+      }
     >
-      <ApiKeySectionHeader />
-      <div className="space-y-4">
-        <ApiKeyCurrentField apiKey={apiKey} onCopy={onCopy} />
-      </div>
-    </motion.section>
+      <ApiKeyCurrentField apiKey={apiKey} onCopy={onCopy} />
+    </SettingsSection>
   )
 }

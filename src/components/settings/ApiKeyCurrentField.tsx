@@ -1,18 +1,28 @@
 'use client'
 
 import { Button, Input } from '@/components/ui'
-import { Copy } from 'lucide-react'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
+import { useSecretReveal } from '@/hooks/settings'
+import { maskSecret } from '@/utils/settings'
+import { Copy, Eye, EyeOff } from 'lucide-react'
 import type { ApiKeyCurrentFieldProps } from './ApiKeyCurrentFieldProps'
 
+/** The API key, masked until revealed, with a copy control for the real value. */
 export function ApiKeyCurrentField({
   apiKey,
   onCopy,
 }: ApiKeyCurrentFieldProps) {
+  const { isRevealed, handleToggleReveal } = useSecretReveal()
+  const hasKey = apiKey.trim() !== ''
+
   return (
     <div>
       <label
         htmlFor="settings-config-api-key"
-        className="text-foreground mb-1.5 block text-xs font-medium"
+        className={SETTINGS_LABEL_CLASS_NAME}
       >
         Current API key
       </label>
@@ -20,21 +30,33 @@ export function ApiKeyCurrentField({
         <Input
           id="settings-config-api-key"
           type="text"
-          value={apiKey}
+          value={isRevealed ? apiKey : maskSecret(apiKey)}
           readOnly
-          className="bg-card border-border/50 font-mono text-xs"
+          className={`${SETTINGS_INPUT_CLASS_NAME} bg-secondary font-mono`}
           autoComplete="off"
         />
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
+          size="icon"
+          onClick={handleToggleReveal}
+          disabled={!hasKey}
+          className="h-10 w-10 shrink-0"
+          aria-label={isRevealed ? 'Hide API key' : 'Show API key'}
+          aria-pressed={isRevealed}
+        >
+          {isRevealed ? <EyeOff /> : <Eye />}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
           size="icon"
           onClick={onCopy}
-          disabled={!apiKey.trim()}
-          className="text-muted-foreground hover:text-foreground h-9 w-9 shrink-0"
+          disabled={!hasKey}
+          className="h-10 w-10 shrink-0"
           aria-label="Copy API key"
         >
-          <Copy className="h-4 w-4" />
+          <Copy />
         </Button>
       </div>
     </div>

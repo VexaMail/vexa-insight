@@ -1,6 +1,10 @@
 'use client'
 
 import { Input } from '@/components/ui'
+import {
+  SETTINGS_INPUT_CLASS_NAME,
+  SETTINGS_LABEL_CLASS_NAME,
+} from '@/constants/settings'
 import type { IpHostnameNumberFieldProps } from './IpHostnameNumberFieldProps'
 
 /** Labelled numeric setting of the IP-to-hostname lookup section. */
@@ -16,10 +20,7 @@ export function IpHostnameNumberField({
 }: IpHostnameNumberFieldProps) {
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="text-foreground mb-1.5 block text-xs font-medium"
-      >
+      <label htmlFor={id} className={SETTINGS_LABEL_CLASS_NAME}>
         {label}
       </label>
       <Input
@@ -32,7 +33,7 @@ export function IpHostnameNumberField({
         onChange={(e) => {
           onCommit(parseInt(e.target.value) || fallback)
         }}
-        className="bg-secondary border-border/50 text-xs"
+        className={SETTINGS_INPUT_CLASS_NAME}
       />
     </div>
   )

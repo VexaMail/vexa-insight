@@ -1,12 +1,12 @@
 'use client'
 
 import { useImapAccountsSection } from '@/hooks/settings'
-import { m as motion } from 'framer-motion'
 import { Mail } from 'lucide-react'
 import { ImapAccountAddButton } from './ImapAccountAddButton'
 import { ImapAccountRow } from './ImapAccountRow'
+import { ImapAccountsEmpty } from './ImapAccountsEmpty'
 import type { ImapAccountsSectionProps } from './ImapAccountsSectionProps'
-import { SettingsSectionHeader } from './SettingsSectionHeader'
+import { SettingsSection } from './SettingsSection'
 
 export default function ImapAccountsSection({
   accounts,
@@ -22,21 +22,21 @@ export default function ImapAccountsSection({
   )
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
-      className="glass-card p-6"
-      aria-labelledby="settings-imap-heading"
+    <SettingsSection
+      anchorId="mailboxes"
+      headingId="settings-imap-heading"
+      icon={<Mail />}
+      title="Mailboxes"
+      description="IMAP accounts that receive aggregate reports; ingestion reads each one."
+      actions={
+        <ImapAccountAddButton
+          onClick={handleAdd}
+          hasAccounts={accounts.length > 0}
+        />
+      }
     >
-      <SettingsSectionHeader
-        headingId="settings-imap-heading"
-        icon={<Mail className="h-4 w-4" />}
-        iconClassName="bg-info/10 text-info flex h-8 w-8 items-center justify-center rounded-lg"
-        title="IMAP Accounts"
-        description="Email accounts for fetching DMARC reports"
-      />
       <div className="space-y-2">
+        {accounts.length === 0 ? <ImapAccountsEmpty /> : null}
         {accounts.map((acc, index) => (
           <ImapAccountRow
             key={acc.id ? acc.id : `new-${acc.server}-${acc.username}`}
@@ -51,8 +51,7 @@ export default function ImapAccountsSection({
             removable={accounts.length > 1}
           />
         ))}
-        <ImapAccountAddButton onClick={handleAdd} />
       </div>
-    </motion.section>
+    </SettingsSection>
   )
 }

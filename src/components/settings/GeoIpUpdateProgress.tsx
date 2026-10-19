@@ -6,7 +6,7 @@ export function GeoIpUpdateProgress({
   etaText,
 }: GeoIpUpdateProgressProps) {
   return (
-    <div className="border-border/50 bg-background/50 flex flex-col gap-2 rounded-md border p-3">
+    <div className="border-border bg-background flex flex-col gap-2 rounded-md border p-3">
       <div className="flex items-center justify-between text-xs">
         <span className="text-foreground font-medium">{progress.step}</span>
         <span className="text-muted-foreground">

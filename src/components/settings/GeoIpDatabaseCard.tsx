@@ -15,8 +15,8 @@ export function GeoIpDatabaseCard({
   onUpdate,
 }: GeoIpDatabaseCardProps) {
   return (
-    <div className="border-border/50 bg-muted/20 flex flex-col gap-3 rounded-md border p-4">
-      <div className="flex items-center justify-between">
+    <div className="border-border bg-secondary flex flex-col gap-3 rounded-md border p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <span className="text-sm font-medium">GeoIP Database Status</span>
           <div className="text-muted-foreground flex items-center gap-2 text-sm">

@@ -1,4 +1,5 @@
 import { Input } from '@/components/ui'
+import { USER_INPUT_CLASS_NAME } from '@/constants/users'
 
 /** Password field, optional while editing an existing user. */
 export function UserPasswordField({
@@ -12,7 +13,10 @@ export function UserPasswordField({
 }>) {
   return (
     <div className="space-y-2">
-      <label htmlFor="user-password" className="text-sm font-medium">
+      <label
+        htmlFor="user-password"
+        className="text-foreground block text-sm font-medium"
+      >
         Password{' '}
         {isEdit ? (
           <span className="text-muted-foreground text-xs">
@@ -22,6 +26,7 @@ export function UserPasswordField({
       </label>
       <Input
         id="user-password"
+        className={USER_INPUT_CLASS_NAME}
         value={password}
         onChange={(e) => {
           onChange(e.target.value)

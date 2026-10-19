@@ -1,5 +1,5 @@
-import { Input } from '@/components/ui'
 import { USER_SELECT_CLASS_NAME } from '@/constants/users'
+import { UserDomainsField } from './UserDomainsField'
 
 /** Whether the user sees every domain, and which ones when not. */
 export function UserDomainAccessFields({
@@ -16,7 +16,10 @@ export function UserDomainAccessFields({
   return (
     <>
       <div className="space-y-2">
-        <label htmlFor="user-domain-mode" className="text-sm font-medium">
+        <label
+          htmlFor="user-domain-mode"
+          className="text-foreground block text-sm font-medium"
+        >
           Domain Access
         </label>
         <select
@@ -27,28 +30,13 @@ export function UserDomainAccessFields({
           }}
           className={USER_SELECT_CLASS_NAME}
         >
-          <option value="all">All Domains</option>
-          <option value="selected">Selected Domains</option>
+          <option value="all">All domains</option>
+          <option value="selected">Selected domains</option>
         </select>
       </div>
 
       {domainMode === 'selected' && (
-        <div className="space-y-2">
-          <label htmlFor="user-domains" className="text-sm font-medium">
-            Specify Domains
-          </label>
-          <Input
-            id="user-domains"
-            value={domainsInput}
-            onChange={(e) => {
-              onDomainsChange(e.target.value)
-            }}
-            placeholder="example.com, another.com"
-          />
-          <p className="text-muted-foreground text-xs">
-            Comma separated list of domains.
-          </p>
-        </div>
+        <UserDomainsField value={domainsInput} onChange={onDomainsChange} />
       )}
     </>
   )

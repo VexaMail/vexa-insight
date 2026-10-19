@@ -17,6 +17,7 @@ export function LoginPasswordField() {
         id="password"
         name="password"
         type="password"
+        autoComplete="current-password"
         required
         className={LOGIN_INPUT_CLASS_NAME}
       />

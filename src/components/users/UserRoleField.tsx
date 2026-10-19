@@ -7,7 +7,10 @@ export function UserRoleField({
 }: Readonly<{ role: string; onChange: (value: string) => void }>) {
   return (
     <div className="space-y-2">
-      <label htmlFor="user-role" className="text-sm font-medium">
+      <label
+        htmlFor="user-role"
+        className="text-foreground block text-sm font-medium"
+      >
         Role
       </label>
       <select
