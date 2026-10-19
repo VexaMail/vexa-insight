@@ -1,7 +1,6 @@
-/**
- * `2026-01-31 12:00:05 UTC`. Fixed format and zone, so a server render and the
- * browser's hydration print the same text.
- */
+import { formatDateTime } from './formatDateTime'
+
+/** When a run happened, as `Oct 19, 2026 12:00 UTC`. */
 export function formatRunAt(d: Date): string {
-  return `${d.toISOString().slice(0, 19).replace('T', ' ')} UTC`
+  return formatDateTime(d)
 }

@@ -89,7 +89,7 @@ describe('describeAuthRate', () => {
     expect(describeAuthRate(0, 5).label).toBe('Fail')
     expect(describeAuthRate(3, 4)).toMatchObject({
       tone: 'warning',
-      label: '75%',
+      label: '75.0%',
     })
     expect(describeAuthRate(0, 0).tone).toBe('unknown')
   })
