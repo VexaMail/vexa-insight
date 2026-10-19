@@ -1,3 +1,5 @@
+export { ICON_TILE_CLASSES } from './iconTileClasses'
+export { SPARKLINE_TONE_CLASSES } from './sparklineStrokeClasses'
 export { STATUS_TONE_CLASSES } from './statusToneClasses'
 export { STATUS_TONE_DOT_CLASSES } from './statusToneDotClasses'
 export { STATUS_TONE_TEXT_CLASSES } from './statusToneTextClasses'

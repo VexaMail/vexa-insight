@@ -7,10 +7,13 @@ export function StatusPill({
   tone,
   children,
   dot = false,
+  icon,
+  title,
   className,
 }: Readonly<StatusPillProps>) {
   return (
     <span
+      title={title}
       className={cn(
         'inline-flex h-6 items-center gap-1.5 rounded-md border px-2 text-xs font-medium whitespace-nowrap',
         STATUS_TONE_CLASSES[tone],
@@ -25,6 +28,11 @@ export function StatusPill({
             STATUS_TONE_DOT_CLASSES[tone],
           )}
         />
+      ) : null}
+      {icon ? (
+        <span aria-hidden className="[&_svg]:h-3.5 [&_svg]:w-3.5">
+          {icon}
+        </span>
       ) : null}
       {children}
     </span>

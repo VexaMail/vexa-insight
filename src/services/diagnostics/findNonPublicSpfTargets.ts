@@ -1,5 +1,5 @@
-import { isPublicDnsName } from '@/utils/diagnostics'
 import { extractSpfChildDomains } from './extractSpfChildDomains'
+import { isPublicDnsName } from './isPublicDnsName'
 
 /**
  * The include and redirect targets of a candidate record that are not public

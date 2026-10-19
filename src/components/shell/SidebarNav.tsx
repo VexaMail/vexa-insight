@@ -5,17 +5,31 @@ import type { SidebarNavProps } from '@/types/shell'
 import { usePathname } from 'next/navigation'
 import { renderNavItems } from './renderNavItems'
 
-/** The grouped navigation, shared by the desktop sidebar and the phone drawer. */
-export function SidebarNav({ onNavigate }: Readonly<SidebarNavProps>) {
+/** The navigation, shared by the desktop sidebar and the phone drawer. */
+export function SidebarNav({
+  onNavigate,
+  placement = 'all',
+}: Readonly<SidebarNavProps>) {
   const pathname = usePathname()
+  const groups = navGroups.filter(
+    (group) => placement === 'all' || group.placement === placement,
+  )
   return (
-    <nav aria-label="Main" className="space-y-5">
-      {navGroups.map((group) => (
-        <div key={group.label}>
-          <p className="text-muted-foreground/70 mb-1.5 px-3 font-mono text-[11px] font-medium tracking-[0.14em] uppercase">
-            {group.label}
-          </p>
-          <ul className="space-y-0.5">
+    <nav
+      aria-label={placement === 'footer' ? 'Admin' : 'Main'}
+      className="space-y-4"
+    >
+      {groups.map((group) => (
+        <div
+          key={group.label}
+          className={
+            placement === 'all' && group.placement === 'footer'
+              ? 'border-sidebar-border border-t pt-4'
+              : undefined
+          }
+        >
+          <p className="sr-only">{group.label}</p>
+          <ul className="space-y-1">
             {renderNavItems(group.items, pathname, onNavigate)}
           </ul>
         </div>

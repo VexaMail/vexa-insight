@@ -10,7 +10,7 @@ export function VexaWordmark({ alt }: Readonly<VexaWordmarkProps>) {
         alt={alt}
         width={123}
         height={32}
-        className="h-8 w-auto dark:hidden"
+        className="h-10 w-auto dark:hidden"
         priority
       />
       <Image
@@ -18,7 +18,7 @@ export function VexaWordmark({ alt }: Readonly<VexaWordmarkProps>) {
         alt={alt}
         width={123}
         height={32}
-        className="hidden h-8 w-auto dark:block"
+        className="hidden h-10 w-auto dark:block"
         priority
       />
     </>

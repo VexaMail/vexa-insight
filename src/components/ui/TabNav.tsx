@@ -29,12 +29,20 @@ export function TabNav({ items, active, label }: Readonly<TabNavProps>) {
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
+                {item.icon ? (
+                  <item.icon className="h-4 w-4" aria-hidden="true" />
+                ) : null}
                 {item.label}
                 {item.count === undefined ? null : (
                   <span className="bg-secondary text-muted-foreground rounded px-1.5 font-mono text-[11px] tabular-nums">
                     {item.count}
                   </span>
                 )}
+                {item.badge ? (
+                  <span className="bg-danger/15 text-danger rounded px-1.5 text-[10px] font-semibold tracking-wide uppercase">
+                    {item.badge}
+                  </span>
+                ) : null}
               </Link>
             </li>
           )

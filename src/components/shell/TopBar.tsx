@@ -1,6 +1,5 @@
 'use client'
 
-import { Breadcrumbs } from '@/components/ui'
 import { useTopBar } from '@/hooks/shell'
 import type { TopBarProps } from '@/types/shell'
 import { CommandPalette } from './CommandPalette'
@@ -17,14 +16,13 @@ export default function TopBar({ projectName }: Readonly<TopBarProps>) {
   } = useTopBar()
 
   return (
-    <header className="border-border bg-background/85 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-3 backdrop-blur-xl sm:gap-4 sm:px-4 print:hidden">
+    <header className="border-border bg-background/85 sticky top-0 z-30 flex h-16 items-center gap-2 border-b px-3 backdrop-blur-xl sm:gap-4 sm:px-4 print:hidden">
       <MobileNav projectName={projectName} />
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <Breadcrumbs />
+        <CommandPalette />
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-2">
-        <CommandPalette />
         <ThemeToggle />
         <ProfileMenu
           isOpen={isProfileOpen}

@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils'
 import type { StatTileProps } from '@/types/ui'
 import Link from 'next/link'
 import { StatTileBody } from './StatTileBody'
+import { StatTileFeatureBody } from './StatTileFeatureBody'
 
 /**
  * One number with its label and context. Every KPI strip uses it, so a value
@@ -10,8 +11,15 @@ import { StatTileBody } from './StatTileBody'
 export function StatTile({
   href,
   className,
+  variant = 'compact',
   ...body
 }: Readonly<StatTileProps>) {
+  const content =
+    variant === 'feature' ? (
+      <StatTileFeatureBody {...body} />
+    ) : (
+      <StatTileBody {...body} />
+    )
   if (href) {
     return (
       <Link
@@ -21,13 +29,11 @@ export function StatTile({
           className,
         )}
       >
-        <StatTileBody {...body} />
+        {content}
       </Link>
     )
   }
   return (
-    <div className={cn('glass-card min-w-0 p-4', className)}>
-      <StatTileBody {...body} />
-    </div>
+    <div className={cn('glass-card min-w-0 p-4', className)}>{content}</div>
   )
 }

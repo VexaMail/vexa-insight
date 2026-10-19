@@ -5,5 +5,8 @@ export type StatusPillProps = {
   readonly tone: StatusTone
   readonly children: ReactNode
   readonly dot?: boolean
+  /** A small leading icon, e.g. a check or a cross on an auth result. */
+  readonly icon?: ReactNode
+  readonly title?: string
   readonly className?: string
 }

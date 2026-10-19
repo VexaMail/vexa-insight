@@ -1,7 +1,7 @@
 import type { SpfPlan } from '@/types/diagnostics'
-import { isPublicDnsName } from '@/utils/diagnostics'
 import { buildSpfTreeNode } from './buildSpfTreeNode'
 import { expandSpfRecord } from './expandSpfRecord'
+import { isPublicDnsName } from './isPublicDnsName'
 import { resolveSpfTree } from './resolveSpfTree'
 import { SPF_LOOKUP_LIMIT } from './spfLookupLimit'
 

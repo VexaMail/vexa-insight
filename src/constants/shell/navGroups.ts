@@ -7,26 +7,24 @@ import {
   Network,
   RefreshCw,
   Settings,
+  TriangleAlert,
   Upload,
   Users,
 } from 'lucide-react'
 
 /**
- * Sidebar order follows the operator's loop: watch what needs attention,
- * investigate the cause, then administer the instance.
+ * Sidebar order follows the operator's loop: what needs attention first, then
+ * the objects to investigate, then the pipeline. Admin sits at the bottom.
  */
 export const navGroups: readonly NavGroup[] = [
   {
     label: 'Operate',
+    placement: 'main',
     items: [
       { title: 'Overview', url: '/', icon: LayoutDashboard },
+      { title: 'Issues', url: '/issues', icon: TriangleAlert },
       { title: 'Domains', url: '/domains', icon: Globe },
       { title: 'Sending sources', url: '/ips', icon: Network },
-    ],
-  },
-  {
-    label: 'Investigate',
-    items: [
       { title: 'Diagnostics', url: '/diagnostics', icon: Activity },
       { title: 'Reports', url: '/reports', icon: FileText },
       { title: 'Ingestion', url: '/ingest', icon: RefreshCw },
@@ -35,6 +33,7 @@ export const navGroups: readonly NavGroup[] = [
   },
   {
     label: 'Admin',
+    placement: 'footer',
     items: [
       { title: 'Users', url: '/users', icon: Users },
       { title: 'Settings', url: '/settings', icon: Settings },
