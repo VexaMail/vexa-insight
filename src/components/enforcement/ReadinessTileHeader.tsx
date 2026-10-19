@@ -1,5 +1,6 @@
 import { StatusPill } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { verdictPillVariant } from '@/utils/ui'
 import { ChevronRight, TriangleAlert } from 'lucide-react'
 import Link from 'next/link'
 import type { ReadinessTileHeaderProps } from './ReadinessTileHeaderProps'
@@ -23,7 +24,9 @@ export function ReadinessTileHeader({
       <h2 className="text-foreground min-w-0 flex-1 text-sm leading-tight font-semibold">
         Enforcement readiness
       </h2>
-      <StatusPill tone={tone}>{label}</StatusPill>
+      <StatusPill tone={tone} variant={verdictPillVariant(tone)}>
+        {label}
+      </StatusPill>
       <Link
         href={reviewHref}
         aria-label="Open the senders at risk"

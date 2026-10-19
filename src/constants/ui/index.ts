@@ -1,3 +1,5 @@
+export { DROPDOWN_MENU_ITEM_CLASS } from './dropdownMenuItemClass'
+export { DROPDOWN_MENU_ITEM_QUERY } from './dropdownMenuItemQuery'
 export { ICON_TILE_CLASSES } from './iconTileClasses'
 export { SPARKLINE_TONE_CLASSES } from './sparklineStrokeClasses'
 export { STATUS_TONE_CLASSES } from './statusToneClasses'

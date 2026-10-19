@@ -26,7 +26,6 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
   return (
     <PageContainer className="space-y-6">
       <PageHeader
-        eyebrow="Operate"
         title="Ingestion"
         description="Whether reports are still arriving: the scheduler, each mailbox, every run and the age of the newest data."
       />

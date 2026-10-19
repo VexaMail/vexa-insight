@@ -4,11 +4,12 @@ import type { StatTileBodyProps } from '@/types/ui'
 import { IconTile } from './IconTile'
 import { Sparkline } from './Sparkline'
 
-/** Icon square, label, large figure and a trend on the right. */
+/** Icon square, label, figure with its optional badge, and a trend. */
 export function StatTileFeatureBody({
   label,
   value,
   hint,
+  badge,
   tone = 'neutral',
   icon,
   trend,
@@ -20,18 +21,21 @@ export function StatTileFeatureBody({
     <div className="flex items-start gap-3.5">
       {icon ? <IconTile tone={lead}>{icon}</IconTile> : null}
       <div className="min-w-0 flex-1">
-        <p className="text-muted-foreground truncate text-sm">{label}</p>
-        <div className="mt-1 flex items-end justify-between gap-2">
-          <p
-            className={cn(
-              'font-mono text-[1.65rem] leading-none font-semibold tracking-tight tabular-nums',
-              tone === 'neutral'
-                ? 'text-foreground'
-                : STATUS_TONE_TEXT_CLASSES[tone],
-            )}
-          >
-            {value}
-          </p>
+        <p className="text-muted-foreground truncate text-sm font-medium">
+          {label}
+        </p>
+        <div className="mt-1.5 flex items-end justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <p
+              className={cn(
+                'font-mono text-2xl leading-none font-semibold tracking-tight tabular-nums',
+                STATUS_TONE_TEXT_CLASSES[tone],
+              )}
+            >
+              {value}
+            </p>
+            {badge}
+          </div>
           {trend ? (
             <Sparkline values={trend} kind={trendKind} tone={lead} />
           ) : null}

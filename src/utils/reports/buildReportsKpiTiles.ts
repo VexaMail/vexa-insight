@@ -3,7 +3,7 @@ import type {
   ReportsWindowSummary,
   ReportsWindowTrends,
 } from '@/types/reports'
-import { formatScopeLabel } from '@/utils/format'
+import { formatPercent, formatScopeLabel } from '@/utils/format'
 import { describeOutOf } from './describeOutOf'
 import { failingShareTone } from './failingShareTone'
 import { percentOf } from './percentOf'
@@ -50,7 +50,7 @@ export function buildReportsKpiTiles(
     {
       id: 'failing',
       label: 'Failing share',
-      value: summary.messages === 0 ? 'No data' : `${String(share)}%`,
+      value: summary.messages === 0 ? 'No data' : formatPercent(share),
       hint: `${scope} · ${describeOutOf(summary.failingMessages, summary.messages, 'message')} fail DMARC`,
       tone: failingShareTone(share, summary.messages),
       trend: trends.failingShare,

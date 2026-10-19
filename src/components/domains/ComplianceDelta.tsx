@@ -40,7 +40,7 @@ export function ComplianceDelta({ trend }: Readonly<ComplianceDeltaProps>) {
         </span>{' '}
         in pass rate
       </p>
-      <p className="text-muted-foreground/80 tabular-nums">
+      <p className="text-muted-foreground tabular-nums">
         {current.rate.toFixed(1)}% of {current.total.toLocaleString('en-US')}{' '}
         last {window}, {previous.rate.toFixed(1)}% before
       </p>

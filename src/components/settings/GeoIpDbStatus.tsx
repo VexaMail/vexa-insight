@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/utils/format'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import type { GeoIpDbStatusProps } from './GeoIpDbStatusProps'
 
@@ -15,7 +16,7 @@ export function GeoIpDbStatus({ errorStatus, lastUpdate }: GeoIpDbStatusProps) {
     return (
       <>
         <CheckCircle className="text-success h-4 w-4" />
-        <span>Last updated: {new Date(lastUpdate).toLocaleString()}</span>
+        <span>Last updated: {formatDateTime(new Date(lastUpdate))}</span>
       </>
     )
   }

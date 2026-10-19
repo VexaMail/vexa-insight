@@ -25,7 +25,7 @@ export async function IssuesScreen({
       <PageHeader
         title="Issues"
         description="Every problem derived from report data and ingestion runs. Acknowledge what you are handling, snooze what can wait, and open the evidence behind each row."
-        actions={
+        period={
           <DashboardDateRangeFilter
             currentDays={days}
             basePath={basePath}

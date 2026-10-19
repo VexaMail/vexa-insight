@@ -1,5 +1,6 @@
 import { REASON_DOT_CLASSES } from '@/constants/domains'
 import { cn } from '@/lib/utils'
+import { formatPercent } from '@/utils/format'
 import type { ReasonRowProps } from './ReasonRowProps'
 
 /** One failure reason: colour dot, label and share of the failing messages. */
@@ -21,7 +22,7 @@ export function ReasonRow({ reason, outOf, index }: Readonly<ReasonRowProps>) {
         {reason.label}
       </span>
       <span className="text-muted-foreground font-mono tabular-nums">
-        {share.toFixed(0)}%
+        {formatPercent(share)}
       </span>
     </li>
   )

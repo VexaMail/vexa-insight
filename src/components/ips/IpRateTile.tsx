@@ -20,12 +20,8 @@ export function IpRateTile({
       trend={trend}
       trendKind="bars"
       value={`${check.rate.toFixed(1)}%`}
-      hint={
-        <span className="flex flex-wrap items-center gap-2">
-          <IpVerdictPill verdict={check.verdict} />
-          {`${check.count.toLocaleString('en-US')} of ${formatMessageCount(total)}`}
-        </span>
-      }
+      badge={<IpVerdictPill verdict={check.verdict} />}
+      hint={`${check.count.toLocaleString('en-US')} of ${formatMessageCount(total)}`}
     />
   )
 }

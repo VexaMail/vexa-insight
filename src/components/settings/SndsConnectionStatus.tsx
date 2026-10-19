@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/utils/format'
 import type { SndsConnectionStatusProps } from './SndsConnectionStatusProps'
 
 /** Connected state and the outcome of the last sync. */
@@ -12,13 +13,13 @@ export function SndsConnectionStatus({
       <dt>Connected</dt>
       <dd>
         {connection.connectedAt
-          ? new Date(connection.connectedAt).toLocaleString()
+          ? formatDateTime(new Date(connection.connectedAt))
           : 'yes'}
       </dd>
       <dt>Last sync</dt>
       <dd>
         {connection.lastSyncAt
-          ? new Date(connection.lastSyncAt).toLocaleString()
+          ? formatDateTime(new Date(connection.lastSyncAt))
           : 'never'}
         {connection.lastSyncStatus ? ` (${connection.lastSyncStatus})` : ''}
       </dd>
