@@ -136,8 +136,8 @@ describe('buildIpAuthChecks', () => {
     const keys = buildIpAuthChecks(ip, [foreign]).map((check) => check.key)
     expect(keys).toEqual([
       'spf-auth',
-      'spf-aligned',
       'dkim-auth',
+      'spf-aligned',
       'dkim-aligned',
       'dmarc',
     ])

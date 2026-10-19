@@ -9,6 +9,7 @@ export function useSourceReview(
   ip: string,
   domain: string,
   initialVerdict: SourceVerdict | null,
+  onSaved?: () => void,
 ): UseSourceReviewReturn {
   const [verdict, setCurrent] = useState(initialVerdict)
   const [saving, setSaving] = useState(false)
@@ -30,8 +31,10 @@ export function useSourceReview(
                   headers: { 'content-type': 'application/json' },
                   body: JSON.stringify({ ip, domain, verdict: next }),
                 })
-          if (response.ok) setCurrent(next)
-          else setError('Not saved')
+          if (response.ok) {
+            setCurrent(next)
+            onSaved?.()
+          } else setError('Not saved')
         } catch {
           setError('Not saved')
         } finally {
@@ -39,7 +42,7 @@ export function useSourceReview(
         }
       })()
     },
-    [ip, domain],
+    [ip, domain, onSaved],
   )
   return { verdict, saving, error, setVerdict }
 }

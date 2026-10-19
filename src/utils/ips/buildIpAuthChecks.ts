@@ -7,8 +7,8 @@ import { describeSpfAlignment } from './describeSpfAlignment'
 import { describeSpfAuth } from './describeSpfAuth'
 
 /**
- * The five authentication facts of a source, kept apart: SPF auth, SPF
- * aligned, DKIM auth, DKIM aligned and the DMARC result.
+ * The five authentication facts of a source, kept apart and in this order:
+ * SPF auth, DKIM auth, SPF alignment, DKIM alignment, the DMARC result.
  */
 export function buildIpAuthChecks(
   data: IpSummaryData,
@@ -24,13 +24,6 @@ export function buildIpAuthChecks(
       detail: describeSpfAuth(data),
     }),
     buildIpAuthCheck({
-      key: 'spf-aligned',
-      label: 'SPF aligned',
-      count: data.spfPassCount,
-      total,
-      detail: describeSpfAlignment(data),
-    }),
-    buildIpAuthCheck({
       key: 'dkim-auth',
       label: 'DKIM authentication',
       count: data.dkimAuthPassCount,
@@ -38,15 +31,22 @@ export function buildIpAuthChecks(
       detail: describeDkimAuth(data, signatures),
     }),
     buildIpAuthCheck({
+      key: 'spf-aligned',
+      label: 'SPF alignment',
+      count: data.spfPassCount,
+      total,
+      detail: describeSpfAlignment(data),
+    }),
+    buildIpAuthCheck({
       key: 'dkim-aligned',
-      label: 'DKIM aligned',
+      label: 'DKIM alignment',
       count: data.dkimPassCount,
       total,
       detail: describeDkimAlignment(data, signatures),
     }),
     buildIpAuthCheck({
       key: 'dmarc',
-      label: 'DMARC result',
+      label: 'Effective DMARC result',
       count: data.dmarcPassCount,
       total,
       detail: describeDmarcResult(data),

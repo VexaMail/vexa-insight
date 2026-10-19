@@ -5,4 +5,6 @@ export const IP_DETAIL_TABS: readonly IpDetailTab[] = [
   'timeline',
   'domains',
   'reports',
+  'dns',
+  'raw',
 ]

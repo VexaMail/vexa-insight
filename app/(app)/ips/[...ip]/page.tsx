@@ -1,15 +1,17 @@
-import { DateRangeFilter } from '@/components/filters'
-import { IpDetailView, SndsReputationCard } from '@/components/ips'
-import { BackButton, PageContainer } from '@/components/shell'
+import {
+  IpDateRangeAction,
+  IpDetailView,
+  SndsReputationCard,
+} from '@/components/ips'
+import { PageContainer } from '@/components/shell'
 import { parseDateRangeParams } from '@/lib/utils'
+import { getIpDetailExtras } from '@/services/ip-detail'
 import { getIpDetailPageData } from '@/services/reports'
 import { listSndsLatestByIp } from '@/services/snds'
 import { buildIpDateRange } from '@/utils/dates'
 import { buildIpDetailContext, parseIpDetailTab } from '@/utils/ips'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
-import { OperatorPanels } from './OperatorPanels'
 import type { PageProps } from './PageProps'
 
 export const metadata: Metadata = {
@@ -27,9 +29,16 @@ export default async function IpDetailPage(props: PageProps) {
   const ip = decodeURIComponent(rawIp)
   const { days, fromDate, toDate } = parseDateRangeParams(searchParams)
   const dateRange = buildIpDateRange(days, fromDate, toDate)
+  const tab = parseIpDetailTab(searchParams['tab'])
 
   const { data, ...loaded } = await getIpDetailPageData(ip, dateRange)
   if (!data) return notFound()
+  const extras = await getIpDetailExtras({
+    ip,
+    dateRange,
+    rawReportIds:
+      tab === 'raw' ? (loaded.reports ?? []).map((r) => r.id) : null,
+  })
 
   const basePath = `/ips/${rawIp}`
   const ctx = buildIpDetailContext({
@@ -39,6 +48,7 @@ export default async function IpDetailPage(props: PageProps) {
     dateRange,
     data,
     ...loaded,
+    ...extras,
   })
   const sndsRows = listSndsLatestByIp().filter((row) => row.ip === ip)
 
@@ -46,26 +56,16 @@ export default async function IpDetailPage(props: PageProps) {
     <PageContainer>
       <IpDetailView
         ctx={ctx}
-        tab={parseIpDetailTab(searchParams['tab'])}
+        tab={tab}
         actions={
-          <>
-            <BackButton href="/ips">&larr; Sources</BackButton>
-            <Suspense
-              fallback={
-                <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
-              }
-            >
-              <DateRangeFilter
-                currentDays={days}
-                basePath={basePath}
-                from={fromDate}
-                to={toDate}
-              />
-            </Suspense>
-          </>
+          <IpDateRangeAction
+            days={days}
+            basePath={basePath}
+            from={fromDate}
+            to={toDate}
+          />
         }
       />
-      <OperatorPanels ip={ip} domains={ctx.domains ?? []} />
       {sndsRows.length > 0 ? (
         <SndsReputationCard rows={sndsRows} statusRows={[]} />
       ) : null}

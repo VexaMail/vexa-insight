@@ -1,31 +1,40 @@
 'use client'
 
-import type { IpNetworkContext } from '@/types/ip-network'
 import type { IpNetworkResponse, UseIpNetworkContextReturn } from '@/types/ips'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
+import { useIpNetworkStore } from './useIpNetworkStore'
 
 /** Asks for the live PTR check and ASN only when the operator wants them. */
 export function useIpNetworkContext(ip: string): UseIpNetworkContextReturn {
-  const [context, setContext] = useState<IpNetworkContext | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const entry = useIpNetworkStore((state) => state.byIp[ip])
+  const setEntry = useIpNetworkStore((state) => state.setEntry)
   const lookUp = useCallback(() => {
-    setLoading(true)
-    setError(null)
+    const previous = useIpNetworkStore.getState().byIp[ip]?.context ?? null
+    setEntry(ip, { context: previous, loading: true, error: null })
     void (async () => {
       try {
         const response = await fetch(
           `/api/v1/ips/${encodeURIComponent(ip)}/network`,
         )
         const body = (await response.json()) as IpNetworkResponse
-        if (body.data) setContext(body.data)
-        else setError(body.error?.message ?? 'Lookup failed')
+        setEntry(ip, {
+          context: body.data ?? previous,
+          loading: false,
+          error: body.data ? null : (body.error?.message ?? 'Lookup failed'),
+        })
       } catch {
-        setError('Lookup failed')
-      } finally {
-        setLoading(false)
+        setEntry(ip, {
+          context: previous,
+          loading: false,
+          error: 'Lookup failed',
+        })
       }
     })()
-  }, [ip])
-  return { context, loading, error, lookUp }
+  }, [ip, setEntry])
+  return {
+    context: entry?.context ?? null,
+    loading: entry?.loading ?? false,
+    error: entry?.error ?? null,
+    lookUp,
+  }
 }

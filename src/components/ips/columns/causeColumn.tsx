@@ -11,5 +11,9 @@ export const causeColumn: ColumnDef<typeof dataTableFeatures, IpSourceRow> = {
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Cause" />
   ),
-  cell: ({ row }) => <SourceCausePill cause={row.original.cause} />,
+  cell: ({ row }) => (
+    <div className="[&>span]:gap-1 [&>span]:px-1.5">
+      <SourceCausePill cause={row.original.cause} />
+    </div>
+  ),
 }

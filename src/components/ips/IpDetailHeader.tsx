@@ -1,49 +1,50 @@
-import { CopyIconButton, EntityHeader, StatusPill } from '@/components/ui'
+import { CopyIconButton, EntityHeader } from '@/components/ui'
 import type { IpDetailHeaderProps } from '@/types/ips'
 import { formatCountryName } from '@/utils/ips'
+import { ArrowUpRight } from 'lucide-react'
+import Link from 'next/link'
 import { IpFlag } from './IpFlag'
-import { SourceCausePill } from './SourceCausePill'
+import { IpHeaderActions } from './IpHeaderActions'
+import { IpHeaderChips } from './IpHeaderChips'
 
-/** IP with copy, country, reverse DNS with copy, cause and named sender. */
+/** The address with copy, its flag and hostname, facts and actions. */
 export function IpDetailHeader({
   ctx,
   actions,
 }: Readonly<IpDetailHeaderProps>) {
-  const { data, sender } = ctx
-  const country = formatCountryName(data.countryCode)
+  const { data } = ctx
   return (
     <EntityHeader
       kind="Sending source"
       title={ctx.ip}
       mono
-      titleAddon={<CopyIconButton value={ctx.ip} label="IP address" />}
-      actions={actions}
-      chips={
-        <>
-          <SourceCausePill cause={ctx.cause} />
-          <span className="text-muted-foreground inline-flex h-6 items-center gap-1.5 text-xs">
-            <IpFlag countryCode={data.countryCode} countryName={country} />
-            {country ?? 'Unknown country'}
+      titleAddon={
+        <span className="flex min-w-0 items-center gap-3">
+          <CopyIconButton value={ctx.ip} label="IP address" />
+          <span className="hidden text-2xl sm:inline-flex">
+            <IpFlag
+              countryCode={data.countryCode}
+              countryName={formatCountryName(data.countryCode)}
+            />
           </span>
           {data.hostname ? (
-            <span className="text-muted-foreground inline-flex min-w-0 items-center font-mono text-xs">
+            <Link
+              href={ctx.tabs.dns.href}
+              scroll={false}
+              title="Reverse DNS and network"
+              className="text-foreground hover:text-primary hidden min-w-0 items-center gap-1 font-mono text-base sm:inline-flex"
+            >
               <span className="truncate">{data.hostname}</span>
-              <CopyIconButton
-                value={data.hostname}
-                label="hostname"
-                className="h-6 w-6"
+              <ArrowUpRight
+                className="text-muted-foreground h-4 w-4 shrink-0"
+                aria-hidden="true"
               />
-            </span>
-          ) : (
-            <span className="text-muted-foreground text-xs">
-              No reverse DNS
-            </span>
-          )}
-          {sender ? (
-            <StatusPill tone="neutral">{sender.name}</StatusPill>
+            </Link>
           ) : null}
-        </>
+        </span>
       }
+      actions={<IpHeaderActions ctx={ctx} actions={actions} />}
+      chips={<IpHeaderChips ctx={ctx} />}
     />
   )
 }

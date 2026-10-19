@@ -8,7 +8,7 @@ export function IpSenderName({ sender }: Readonly<IpSenderNameProps>) {
   }
   return (
     <span
-      className="flex max-w-[13rem] min-w-0 flex-col"
+      className="flex max-w-[11.5rem] min-w-0 flex-col"
       title={`Matched on ${sender.matchedOn === 'hostname' ? 'reverse DNS' : 'DKIM domain'}`}
     >
       <span className="text-foreground truncate text-sm">{sender.name}</span>
