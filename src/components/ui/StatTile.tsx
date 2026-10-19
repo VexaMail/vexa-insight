@@ -7,6 +7,7 @@ import { StatTileFeatureBody } from './StatTileFeatureBody'
 /**
  * One number with its label and context. Every KPI strip uses it, so a value
  * always reads the same way: label, figure, then what the figure is out of.
+ * Both variants share padding, minimum height, figure size and hint style.
  */
 export function StatTile({
   href,
@@ -25,7 +26,7 @@ export function StatTile({
       <Link
         href={href}
         className={cn(
-          'glass-card-hover focus-visible:ring-ring block min-w-0 p-4 focus-visible:ring-2 focus-visible:outline-none',
+          'glass-card-hover focus-visible:ring-ring block min-h-[112px] min-w-0 p-4 focus-visible:ring-2 focus-visible:outline-none',
           className,
         )}
       >
@@ -34,6 +35,8 @@ export function StatTile({
     )
   }
   return (
-    <div className={cn('glass-card min-w-0 p-4', className)}>{content}</div>
+    <div className={cn('glass-card min-h-[112px] min-w-0 p-4', className)}>
+      {content}
+    </div>
   )
 }

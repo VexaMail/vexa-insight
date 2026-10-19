@@ -17,7 +17,7 @@ export function SectionHeader({
           <InfoTooltip content={helpText} />
         )}
       </div>
-      <StatusPill tone={found ? 'success' : 'danger'} dot>
+      <StatusPill tone={found ? 'success' : 'danger'} variant="solid" dot>
         {found ? 'Found' : 'Not found'}
       </StatusPill>
     </div>

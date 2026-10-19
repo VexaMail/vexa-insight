@@ -1,4 +1,5 @@
 import type { ReportStats } from '@/types/reports'
+import { formatPercent } from '@/utils/format'
 
 /**
  * Names the weaker mechanism when SPF and DKIM alignment differ by more than
@@ -10,11 +11,11 @@ export function appendFailureMode(parts: string[], stats: ReportStats): void {
 
   if (dkimGap > 15) {
     parts.push(
-      `SPF aligns for ${String(stats.spfAlignedRate)}% of messages, so DMARC relies on DKIM.`,
+      `SPF aligns for ${formatPercent(stats.spfAlignedRate)} of messages, so DMARC relies on DKIM.`,
     )
   } else if (spfGap > 15) {
     parts.push(
-      `DKIM aligns for ${String(stats.dkimAlignedRate)}% of messages, so DMARC relies on SPF.`,
+      `DKIM aligns for ${formatPercent(stats.dkimAlignedRate)} of messages, so DMARC relies on SPF.`,
     )
   }
 }

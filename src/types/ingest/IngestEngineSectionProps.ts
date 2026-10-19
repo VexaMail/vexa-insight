@@ -16,4 +16,6 @@ export type IngestEngineSectionProps = {
   readonly jobId: number | undefined
   readonly intervalMinutes: number
   readonly initialApiKey: string
+  /** Whether the viewer may open Settings to add a mailbox. */
+  readonly canConfigure: boolean
 }

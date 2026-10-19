@@ -25,7 +25,7 @@ export function DomainDnsTab({
       description={`Security score ${String(score.percentage)}/100: SPF, DKIM and DMARC make the core; MTA-STS, TLS-RPT and BIMI add on top.`}
       actions={
         <>
-          <StatusPill tone={gradeTone[score.grade]}>
+          <StatusPill tone={gradeTone[score.grade]} variant="solid">
             Grade {score.grade}
           </StatusPill>
           <Link

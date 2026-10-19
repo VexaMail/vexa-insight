@@ -18,6 +18,7 @@ import {
   filterSourcesByCause,
   parseSourceCause,
 } from '@/utils/ips'
+import { describeReportsWindow } from '@/utils/reports'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
@@ -40,10 +41,9 @@ export default async function IpsPage(props: PageProps) {
   return (
     <PageContainer>
       <PageHeader
-        eyebrow="Investigate"
         title="Sending sources"
         description="Every IP that sent mail as your domains, from DMARC aggregate reports, grouped by why it passes or fails DMARC."
-        actions={
+        period={
           <Suspense
             fallback={
               <div className="bg-secondary h-9 w-[160px] animate-pulse rounded-md" />
@@ -61,6 +61,7 @@ export default async function IpsPage(props: PageProps) {
       <IpsSummaryKpis
         kpis={computeIpsKpis(sources)}
         failingHref={hrefs.failing}
+        windowLabel={describeReportsWindow(days, fromDate, toDate)}
       />
       <SourceCauseChips
         counts={countSourceCauses(sources)}

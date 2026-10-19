@@ -37,10 +37,9 @@ export default async function ReportsPage(props: PageProps) {
   return (
     <PageContainer className="space-y-6">
       <PageHeader
-        eyebrow="Evidence"
         title="Reports"
         description="Aggregate reports received from receivers. Each one is evidence for a domain: who sent as it, and whether SPF or DKIM aligned."
-        actions={
+        period={
           <DateRangeFilter
             currentDays={days}
             from={fromDate}
@@ -59,7 +58,7 @@ export default async function ReportsPage(props: PageProps) {
       <Panel
         icon={<FileText />}
         title="Aggregate reports"
-        description={`Newest first, ${windowLabel}. The status pill says whether every message aligned; open a report for its sources and raw XML.`}
+        description={`Newest first, ${windowLabel}. The status pill leads with the DMARC result, then says whether every message aligned on both SPF and DKIM; open a report for its sources and raw XML.`}
       >
         <Suspense fallback={<PageSkeleton />}>
           <ReportsTable />

@@ -1,4 +1,5 @@
 import type { IpSourceSummaryRowProps } from '@/types/ips'
+import { formatPercent } from '@/utils/format'
 import Link from 'next/link'
 import { IpFlag } from './IpFlag'
 import { IpLastSeen } from './IpLastSeen'
@@ -27,8 +28,8 @@ export function IpSourceSummaryRow({ row }: Readonly<IpSourceSummaryRowProps>) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
         <SourceCausePill cause={row.cause} />
         <span className="text-muted-foreground font-mono tabular-nums">
-          SPF {row.spfPassRate.toFixed(0)}% · DKIM {row.dkimPassRate.toFixed(0)}
-          %
+          SPF {formatPercent(row.spfPassRate)} · DKIM{' '}
+          {formatPercent(row.dkimPassRate)}
         </span>
         <IpLastSeen lastSeen={row.lastSeen} />
       </div>

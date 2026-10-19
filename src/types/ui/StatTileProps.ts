@@ -7,6 +7,8 @@ export type StatTileProps = {
   readonly value: ReactNode
   /** Small line under the value: a denominator, a window, a comparison. */
   readonly hint?: ReactNode
+  /** A verdict pill beside the figure, e.g. Pass or Fail of a rate. */
+  readonly badge?: ReactNode
   readonly tone?: StatusTone
   readonly icon?: ReactNode
   /**

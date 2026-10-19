@@ -12,6 +12,7 @@ import { getDomainSummary } from '@/services/reports'
 import { getTlsDomainFailures, getTlsDomainSummary } from '@/services/tlsrpt'
 import type { DomainDetailData } from '@/types/domains'
 import { buildDomainInsights } from '@/utils/domains'
+import { loadLastReportDay } from './loadLastReportDay'
 import { loadSourceRows } from './loadSourceRows'
 
 export async function getDomainDetail(
@@ -21,6 +22,7 @@ export async function getDomainDetail(
 ): Promise<DomainDetailData | null> {
   try {
     const volume = getDailyVolume([domainId], DAILY_VOLUME_DAYS)
+    const lastDay = loadLastReportDay(domainId)
     const [summary, allSources, windowSources, enforcement, policies, trend] =
       await Promise.all([
         getDomainSummary(domainId),
@@ -33,7 +35,7 @@ export async function getDomainDetail(
     const dailyVolume = await volume
     if (!summary) return null
     return {
-      summary,
+      summary: { ...summary, lastReportDay: await lastDay },
       policy: policies.get(domainId) ?? null,
       trend,
       insights: buildDomainInsights(allSources),

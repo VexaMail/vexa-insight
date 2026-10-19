@@ -1,4 +1,5 @@
 import { IpFlag } from '@/components/ips'
+import { formatPercent } from '@/utils/format'
 import type { InsightFactsProps } from './InsightFactsProps'
 import { InsightRow } from './InsightRow'
 
@@ -11,7 +12,7 @@ export function InsightFacts({
   const country = insights.primaryCountry
   const failureRate =
     summary.totalMessages > 0
-      ? `${((summary.failedCount / summary.totalMessages) * 100).toFixed(1)}%`
+      ? formatPercent((summary.failedCount / summary.totalMessages) * 100)
       : 'n/a'
   return (
     <dl className="space-y-1.5 text-xs">
@@ -20,7 +21,7 @@ export function InsightFacts({
         label="Primary country"
         title={
           country
-            ? `${country.share.toFixed(0)}% of messages came from sources located there`
+            ? `${formatPercent(country.share)} of messages came from sources located there`
             : undefined
         }
       >

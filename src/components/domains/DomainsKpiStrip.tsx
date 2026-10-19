@@ -18,7 +18,7 @@ export function DomainsKpiStrip({
         icon={<Globe />}
         label="Domains"
         value={kpis.domains.toLocaleString('en-US')}
-        hint={`${String(kpis.withData)} with report data`}
+        hint={`All reports · ${String(kpis.withData)} with report data`}
       />
       <StatTile
         variant="feature"
@@ -35,7 +35,7 @@ export function DomainsKpiStrip({
         label="Compliance"
         value={rate === null ? 'n/a' : `${rate.toFixed(1)}%`}
         tone={complianceTone(rate)}
-        hint={`DMARC pass of ${kpis.messages.toLocaleString('en-US')}, all reports`}
+        hint={`All reports · ${kpis.passed.toLocaleString('en-US')} of ${kpis.messages.toLocaleString('en-US')} pass DMARC`}
       />
       <DomainsAttentionTiles kpis={kpis} staleDays={staleDays} />
     </div>

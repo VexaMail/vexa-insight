@@ -1,5 +1,6 @@
 import { StatusPill } from '@/components/ui'
 import type { StatusTone } from '@/types/ui'
+import { verdictPillVariant } from '@/utils/ui'
 import type { DnsCheckRowProps } from './DnsCheckRowProps'
 import { ToneIcon } from './ToneIcon'
 
@@ -25,6 +26,7 @@ export function DnsCheckRow({ check }: Readonly<DnsCheckRowProps>) {
       <span>
         <StatusPill
           tone={tone}
+          variant={verdictPillVariant(tone)}
           dot={tone === 'unknown'}
           icon={tone === 'unknown' ? null : <ToneIcon tone={tone} />}
         >

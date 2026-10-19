@@ -42,6 +42,7 @@ export default async function DomainDetailPage({
         domainId={domainRow.id}
         domainName={domainName}
         policy={data.policy}
+        summary={data.summary}
       />
       <DomainDetail
         domainId={domainRow.id}

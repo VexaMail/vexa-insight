@@ -1,3 +1,4 @@
+import { MAILBOX_SETTINGS_HREF } from '@/constants/ingest'
 import type { IngestHealthProps } from '@/types/ingest'
 import { describeAge, formatHealthTime, schedulerVerdict } from '@/utils/ingest'
 import { CalendarClock } from 'lucide-react'
@@ -19,7 +20,7 @@ export function SchedulerHealthTile({ health }: Readonly<IngestHealthProps>) {
           `Every ${String(health.intervalMinutes)} min`
         ) : (
           <Link
-            href="/settings#mailboxes"
+            href={MAILBOX_SETTINGS_HREF}
             className="text-primary hover:underline"
           >
             Off: add a mailbox

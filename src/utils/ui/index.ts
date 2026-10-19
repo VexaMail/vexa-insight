@@ -1,3 +1,7 @@
 export { fetchAllItemIds } from './fetchAllItemIds'
 export { isSelectedTableRow } from './isSelectedTableRow'
+export { menuItemsOf } from './menuItemsOf'
 export { navigatorScopeButtonClassName } from './navigatorScopeButtonClassName'
+export { nextMenuIndex } from './nextMenuIndex'
+export { severityPillVariant } from './severityPillVariant'
+export { verdictPillVariant } from './verdictPillVariant'

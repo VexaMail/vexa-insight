@@ -3,6 +3,7 @@
 import { StatusPill } from '@/components/ui'
 import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
 import { cn } from '@/lib/utils'
+import { severityPillVariant } from '@/utils/ui'
 import type { AiInsightCardProps } from './AiInsightCardProps'
 import { renderInlineCode } from './renderInlineCode'
 import { severityColor } from './severityColor'
@@ -32,7 +33,11 @@ export default function AiInsightCard({
         <h4 className="text-foreground min-w-0 flex-1 text-sm font-semibold">
           {insight.title}
         </h4>
-        <StatusPill tone={tone} className="capitalize">
+        <StatusPill
+          tone={tone}
+          variant={severityPillVariant(tone)}
+          className="capitalize"
+        >
           {insight.severity}
         </StatusPill>
       </div>
