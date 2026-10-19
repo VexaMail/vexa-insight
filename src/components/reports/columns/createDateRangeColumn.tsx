@@ -25,7 +25,7 @@ export function createDateRangeColumn({
       />
     ),
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm">
+      <span className="text-muted-foreground text-sm whitespace-nowrap">
         {formatReportDateRange(row.original.beginDate, row.original.endDate)}
       </span>
     ),

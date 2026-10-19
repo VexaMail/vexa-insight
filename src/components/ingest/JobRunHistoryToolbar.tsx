@@ -18,13 +18,13 @@ export function JobRunHistoryToolbar({
           {' — '}
           <button
             onClick={onClearSelection}
-            className="text-primary hover:underline"
+            className="text-primary cursor-pointer hover:underline"
           >
             Clear selection
           </button>
         </p>
       )}
-      <div className="ml-auto flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+      <div className="text-muted-foreground ml-auto flex items-center gap-2 text-sm">
         <label htmlFor="hide-empty" className="cursor-pointer select-none">
           Hide empty runs
         </label>
@@ -35,7 +35,7 @@ export function JobRunHistoryToolbar({
           onChange={(e) => {
             onToggleHideEmpty(e.target.checked)
           }}
-          className="h-4 w-4 accent-zinc-900 dark:accent-zinc-50"
+          className="accent-primary h-4 w-4 cursor-pointer"
         />
       </div>
     </div>

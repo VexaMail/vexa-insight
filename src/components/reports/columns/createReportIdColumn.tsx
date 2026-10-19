@@ -3,8 +3,8 @@
 import { SortHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
-import { FileText } from 'lucide-react'
 import type { GetReportsColumnsParams } from '../GetReportsColumnsParams'
+import { ReportIdChip } from '../ReportIdChip'
 import type { ReportRow } from '../ReportRow'
 
 export function createReportIdColumn({
@@ -25,12 +25,7 @@ export function createReportIdColumn({
       />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <FileText className="text-primary h-3.5 w-3.5 shrink-0" />
-        <span className="text-foreground font-mono text-xs">
-          {row.getValue('reportId')}
-        </span>
-      </div>
+      <ReportIdChip reportId={row.original.reportId} visibleChars={14} />
     ),
   }
 }

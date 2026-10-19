@@ -12,7 +12,7 @@ export const relatedDomainsColumn: ColumnDef<
   id: 'relatedDomains',
   header: () => (
     <div className="text-muted-foreground text-xs font-medium select-none">
-      Related Domains
+      Domain
     </div>
   ),
   cell: ({ row }) => (

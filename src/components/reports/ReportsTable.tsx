@@ -1,7 +1,7 @@
 'use client'
 
-import { useOpenReport } from '../../hooks/reports/useOpenReport'
 import { useReportsTable } from '../../hooks/reports/useReportsTable'
+import { ReportsCardList } from './ReportsCardList'
 import { ReportsDataTable } from './ReportsDataTable'
 import { ReportsTableEmpty } from './ReportsTableEmpty'
 import { ReportsTableLoading } from './ReportsTableLoading'
@@ -21,7 +21,6 @@ export default function ReportsTable({
     filtered,
     updateUrlParams,
   } = useReportsTable({ domainId: domainId })
-  const openReport = useOpenReport(filtered)
 
   const { data, loading, search, filterOrg, filterDomain, sortKey, sortDir } =
     state
@@ -30,7 +29,7 @@ export default function ReportsTable({
   if (data == null || data.items.length === 0) return <ReportsTableEmpty />
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 space-y-5 duration-500">
+    <div className="animate-in fade-in slide-in-from-bottom-2 space-y-4 duration-500">
       <ReportsTableToolbar
         search={search}
         filterOrg={filterOrg}
@@ -49,8 +48,9 @@ export default function ReportsTable({
         filtered={filtered}
         domainName={domainName}
         loading={loading}
-        onRowClick={openReport}
       />
+
+      <ReportsCardList rows={filtered} domainName={domainName} />
 
       <ReportsTablePagination data={data} dispatch={dispatch} />
     </div>

@@ -6,11 +6,11 @@ export function TransportSecurityChecklist() {
       <ul className="text-muted-foreground list-inside list-disc space-y-1.5">
         <li>
           Publish a policy file at{' '}
-          <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
+          <code className="bg-secondary rounded px-1 font-mono text-xs">
             https://mta-sts.your-domain/.well-known/mta-sts.txt
           </code>{' '}
           over HTTPS with a publicly trusted certificate for{' '}
-          <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
+          <code className="bg-secondary rounded px-1 font-mono text-xs">
             mta-sts.your-domain
           </code>{' '}
           (replace <span className="font-mono">your-domain</span> with your apex
@@ -18,7 +18,7 @@ export function TransportSecurityChecklist() {
         </li>
         <li>
           Add a <code className="font-mono text-xs">TXT</code> record at{' '}
-          <code className="rounded bg-zinc-100 px-1 font-mono text-xs dark:bg-zinc-900">
+          <code className="bg-secondary rounded px-1 font-mono text-xs">
             _mta-sts.your-domain
           </code>{' '}
           (e.g. <code className="font-mono text-xs">v=STSv1; id=…</code> — bump{' '}

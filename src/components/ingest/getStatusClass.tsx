@@ -5,5 +5,5 @@ export function getStatusClass(
 ) {
   if (abortStatus === 'loading') return 'bg-warning/10 text-warning'
   if (isRunning || runRequested) return 'bg-info/10 text-info'
-  return 'bg-success/10 text-success'
+  return 'bg-secondary text-muted-foreground'
 }

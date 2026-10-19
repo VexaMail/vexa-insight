@@ -12,12 +12,13 @@ import { asc, eq } from 'drizzle-orm'
  */
 export async function queryPrimaryDkimByIp(
   rawReportId: number,
-): Promise<Map<string, { domain: string; selector: string }>> {
+): Promise<Map<string, { domain: string; selector: string; result: string }>> {
   const rows = await getDb()
     .select({
       ip: ipAddresses.ip,
       domain: normalizedEventDkimResults.domain,
       selector: normalizedEventDkimResults.selector,
+      result: normalizedEventDkimResults.result,
     })
     .from(normalizedEventDkimResults)
     .innerJoin(
@@ -28,10 +29,17 @@ export async function queryPrimaryDkimByIp(
     .where(eq(normalizedEvents.rawReportId, rawReportId))
     .orderBy(asc(normalizedEvents.id), asc(normalizedEventDkimResults.id))
 
-  const byIp = new Map<string, { domain: string; selector: string }>()
+  const byIp = new Map<
+    string,
+    { domain: string; selector: string; result: string }
+  >()
   for (const row of rows) {
     if (!byIp.has(row.ip)) {
-      byIp.set(row.ip, { domain: row.domain, selector: row.selector })
+      byIp.set(row.ip, {
+        domain: row.domain,
+        selector: row.selector,
+        result: row.result,
+      })
     }
   }
   return byIp

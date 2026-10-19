@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckCircle } from 'lucide-react'
+import { Activity } from 'lucide-react'
 import { getStatusClass } from './getStatusClass'
 import { getStatusText } from './getStatusText'
 
@@ -20,7 +20,7 @@ export function EngineStatusIndicator({
     <div
       className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${engineStatusClass}`}
     >
-      <CheckCircle className="h-3 w-3" />
+      <Activity className="h-3 w-3" aria-hidden="true" />
       {engineStatusText}
     </div>
   )

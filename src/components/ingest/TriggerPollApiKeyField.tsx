@@ -10,7 +10,7 @@ export function TriggerPollApiKeyField({
     <div className="min-w-[200px] flex-1">
       <label
         htmlFor="trigger-poll-api-key"
-        className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        className="text-foreground mb-1 block text-sm font-medium"
       >
         API key
       </label>
@@ -22,7 +22,7 @@ export function TriggerPollApiKeyField({
           onChange(e.target.value)
         }}
         placeholder="API key"
-        className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
+        className="border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:outline-none"
         autoComplete="off"
       />
     </div>

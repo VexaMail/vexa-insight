@@ -7,6 +7,8 @@ import { createDateRangeColumn } from './columns/createDateRangeColumn'
 import { createOrgNameColumn } from './columns/createOrgNameColumn'
 import { createReportIdColumn } from './columns/createReportIdColumn'
 import { dmarcStatusColumn } from './columns/dmarcStatusColumn'
+import { failingColumn } from './columns/failingColumn'
+import { messagesColumn } from './columns/messagesColumn'
 import { relatedDomainsColumn } from './columns/relatedDomainsColumn'
 import type { GetReportsColumnsParams } from './GetReportsColumnsParams'
 import type { ReportRow } from './ReportRow'
@@ -17,9 +19,11 @@ export function getReportsColumns(
   return [
     dmarcStatusColumn,
     relatedDomainsColumn,
-    createReportIdColumn(params),
     createOrgNameColumn(params),
+    createReportIdColumn(params),
     createDateRangeColumn(params),
+    messagesColumn,
+    failingColumn,
     createActionsColumn(params),
   ]
 }

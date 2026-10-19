@@ -3,13 +3,14 @@ import type { Metadata } from 'next'
 import { IngestActivityChart } from '@/components/charts'
 import {
   CronsSection,
+  IngestHealthPanel,
   IngestStoreProvider,
   JobRunHistoryTable,
   ProcessedEmailsTable,
 } from '@/components/ingest'
 import { PageContainer, PageHeader } from '@/components/shell'
 import { requirePageSession } from '@/services/auth'
-import { getIngestPageData } from '@/services/ingest'
+import { getIngestHealth, getIngestPageData } from '@/services/ingest'
 import type { IngestPageProps } from '@/types/ingest'
 import { adminOnlyApiKey, buildIngestInitialState } from '@/utils/ingest'
 
@@ -35,14 +36,17 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
     isHistoricalJobContext,
     effectiveJobId,
   } = await getIngestPageData(jobId)
+  const health = await getIngestHealth(pollStatus.isRunning)
 
   return (
-    <PageContainer>
+    <PageContainer className="space-y-6">
       <PageHeader
-        title="Ingest"
-        description="Track ingestion jobs, processed emails, and scheduled crons."
+        eyebrow="Operate"
+        title="Ingestion"
+        description="Whether reports are still arriving: the scheduler, each mailbox, every run and the age of the newest data."
       />
-      <IngestActivityChart data={activity} />
+
+      <IngestHealthPanel health={health} />
 
       <IngestStoreProvider
         initialState={buildIngestInitialState(
@@ -67,6 +71,8 @@ export default async function IngestPage({ searchParams }: IngestPageProps) {
           }
         />
       </IngestStoreProvider>
+
+      <IngestActivityChart data={activity} />
     </PageContainer>
   )
 }

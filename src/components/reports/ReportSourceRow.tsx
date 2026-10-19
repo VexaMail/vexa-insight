@@ -1,53 +1,39 @@
-import type { ReportSource } from '@/types/reports'
-import { deriveSourceSeverity } from './deriveSourceSeverity'
-import { SourceAlignmentCell } from './SourceAlignmentCell'
-import { SourceIpCell } from './SourceIpCell'
-import { SourceSeverityDot } from './SourceSeverityDot'
-import { SpfDkimBadge } from './SpfDkimBadge'
+import type { ReportSourceItemProps } from '@/types/reports'
+import { AuthResultCell } from './AuthResultCell'
+import { SourceIpLink } from './SourceIpLink'
+import { SourceVerdictCell } from './SourceVerdictCell'
 
 /** One sending source of a report, one row of the sources table. */
-export function ReportSourceRow({
-  source,
-}: Readonly<{ source: ReportSource }>) {
-  const isCritical =
-    deriveSourceSeverity(source.spfAligned, source.dkimAligned) === 'critical'
-
+export function ReportSourceRow({ source }: Readonly<ReportSourceItemProps>) {
   return (
-    <tr
-      className={
-        isCritical
-          ? 'bg-red-50/50 dark:bg-red-950/20'
-          : 'bg-white dark:bg-zinc-800'
-      }
-    >
-      <td className="px-3 py-2">
-        <SourceSeverityDot
-          spfAligned={source.spfAligned}
-          dkimAligned={source.dkimAligned}
-        />
+    <tr className="hover:bg-accent/40 align-top transition-colors duration-150">
+      <td className="px-4 py-3">
+        <SourceIpLink ip={source.ip} countryCode={source.countryCode} />
       </td>
-      <SourceIpCell ip={source.ip} countryCode={source.countryCode} />
       <td
-        className="max-w-[200px] truncate px-3 py-2 text-zinc-600 dark:text-zinc-400"
+        className="text-muted-foreground max-w-56 truncate px-4 py-3 font-mono text-xs"
         title={source.hostname ?? undefined}
       >
-        {source.hostname ?? '—'}
+        {source.hostname ?? 'No reverse DNS'}
       </td>
-      <td className="px-3 py-2 text-right font-medium text-zinc-900 dark:text-zinc-50">
-        {source.messageCount.toLocaleString()}
+      <td className="text-foreground px-4 py-3 text-right font-mono tabular-nums">
+        {source.messageCount.toLocaleString('en-US')}
       </td>
-      <td className="px-3 py-2 text-center">
-        <SpfDkimBadge result={source.spfResult} />
+      <td className="px-4 py-3">
+        <AuthResultCell
+          result={source.spfAuthResult}
+          aligned={source.spfAligned}
+        />
       </td>
-      <td className="px-3 py-2 text-center">
-        <SpfDkimBadge result={source.dkimResult} />
+      <td className="px-4 py-3">
+        <AuthResultCell
+          result={source.primaryDkimResult ?? source.dkimResult}
+          aligned={source.dkimAligned}
+          identity={source.primaryDkimDomain}
+        />
       </td>
-      <SourceAlignmentCell
-        spfAligned={source.spfAligned}
-        dkimAligned={source.dkimAligned}
-      />
-      <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
-        {source.disposition}
+      <td className="px-4 py-3">
+        <SourceVerdictCell source={source} />
       </td>
     </tr>
   )

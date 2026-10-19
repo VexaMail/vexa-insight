@@ -1,4 +1,7 @@
+import { cn } from '@/lib/utils'
+import type { UploadDropZoneProps } from '@/types/upload'
 import { Upload } from 'lucide-react'
+import { SelectedFileChip } from './SelectedFileChip'
 
 /**
  * File drop target. Drag events are a pointer affordance with no keyboard
@@ -7,13 +10,11 @@ import { Upload } from 'lucide-react'
  */
 export function UploadDropZone({
   dragActive,
+  selectedName,
   onDrag,
   onDrop,
-}: Readonly<{
-  dragActive: boolean
-  onDrag: (e: React.DragEvent) => void
-  onDrop: (e: React.DragEvent) => void
-}>) {
+  onFileChange,
+}: Readonly<UploadDropZoneProps>) {
   return (
     <div
       role="presentation"
@@ -24,30 +25,32 @@ export function UploadDropZone({
     >
       <label
         htmlFor="upload-file"
-        className={`glass-card-hover flex cursor-pointer flex-col items-center justify-center gap-3 border-2 border-dashed p-12 transition-colors ${
+        className={cn(
+          'focus-within:ring-ring flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed px-4 py-10 text-center transition-colors focus-within:ring-2 sm:py-14',
           dragActive
             ? 'border-primary bg-primary/5'
-            : 'border-border/50 hover:border-primary/30'
-        }`}
+            : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-primary/5',
+        )}
       >
-        <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-xl">
-          <Upload className="h-7 w-7" />
-        </div>
-        <div className="text-center">
-          <p className="font-display text-foreground text-sm font-semibold">
-            Drop your DMARC report here
-          </p>
-          <p className="text-muted-foreground mt-1 text-xs">
-            Supports DMARC aggregate (.xml, .gz, .gzip, .zip) and TLS-RPT
-            (.json, .json.gz) files
-          </p>
-        </div>
+        <span className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-lg">
+          <Upload className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <span className="font-display text-foreground text-sm font-semibold">
+          {dragActive
+            ? 'Release to upload'
+            : 'Drop a report here, or click to choose one'}
+        </span>
+        <span className="text-muted-foreground text-xs">
+          Aggregate DMARC (.xml, .gz, .gzip, .zip) and TLS-RPT (.json, .json.gz)
+        </span>
+        <SelectedFileChip name={selectedName} />
         <input
           id="upload-file"
           type="file"
           name="file"
           accept=".xml,.gz,.gzip,.zip,.json"
           className="sr-only"
+          onChange={onFileChange}
           required
         />
       </label>

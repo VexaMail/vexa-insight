@@ -10,7 +10,7 @@ export function XmlLineRow({ line }: Readonly<XmlLineRowProps>) {
     <div className="flex">
       <span
         aria-hidden="true"
-        className="text-muted-foreground/60 sticky left-0 w-12 shrink-0 bg-zinc-50 pr-3 text-right tabular-nums select-none dark:bg-zinc-900/40"
+        className="text-muted-foreground/60 bg-muted sticky left-0 w-12 shrink-0 pr-3 text-right tabular-nums select-none"
       >
         {line.number}
       </span>

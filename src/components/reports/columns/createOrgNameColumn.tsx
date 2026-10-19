@@ -15,7 +15,7 @@ export function createOrgNameColumn({
     accessorKey: 'orgName',
     header: () => (
       <SortHeaderButton
-        label="Organization"
+        label="Reporter"
         active={sortKey === 'orgName'}
         dir={sortDir}
         onSort={() => {
@@ -24,9 +24,7 @@ export function createOrgNameColumn({
       />
     ),
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm">
-        {row.getValue('orgName')}
-      </span>
+      <span className="text-foreground text-sm">{row.getValue('orgName')}</span>
     ),
   }
 }

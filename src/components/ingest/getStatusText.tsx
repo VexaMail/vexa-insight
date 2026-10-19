@@ -5,5 +5,5 @@ export function getStatusText(
 ) {
   if (abortStatus === 'loading') return 'Canceling'
   if (isRunning || runRequested) return 'Running'
-  return 'Idle'
+  return 'Engine idle'
 }

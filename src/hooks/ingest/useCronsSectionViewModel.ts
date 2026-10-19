@@ -1,5 +1,5 @@
-import { formatEta, formatPollStatusTime } from '@/utils/format'
-import { computeProgressRateAndEta } from '@/utils/ingest'
+import { formatEta } from '@/utils/format'
+import { computeProgressRateAndEta, formatHealthTime } from '@/utils/ingest'
 
 import { useIngestContext } from './useIngestContext'
 
@@ -25,9 +25,10 @@ export function useCronsSectionViewModel(ingestionIntervalMinutes: number) {
     lastCheckString =
       typeof lastCheck === 'string' ? lastCheck : lastCheck.toISOString()
   }
-  const lastRunFormatted = lastCheck
-    ? formatPollStatusTime(lastCheckString)
-    : 'Never'
+  // A fixed format: a locale-dependent one renders differently on the
+  // server and in the browser and breaks hydration.
+  const lastRunFormatted =
+    formatHealthTime(lastCheck ? new Date(lastCheckString) : null) ?? 'Never'
 
   let scheduleText = 'Disabled'
   if (ingestionIntervalMinutes >= 1) {
