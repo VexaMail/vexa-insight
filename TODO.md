@@ -188,7 +188,12 @@ coherence review over all screens in both themes.
 
 - [ ] Dashboard shows "Compliance 96.8%" and "Global pass rate 83%" at once, and
       24,802 emails vs 24,699 on `/ips`; define each metric's denominator and
-      window, reconcile, and label them.
+      window, reconcile, and label them. Found 2026-10-19: Overview counts whole
+      UTC days (today plus 29), while Reports and Sending sources count a
+      rolling 30 x 24 h back from now; both filter on report end date and both
+      say "last 30 days" (24,612 vs 24,699 messages, 1,334 vs 1,348 reports).
+      Smallest step: pick one window helper and use it in all three services.
+      Tile hints now name each scope.
 
 **Screens**
 
