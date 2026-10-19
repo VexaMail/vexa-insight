@@ -28,7 +28,8 @@ export function SourceReviewRow({
           {domain}
         </Link>
         <p className="text-muted-foreground text-xs">
-          {messageCount.toLocaleString('en-US')} messages
+          {messageCount.toLocaleString('en-US')}{' '}
+          {messageCount === 1 ? 'message' : 'messages'}
           {error ? <span className="text-danger"> · {error}</span> : null}
         </p>
       </div>

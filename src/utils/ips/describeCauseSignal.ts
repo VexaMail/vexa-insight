@@ -5,7 +5,7 @@ import type { IpReputationStatus, SourceCause } from '@/types/ips'
 export function describeCauseSignal(cause: SourceCause): IpReputationStatus {
   return {
     value: SOURCE_CAUSE_LABELS[cause],
-    label: cause === 'unknown' ? 'Insufficient data' : 'From stored results',
+    label: cause === 'unknown' ? 'Too little data' : 'From reports',
     tone: SOURCE_CAUSE_TONES[cause],
   }
 }
