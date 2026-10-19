@@ -14,7 +14,7 @@ export function TriageKpiTile({
       label={model.label}
       value={model.value}
       tone={model.tone}
-      accent="neutral"
+      accent={model.accent}
       icon={icon}
       href={model.href}
       trend={model.trend}

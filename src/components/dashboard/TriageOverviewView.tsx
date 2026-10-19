@@ -36,6 +36,7 @@ export function TriageOverviewView({
           className="xl:col-span-5"
           items={overview.changes}
           window={window}
+          nowMs={nowMs}
         />
       </div>
       <div className="order-3 grid grid-cols-1 gap-4 lg:order-none xl:grid-cols-12">
@@ -49,6 +50,7 @@ export function TriageOverviewView({
           className="xl:col-span-5"
           health={overview.ingestion}
           nowMs={nowMs}
+          reportsTrend={overview.kpis.series.reports}
           apiKey={apiKey}
         />
       </div>

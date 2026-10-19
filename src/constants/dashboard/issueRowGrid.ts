@@ -6,4 +6,4 @@
  * widths, because the header and each row are separate grids.
  */
 export const ISSUE_ROW_GRID =
-  '@xl:grid-cols-[84px_minmax(0,0.85fr)_minmax(0,1.5fr)_70px_86px_68px] @3xl:grid-cols-[88px_minmax(0,0.8fr)_minmax(0,1.6fr)_88px_100px_104px] @4xl:grid-cols-[92px_minmax(0,0.8fr)_minmax(0,1.6fr)_96px_110px_104px_16px]'
+  '@xl:grid-cols-[76px_minmax(0,0.8fr)_minmax(0,1.5fr)_72px_84px_68px] @3xl:grid-cols-[88px_minmax(0,0.8fr)_minmax(0,1.6fr)_88px_100px_104px] @4xl:grid-cols-[92px_minmax(0,0.8fr)_minmax(0,1.6fr)_96px_110px_104px_16px]'

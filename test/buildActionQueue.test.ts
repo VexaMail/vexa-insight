@@ -28,6 +28,9 @@ const healthy: IngestionHealth = {
   lastSuccessAtMs: now.getTime(),
   nextRunAtMs: now.getTime(),
   mailboxFreshAtMs: now.getTime(),
+  lastRunDurationMs: 1000,
+  mailboxCount: 1,
+  recentErrorCount: 0,
   newestReportDay: today,
 }
 

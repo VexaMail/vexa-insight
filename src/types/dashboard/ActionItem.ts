@@ -11,6 +11,8 @@ export type ActionItem = {
   detail: string
   /** Messages affected in the current period; null when not message-based. */
   impactMessages: number | null
+  /** Share of the period's messages failing DMARC; null when not message-based. */
+  impactRate: number | null
   /** Unix seconds of the newest evidence; null when there is none. */
   lastSeenAt: number | null
   /** True when it appeared or got worse in the current period. */

@@ -14,6 +14,7 @@ export function reportsTile(
     label: 'Reports processed',
     value: formatCount(kpis.reports.current),
     tone: 'neutral',
+    accent: 'info',
     delta: countDelta(kpis.reports),
     direction: changeDirection(pct, null),
     context: `aggregate reports, ${window.label}`,

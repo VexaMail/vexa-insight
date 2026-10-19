@@ -14,7 +14,7 @@ export function IssueRowHeader({ impactLabel }: Readonly<IssueRowHeaderProps>) {
     >
       <span>Severity</span>
       <span>Domain / source</span>
-      <span>Issue</span>
+      <span>Issue summary</span>
       <span className="text-right whitespace-nowrap">{impactLabel}</span>
       <span>Last seen</span>
       <span />

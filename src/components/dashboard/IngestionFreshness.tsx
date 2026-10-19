@@ -1,25 +1,29 @@
-import { formatAgo, formatDateTime } from '@/utils/dashboard'
+import { StatusPill } from '@/components/ui'
+import { formatCount } from '@/utils/dashboard'
 import type { IngestionFactsProps } from './IngestionFactsProps'
 
-/**
- * How long ago mail last arrived: the last successful mailbox poll or the
- * newest stored report, whichever is later.
- */
+/** Mailboxes polled, and whether mail is arriving on schedule. */
 export function IngestionFreshness({
   health,
-  nowMs,
-}: Readonly<IngestionFactsProps>) {
-  if (health.mailboxFreshAtMs === null) {
-    return <span className="text-muted-foreground">No mail received yet</span>
+}: Readonly<Pick<IngestionFactsProps, 'health'>>) {
+  if (health.mailboxCount === 0) {
+    return <span className="text-muted-foreground">No mailbox configured</span>
   }
   return (
-    <span
-      className={
-        health.state === 'healthy' ? 'text-success' : 'text-foreground'
-      }
-      title={`Last poll or newest report: ${formatDateTime(health.mailboxFreshAtMs)}`}
-    >
-      {formatAgo(health.mailboxFreshAtMs, nowMs)}
+    <span className="flex flex-wrap items-center gap-2">
+      <span>
+        {formatCount(health.mailboxCount)}{' '}
+        {health.mailboxCount === 1 ? 'mailbox' : 'mailboxes'}
+      </span>
+      {health.state === 'healthy' ? (
+        <StatusPill tone="success" dot>
+          Up to date
+        </StatusPill>
+      ) : (
+        <StatusPill tone="warning" dot>
+          Behind
+        </StatusPill>
+      )}
     </span>
   )
 }

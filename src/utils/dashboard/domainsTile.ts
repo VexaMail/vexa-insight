@@ -10,6 +10,7 @@ export function domainsTile(
     label: 'Monitored domains',
     value: formatCount(kpis.monitoredDomains),
     tone: 'neutral',
+    accent: 'info',
     delta: kpis.addedDomains > 0 ? `+${String(kpis.addedDomains)}` : null,
     direction: 'neutral',
     context: `${formatCount(kpis.reportingDomains)} reporting, ${window.label}`,

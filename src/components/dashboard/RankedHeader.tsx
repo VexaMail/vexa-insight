@@ -5,6 +5,7 @@ import type { RankedHeaderProps } from './RankedHeaderProps'
 export function RankedHeader({
   labels,
   rightAligned,
+  hiddenOnPhone = [],
   gridClassName,
 }: Readonly<RankedHeaderProps>) {
   return (
@@ -18,7 +19,10 @@ export function RankedHeader({
       {labels.map((label, index) => (
         <span
           key={`${String(index)}-${label}`}
-          className={rightAligned.includes(index) ? 'text-right' : ''}
+          className={cn(
+            rightAligned.includes(index) && 'text-right',
+            hiddenOnPhone.includes(index) && 'hidden sm:block',
+          )}
         >
           {label}
         </span>

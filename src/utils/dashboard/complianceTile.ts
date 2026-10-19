@@ -19,6 +19,7 @@ export function complianceTile(
     label: 'Overall compliance',
     value: formatRate(rate),
     tone: passRateTone(rate),
+    accent: 'success',
     delta: delta === null ? null : formatPointChange(delta),
     direction: changeDirection(delta, true),
     context: `DMARC pass, ${formatCount(kpis.passCurrent.passed)} of ${formatCount(kpis.passCurrent.total)} messages, ${window.label}`,

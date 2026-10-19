@@ -1,28 +1,15 @@
 import { StatusPill } from '@/components/ui'
-import { CircleAlert, Info, TriangleAlert } from 'lucide-react'
+import { ISSUE_SEVERITY_TONES } from '@/constants/dashboard'
 import type { IssueSeverityPillProps } from './IssueSeverityPillProps'
 
-/** Critical, Warning or Info, each with its own icon and status tone. */
+/** Critical, Warning or Info as a filled badge of one width, so rows align. */
 export function IssueSeverityPill({
   severity,
 }: Readonly<IssueSeverityPillProps>) {
-  if (severity === 'critical') {
-    return (
-      <StatusPill tone="danger" icon={<CircleAlert />}>
-        Critical
-      </StatusPill>
-    )
-  }
-  if (severity === 'warning') {
-    return (
-      <StatusPill tone="warning" icon={<TriangleAlert />}>
-        Warning
-      </StatusPill>
-    )
-  }
+  const { tone, label } = ISSUE_SEVERITY_TONES[severity]
   return (
-    <StatusPill tone="info" icon={<Info />}>
-      Info
+    <StatusPill tone={tone} variant="solid" className="w-[72px] justify-center">
+      {label}
     </StatusPill>
   )
 }

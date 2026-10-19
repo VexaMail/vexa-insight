@@ -1,7 +1,7 @@
 import { PassRateTrendChart } from '@/components/charts'
 import { EmptyState, Panel } from '@/components/ui'
 import { trendRangeDefault, trendRangeOptions } from '@/utils/dashboard'
-import { ShieldCheck } from 'lucide-react'
+import { ChartColumn } from 'lucide-react'
 import { Suspense } from 'react'
 import { PassRateTrendLegend } from './PassRateTrendLegend'
 import type { PassRateTrendPanelProps } from './PassRateTrendPanelProps'
@@ -18,23 +18,23 @@ export function PassRateTrendPanel({
   return (
     <Panel
       className={className ?? ''}
-      icon={<ShieldCheck />}
+      icon={<ChartColumn />}
       title="Global DMARC pass rate trend"
-      description={`Share of each UTC report day's messages, ${trendLabel}. Days without reports are gaps.`}
+      description={`Messages passing DMARC per UTC report day, ${trendLabel}.`}
       actions={
-        <Suspense
-          fallback={<span className="bg-secondary h-8 w-32 rounded-md" />}
-        >
-          <TrendRangeSelect
-            options={trendRangeOptions(window)}
-            fallback={trendRangeDefault(window)}
-          />
-        </Suspense>
+        <span className="flex items-center gap-4">
+          <PassRateTrendLegend />
+          <Suspense
+            fallback={<span className="bg-secondary h-8 w-32 rounded-md" />}
+          >
+            <TrendRangeSelect
+              options={trendRangeOptions(window)}
+              fallback={trendRangeDefault(window)}
+            />
+          </Suspense>
+        </span>
       }
     >
-      <div className="mb-2 flex justify-end">
-        <PassRateTrendLegend />
-      </div>
       {hasData ? (
         <PassRateTrendChart data={points} />
       ) : (

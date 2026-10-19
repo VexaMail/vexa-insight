@@ -6,6 +6,8 @@ export type KpiTileModel = {
   label: string
   value: string
   tone: StatusTone
+  /** Tone of the icon square and sparkline. */
+  accent: StatusTone
   /** Change against the previous period, e.g. "+12%"; null without one. */
   delta: string | null
   direction: ChangeDirection

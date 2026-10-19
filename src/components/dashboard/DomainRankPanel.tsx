@@ -1,40 +1,52 @@
 import { Panel } from '@/components/ui'
+import { DOMAIN_RANK_GRID } from '@/constants/dashboard'
+import { ShieldAlert } from 'lucide-react'
 import type { DomainRankPanelProps } from './DomainRankPanelProps'
 import { DomainRankRow } from './DomainRankRow'
 import { RankedHeader } from './RankedHeader'
 import { ViewAllLink } from './ViewAllLink'
 
-/** A short ranked list of domains with messages and pass rate. */
+/** Domains with the lowest DMARC pass rate, with their fail-rate trend. */
 export function DomainRankPanel({
-  title,
-  description,
-  icon,
   domains,
-  emptyText,
-  rateLabel,
+  trends,
+  description,
   className,
 }: Readonly<DomainRankPanelProps>) {
   return (
     <Panel
       className={className ?? ''}
       flush
-      icon={icon}
-      title={title}
+      icon={<ShieldAlert />}
+      title="Lowest domain compliance"
       description={description}
-      actions={<ViewAllLink href="/domains" />}
+      actions={<ViewAllLink href="/domains" label="View all domains" />}
     >
       {domains.length === 0 ? (
-        <p className="text-muted-foreground p-4 text-sm">{emptyText}</p>
+        <p className="text-muted-foreground p-4 text-sm">
+          No domain has enough messages to judge.
+        </p>
       ) : (
         <>
           <RankedHeader
-            labels={['Domain', 'Messages', rateLabel]}
-            rightAligned={[1]}
-            gridClassName="grid-cols-[minmax(0,1fr)_72px_minmax(88px,0.8fr)]"
+            labels={[
+              'Domain',
+              'Total messages',
+              'Pass rate',
+              'Fail rate',
+              'Trend',
+            ]}
+            rightAligned={[1, 2, 3]}
+            hiddenOnPhone={[3, 4]}
+            gridClassName={DOMAIN_RANK_GRID}
           />
           <ul className="divide-border divide-y">
             {domains.map((d) => (
-              <DomainRankRow key={d.domainId} domain={d} />
+              <DomainRankRow
+                key={d.domainId}
+                domain={d}
+                trend={trends[String(d.domainId)]}
+              />
             ))}
           </ul>
         </>

@@ -11,6 +11,7 @@ const item: ActionItem = {
   issue: 'New failing source',
   detail: '10 of 10 messages for example.com fail DMARC',
   impactMessages: 10,
+  impactRate: 100,
   lastSeenAt: 1,
   isNew: true,
   href: '/ips/2001:db8::1',

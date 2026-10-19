@@ -15,9 +15,12 @@ export function failureRateChange(
   return {
     id: 'failure-rate',
     value: formatPointChange(delta),
-    title: 'Overall DMARC failure rate',
-    detail: `From ${formatRate(previous)} to ${formatRate(current)} of messages`,
+    title: delta < 0 ? 'Failure rate improved' : 'Failure rate worsened',
+    subject: 'All domains',
+    detail: `${formatRate(previous)} to ${formatRate(current)}`,
     direction: delta < 0 ? 'better' : delta > 0 ? 'worse' : 'neutral',
+    isNew: false,
+    lastSeenAt: null,
     href: null,
   }
 }

@@ -19,6 +19,12 @@ export type IngestionHealth = {
    * or the newest stored report, whichever is later.
    */
   mailboxFreshAtMs: number | null
+  /** How long the latest run took, in ms; null while running or unknown. */
+  lastRunDurationMs: number | null
+  /** Mailboxes configured for polling. */
+  mailboxCount: number
+  /** Errors across the runs of the last `RECENT_ERROR_DAYS` days. */
+  recentErrorCount: number
   /** Newest UTC report day across the visible domains. */
   newestReportDay: number | null
 }

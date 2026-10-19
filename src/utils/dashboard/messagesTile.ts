@@ -14,11 +14,12 @@ export function messagesTile(
     label: 'Total email messages',
     value: formatCount(kpis.messages.current),
     tone: 'neutral',
+    accent: 'info',
     delta: countDelta(kpis.messages),
     direction: changeDirection(pct, null),
     context: `reported, ${window.label}`,
     href: '/reports',
     trend: kpis.series.messages,
-    trendKind: 'line',
+    trendKind: 'bars',
   }
 }

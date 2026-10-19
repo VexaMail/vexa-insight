@@ -78,15 +78,17 @@ describe('getTriageOverview', () => {
     expect(o.trend.find((p) => p.total > 0)?.passRate).toBe(80)
     expect(o.trend.find((p) => p.total === 0)?.passRate).toBeNull()
 
-    const domainTotal = o.domains.reduce((s, d) => s + d.current.total, 0)
-    expect(domainTotal).toBe(30)
+    const sparkTotal = o.kpis.series.messages.reduce((s, n) => s + n, 0)
+    expect(sparkTotal).toBe(30)
   })
 
   it('reports failing sources and the ingestion state from the tables', async () => {
     const { getTriageOverview } = await import('@/services/dashboard')
     const o = await getTriageOverview({ days: 7, now })
 
-    expect(o.failingSources).toEqual([
+    const failures = o.rankedTrends.sources['203.0.113.1'] ?? []
+    expect(failures.reduce((s, n) => s + n, 0)).toBe(6)
+    expect(o.ranked.sources).toEqual([
       expect.objectContaining({
         ip: '203.0.113.1',
         domainCount: 2,

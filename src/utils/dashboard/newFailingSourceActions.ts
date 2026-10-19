@@ -17,6 +17,7 @@ export function newFailingSourceActions(
     issue: 'New failing source',
     detail: `${formatCount(row.currentFailed)} of ${formatCount(row.currentTotal)} messages for ${row.domainName} fail DMARC`,
     impactMessages: row.currentFailed,
+    impactRate: (row.currentFailed / row.currentTotal) * 100,
     lastSeenAt: row.lastFailedAt,
     isNew: true,
     href: sourceHref(row.ip),

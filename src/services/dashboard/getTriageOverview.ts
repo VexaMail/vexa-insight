@@ -1,14 +1,17 @@
+import { OVERVIEW_TABLE_ROWS } from '@/constants/dashboard'
 import type { TriageOverview, TriageWindowInput } from '@/types/dashboard'
 import {
   buildChangeList,
   buildKpiSeries,
   buildRateTrend,
   buildTriageKpis,
+  lowestComplianceDomains,
   resolveTriageWindow,
   summarizeFailingSources,
   withChangeTrends,
 } from '@/utils/dashboard'
 import { getIssueQueue } from './getIssueQueue'
+import { loadRankedTrends } from './loadRankedTrends'
 import { loadReportCounts } from './loadReportCounts'
 import { loadTrendSeries } from './loadTrendSeries'
 import { queryDailyPassTotals } from './queryDailyPassTotals'
@@ -34,6 +37,10 @@ export async function getTriageOverview(
     loadReportCounts(window, allowedIds),
   ])
   const active = issues.filter((issue) => issue.state === 'active')
+  const ranked = {
+    domains: lowestComplianceDomains(domains, OVERVIEW_TABLE_ROWS),
+    sources: summarizeFailingSources(sources).slice(0, OVERVIEW_TABLE_ROWS),
+  }
   return {
     window,
     kpis: buildTriageKpis(domains, reports, window, buildKpiSeries(series)),
@@ -43,7 +50,7 @@ export async function getTriageOverview(
     trend: buildRateTrend(daily, trendWindow.current),
     trendLabel: trendWindow.label,
     ingestion: rules.ingestion,
-    domains,
-    failingSources: summarizeFailingSources(sources),
+    ranked,
+    rankedTrends: await loadRankedTrends(series, window, ranked, allowedIds),
   }
 }

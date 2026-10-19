@@ -1,8 +1,11 @@
 import { COMPLIANT_PASS_RATE } from '@/constants/dashboard'
 import type { ChangeItem, DomainPeriodTotals } from '@/types/dashboard'
+import { changeSubject } from './changeSubject'
 import { domainHref } from './domainHref'
 import { judgedPassRate } from './judgedPassRate'
+import { lastReportSeconds } from './lastReportSeconds'
 import { nameList } from './nameList'
+import { newestSeconds } from './newestSeconds'
 
 /** Domains below the compliant band last period and inside it now. */
 export function nowCompliantChange(
@@ -24,8 +27,14 @@ export function nowCompliantChange(
     id: 'now-compliant',
     value: String(fixed.length),
     title: `${fixed.length === 1 ? 'Domain' : 'Domains'} now compliant`,
+    subject: changeSubject(
+      fixed.map((d) => d.domainName),
+      'domain',
+    ),
     detail: nameList(fixed.map((d) => d.domainName)),
     direction: 'better',
+    isNew: false,
+    lastSeenAt: newestSeconds(fixed.map(lastReportSeconds)),
     href: fixed.length === 1 ? domainHref(first.domainName) : '/domains',
     domainNames: fixed.map((d) => d.domainName),
   }

@@ -1,7 +1,7 @@
 import { ISSUE_ROW_GRID } from '@/constants/dashboard'
 import { cn } from '@/lib/utils'
-import { formatCount } from '@/utils/dashboard'
 import { ChevronRight } from 'lucide-react'
+import { IssueImpact } from './IssueImpact'
 import { IssueLastSeen } from './IssueLastSeen'
 import type { IssueRowProps } from './IssueRowProps'
 import { IssueRowTitle } from './IssueRowTitle'
@@ -31,10 +31,8 @@ export function IssueRow({
           {issue.subject}
         </span>
         <IssueRowTitle issue={issue} />
-        <span className="text-foreground order-3 text-right text-[13px] tabular-nums @xl:order-none">
-          {issue.impactMessages === null
-            ? 'n/a'
-            : `${formatCount(issue.impactMessages)} msgs`}
+        <span className="order-3 text-right text-[13px] tabular-nums @xl:order-none">
+          <IssueImpact issue={issue} />
         </span>
         <span className="order-5 col-span-2 @xl:order-none @xl:col-span-1">
           <IssueLastSeen seconds={issue.lastSeenAt} nowMs={nowMs} />
