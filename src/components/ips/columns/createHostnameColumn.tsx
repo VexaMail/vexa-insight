@@ -2,7 +2,7 @@
 
 import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
-import type { IpSummaryData } from '@/types/ips'
+import type { IpSourceRow } from '@/types/ips'
 import { mainDomainFilterFn } from '@/utils/ips'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { GetIpsColumnsParams } from '../GetIpsColumnsParams'
@@ -13,7 +13,7 @@ export function createHostnameColumn({
   localHostnames,
   localHostnameLookupTimestamps,
   handleRefresh,
-}: GetIpsColumnsParams): ColumnDef<typeof dataTableFeatures, IpSummaryData> {
+}: GetIpsColumnsParams): ColumnDef<typeof dataTableFeatures, IpSourceRow> {
   return {
     accessorKey: 'hostname',
     header: ({ column }) => (
@@ -35,6 +35,7 @@ export function createHostnameColumn({
           showIp={false}
           isRefreshing={refreshingIps.has(ip)}
           onRefresh={handleRefresh}
+          className="max-w-[15rem] overflow-hidden font-mono text-[13px]"
         />
       )
     },

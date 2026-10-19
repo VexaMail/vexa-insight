@@ -2,14 +2,14 @@
 
 import { useDataTable } from '@/hooks/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
-import type { IpSummaryData } from '@/types/ips'
+import type { IpSourceRow } from '@/types/ips'
 import { mainDomainFilterFn } from '@/utils/ips'
 import type { ColumnDef } from '@tanstack/react-table'
 import { act, cleanup, renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 
 describe('main-domain table filtering', () => {
-  const data: IpSummaryData[] = [
+  const data: IpSourceRow[] = [
     'example.com',
     'mail.example.com',
     'notexample.com',
@@ -26,14 +26,24 @@ describe('main-domain table filtering', () => {
     spfPassCount: 0,
     dkimPassCount: 0,
     fullyAlignedCount: 0,
+    spfAuthPassCount: 0,
+    spfUnalignedPassCount: 0,
+    dkimAuthPassCount: 0,
+    dkimUnalignedPassCount: 0,
+    dmarcPassCount: 0,
+    spfAuthPassRate: 0,
+    dkimAuthPassRate: 0,
+    dmarcPassRate: 0,
     spfPassRate: 0,
     dkimPassRate: 0,
     fullyAlignedRate: 0,
     dispositionNone: 0,
     dispositionQuarantine: 0,
     dispositionReject: 0,
+    sender: null,
+    cause: 'unknown' as const,
   }))
-  const columns: ColumnDef<typeof dataTableFeatures, IpSummaryData>[] = [
+  const columns: ColumnDef<typeof dataTableFeatures, IpSourceRow>[] = [
     { accessorKey: 'hostname', filterFn: mainDomainFilterFn },
   ]
 

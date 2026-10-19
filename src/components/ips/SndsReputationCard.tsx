@@ -1,3 +1,5 @@
+import { Panel } from '@/components/ui'
+import { ShieldCheck } from 'lucide-react'
 import type { SndsReputationCardProps } from './SndsReputationCardProps'
 import { SndsReputationTable } from './SndsReputationTable'
 import { SndsStatusList } from './SndsStatusList'
@@ -11,12 +13,14 @@ export function SndsReputationCard({
   statusRows,
 }: SndsReputationCardProps) {
   return (
-    <section className="glass-card flex flex-col space-y-4 p-4 sm:p-6">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-        Outlook.com reputation (Microsoft SNDS)
-      </h2>
+    <Panel
+      title="Outlook.com reputation"
+      description="Microsoft SNDS, latest published day per IP"
+      icon={<ShieldCheck />}
+      flush
+    >
       {rows.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground p-4 text-sm">
           No SNDS data yet. SNDS publishes a day after it ends, and only for IPs
           that sent mail to Outlook.com.
         </p>
@@ -26,6 +30,6 @@ export function SndsReputationCard({
       {statusRows.length > 0 ? (
         <SndsStatusList statusRows={statusRows} />
       ) : null}
-    </section>
+    </Panel>
   )
 }

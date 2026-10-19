@@ -10,6 +10,11 @@ export type IpDetailRow = {
   lastSeen: number
   spfPassCount: number
   dkimPassCount: number
+  spfAuthPassCount: number
+  spfUnalignedPassCount: number
+  dkimAuthPassCount: number
+  dkimUnalignedPassCount: number
+  dmarcPassCount: number
   fullyAlignedCount: number
   dispositionNone: number
   dispositionQuarantine: number

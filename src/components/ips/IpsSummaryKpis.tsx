@@ -1,53 +1,38 @@
-import { KpiCard, KpiGrid } from '@/components/ui'
-import { AlertTriangle, CheckCircle2, Network, Server } from 'lucide-react'
-import type { IpsSummaryKpisProps } from './IpsSummaryKpisProps'
+import { StatTile } from '@/components/ui'
+import type { IpsSummaryKpisProps } from '@/types/ips'
+import { computeRate, rateVerdict } from '@/utils/ips'
 
 export default function IpsSummaryKpis({
   kpis,
+  failingHref,
 }: Readonly<IpsSummaryKpisProps>) {
+  const passRate = computeRate(kpis.dmarcPassMessages, kpis.totalMessages)
+  const sources = kpis.totalSources.toLocaleString()
   return (
-    <KpiGrid cols={4}>
-      <KpiCard
-        label="Total Sources"
-        value={kpis.totalSources.toLocaleString()}
-        icon={
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Server className="text-primary h-5 w-5" aria-hidden="true" />
-          </div>
-        }
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <StatTile
+        label="Sending sources"
+        value={sources}
+        hint="IPs seen in the window"
       />
-      <KpiCard
-        label="Healthy"
-        value={kpis.healthySources.toLocaleString()}
-        status="healthy"
-        icon={
-          <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <CheckCircle2 className="text-success h-5 w-5" aria-hidden="true" />
-          </div>
-        }
-      />
-      <KpiCard
-        label="Needs Review"
-        value={kpis.needsReviewSources.toLocaleString()}
-        status="degraded"
-        icon={
-          <div className="bg-warning/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <AlertTriangle
-              className="text-warning h-5 w-5"
-              aria-hidden="true"
-            />
-          </div>
-        }
-      />
-      <KpiCard
-        label="Total Messages"
+      <StatTile
+        label="Messages"
         value={kpis.totalMessages.toLocaleString()}
-        icon={
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Network className="text-primary h-5 w-5" aria-hidden="true" />
-          </div>
-        }
+        hint={`Across ${sources} sources`}
       />
-    </KpiGrid>
+      <StatTile
+        label="DMARC pass"
+        value={`${passRate.toFixed(1)}%`}
+        tone={rateVerdict(passRate, kpis.totalMessages).tone}
+        hint={`${kpis.dmarcPassMessages.toLocaleString()} of ${kpis.totalMessages.toLocaleString()} messages`}
+      />
+      <StatTile
+        label="Fail SPF and DKIM"
+        value={kpis.failingSources.toLocaleString()}
+        tone={kpis.failingSources > 0 ? 'danger' : 'success'}
+        hint={`Of ${sources} sources, neither aligned`}
+        href={failingHref}
+      />
+    </div>
   )
 }

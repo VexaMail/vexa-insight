@@ -12,7 +12,7 @@ export function IpHostname({
   if (!showHostname || (showHostname === 'if-present' && !hostname)) return null
 
   return (
-    <div className="group/hostname flex items-center gap-2">
+    <div className="group/hostname flex min-w-0 items-center gap-2">
       {hostname ? (
         <span className="text-muted-foreground min-w-0 truncate text-sm">
           {hostname}

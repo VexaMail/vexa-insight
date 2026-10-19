@@ -11,6 +11,7 @@ import type { IpLogRow } from '@/types/IpLogRow'
 import { and, eq } from 'drizzle-orm'
 import type { GetIpLogsParams } from './GetIpLogsParams'
 import { ipEventConditions } from './ipEventConditions'
+import { ipLogSelection } from './ipLogSelection'
 import { ipLogsFilterConditions } from './ipLogsFilterConditions'
 import { ipLogsOrderBy } from './ipLogsOrderBy'
 
@@ -26,16 +27,7 @@ export async function getIpLogs({
   if (allowedIds !== null && allowedIds.length === 0) return []
 
   const rows = await db
-    .select({
-      eventId: normalizedEvents.id,
-      headerFrom: domains.name,
-      disposition: normalizedEvents.disposition,
-      spfResult: normalizedEvents.spfResult,
-      dkimResult: normalizedEvents.dkimResult,
-      count: normalizedEvents.count,
-      reportId: rawReports.reportId,
-      observedAt: normalizedEvents.reportBeginDate,
-    })
+    .select(ipLogSelection)
     .from(ipAddresses)
     .innerJoin(
       normalizedEvents,

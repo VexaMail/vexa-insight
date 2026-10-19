@@ -1,12 +1,23 @@
 import { DateRangeFilter } from '@/components/filters'
-import { IpsSummaryKpis, IpsTable, SndsReputationPanel } from '@/components/ips'
+import {
+  IpsSummaryKpis,
+  IpsTable,
+  SndsReputationPanel,
+  SourceCauseChips,
+} from '@/components/ips'
 import { PageContainer, PageHeader } from '@/components/shell'
 import { PageSkeleton } from '@/components/ui'
 import { parseDateRangeParams } from '@/lib/utils'
-import { getIpsSummary } from '@/services/reports'
+import { getIpSources } from '@/services/reports'
 import { getSndsReputationPanel } from '@/services/snds'
 import { buildIpDateRange } from '@/utils/dates'
-import { computeIpsKpis } from '@/utils/ips'
+import {
+  buildSourceCauseHrefs,
+  computeIpsKpis,
+  countSourceCauses,
+  filterSourcesByCause,
+  parseSourceCause,
+} from '@/utils/ips'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
@@ -22,17 +33,16 @@ export const dynamic = 'force-dynamic'
 export default async function IpsPage(props: PageProps) {
   const searchParams = await props.searchParams
   const { days, fromDate, toDate } = parseDateRangeParams(searchParams)
-
-  const dateRange = buildIpDateRange(days, fromDate, toDate)
-
-  const summary = await getIpsSummary(dateRange)
-  const kpis = computeIpsKpis(summary.ips)
+  const sources = await getIpSources(buildIpDateRange(days, fromDate, toDate))
+  const cause = parseSourceCause(searchParams['cause'])
+  const hrefs = buildSourceCauseHrefs(searchParams)
 
   return (
     <PageContainer>
       <PageHeader
-        title="Sending Sources"
-        description="IP addresses that sent email claiming to be from your domains, based on DMARC aggregate reports. Review authentication health to identify trusted and potentially unauthorized sources."
+        eyebrow="Investigate"
+        title="Sending sources"
+        description="Every IP that sent mail as your domains, from DMARC aggregate reports, grouped by why it passes or fails DMARC."
         actions={
           <Suspense
             fallback={
@@ -48,11 +58,20 @@ export default async function IpsPage(props: PageProps) {
           </Suspense>
         }
       />
-      <IpsSummaryKpis kpis={kpis} />
-      <SndsReputationPanel panel={getSndsReputationPanel()} />
+      <IpsSummaryKpis
+        kpis={computeIpsKpis(sources)}
+        failingHref={hrefs.failing}
+      />
+      <SourceCauseChips
+        counts={countSourceCauses(sources)}
+        total={sources.length}
+        active={cause}
+        hrefs={hrefs}
+      />
       <Suspense fallback={<PageSkeleton />}>
-        <IpsTable ips={summary.ips} />
+        <IpsTable ips={filterSourcesByCause(sources, cause)} />
       </Suspense>
+      <SndsReputationPanel panel={getSndsReputationPanel()} />
     </PageContainer>
   )
 }

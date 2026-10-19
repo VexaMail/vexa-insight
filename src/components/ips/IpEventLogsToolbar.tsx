@@ -13,15 +13,17 @@ export function IpEventLogsToolbar({
   onChange,
 }: Readonly<IpEventLogsToolbarProps>) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <IpSectionSearchInput
-        value={query.search}
-        label="Search events"
-        placeholder="Search domain or report ID..."
-        onSearch={(search) => {
-          onChange({ ...query, search })
-        }}
-      />
+    <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-wrap lg:items-center">
+      <div className="col-span-2 flex lg:min-w-[16rem] lg:flex-1">
+        <IpSectionSearchInput
+          value={query.search}
+          label="Search events"
+          placeholder="Search domain or report ID..."
+          onSearch={(search) => {
+            onChange({ ...query, search })
+          }}
+        />
+      </div>
       <IpEventLogsFilters query={query} onChange={onChange} />
       <IpSectionSelect
         label="Sort events"

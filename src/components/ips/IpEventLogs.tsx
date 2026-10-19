@@ -21,7 +21,7 @@ export function IpEventLogs({ initialLogs, ip, dateRange }: IpEventLogsProps) {
 
   return (
     <IpDetailSection
-      title="Event Timeline"
+      title="Event timeline"
       toolbar={
         <IpEventLogsToolbar query={query} onChange={handleQueryChange} />
       }
@@ -35,17 +35,17 @@ export function IpEventLogs({ initialLogs, ip, dateRange }: IpEventLogsProps) {
           }
         />
       ) : (
-        <div className="relative mt-2 ml-4 space-y-8 border-l-2 border-gray-100 pb-4 dark:border-gray-800">
+        <ol className="border-border relative ml-3 space-y-5 border-l pb-1">
           {logs.map((row) => (
             <IpEventTimelineItem key={row.eventId} row={row} />
           ))}
-        </div>
+        </ol>
       )}
 
       {hasMore ? (
         <IpLoadMoreButton
           isLoading={isLoading}
-          label="Load Older Events"
+          label="Load older events"
           onLoadMore={() => {
             void handleLoadMore()
           }}

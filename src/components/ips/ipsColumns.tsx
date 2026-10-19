@@ -1,31 +1,37 @@
 'use client'
 
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
-import type { IpSummaryData } from '@/types/ips'
+import type { IpSourceRow } from '@/types/ips'
 import type { ColumnDef } from '@tanstack/react-table'
-import { authStatusColumn } from './columns/authStatusColumn'
+import { causeColumn } from './columns/causeColumn'
 import { countryColumn } from './columns/countryColumn'
-import { createActionsColumn } from './columns/createActionsColumn'
 import { createHostnameColumn } from './columns/createHostnameColumn'
+import { createIpColumn } from './columns/createIpColumn'
 import { dkimRateColumn } from './columns/dkimRateColumn'
-import { ipColumn } from './columns/ipColumn'
 import { lastSeenColumn } from './columns/lastSeenColumn'
+import { phoneSummaryColumn } from './columns/phoneSummaryColumn'
+import { senderColumn } from './columns/senderColumn'
 import { spfRateColumn } from './columns/spfRateColumn'
 import { volumeColumn } from './columns/volumeColumn'
 import type { GetIpsColumnsParams } from './GetIpsColumnsParams'
 
+/**
+ * Columns of the sources table. The first one is the phone row summary; the
+ * table wrapper shows only it below `md` and hides it from `md` up.
+ */
 export function getIpsColumns(
   params: GetIpsColumnsParams,
-): ColumnDef<typeof dataTableFeatures, IpSummaryData>[] {
+): ColumnDef<typeof dataTableFeatures, IpSourceRow>[] {
   return [
+    phoneSummaryColumn,
     countryColumn,
-    ipColumn,
+    createIpColumn(params),
     createHostnameColumn(params),
-    authStatusColumn,
+    senderColumn,
+    causeColumn,
     spfRateColumn,
     dkimRateColumn,
     lastSeenColumn,
     volumeColumn,
-    createActionsColumn(params),
   ]
 }
