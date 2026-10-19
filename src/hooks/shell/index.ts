@@ -1,3 +1,5 @@
+export { useCommandPalette } from './useCommandPalette'
+export { useMobileNav } from './useMobileNav'
 export { useSidebarVersionStatus } from './useSidebarVersionStatus'
 export { useThemeProvider } from './useThemeProvider'
 export { useTopBar } from './useTopBar'

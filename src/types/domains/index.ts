@@ -1,4 +1,6 @@
 export * from './DomainDetailData'
+export * from './DomainNameRow'
+export * from './DomainNamesResponse'
 export * from './DomainSourcesTableProps'
 export * from './DomainsTableProps'
 export * from './DomainsTableRow'

@@ -1,6 +1,7 @@
 import { APP_NAME } from '@/lib/constants'
 import Image from 'next/image'
 import type { VexaLogoMarkProps } from './VexaLogoMarkProps'
+import { VexaWordmark } from './VexaWordmark'
 
 export default function VexaLogoMark({
   collapsed,
@@ -20,16 +21,7 @@ export default function VexaLogoMark({
   }
 
   if (projectName === APP_NAME) {
-    return (
-      <Image
-        src="/vexa-insight-logo.svg"
-        alt={projectName}
-        width={123}
-        height={32}
-        className="h-8 w-auto"
-        priority
-      />
-    )
+    return <VexaWordmark alt={projectName} />
   }
 
   return (

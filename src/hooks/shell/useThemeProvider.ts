@@ -3,6 +3,7 @@ import type {
   ThemeContextValue,
   UseThemeProviderReturn,
 } from '@/types/shell'
+import { resolveInitialTheme } from '@/utils/shell'
 import { useEffect, useMemo, useState } from 'react'
 
 export function useThemeProvider(): UseThemeProviderReturn {
@@ -11,8 +12,7 @@ export function useThemeProvider(): UseThemeProviderReturn {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      const stored = localStorage.getItem('theme') as Theme | null
-      const resolved = stored === 'dark' ? 'dark' : 'light'
+      const resolved = resolveInitialTheme()
 
       setTheme(resolved)
       document.documentElement.classList.toggle('dark', resolved === 'dark')

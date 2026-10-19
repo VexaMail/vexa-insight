@@ -1,13 +1,14 @@
 'use client'
 
-import { Breadcrumbs, Button } from '@/components/ui'
+import { Breadcrumbs } from '@/components/ui'
 import { useTopBar } from '@/hooks/shell'
-import { Bell } from 'lucide-react'
+import type { TopBarProps } from '@/types/shell'
+import { CommandPalette } from './CommandPalette'
+import { MobileNav } from './MobileNav'
 import { ProfileMenu } from './ProfileMenu'
 import ThemeToggle from './ThemeToggle'
-import { TopBarSearch } from './TopBarSearch'
 
-export default function TopBar() {
+export default function TopBar({ projectName }: Readonly<TopBarProps>) {
   const {
     isProfileOpen,
     menuRef,
@@ -16,22 +17,15 @@ export default function TopBar() {
   } = useTopBar()
 
   return (
-    <header className="border-border/50 bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 backdrop-blur-xl print:hidden">
-      <div className="flex flex-1 items-center gap-3">
+    <header className="border-border bg-background/85 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-3 backdrop-blur-xl sm:gap-4 sm:px-4 print:hidden">
+      <MobileNav projectName={projectName} />
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <Breadcrumbs />
       </div>
 
-      <div className="flex items-center gap-2">
-        <TopBarSearch />
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <CommandPalette />
         <ThemeToggle />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground h-8 w-8"
-        >
-          <Bell className="h-4 w-4" />
-        </Button>
-
         <ProfileMenu
           isOpen={isProfileOpen}
           menuRef={menuRef}

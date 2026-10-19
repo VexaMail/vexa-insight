@@ -1,11 +1,12 @@
 import { ThemeProvider } from '@/components/shell'
 import { Toaster } from 'sonner'
+import ThemeScript from './ThemeScript'
 
 import { siteMetadata } from '../src/lib/config/siteMetadata'
 import './globals.css'
 
-import { inter } from './inter'
-import { spaceGrotesk } from './spaceGrotesk'
+import { geist } from './geist'
+import { geistMono } from './geistMono'
 
 export const metadata = siteMetadata
 
@@ -16,9 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${geist.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
