@@ -1,43 +1,29 @@
 import type { IpDetailContextProps } from '@/types/ips'
-import { formatRelativeDate } from '@/utils/format'
-import { Ban, Clock, Globe, History, Mail, TriangleAlert } from 'lucide-react'
+import { Globe } from 'lucide-react'
+import { IpDispositionFacts } from './IpDispositionFacts'
 import { IpFact } from './IpFact'
 import { IpRelatedDomainsFact } from './IpRelatedDomainsFact'
+import { IpSeenFact } from './IpSeenFact'
 
-/** First and last seen, related domains and the disposition counts. */
+/** First and last seen in UTC, related domains and the disposition shares. */
 export function IpDetailFacts({ ctx }: Readonly<IpDetailContextProps>) {
   const { data } = ctx
-  const first = data.firstSeen ? formatRelativeDate(data.firstSeen) : null
-  const last = data.lastSeen ? formatRelativeDate(data.lastSeen) : null
+  const domains = ctx.domains?.length ?? 0
   return (
-    <dl className="glass-card lg:divide-border grid grid-cols-2 gap-x-4 gap-y-5 p-4 sm:grid-cols-3 lg:grid-cols-6 lg:divide-x [&>div]:lg:px-4 [&>div:first-child]:lg:pl-0">
-      <IpFact label="First seen" icon={<History />}>
-        <span title={first?.absolute}>{first?.relative ?? 'Unknown'}</span>
-      </IpFact>
-      <IpFact label="Last seen" icon={<Clock />}>
-        <span title={last?.absolute}>{last?.relative ?? 'Unknown'}</span>
-      </IpFact>
-      <IpFact label="Related domains" icon={<Globe />}>
+    <dl className="glass-card lg:divide-border grid grid-cols-1 gap-x-4 gap-y-5 p-4 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 lg:divide-x [&>div]:lg:px-4 [&>div:first-child]:lg:pl-0">
+      <IpSeenFact label="First seen" timestamp={data.firstSeen} />
+      <IpSeenFact label="Last seen" timestamp={data.lastSeen} />
+      <IpFact
+        label="Related domain"
+        icon={<Globe />}
+        sub={`${String(domains)} ${domains === 1 ? 'domain' : 'domains'}`}
+      >
         <IpRelatedDomainsFact
           domains={ctx.domains}
           href={ctx.tabs.domains.href}
         />
       </IpFact>
-      <IpFact label="Disposition none" icon={<Mail />}>
-        <span className="font-mono tabular-nums">
-          {data.dispositionNone.toLocaleString()}
-        </span>
-      </IpFact>
-      <IpFact label="Quarantine" icon={<TriangleAlert />} tone="warning">
-        <span className="font-mono tabular-nums">
-          {data.dispositionQuarantine.toLocaleString()}
-        </span>
-      </IpFact>
-      <IpFact label="Reject" icon={<Ban />} tone="danger">
-        <span className="font-mono tabular-nums">
-          {data.dispositionReject.toLocaleString()}
-        </span>
-      </IpFact>
+      <IpDispositionFacts data={data} />
     </dl>
   )
 }

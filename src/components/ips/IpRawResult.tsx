@@ -1,6 +1,6 @@
 import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
 import { cn } from '@/lib/utils'
-import type { IpRawResultProps } from '@/types/ips'
+import type { IpRawResultProps } from '@/types/ip-detail'
 import { resultTone } from '@/utils/ips'
 
 /** A `name = result` pair of a raw record, the result coloured. */

@@ -1,4 +1,4 @@
-import type { IpRawSpfResult } from '@/types/ips'
+import type { IpRawSpfResult } from '@/types/ip-detail'
 import { readXmlText } from './readXmlText'
 import { toNodeList } from './toNodeList'
 

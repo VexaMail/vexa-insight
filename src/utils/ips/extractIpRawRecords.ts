@@ -1,4 +1,4 @@
-import type { IpRawRecord, IpRawReportMeta } from '@/types/ips'
+import type { IpRawRecord, IpRawReportMeta } from '@/types/ip-detail'
 import { XMLParser } from 'fast-xml-parser'
 import { readRawRecord } from './readRawRecord'
 import { readXmlNode } from './readXmlNode'

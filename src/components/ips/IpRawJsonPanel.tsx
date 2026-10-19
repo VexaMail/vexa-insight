@@ -1,5 +1,5 @@
 import { CopyIconButton, Panel } from '@/components/ui'
-import type { IpRawDataTabProps } from '@/types/ips'
+import type { IpRawDataTabProps } from '@/types/ip-detail'
 import { Braces } from 'lucide-react'
 
 /** The same records as JSON, as the XML parser returned them, to copy. */

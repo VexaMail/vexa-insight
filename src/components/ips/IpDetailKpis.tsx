@@ -1,14 +1,15 @@
 import { StatTile } from '@/components/ui'
 import type { IpDetailContextProps } from '@/types/ips'
-import { KeyRound, Mail, ShieldCheck } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { IpRateTile } from './IpRateTile'
+import { IpShieldIcon } from './IpShieldIcon'
 
 /** Messages, SPF authentication, DKIM authentication and the DMARC result. */
 export function IpDetailKpis({ ctx }: Readonly<IpDetailContextProps>) {
   const total = ctx.data.totalMessages
   const { trend } = ctx
-  // Fixed order: SPF auth, SPF aligned, DKIM auth, DKIM aligned, DMARC.
-  const [spf, , dkim, , dmarc] = ctx.checks
+  // Fixed order: SPF auth, DKIM auth, SPF alignment, DKIM alignment, DMARC.
+  const [spf, dkim, , , dmarc] = ctx.checks
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatTile
@@ -26,7 +27,7 @@ export function IpDetailKpis({ ctx }: Readonly<IpDetailContextProps>) {
           check={spf}
           total={total}
           trend={trend.spfAuth}
-          icon={<ShieldCheck />}
+          icon={<IpShieldIcon tone={spf.verdict.tone} />}
         />
       ) : null}
       {dkim ? (
@@ -34,15 +35,16 @@ export function IpDetailKpis({ ctx }: Readonly<IpDetailContextProps>) {
           check={dkim}
           total={total}
           trend={trend.dkimAuth}
-          icon={<KeyRound />}
+          icon={<IpShieldIcon tone={dkim.verdict.tone} />}
         />
       ) : null}
       {dmarc ? (
         <IpRateTile
           check={dmarc}
+          label="DMARC result"
           total={total}
           trend={trend.dmarc}
-          icon={<ShieldCheck />}
+          icon={<IpShieldIcon tone={dmarc.verdict.tone} />}
         />
       ) : null}
     </div>

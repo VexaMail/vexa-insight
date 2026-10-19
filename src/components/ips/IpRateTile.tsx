@@ -9,11 +9,12 @@ export function IpRateTile({
   total,
   trend,
   icon,
+  label,
 }: Readonly<IpRateTileProps>) {
   return (
     <StatTile
       variant="feature"
-      label={check.label}
+      label={label ?? check.label}
       tone={check.verdict.tone}
       icon={icon}
       trend={trend}

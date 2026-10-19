@@ -8,7 +8,10 @@ import { IpHeaderActions } from './IpHeaderActions'
 import { IpHeaderChips } from './IpHeaderChips'
 
 /** The address with copy, its flag and hostname, facts and actions. */
-export function IpDetailHeader({ ctx, actions }: Readonly<IpDetailHeaderProps>) {
+export function IpDetailHeader({
+  ctx,
+  actions,
+}: Readonly<IpDetailHeaderProps>) {
   const { data } = ctx
   return (
     <EntityHeader
@@ -19,7 +22,10 @@ export function IpDetailHeader({ ctx, actions }: Readonly<IpDetailHeaderProps>) 
         <span className="flex min-w-0 items-center gap-3">
           <CopyIconButton value={ctx.ip} label="IP address" />
           <span className="hidden text-2xl sm:inline-flex">
-            <IpFlag countryCode={data.countryCode} countryName={formatCountryName(data.countryCode)} />
+            <IpFlag
+              countryCode={data.countryCode}
+              countryName={formatCountryName(data.countryCode)}
+            />
           </span>
           {data.hostname ? (
             <Link
@@ -29,7 +35,10 @@ export function IpDetailHeader({ ctx, actions }: Readonly<IpDetailHeaderProps>) 
               className="text-foreground hover:text-primary hidden min-w-0 items-center gap-1 font-mono text-base sm:inline-flex"
             >
               <span className="truncate">{data.hostname}</span>
-              <ArrowUpRight className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
+              <ArrowUpRight
+                className="text-muted-foreground h-4 w-4 shrink-0"
+                aria-hidden="true"
+              />
             </Link>
           ) : null}
         </span>

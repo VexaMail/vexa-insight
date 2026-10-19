@@ -1,11 +1,12 @@
-import { InlineErrorBlock } from '@/components/ui'
+import { InlineErrorBlock, Panel } from '@/components/ui'
 import { IP_OVERVIEW_TIMELINE_SIZE } from '@/constants/ips'
 import type { IpDetailContextProps } from '@/types/ips'
-import { Clock } from 'lucide-react'
+import { filterIpEvents } from '@/utils/ips'
+import { Activity } from 'lucide-react'
 import { IpEventStepper } from './IpEventStepper'
-import { IpSummaryList } from './IpSummaryList'
+import { IpTimelineActions } from './IpTimelineActions'
 
-/** The latest events as steppers, linking to the full, filterable timeline. */
+/** The latest events as steppers, filterable, linking to the full timeline. */
 export function IpOverviewTimeline({ ctx }: Readonly<IpDetailContextProps>) {
   if (!ctx.logs) {
     return (
@@ -14,24 +15,33 @@ export function IpOverviewTimeline({ ctx }: Readonly<IpDetailContextProps>) {
       </InlineErrorBlock>
     )
   }
+  const rows = filterIpEvents(ctx.logs, ctx.eventFilter).slice(
+    0,
+    IP_OVERVIEW_TIMELINE_SIZE,
+  )
   return (
-    <IpSummaryList
+    <Panel
       title="Event timeline"
-      icon={<Clock />}
-      viewAllHref={ctx.tabs.timeline.href}
-      isEmpty={ctx.logs.length === 0}
-      emptyText="No event in the window."
+      description="How receivers evaluated the latest mail from this source."
+      icon={<Activity />}
+      actions={<IpTimelineActions ctx={ctx} />}
     >
-      <div className="flex flex-col gap-6">
-        {ctx.logs.slice(0, IP_OVERVIEW_TIMELINE_SIZE).map((row) => (
-          <IpEventStepper
-            key={row.eventId}
-            row={row}
-            ip={ctx.ip}
-            hostname={ctx.data.hostname}
-          />
-        ))}
-      </div>
-    </IpSummaryList>
+      {rows.length === 0 ? (
+        <p className="text-muted-foreground text-sm">
+          No event in the window matches this filter.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-6">
+          {rows.map((row) => (
+            <IpEventStepper
+              key={row.eventId}
+              row={row}
+              ip={ctx.ip}
+              hostname={ctx.data.hostname}
+            />
+          ))}
+        </div>
+      )}
+    </Panel>
   )
 }

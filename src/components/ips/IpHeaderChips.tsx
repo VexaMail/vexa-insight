@@ -14,7 +14,9 @@ export function IpHeaderChips({ ctx }: Readonly<IpDetailContextProps>) {
   return (
     <>
       <IpHeaderChip icon={<Server />}>Sending source</IpHeaderChip>
-      <IpHeaderChip icon={<IpFlag countryCode={data.countryCode} countryName={country} />}>
+      <IpHeaderChip
+        icon={<IpFlag countryCode={data.countryCode} countryName={country} />}
+      >
         {country ?? 'Unknown country'}
       </IpHeaderChip>
       <IpNetworkChips ip={ctx.ip} />

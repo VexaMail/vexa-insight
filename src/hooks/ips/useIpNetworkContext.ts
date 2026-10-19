@@ -23,7 +23,11 @@ export function useIpNetworkContext(ip: string): UseIpNetworkContextReturn {
           error: body.data ? null : (body.error?.message ?? 'Lookup failed'),
         })
       } catch {
-        setEntry(ip, { context: previous, loading: false, error: 'Lookup failed' })
+        setEntry(ip, {
+          context: previous,
+          loading: false,
+          error: 'Lookup failed',
+        })
       }
     })()
   }, [ip, setEntry])

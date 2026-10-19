@@ -1,5 +1,5 @@
 import { EmptyState, InlineErrorBlock, Panel } from '@/components/ui'
-import type { IpRawDataTabProps } from '@/types/ips'
+import type { IpRawDataTabProps } from '@/types/ip-detail'
 import { Table2 } from 'lucide-react'
 import { IpRawJsonPanel } from './IpRawJsonPanel'
 import { IpRawRecordRow } from './IpRawRecordRow'

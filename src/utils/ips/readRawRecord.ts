@@ -1,4 +1,4 @@
-import type { IpRawRecord, IpRawReportMeta } from '@/types/ips'
+import type { IpRawRecord, IpRawReportMeta } from '@/types/ip-detail'
 import { readRawDkimResults } from './readRawDkimResults'
 import { readRawSpfResults } from './readRawSpfResults'
 import { readXmlNode } from './readXmlNode'

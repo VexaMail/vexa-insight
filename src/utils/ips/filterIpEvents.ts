@@ -1,5 +1,5 @@
-import type { IpEventFilter } from '@/types/ips'
 import type { IpLogRow } from '@/types/IpLogRow'
+import type { IpEventFilter } from '@/types/ips'
 
 /** The events whose DMARC outcome (SPF or DKIM aligned) matches the filter. */
 export function filterIpEvents(

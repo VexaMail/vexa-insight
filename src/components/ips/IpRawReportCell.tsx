@@ -1,4 +1,4 @@
-import type { IpRawRecordRowProps } from '@/types/ips'
+import type { IpRawRecordRowProps } from '@/types/ip-detail'
 import { formatRelativeDate } from '@/utils/format'
 import Link from 'next/link'
 

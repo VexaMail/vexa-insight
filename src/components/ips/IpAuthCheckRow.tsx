@@ -1,4 +1,3 @@
-import { IconTile } from '@/components/ui'
 import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
 import { cn } from '@/lib/utils'
 import type { IpAuthCheckRowProps } from '@/types/ips'
@@ -7,7 +6,7 @@ import Link from 'next/link'
 import { IpAuthCheckIcon } from './IpAuthCheckIcon'
 import { IpVerdictPill } from './IpVerdictPill'
 
-/** One authentication fact: icon, name, verdict, rate and explanation. */
+/** One authentication fact: its mark, name, rate, verdict and explanation. */
 export function IpAuthCheckRow({
   check,
   total,
@@ -20,31 +19,31 @@ export function IpAuthCheckRow({
         scroll={false}
         className="group hover:bg-accent/50 flex items-start gap-3 px-4 py-3 transition-colors duration-150"
       >
-        <IconTile tone={check.verdict.tone} size="sm" className="mt-0.5">
-          <IpAuthCheckIcon checkKey={check.key} tone={check.verdict.tone} />
-        </IconTile>
+        <IpAuthCheckIcon tone={check.verdict.tone} className="mt-0.5" />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
             <span className="text-foreground text-sm font-medium">
               {check.label}
             </span>
-            <IpVerdictPill verdict={check.verdict} />
+            <span className="flex items-center gap-2">
+              <span
+                className={cn(
+                  'font-mono text-sm font-semibold tabular-nums',
+                  STATUS_TONE_TEXT_CLASSES[check.verdict.tone],
+                )}
+                title={`${check.count.toLocaleString()} of ${total.toLocaleString()} messages`}
+              >
+                {check.rate.toFixed(1)}%
+              </span>
+              <IpVerdictPill verdict={check.verdict} />
+            </span>
           </div>
           <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
             {check.detail}
           </p>
         </div>
-        <span
-          className={cn(
-            'mt-1 shrink-0 font-mono text-base font-semibold tabular-nums',
-            STATUS_TONE_TEXT_CLASSES[check.verdict.tone],
-          )}
-          title={`${check.count.toLocaleString()} of ${total.toLocaleString()} messages`}
-        >
-          {check.rate.toFixed(1)}%
-        </span>
         <ChevronRight
-          className="text-muted-foreground group-hover:text-primary mt-1.5 h-4 w-4 shrink-0 transition-colors"
+          className="text-muted-foreground group-hover:text-primary mt-0.5 h-4 w-4 shrink-0 transition-colors"
           aria-hidden="true"
         />
       </Link>

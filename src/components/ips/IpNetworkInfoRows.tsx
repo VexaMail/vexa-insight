@@ -1,46 +1,30 @@
 'use client'
 
+import { CopyIconButton } from '@/components/ui'
 import { useIpNetworkContext } from '@/hooks/ips'
 import type { IpNetworkInfoRowsProps } from '@/types/ips'
-import { describeRdnsStatus, formatAsn } from '@/utils/ips'
+import { IpAsnInfoRows } from './IpAsnInfoRows'
 import { IpInfoRow } from './IpInfoRow'
 import { IpLookUpButton } from './IpLookUpButton'
 
 /**
- * Forward-confirmed reverse DNS, ASN and organisation of the source, looked
- * up live only when the operator asks: the lookup sends the address to
- * public DNS resolvers.
+ * PTR, ASN and organisation of the source from the live lookup, which runs
+ * only when the operator asks: it sends the address to public resolvers.
  */
 export function IpNetworkInfoRows({ ip }: Readonly<IpNetworkInfoRowsProps>) {
   const { context, loading, error, lookUp } = useIpNetworkContext(ip)
-  if (!context) {
-    return (
-      <IpInfoRow label="ASN and organization">
-        {error ? <span className="text-danger text-xs">{error}</span> : null}
-        <IpLookUpButton loading={loading} onClick={lookUp} />
-      </IpInfoRow>
-    )
-  }
-  const { rdns, asn } = context
+  const ptr = context?.rdns.ptrNames[0] ?? null
   return (
     <>
-      <IpInfoRow label="Reverse DNS">
-        <span
-          className={
-            rdns.status === 'confirmed'
-              ? 'text-success truncate'
-              : 'text-warning truncate'
-          }
-        >
-          {describeRdnsStatus(rdns)}
-        </span>
+      <IpInfoRow label="Reverse DNS (PTR)">
+        {context ? (
+          <span className="truncate font-mono">{ptr ?? 'None'}</span>
+        ) : (
+          <IpLookUpButton loading={loading} onClick={lookUp} />
+        )}
+        {ptr ? <CopyIconButton value={ptr} label="PTR name" /> : null}
       </IpInfoRow>
-      <IpInfoRow label="ASN">
-        <span className="font-mono">{formatAsn(asn)}</span>
-      </IpInfoRow>
-      <IpInfoRow label="Organization">
-        <span className="truncate">{asn?.name ?? 'Unknown'}</span>
-      </IpInfoRow>
+      <IpAsnInfoRows context={context} error={error} />
     </>
   )
 }

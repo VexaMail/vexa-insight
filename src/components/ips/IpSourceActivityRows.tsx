@@ -1,20 +1,27 @@
 import type { IpSourceActivityRowsProps } from '@/types/ips'
-import { formatRelativeDate } from '@/utils/format'
+import { formatUtcDateTime } from '@/utils/ips'
 import { IpInfoRow } from './IpInfoRow'
+import { IpUtcStamp } from './IpUtcStamp'
 
-/** First and last report of the source in the window and its volume. */
+/** First and last report of the source in the window, in UTC, and volume. */
 export function IpSourceActivityRows({
   data,
 }: Readonly<IpSourceActivityRowsProps>) {
   return (
     <>
       <IpInfoRow label="First seen">
-        {data.firstSeen
-          ? formatRelativeDate(data.firstSeen).absolute
-          : 'Unknown'}
+        {data.firstSeen ? (
+          <IpUtcStamp value={formatUtcDateTime(data.firstSeen)} />
+        ) : (
+          'Unknown'
+        )}
       </IpInfoRow>
       <IpInfoRow label="Last seen">
-        {data.lastSeen ? formatRelativeDate(data.lastSeen).absolute : 'Unknown'}
+        {data.lastSeen ? (
+          <IpUtcStamp value={formatUtcDateTime(data.lastSeen)} />
+        ) : (
+          'Unknown'
+        )}
       </IpInfoRow>
       <IpInfoRow label="Total messages">
         <span className="font-mono tabular-nums">

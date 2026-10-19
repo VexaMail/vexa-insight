@@ -1,8 +1,7 @@
 import { CopyIconButton, Panel } from '@/components/ui'
 import type { IpDetailContextProps } from '@/types/ips'
-import { formatRelativeDate } from '@/utils/format'
 import { buildExternalLookupLinks, formatCountryName } from '@/utils/ips'
-import { Info } from 'lucide-react'
+import { Network } from 'lucide-react'
 import { IpFlag } from './IpFlag'
 import { IpInfoRow } from './IpInfoRow'
 import { IpMenu } from './IpMenu'
@@ -10,14 +9,15 @@ import { IpNetworkInfoRows } from './IpNetworkInfoRows'
 import { IpSenderName } from './IpSenderName'
 import { IpSourceActivityRows } from './IpSourceActivityRows'
 
-/** What is known about the source itself: address, PTR, network, dates. */
+/** The source itself: address, names, network, place, sender and dates. */
 export function IpSourceInfoPanel({ ctx }: Readonly<IpDetailContextProps>) {
   const { data } = ctx
-  const lookup = data.hostnameLastLookupAt
-    ? formatRelativeDate(data.hostnameLastLookupAt)
-    : null
   return (
-    <Panel title="Source information" icon={<Info />}>
+    <Panel
+      title="Identity & Network"
+      description="Core information about this sending source."
+      icon={<Network />}
+    >
       <dl className="divide-border -my-1.5 divide-y">
         <IpInfoRow label="IP address">
           <span className="truncate font-mono">{ctx.ip}</span>
@@ -30,9 +30,6 @@ export function IpSourceInfoPanel({ ctx }: Readonly<IpDetailContextProps>) {
           {data.hostname ? (
             <CopyIconButton value={data.hostname} label="hostname" />
           ) : null}
-        </IpInfoRow>
-        <IpInfoRow label="PTR looked up">
-          <span title={lookup?.absolute}>{lookup?.relative ?? 'Not yet'}</span>
         </IpInfoRow>
         <IpNetworkInfoRows ip={ctx.ip} />
         <IpInfoRow label="Country">

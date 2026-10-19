@@ -1,4 +1,4 @@
-import type { IpRawDkimResult } from '@/types/ips'
+import type { IpRawDkimResult } from '@/types/ip-detail'
 import { readXmlText } from './readXmlText'
 import { toNodeList } from './toNodeList'
 

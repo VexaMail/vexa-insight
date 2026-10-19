@@ -1,4 +1,4 @@
-import type { IpRawRecordRowProps } from '@/types/ips'
+import type { IpRawRecordRowProps } from '@/types/ip-detail'
 import { IpRawAuthCells } from './IpRawAuthCells'
 import { IpRawReportCell } from './IpRawReportCell'
 import { IpRawResult } from './IpRawResult'

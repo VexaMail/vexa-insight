@@ -1,4 +1,5 @@
 import type { IpDateRange } from '@/types/filters'
+import type { IpRawRecord } from '@/types/ip-detail'
 import type { SenderIdentity } from '@/types/senders'
 import type { SourceReview } from '@/types/source-reviews'
 import type { TabNavItem } from '@/types/ui'
@@ -11,7 +12,6 @@ import type { IpDetailTab } from './IpDetailTab'
 import type { IpDkimSignature } from './IpDkimSignature'
 import type { IpEventFilter } from './IpEventFilter'
 import type { IpMenuItem } from './IpMenuItem'
-import type { IpRawRecord } from './IpRawRecord'
 import type { IpTrendSeries } from './IpTrendSeries'
 import type { SourceCause } from './SourceCause'
 

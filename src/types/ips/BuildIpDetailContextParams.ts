@@ -1,4 +1,5 @@
 import type { IpDateRange } from '@/types/filters'
+import type { IpRawRecord } from '@/types/ip-detail'
 import type { SenderIdentity } from '@/types/senders'
 import type { SourceReview } from '@/types/source-reviews'
 import type { IpLogRow } from '../IpLogRow'
@@ -7,7 +8,6 @@ import type { IpRelatedReportRow } from '../IpRelatedReportRow'
 import type { IpSummaryData } from '../IpSummaryData'
 import type { IpDailyPoint } from './IpDailyPoint'
 import type { IpDkimSignature } from './IpDkimSignature'
-import type { IpRawRecord } from './IpRawRecord'
 import type { SearchParamsRecord } from './SearchParamsRecord'
 
 export type BuildIpDetailContextParams = {

@@ -1,7 +1,11 @@
 import type { IpHeaderChipProps } from '@/types/ips'
 
 /** One small fact under the source's address. */
-export function IpHeaderChip({ icon, children, title }: Readonly<IpHeaderChipProps>) {
+export function IpHeaderChip({
+  icon,
+  children,
+  title,
+}: Readonly<IpHeaderChipProps>) {
   return (
     <span
       title={title}

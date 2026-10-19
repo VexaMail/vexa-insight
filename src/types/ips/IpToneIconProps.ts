@@ -1,6 +1,6 @@
 import type { StatusTone } from '@/types/ui'
 
-export type IpAuthCheckIconProps = {
-  readonly checkKey: string
+export type IpToneIconProps = {
   readonly tone: StatusTone
+  readonly className?: string
 }

@@ -1,4 +1,4 @@
-import type { IpRawRecordRowProps } from '@/types/ips'
+import type { IpRawRecordRowProps } from '@/types/ip-detail'
 import { IpRawResult } from './IpRawResult'
 
 /** Every DKIM signature and SPF check of a raw record, as written. */

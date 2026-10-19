@@ -1,5 +1,5 @@
 import { getDb, rawReports } from '@/lib/db'
-import type { IpRawRecord } from '@/types/ips'
+import type { IpRawRecord } from '@/types/ip-detail'
 import { extractIpRawRecords } from '@/utils/ips'
 import { desc, inArray } from 'drizzle-orm'
 
