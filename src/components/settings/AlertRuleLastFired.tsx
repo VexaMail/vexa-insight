@@ -18,13 +18,12 @@ export function AlertRuleLastFired({
   return (
     <StatusPill
       tone="warning"
+      variant="solid"
       icon={<Zap />}
       title={new Date(lastFiredAt * 1000).toISOString()}
     >
       Last fired {when.relative}
-      <span className="text-muted-foreground font-mono font-normal">
-        {when.absolute}
-      </span>
+      <span className="font-mono font-normal opacity-80">{when.absolute}</span>
     </StatusPill>
   )
 }

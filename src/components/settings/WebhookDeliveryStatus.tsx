@@ -23,6 +23,7 @@ export function WebhookDeliveryStatus({
     <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs">
       <StatusPill
         tone={tone}
+        variant="solid"
         icon={tone === 'success' ? <Check /> : <X />}
         {...(lastError === null ? {} : { title: lastError })}
       >
