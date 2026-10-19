@@ -1,52 +1,52 @@
 'use client'
 
-import { Button, Panel } from '@/components/ui'
-import { FileUp, Loader2, Upload } from 'lucide-react'
+import { Panel } from '@/components/ui'
+import { FileUp } from 'lucide-react'
 import { useUploadForm } from '../../hooks/upload/useUploadForm'
+import { PendingFileList } from './PendingFileList'
 import { RecentUploadsCard } from './RecentUploadsCard'
 import { UploadDropZone } from './UploadDropZone'
 import { UploadStatusMessage } from './UploadStatusMessage'
+import { UploadSubmitButton } from './UploadSubmitButton'
 
 export default function UploadForm() {
   const {
     status,
     message,
     dragActive,
-    selectedName,
+    pendingFiles,
     recentUploads,
     handleSubmit,
     handleDrag,
     handleDrop,
     handleFileChange,
+    handleRemovePending,
   } = useUploadForm()
+  const isUploading = status === 'loading'
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
       <Panel
-        title="Upload a report"
-        description="A dropped file is uploaded at once; a chosen one when you press Upload."
+        title="Upload reports"
+        description="Dropped or chosen files wait in the list below until you press Upload."
         icon={<FileUp />}
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <UploadDropZone
             dragActive={dragActive}
-            selectedName={selectedName}
             onDrag={handleDrag}
             onDrop={handleDrop}
             onFileChange={handleFileChange}
           />
-          <Button
-            type="submit"
-            disabled={status === 'loading'}
-            className="h-10 w-full cursor-pointer sm:w-auto"
-          >
-            {status === 'loading' ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <Upload aria-hidden="true" />
-            )}
-            {status === 'loading' ? 'Uploading…' : 'Upload'}
-          </Button>
+          <PendingFileList
+            files={pendingFiles}
+            isUploading={isUploading}
+            onRemove={handleRemovePending}
+          />
+          <UploadSubmitButton
+            pendingCount={pendingFiles.length}
+            isUploading={isUploading}
+          />
           {message !== '' && (
             <UploadStatusMessage status={status} message={message} />
           )}

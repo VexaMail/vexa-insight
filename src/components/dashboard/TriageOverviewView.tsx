@@ -20,7 +20,7 @@ export function TriageOverviewView({
   return (
     <div className="flex flex-col gap-4">
       <TriageKpiStrip kpis={overview.kpis} window={window} />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+      <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-12">
         <ActionQueuePanel
           className="xl:col-span-7"
           items={overview.actions}

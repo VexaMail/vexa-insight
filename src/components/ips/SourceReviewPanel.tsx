@@ -19,7 +19,7 @@ export function SourceReviewPanel({
       flush
       icon={<UserCheck />}
       title="Operator review"
-      description="Record what this source is for each domain. A legitimate sender or forwarder is left out of unauthorized-source alerts; nothing changes in DNS or at the receivers."
+      description="One verdict per domain, saved for that domain only; the header's Mark legitimate button sets the same verdict. A legitimate sender or forwarder is left out of unauthorized-source alerts; nothing changes in DNS or at the receivers."
     >
       <ul className="divide-border divide-y">
         {domains.slice(0, 10).map((row) => {

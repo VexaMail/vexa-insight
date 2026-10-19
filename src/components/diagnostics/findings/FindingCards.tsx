@@ -4,6 +4,7 @@ import { FindingRecommendation } from './FindingRecommendation'
 import { FindingSeverityPill } from './FindingSeverityPill'
 import type { FindingsListProps } from './FindingsListProps'
 import { FindingState } from './FindingState'
+import { FindingSteps } from './FindingSteps'
 
 /** Phone findings: the same facts as the table, stacked per check. */
 export function FindingCards({ findings, base }: Readonly<FindingsListProps>) {
@@ -18,6 +19,7 @@ export function FindingCards({ findings, base }: Readonly<FindingsListProps>) {
           <FindingState finding={finding} />
           <FindingRecommendation finding={finding} />
           <FindingActions finding={finding} base={base} />
+          <FindingSteps finding={finding} />
         </li>
       ))}
     </ul>

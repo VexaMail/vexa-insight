@@ -1,3 +1,4 @@
+import { OPERATOR_REVIEW_ANCHOR_ID } from '@/constants/ips'
 import type { OperatorPanelsProps } from '@/types/ips'
 import { SourceReviewPanel } from './SourceReviewPanel'
 
@@ -8,7 +9,11 @@ export function IpOperatorReview({
   reviews,
 }: Readonly<OperatorPanelsProps>) {
   return (
-    <div id="operator-review" className="scroll-mt-24">
+    <div
+      id={OPERATOR_REVIEW_ANCHOR_ID}
+      tabIndex={-1}
+      className="target:ring-success/60 focus-visible:ring-ring scroll-mt-24 rounded-xl transition-shadow duration-150 outline-none target:ring-2 focus-visible:ring-2"
+    >
       <SourceReviewPanel ip={ip} domains={domains} reviews={reviews} />
     </div>
   )

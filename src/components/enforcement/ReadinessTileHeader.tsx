@@ -13,20 +13,28 @@ export function ReadinessTileHeader({
   reviewHref,
 }: Readonly<ReadinessTileHeaderProps>) {
   return (
-    <header className="flex items-center gap-2">
+    <header className="flex items-start gap-2">
       <TriangleAlert
         className={cn(
-          'h-4 w-4 shrink-0',
+          'mt-0.5 h-4 w-4 shrink-0',
           atRisk ? 'text-danger' : 'text-primary',
         )}
         aria-hidden
       />
-      <h2 className="text-foreground min-w-0 flex-1 text-sm leading-tight font-semibold">
-        Enforcement readiness
-      </h2>
-      <StatusPill tone={tone} variant={verdictPillVariant(tone)}>
-        {label}
-      </StatusPill>
+      {/* The verdict wraps under the title when the card is narrow, rather
+          than overlapping a two-line title. */}
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+        <h2 className="text-foreground text-sm leading-tight font-semibold">
+          Enforcement readiness
+        </h2>
+        <StatusPill
+          tone={tone}
+          variant={verdictPillVariant(tone)}
+          className="shrink-0 whitespace-nowrap"
+        >
+          {label}
+        </StatusPill>
+      </div>
       <Link
         href={reviewHref}
         aria-label="Open the senders at risk"

@@ -1,4 +1,5 @@
 export { defaultMtaStsMaxAge } from './defaultMtaStsMaxAge'
+export { DIAGNOSTICS_GRADE_BAND_OPTIONS } from './diagnosticsGradeBandOptions'
 export { diagnosticsOverviewConcurrency } from './diagnosticsOverviewConcurrency'
 export { diagnosticsSectionIds } from './diagnosticsSectionIds'
 export { diagnosticsSectionTabs } from './diagnosticsSectionTabs'

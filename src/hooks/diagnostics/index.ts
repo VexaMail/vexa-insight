@@ -1,3 +1,4 @@
+export { useDiagnosticsOverviewTable } from './useDiagnosticsOverviewTable'
 export { useDiagnosticsRerun } from './useDiagnosticsRerun'
 export { useDiagnosticsSections } from './useDiagnosticsSections'
 export { useDiagnosticsView } from './useDiagnosticsView'

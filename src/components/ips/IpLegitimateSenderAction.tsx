@@ -36,8 +36,9 @@ export function IpLegitimateSenderAction({
       {error
         ? 'Not saved, retry'
         : listed
-          ? 'Marked legitimate'
-          : 'Mark as legitimate sender'}
+          ? 'Legitimate for'
+          : 'Mark legitimate for'}
+      <span className="max-w-[9rem] truncate font-mono text-xs">{domain}</span>
     </button>
   )
 }

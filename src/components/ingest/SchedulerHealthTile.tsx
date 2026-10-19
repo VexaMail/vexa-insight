@@ -1,6 +1,8 @@
+import { MAILBOX_SETTINGS_HREF } from '@/constants/ingest'
 import type { IngestHealthProps } from '@/types/ingest'
 import { describeAge, formatHealthTime, schedulerVerdict } from '@/utils/ingest'
 import { CalendarClock } from 'lucide-react'
+import Link from 'next/link'
 import { HealthFact } from './HealthFact'
 import { HealthTile } from './HealthTile'
 
@@ -14,9 +16,16 @@ export function SchedulerHealthTile({ health }: Readonly<IngestHealthProps>) {
       verdict={schedulerVerdict(health)}
     >
       <HealthFact label="Interval">
-        {scheduled
-          ? `Every ${String(health.intervalMinutes)} min`
-          : 'Off: no mailbox'}
+        {scheduled ? (
+          `Every ${String(health.intervalMinutes)} min`
+        ) : (
+          <Link
+            href={MAILBOX_SETTINGS_HREF}
+            className="text-primary hover:underline"
+          >
+            Off: add a mailbox
+          </Link>
+        )}
       </HealthFact>
       <HealthFact label="Next run" title={formatHealthTime(health.nextRunAt)}>
         {health.nextRunAt

@@ -1,9 +1,9 @@
 import type { UseUploadDragReturn } from '@/types/upload'
 import { useState } from 'react'
 
-/** Drag-over highlight and the drop that hands the first file over. */
+/** Drag-over highlight and the drop that hands every dropped file over. */
 export function useUploadDrag(
-  onFile: (file: File) => void,
+  onFiles: (files: File[]) => void,
 ): UseUploadDragReturn {
   const [dragActive, setDragActive] = useState(false)
 
@@ -17,10 +17,8 @@ export function useUploadDrag(
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      onFile(file)
-    }
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 0) onFiles(files)
   }
 
   return { dragActive, handleDrag, handleDrop }
