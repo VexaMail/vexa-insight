@@ -3,13 +3,17 @@ import type { Metadata } from 'next'
 import { DateRangeFilter } from '@/components/filters'
 import { ReportsKpiStrip, ReportsTable } from '@/components/reports'
 import { PageContainer, PageHeader } from '@/components/shell'
-import { PageSkeleton } from '@/components/ui'
+import { PageSkeleton, Panel } from '@/components/ui'
 import { parseDateRangeParams } from '@/lib/utils'
-import { getReportsWindowSummary } from '@/services/reports'
+import {
+  getReportsWindowSummary,
+  getReportsWindowTrends,
+} from '@/services/reports'
 import {
   describeReportsWindow,
   parseReportsWindowFilter,
 } from '@/utils/reports'
+import { FileText } from 'lucide-react'
 import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
 
@@ -23,9 +27,12 @@ export const dynamic = 'force-dynamic'
 export default async function ReportsPage(props: PageProps) {
   const unresolvedParams = await props.searchParams
   const { days, fromDate, toDate } = parseDateRangeParams(unresolvedParams)
-  const summary = await getReportsWindowSummary(
-    parseReportsWindowFilter(unresolvedParams),
-  )
+  const filter = parseReportsWindowFilter(unresolvedParams)
+  const [summary, trends] = await Promise.all([
+    getReportsWindowSummary(filter),
+    getReportsWindowTrends(filter),
+  ])
+  const windowLabel = describeReportsWindow(days, fromDate, toDate)
 
   return (
     <PageContainer className="space-y-6">
@@ -45,12 +52,19 @@ export default async function ReportsPage(props: PageProps) {
 
       <ReportsKpiStrip
         summary={summary}
-        windowLabel={describeReportsWindow(days, fromDate, toDate)}
+        trends={trends}
+        windowLabel={windowLabel}
       />
 
-      <Suspense fallback={<PageSkeleton />}>
-        <ReportsTable />
-      </Suspense>
+      <Panel
+        icon={<FileText />}
+        title="Aggregate reports"
+        description={`Newest first, ${windowLabel}. The status pill says whether every message aligned; open a report for its sources and raw XML.`}
+      >
+        <Suspense fallback={<PageSkeleton />}>
+          <ReportsTable />
+        </Suspense>
+      </Panel>
     </PageContainer>
   )
 }

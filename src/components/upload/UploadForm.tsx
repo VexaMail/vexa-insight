@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Panel } from '@/components/ui'
-import { FileUp, Loader2 } from 'lucide-react'
+import { FileUp, Loader2, Upload } from 'lucide-react'
 import { useUploadForm } from '../../hooks/upload/useUploadForm'
 import { RecentUploadsCard } from './RecentUploadsCard'
 import { UploadDropZone } from './UploadDropZone'
@@ -38,11 +38,13 @@ export default function UploadForm() {
           <Button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full cursor-pointer sm:w-auto"
+            className="h-10 w-full cursor-pointer sm:w-auto"
           >
             {status === 'loading' ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : null}
+              <Loader2 className="animate-spin" aria-hidden="true" />
+            ) : (
+              <Upload aria-hidden="true" />
+            )}
             {status === 'loading' ? 'Uploading…' : 'Upload'}
           </Button>
           {message !== '' && (

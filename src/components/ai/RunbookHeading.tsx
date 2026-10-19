@@ -3,7 +3,7 @@ import type { RunbookHeadingProps } from './RunbookHeadingProps'
 export function RunbookHeading({ domainName }: Readonly<RunbookHeadingProps>) {
   return (
     <div className="space-y-1">
-      <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+      <p className="text-muted-foreground font-mono text-[11px] font-medium tracking-[0.16em] uppercase">
         Admin Runbook
       </p>
       <h3 className="text-foreground text-base font-semibold">

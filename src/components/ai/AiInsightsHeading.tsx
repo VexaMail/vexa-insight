@@ -1,13 +1,18 @@
 'use client'
 
-/** The sparkle and title shared by every state of the diagnostics panel. */
+import { IconTile } from '@/components/ui'
+import { Sparkles } from 'lucide-react'
+
+/** The icon square and title shared by every state of the diagnostics panel. */
 export function AiInsightsHeading() {
   return (
     <>
-      <span className="text-lg" aria-hidden="true">
-        ✨
-      </span>
-      <h3 className="text-base font-semibold">AI Diagnostics Insights</h3>
+      <IconTile size="sm">
+        <Sparkles />
+      </IconTile>
+      <h3 className="text-foreground text-sm font-semibold">
+        AI diagnostics insights
+      </h3>
     </>
   )
 }

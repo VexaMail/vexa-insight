@@ -1,11 +1,15 @@
+import type { ReactNode } from 'react'
 import type { EngineHeaderProps } from './EngineHeaderProps'
-import type { EngineSummaryProps } from './EngineSummaryProps'
 
-export type CronsEngineCardProps = EngineHeaderProps &
-  EngineSummaryProps & {
-    readonly totalEmails: number
-    readonly processingEmails: number
-    readonly ratePerSecond: number
-    readonly etaFormatted: string
-    readonly statusText: string | null
-  }
+export type CronsEngineCardProps = EngineHeaderProps & {
+  readonly currentProcessed: number
+  readonly totalEmails: number
+  readonly processingEmails: number
+  readonly ratePerSecond: number
+  readonly etaFormatted: string
+  readonly statusText: string | null
+  /** Server-rendered overall health state, top right of the panel. */
+  readonly healthPill?: ReactNode
+  /** Server-rendered scheduler, last run, next run and freshness facts. */
+  readonly healthFacts?: ReactNode
+}

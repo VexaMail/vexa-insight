@@ -1,6 +1,6 @@
-import { StatusPill } from '@/components/ui'
 import type { ReportOutcomePillProps } from '@/types/reports'
 import { describeDmarcOutcome, reportOutcomeLabel } from '@/utils/reports'
+import { ResultPill } from './ResultPill'
 
 /** A report's DMARC outcome in words, with the counts behind it on hover. */
 export function ReportOutcomePill({
@@ -11,10 +11,10 @@ export function ReportOutcomePill({
     ? describeDmarcOutcome(outcome)
     : 'No messages in this report'
   return (
-    <span title={description} className="inline-flex">
-      <StatusPill tone={pill.tone} dot>
+    <span className="inline-flex">
+      <ResultPill tone={pill.tone} title={description}>
         {pill.label}
-      </StatusPill>
+      </ResultPill>
       <span className="sr-only">: {description}</span>
     </span>
   )

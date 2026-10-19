@@ -9,22 +9,16 @@ export function TriggerPollSubmitButton({
   disabled,
 }: Readonly<TriggerPollSubmitButtonProps>) {
   return (
-    <Button
-      type="submit"
-      variant="outline"
-      size="sm"
-      disabled={disabled}
-      className="h-8 gap-1.5 px-3 text-xs"
-    >
+    <Button type="submit" disabled={disabled} className="h-10 w-full">
       {isLoading ? (
         <>
-          <RotateCw className="h-3 w-3 animate-spin" />
+          <RotateCw className="animate-spin" aria-hidden="true" />
           Running…
         </>
       ) : (
         <>
-          <Play className="h-3 w-3" />
-          Trigger poll
+          <Play aria-hidden="true" />
+          Trigger now
         </>
       )}
     </Button>

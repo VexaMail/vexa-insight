@@ -14,14 +14,16 @@ export function DiagnosticsInsightCard({
   const actionText = insight.action || insight.legacyRecommendation || ''
 
   return (
-    <div className="bg-card rounded-lg border p-4 shadow-sm">
+    <div className="border-border bg-secondary/30 rounded-lg border p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <span
             className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${insightToneDot(insight.tone)}`}
             aria-hidden="true"
           />
-          <h4 className="text-sm font-semibold">{insight.title}</h4>
+          <h4 className="text-foreground text-sm font-semibold">
+            {insight.title}
+          </h4>
         </div>
         <InsightToneBadge tone={insight.tone} />
       </div>

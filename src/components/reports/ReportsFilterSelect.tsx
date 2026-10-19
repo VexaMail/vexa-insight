@@ -14,7 +14,7 @@ export function ReportsFilterSelect({
       onChange={(e) => {
         onChange(e.target.value)
       }}
-      className="bg-background border-input focus-visible:ring-primary text-foreground h-9 cursor-pointer rounded-md border px-3 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
+      className="bg-card border-border hover:border-primary/40 focus-visible:ring-ring text-foreground h-10 min-w-0 cursor-pointer rounded-md border px-3 text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:max-w-56"
     >
       <option value="">{label}</option>
       {options.map((option) => (

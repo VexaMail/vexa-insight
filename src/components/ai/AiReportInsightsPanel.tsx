@@ -32,8 +32,8 @@ export default function AiReportInsightsPanel({
 
   if (state.status === 'error') {
     return (
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
+      <div className="glass-card space-y-3 p-4">
+        <div className="flex items-center gap-2.5">
           <AiReportInsightsHeading />
         </div>
         <AiErrorState message={state.error.message} onRetry={handleAnalyze} />
@@ -43,8 +43,8 @@ export default function AiReportInsightsPanel({
 
   if (state.data.insights.length === 0) {
     return (
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
+      <div className="glass-card space-y-3 p-4">
+        <div className="flex items-center gap-2.5">
           <AiReportInsightsHeading />
         </div>
         <AiEmptyState />

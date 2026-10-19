@@ -13,7 +13,7 @@ export function ReportSourcesPanel({
   return (
     <Panel
       title="Sending sources"
-      description="Authentication result first, then whether it aligns with the From domain. DMARC passes when either aligns."
+      description="Each IP that sent as the domain: the SPF and DKIM result, whether it aligns with the From domain, and what the receiver did. DMARC passes when either aligns."
       icon={<Network />}
       flush
     >

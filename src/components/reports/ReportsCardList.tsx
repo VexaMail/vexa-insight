@@ -10,7 +10,7 @@ export function ReportsCardList({
 }: Readonly<ReportsCardListProps>) {
   const scopeIds = rows.map((r) => r.id.toString())
   return (
-    <ul className="glass-card divide-border divide-y xl:hidden">
+    <ul className="border-border divide-border divide-y rounded-lg border xl:hidden">
       {rows.map((row) => (
         <ReportCard
           key={row.id}

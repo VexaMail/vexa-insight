@@ -1,15 +1,16 @@
 'use client'
 
-/** The sparkle and title shared by every state of the report panel. */
+import { IconTile } from '@/components/ui'
+import { Sparkles } from 'lucide-react'
+
+/** The icon square and title shared by every state of the report panel. */
 export function AiReportInsightsHeading() {
   return (
     <>
-      <span className="text-lg" aria-hidden="true">
-        ✨
-      </span>
-      <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-        AI Insights
-      </h3>
+      <IconTile size="sm">
+        <Sparkles />
+      </IconTile>
+      <h3 className="text-foreground text-sm font-semibold">AI insights</h3>
     </>
   )
 }

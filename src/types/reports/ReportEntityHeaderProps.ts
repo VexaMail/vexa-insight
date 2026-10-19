@@ -5,7 +5,5 @@ import type { ReportStats } from './ReportStats'
 export type ReportEntityHeaderProps = {
   readonly report: ReportDetailRow
   readonly stats: ReportStats
-  readonly backHref: string
-  readonly backLabel: string
   readonly navigatorSlot?: ReactNode
 }

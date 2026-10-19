@@ -1,60 +1,59 @@
 'use client'
 
+import { Panel } from '@/components/ui'
 import type { CronsEngineCardProps } from '@/types/ingest'
-import { m as motion } from 'framer-motion'
+import { Activity } from 'lucide-react'
 import { EngineHeader } from './EngineHeader'
 import { EngineProgress } from './EngineProgress'
-import { EngineSummary } from './EngineSummary'
 
+/**
+ * Ingestion health: the server-read facts and overall state on the left,
+ * run now, rescan or stop on the right, live progress while a run is up.
+ */
 export function CronsEngineCard({
   initialApiKey,
   isRunning,
   runRequested,
   abortStatus,
   onAbort,
-  scheduleText,
-  lastRunFormatted,
   currentProcessed,
   totalEmails,
   processingEmails,
   ratePerSecond,
   etaFormatted,
   statusText,
+  healthPill,
+  healthFacts,
 }: CronsEngineCardProps) {
-  const isActive = isRunning || runRequested
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="glass-card-hover p-5"
+    <Panel
+      icon={<Activity />}
+      title="Ingestion health"
+      description="Whether reports are still arriving, and a run on demand."
+      actions={healthPill}
     >
-      <EngineHeader
-        initialApiKey={initialApiKey}
-        isRunning={isRunning}
-        runRequested={runRequested}
-        abortStatus={abortStatus}
-        onAbort={onAbort}
-      />
-      <EngineSummary
-        scheduleText={scheduleText}
-        lastRunFormatted={lastRunFormatted}
-        currentProcessed={currentProcessed}
-        isRunning={isRunning}
-        runRequested={runRequested}
-      />
-
-      {isActive ? (
-        <EngineProgress
-          currentProcessed={currentProcessed}
-          totalEmails={totalEmails}
-          processingEmails={processingEmails}
-          ratePerSecond={ratePerSecond}
-          etaFormatted={etaFormatted}
-          statusText={statusText}
+      <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-6">
+        <div className="min-w-0">
+          {healthFacts}
+          {isRunning || runRequested ? (
+            <EngineProgress
+              currentProcessed={currentProcessed}
+              totalEmails={totalEmails}
+              processingEmails={processingEmails}
+              ratePerSecond={ratePerSecond}
+              etaFormatted={etaFormatted}
+              statusText={statusText}
+            />
+          ) : null}
+        </div>
+        <EngineHeader
+          initialApiKey={initialApiKey}
+          isRunning={isRunning}
+          runRequested={runRequested}
+          abortStatus={abortStatus}
+          onAbort={onAbort}
         />
-      ) : null}
-    </motion.div>
+      </div>
+    </Panel>
   )
 }
