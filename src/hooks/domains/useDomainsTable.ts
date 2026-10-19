@@ -7,7 +7,7 @@ import type {
   DomainsTableRow,
   UseDomainsTableReturn,
 } from '@/types/domains'
-import { getDomainStatus } from '@/utils/domains'
+import { getDomainHealth } from '@/utils/domains'
 import type { Row } from '@tanstack/react-table'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ChangeEvent } from 'react'
@@ -23,15 +23,13 @@ export function useDomainsTable({
   const initialStatus = searchParams.get('status') || 'All'
   const [statusFilter, setStatusFilter] = useState(initialStatus)
 
-  const filtered = useMemo(() => {
-    let result = domains
-    if (statusFilter !== 'All') {
-      result = result.filter(
-        (d) => getDomainStatus(d.passRatePercent) === statusFilter,
-      )
-    }
-    return result
-  }, [domains, statusFilter])
+  const filtered = useMemo(
+    () =>
+      statusFilter === 'All'
+        ? domains
+        : domains.filter((d) => getDomainHealth(d) === statusFilter),
+    [domains, statusFilter],
+  )
 
   function handleStatusChange(value: string) {
     setStatusFilter(value)
@@ -41,8 +39,12 @@ export function useDomainsTable({
     router.replace(`?${newParams.toString()}`, { scroll: false })
   }
 
-  function handleRowClick(row: Row<typeof dataTableFeatures, DomainsTableRow>) {
+  function handleNavigate() {
     setScope(filtered.map((d) => d.domainName))
+  }
+
+  function handleRowClick(row: Row<typeof dataTableFeatures, DomainsTableRow>) {
+    handleNavigate()
     router.push(`/domains/${row.original.domainName}`)
   }
 
@@ -56,5 +58,6 @@ export function useDomainsTable({
     handleRowClick,
     handleStatusChange,
     handleStatusSelectChange,
+    handleNavigate,
   }
 }

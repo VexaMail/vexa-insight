@@ -14,5 +14,10 @@ export const complianceColumn: ColumnDef<
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Compliance" descendingFirst />
   ),
-  cell: ({ row }) => <ComplianceBar passRate={row.original.passRatePercent} />,
+  cell: ({ row }) =>
+    row.original.totalMessages === 0 ? (
+      <span className="text-unknown text-xs">No mail reported</span>
+    ) : (
+      <ComplianceBar passRate={row.original.passRatePercent} />
+    ),
 }

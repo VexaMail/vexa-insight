@@ -1,46 +1,50 @@
-import { DispositionChartDisplay } from '@/components/charts'
-import { EnforcementReadinessCard } from '@/components/enforcement'
-import { ForensicReportsSection } from '@/components/forensic'
-import { ReportsTable } from '@/components/reports'
-import { TlsReportsSection } from '@/components/tlsrpt'
+import { EnforcementStageTrack } from '@/components/enforcement'
+import { deriveEnforcementStages } from '@/utils/domains'
+import { DomainDecisionRow } from './DomainDecisionRow'
 import type { DomainDetailProps } from './DomainDetailProps'
-import { DomainSection } from './DomainSection'
-import DomainSourcesTable from './DomainSourcesTable'
-import DomainStatsCard from './DomainStatsCard'
+import { DomainDetailTabs } from './DomainDetailTabs'
+import { DomainReportsTab } from './DomainReportsTab'
+import { DomainSourcesTab } from './DomainSourcesTab'
+import { DomainTransportTab } from './DomainTransportTab'
 
 export default function DomainDetail({
   domainId,
   domainName,
   data,
+  tab,
+  dnsSlot,
 }: Readonly<DomainDetailProps>) {
-  const { stats, sources, tls, forensic, enforcement } = data
-
+  const stages = deriveEnforcementStages(data.policy, data.enforcement.verdict)
   return (
     <>
-      <DomainStatsCard
-        totalMessages={stats.totalMessages}
-        passedCount={stats.passedCount}
-        failedCount={stats.failedCount}
-        passRatePercent={stats.passRatePercent}
-      />
-      <DomainSection id="disposition" title="Pass vs fail">
-        <DispositionChartDisplay
-          passed={stats.passedCount}
-          failed={stats.failedCount}
+      <DomainDecisionRow domainName={domainName} data={data} />
+      <EnforcementStageTrack stages={stages} />
+      <div className="space-y-4">
+        <DomainDetailTabs
+          domainName={domainName}
+          active={tab}
+          sourceCount={data.sources.length}
+          sourceDays={data.sourceDays}
         />
-      </DomainSection>
-      <EnforcementReadinessCard readiness={enforcement} />
-      <DomainSection id="sources" title="Sources (IP, count)">
-        <DomainSourcesTable
-          sources={sources}
-          csvHref={`/api/v1/domains/${String(domainId)}/sources?format=csv`}
-        />
-      </DomainSection>
-      <TlsReportsSection domainName={domainName} {...tls} />
-      <ForensicReportsSection rows={forensic} />
-      <DomainSection id="reports" title="Associated Reports">
-        <ReportsTable domainId={domainId} domainName={domainName} />
-      </DomainSection>
+        {tab === 'sources' ? (
+          <DomainSourcesTab domainId={domainId} data={data} />
+        ) : null}
+        {tab === 'dns' ? dnsSlot : null}
+        {tab === 'reports' ? (
+          <DomainReportsTab
+            domainId={domainId}
+            domainName={domainName}
+            summary={data.summary}
+          />
+        ) : null}
+        {tab === 'transport' ? (
+          <DomainTransportTab
+            domainName={domainName}
+            tls={data.tls}
+            forensic={data.forensic}
+          />
+        ) : null}
+      </div>
     </>
   )
 }

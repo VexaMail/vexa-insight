@@ -1,31 +1,21 @@
 'use client'
 
-import { Badge, SortableHeaderButton } from '@/components/ui'
+import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DomainsTableRow } from '@/types/domains'
-import { getDomainStatus } from '@/utils/domains'
+import { getDomainHealth } from '@/utils/domains'
 import type { ColumnDef } from '@tanstack/react-table'
-import { getComplianceStyles } from '../getComplianceStyles'
+import { DomainHealthPill } from '../DomainHealthPill'
 
 export const statusColumn: ColumnDef<
   typeof dataTableFeatures,
   DomainsTableRow
 > = {
   id: 'status',
-  accessorFn: (row) => getDomainStatus(row.passRatePercent),
+  accessorFn: (row) => getDomainHealth(row),
   header: ({ column }) => (
     <SortableHeaderButton column={column} label="Status" />
   ),
-  cell: ({ row }) => {
-    const { statusLabel, statusClass } = getComplianceStyles(
-      row.original.passRatePercent,
-    )
-
-    return (
-      <Badge variant="outline" className={statusClass}>
-        {statusLabel}
-      </Badge>
-    )
-  },
+  cell: ({ row }) => <DomainHealthPill {...row.original} />,
   enableGlobalFilter: false,
 }

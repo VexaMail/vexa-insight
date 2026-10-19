@@ -1,3 +1,3 @@
-import type { DomainsTableProps } from './DomainsTableProps'
+import type { DomainListRow } from './DomainListRow'
 
-export type DomainsTableRow = DomainsTableProps['domains'][0]
+export type DomainsTableRow = DomainListRow

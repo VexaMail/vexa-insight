@@ -1,7 +1,9 @@
+import { Panel, StatTile, StatusPill } from '@/components/ui'
+import { ShieldAlert } from 'lucide-react'
 import type { EnforcementReadinessCardProps } from './EnforcementReadinessCardProps'
-import { EnforcementStat } from './EnforcementStat'
 import { ENFORCEMENT_VERDICT_COPY } from './enforcementVerdictCopy'
 import { FAILING_KIND_LABEL } from './failingKindLabel'
+import { FAILING_KIND_TONE } from './failingKindTone'
 import { FailingSourcesTable } from './FailingSourcesTable'
 
 /**
@@ -12,45 +14,44 @@ export function EnforcementReadinessCard({
   readiness,
 }: EnforcementReadinessCardProps) {
   const copy = ENFORCEMENT_VERDICT_COPY[readiness.verdict]
+  const kinds = ['legitimate', 'forwarded', 'unknown'] as const
   return (
-    <section aria-labelledby="enforcement-heading" className="space-y-4">
-      <h2
-        id="enforcement-heading"
-        className="text-lg font-medium text-zinc-900 dark:text-zinc-50"
-      >
-        Enforcement readiness (last {readiness.days} days)
-      </h2>
-      <div
-        className={`rounded-lg border-l-4 bg-white p-4 dark:bg-zinc-800 ${copy.tone}`}
-      >
-        <p className="font-medium text-zinc-900 dark:text-zinc-50">
-          {copy.title}
-        </p>
-        <p className="text-muted-foreground mt-1 text-sm">{copy.advice}</p>
-        <p className="text-muted-foreground mt-1 text-xs">
-          Based on {readiness.totalMessages.toLocaleString()} messages over{' '}
-          {readiness.reportDays} report days. Under enforcement,{' '}
-          {readiness.failingMessages.toLocaleString()} would have been
-          quarantined or rejected.
-        </p>
+    <Panel
+      icon={<ShieldAlert />}
+      title={`Enforcement readiness, last ${String(readiness.days)} days`}
+    >
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <StatusPill tone={copy.tone} dot>
+            {copy.title}
+          </StatusPill>
+          <p className="text-muted-foreground text-sm">{copy.advice}</p>
+          <p className="text-muted-foreground text-xs">
+            Based on {readiness.totalMessages.toLocaleString('en-US')} messages
+            over {readiness.reportDays} report days. Under enforcement,{' '}
+            {readiness.failingMessages.toLocaleString('en-US')} would have been
+            quarantined or rejected.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {kinds.map((kind) => (
+            <StatTile
+              key={kind}
+              label={FAILING_KIND_LABEL[kind]}
+              value={readiness.failingByKind[kind].toLocaleString('en-US')}
+              tone={
+                readiness.failingByKind[kind] > 0
+                  ? FAILING_KIND_TONE[kind]
+                  : 'neutral'
+              }
+              hint={`failing messages from ${String(readiness.failingSourcesByKind[kind])} sources`}
+            />
+          ))}
+        </div>
+        {readiness.topFailingSources.length > 0 && (
+          <FailingSourcesTable sources={readiness.topFailingSources} />
+        )}
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <EnforcementStat
-          label={FAILING_KIND_LABEL.legitimate}
-          value={readiness.failingByKind.legitimate}
-        />
-        <EnforcementStat
-          label={FAILING_KIND_LABEL.forwarded}
-          value={readiness.failingByKind.forwarded}
-        />
-        <EnforcementStat
-          label={FAILING_KIND_LABEL.unknown}
-          value={readiness.failingByKind.unknown}
-        />
-      </div>
-      {readiness.topFailingSources.length > 0 && (
-        <FailingSourcesTable sources={readiness.topFailingSources} />
-      )}
-    </section>
+    </Panel>
   )
 }
