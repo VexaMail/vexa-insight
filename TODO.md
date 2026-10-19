@@ -10,13 +10,22 @@
 
 ## Diagnostics load time (2026-10-19)
 
-- [ ] Diagnostics pages take many seconds to load. The index runs a full DNS
-      check of every domain (`loadDiagnosticsOverview`, 6 at a time, snapshot
-      cached for `dnsSnapshotTtlMs`), and `/diagnostics/[domain]` runs a live
-      DNS check with no cache on every visit. A spinner now shows while they
-      run. Next: time `getDomainDnsRecords` per protocol on one domain to find
-      the slow lookups, then decide between lower resolver timeouts, reusing the
-      index snapshot on the domain page, or a background refresh.
+- [ ] `/diagnostics/[domain]` still runs a live DNS check with no cache on every
+      visit, which takes several seconds; a spinner shows meanwhile. The index
+      no longer waits on DNS: it reads stored runs and refreshes stale ones in
+      batches. Next: time `getDomainDnsRecords` per protocol on one domain to
+      find the slow lookups, then decide between lower resolver timeouts or
+      serving the stored run first.
+- [ ] A DNS timeout reads as a missing record (`resolveTxtSafe` returns `[]`),
+      and the index now stores that run for up to a day. Seen locally on
+      2026-10-19: under resolver load busirocket.com scored 3 instead of 40.
+      Next: have the resolvers report a timeout separately and skip storing a
+      run that had any, keeping the previous one.
+
+- [ ] `test/getTriageOverview.test.ts` ("counts the same messages in the KPIs,
+      the domains and the trend") hits the 5 s vitest timeout in the full suite
+      under machine load (load average 25-56 on 2026-10-19) and passes alone.
+      Next: profile its seed step, or give that test a longer timeout.
 
 ## Open Dependabot PRs (2026-10-13)
 

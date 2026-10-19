@@ -5,12 +5,17 @@ import type {
 } from '@/types/diagnostics'
 import { buildDiagnosticsFindings } from '@/utils/diagnostics'
 import { buildDiagnosticsAdminGuides } from './buildDiagnosticsAdminGuides'
+import { buildDiagnosticsOverviewCheck } from './buildDiagnosticsOverviewCheck'
 import { computeDomainScore } from './computeDomainScore'
 import { getDiagnosticStats } from './getDiagnosticStats'
 import { getDomainDnsRecords } from './getDomainDnsRecords'
 import { getReportedDkimSelectors } from './getReportedDkimSelectors'
+import { storeDiagnosticsOverviewCheck } from './storeDiagnosticsOverviewCheck'
 
-/** Loads, in parallel, everything the diagnostics page shows for a domain. */
+/**
+ * Loads, in parallel, everything the diagnostics page shows for a domain, and
+ * keeps the live run for the diagnostics index.
+ */
 export async function loadDomainDiagnostics(
   domainId: number,
   domainName: string,
@@ -28,6 +33,10 @@ export async function loadDomainDiagnostics(
     getDomainDnsRecords(domainName, selectors),
   ])
   const score = computeDomainScore(dns)
+  await storeDiagnosticsOverviewCheck(
+    domainId,
+    buildDiagnosticsOverviewCheck({ dns, checkedAt }),
+  )
   return {
     domains: summaryResponse.domains.map((d) => ({
       id: d.domainId,

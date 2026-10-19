@@ -1,4 +1,5 @@
 export { useDiagnosticsActiveTab } from './useDiagnosticsActiveTab'
+export { useDiagnosticsOverviewRows } from './useDiagnosticsOverviewRows'
 export { useDiagnosticsOverviewTable } from './useDiagnosticsOverviewTable'
 export { useDiagnosticsRerun } from './useDiagnosticsRerun'
 export { useDiagnosticsSections } from './useDiagnosticsSections'

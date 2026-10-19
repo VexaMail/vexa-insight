@@ -8,6 +8,7 @@ export {
   appSettings,
   auditLog,
   dnsSnapshots,
+  domainDiagnostics,
   domains,
   eventRollupDaily,
   forensicReports,

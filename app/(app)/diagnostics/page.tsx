@@ -11,8 +11,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 /**
- * /diagnostics — every domain's score and protocol states from a DNS run,
- * streamed in once the lookups finish.
+ * /diagnostics — every domain's score and protocol states from its stored DNS
+ * run; stale rows are checked again from the browser and fill in as they
+ * finish.
  */
 export default function DiagnosticsIndexPage() {
   return (
@@ -23,9 +24,7 @@ export default function DiagnosticsIndexPage() {
       />
       <Suspense
         fallback={
-          <LoadingPanel className="min-h-96">
-            Running DNS checks for every domain…
-          </LoadingPanel>
+          <LoadingPanel className="min-h-96">Loading domains…</LoadingPanel>
         }
       >
         <DiagnosticsOverviewLoader />

@@ -316,6 +316,13 @@
       "when": 1792376887698,
       "tag": "0044_alert_rules",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "6",
+      "when": 1792428116547,
+      "tag": "0045_domain_diagnostics",
+      "breakpoints": true
     }
   ]
 }

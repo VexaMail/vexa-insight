@@ -1,6 +1,6 @@
 import { countActionableFindings } from '@/utils/diagnostics'
-import { formatRunAt } from '@/utils/format'
 import type { DiagnosticsOverviewRowProps } from './DiagnosticsOverviewRowProps'
+import { OverviewCheckedAt } from './OverviewCheckedAt'
 import { OverviewDomainLink } from './OverviewDomainLink'
 import { OverviewProtocols } from './OverviewProtocols'
 import { OverviewScore } from './OverviewScore'
@@ -16,12 +16,12 @@ export function DiagnosticsOverviewCard({
         <OverviewScore row={row} />
       </div>
       <OverviewProtocols row={row} />
-      <p className="text-muted-foreground text-xs">
-        {countActionableFindings(row.findings)} need action · checked{' '}
-        <time dateTime={row.checkedAt} className="font-mono">
-          {formatRunAt(new Date(row.checkedAt))}
-        </time>
-      </p>
+      {row.check ? (
+        <p className="text-muted-foreground text-xs">
+          {countActionableFindings(row.check.protocols)} need action · checked{' '}
+          <OverviewCheckedAt row={row} />
+        </p>
+      ) : null}
     </li>
   )
 }

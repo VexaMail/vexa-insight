@@ -1,5 +1,5 @@
-import type { DiagnosticsFinding } from '@/types/diagnostics'
+import type { DiagnosticsProtocolState } from '@/types/diagnostics'
 
 export type ProtocolDotsProps = {
-  readonly findings: readonly DiagnosticsFinding[]
+  readonly findings: readonly DiagnosticsProtocolState[]
 }

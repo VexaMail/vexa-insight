@@ -9,4 +9,6 @@ export type GradeBandCounts = {
   readonly good: number
   /** The NS lookup returned nothing, so there is no grade. */
   readonly unresolved: number
+  /** Never checked yet, so there is nothing to grade. */
+  readonly pending: number
 }

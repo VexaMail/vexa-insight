@@ -2,8 +2,8 @@ import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { DiagnosticsOverviewRow } from '@/types/diagnostics'
 import { countActionableFindings } from '@/utils/diagnostics'
-import { formatRunAt } from '@/utils/format'
 import type { ColumnDef } from '@tanstack/react-table'
+import { OverviewCheckedAt } from './OverviewCheckedAt'
 import { OverviewDomainLink } from './OverviewDomainLink'
 import { OverviewProtocols } from './OverviewProtocols'
 import { OverviewScore } from './OverviewScore'
@@ -23,9 +23,10 @@ export const diagnosticsOverviewColumns: ColumnDef<
   },
   {
     id: 'score',
-    // A domain without a DNS answer has no score: it sorts after every
-    // scored one when the lowest scores come first.
-    accessorFn: (row) => (row.resolved ? row.score.percentage : 101),
+    // A domain without a DNS answer has no score, and one not checked yet has
+    // nothing at all: both sort after every scored one, lowest first.
+    accessorFn: (row) =>
+      row.check ? (row.check.resolved ? row.check.percentage : 101) : 102,
     header: ({ column }) => (
       <SortableHeaderButton column={column} label="Score" />
     ),
@@ -40,30 +41,28 @@ export const diagnosticsOverviewColumns: ColumnDef<
   },
   {
     id: 'needAction',
-    accessorFn: (row) => countActionableFindings(row.findings),
+    accessorFn: (row) =>
+      row.check ? countActionableFindings(row.check.protocols) : -1,
     header: ({ column }) => (
       <SortableHeaderButton column={column} label="To fix" descendingFirst />
     ),
     cell: ({ getValue }) => (
       <span className="text-muted-foreground font-mono text-xs tabular-nums">
-        {String(getValue())}
+        {getValue<number>() < 0 ? '—' : String(getValue())}
       </span>
     ),
     enableGlobalFilter: false,
   },
   {
     id: 'checkedAt',
-    accessorKey: 'checkedAt',
+    accessorFn: (row) => row.check?.checkedAt ?? '',
     header: ({ column }) => (
       <SortableHeaderButton column={column} label="Last checked" />
     ),
     cell: ({ row }) => (
-      <time
-        dateTime={row.original.checkedAt}
-        className="text-muted-foreground font-mono text-xs whitespace-nowrap"
-      >
-        {formatRunAt(new Date(row.original.checkedAt))}
-      </time>
+      <span className="text-muted-foreground text-xs whitespace-nowrap">
+        <OverviewCheckedAt row={row.original} />
+      </span>
     ),
     enableGlobalFilter: false,
   },

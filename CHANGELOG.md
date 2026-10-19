@@ -8,6 +8,18 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- **The diagnostics index opens at once and fills in as it checks.** Each
+  domain's last DNS run is now stored (migration `0045_domain_diagnostics`), so
+  `/diagnostics` lists every domain straight from the database. Rows that were
+  never checked, or were checked more than a day ago, are checked again from the
+  browser a batch at a time through the new
+  `POST /api/v1/diagnostics/overview/refresh`, with a progress line, and each
+  row updates as its batch returns. A daily job keeps every domain's run fresh,
+  and opening a domain stores its live run too. The phone list shows 50 domains
+  at a time.
+
 ## [0.4.0] - 2026-09-30
 
 ### Added

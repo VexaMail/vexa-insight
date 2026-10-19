@@ -5,7 +5,15 @@ import { ProtocolDots } from './ProtocolDots'
 export function OverviewProtocols({
   row,
 }: Readonly<DiagnosticsOverviewRowProps>) {
-  if (row.resolved) return <ProtocolDots findings={row.findings} />
+  const { check } = row
+  if (!check) {
+    return (
+      <span className="text-muted-foreground text-xs">
+        Waiting for the first DNS run.
+      </span>
+    )
+  }
+  if (check.resolved) return <ProtocolDots findings={check.protocols} />
   return (
     <span className="text-muted-foreground text-xs">
       The NS lookup returned nothing: the domain may not exist, or the resolver

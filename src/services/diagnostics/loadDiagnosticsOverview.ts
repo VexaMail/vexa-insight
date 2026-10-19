@@ -1,36 +1,21 @@
-import { diagnosticsOverviewConcurrency } from '@/constants/diagnostics'
-import { getDomainsSummaryAll } from '@/services/reports'
+import { getAllowedDomainIds } from '@/services/auth'
 import type { DiagnosticsOverviewRow } from '@/types/diagnostics'
-import {
-  buildDiagnosticsFindings,
-  resolveWithConcurrency,
-} from '@/utils/diagnostics'
-import { computeDomainScore } from './computeDomainScore'
-import { getDnsSnapshot } from './getDnsSnapshot'
+import { listDiagnosticsOverviewRows } from './listDiagnosticsOverviewRows'
 
-/** Score and protocol states of every visible domain, lowest score first. */
+/**
+ * Every visible domain with its stored DNS run, lowest score first and the
+ * never-checked ones last. Runs no lookup: the page refreshes stale rows from
+ * the browser, a batch at a time.
+ */
 export async function loadDiagnosticsOverview(): Promise<
   DiagnosticsOverviewRow[]
 > {
-  const { domains } = await getDomainsSummaryAll()
-  const rows = await resolveWithConcurrency(
-    domains,
-    diagnosticsOverviewConcurrency,
-    async (domain) => {
-      const snapshot = await getDnsSnapshot(domain.domainId, domain.domainName)
-      return {
-        domainName: domain.domainName,
-        score: computeDomainScore(snapshot.dns),
-        findings: buildDiagnosticsFindings(snapshot),
-        checkedAt: snapshot.checkedAt,
-        resolved: snapshot.dns.nsRecords.length > 0,
-      }
-    },
-  )
+  const rows = await listDiagnosticsOverviewRows(await getAllowedDomainIds())
+  const rank = (row: DiagnosticsOverviewRow) =>
+    row.check ? (row.check.resolved ? row.check.percentage : 101) : 102
   return rows.toSorted(
     (left, right) =>
-      Number(!left.resolved) - Number(!right.resolved) ||
-      left.score.percentage - right.score.percentage ||
+      rank(left) - rank(right) ||
       left.domainName.localeCompare(right.domainName),
   )
 }

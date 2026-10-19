@@ -9,12 +9,13 @@ import { diagnosticsOverviewColumns } from './diagnosticsOverviewColumns'
 
 /**
  * Every domain's score and protocol states, lowest score first: searchable,
- * sortable, filtered by grade band and paged 25 at a time on desktop.
+ * sortable, filtered by grade band, paged 25 at a time on desktop and 50
+ * at a time on a phone.
  */
 export function DiagnosticsOverviewTable({
   rows,
 }: Readonly<DiagnosticsOverviewTableProps>) {
-  const { band, counts, filtered, handleBandChange } =
+  const { band, counts, filtered, phoneRows, handleBandChange, showMore } =
     useDiagnosticsOverviewTable(rows)
   const filter = (
     <DiagnosticsGradeFilter
@@ -25,16 +26,22 @@ export function DiagnosticsOverviewTable({
   )
   return (
     <section aria-label="Domains" className="space-y-3">
-      <p className="text-muted-foreground text-xs">
-        Each run is reused for up to 5 minutes; open a domain for a live run.
-      </p>
       <div className="space-y-3 md:hidden">
         {filter}
         <ul className="glass-card divide-border divide-y">
-          {filtered.map((row) => (
-            <DiagnosticsOverviewCard key={row.domainName} row={row} />
+          {phoneRows.map((row) => (
+            <DiagnosticsOverviewCard key={row.domainId} row={row} />
           ))}
         </ul>
+        {phoneRows.length < filtered.length ? (
+          <button
+            type="button"
+            onClick={showMore}
+            className="border-border bg-card text-foreground hover:bg-accent focus-visible:ring-ring min-h-10 w-full rounded-md border px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            Show more ({filtered.length - phoneRows.length} left)
+          </button>
+        ) : null}
       </div>
       <div className="hidden md:block">
         <DataTable

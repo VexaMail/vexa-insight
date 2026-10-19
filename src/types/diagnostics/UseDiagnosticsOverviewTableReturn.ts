@@ -7,5 +7,9 @@ export type UseDiagnosticsOverviewTableReturn = {
   readonly band: DiagnosticsGradeBand
   readonly counts: GradeBandCounts
   readonly filtered: DiagnosticsOverviewRow[]
+  /** The first rows of `filtered`, as many as the phone list has opened. */
+  readonly phoneRows: DiagnosticsOverviewRow[]
   readonly handleBandChange: (band: DiagnosticsGradeBand) => void
+  /** Opens the next page of the phone list. */
+  readonly showMore: () => void
 }

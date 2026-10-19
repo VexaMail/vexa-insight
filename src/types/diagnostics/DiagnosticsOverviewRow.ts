@@ -1,13 +1,9 @@
-import type { DiagnosticsFinding } from './DiagnosticsFinding'
-import type { DomainScore } from './DomainScore'
+import type { DiagnosticsOverviewCheck } from './DiagnosticsOverviewCheck'
 
-/** One domain of the diagnostics index: its score and protocol states. */
+/** One domain of the diagnostics index and its last DNS run, if any. */
 export type DiagnosticsOverviewRow = {
+  readonly domainId: number
   readonly domainName: string
-  readonly score: DomainScore
-  readonly findings: readonly DiagnosticsFinding[]
-  /** ISO timestamp of the DNS run the row was computed from. */
-  readonly checkedAt: string
-  /** False when the NS lookup returned nothing: the run says little. */
-  readonly resolved: boolean
+  /** Null until the domain's DNS has been checked once. */
+  readonly check: DiagnosticsOverviewCheck | null
 }

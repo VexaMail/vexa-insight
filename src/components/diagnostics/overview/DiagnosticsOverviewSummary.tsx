@@ -11,9 +11,13 @@ export function DiagnosticsOverviewSummary({
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatTile
         variant="feature"
-        label="Domains checked"
+        label="Domains"
         value={counts.total}
-        hint={`${String(counts.unresolved)} without a DNS answer`}
+        hint={
+          counts.pending > 0
+            ? `${String(counts.unresolved)} without a DNS answer · ${String(counts.pending)} not checked yet`
+            : `${String(counts.unresolved)} without a DNS answer`
+        }
         icon={<Globe />}
       />
       <StatTile
