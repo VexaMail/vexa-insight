@@ -25,14 +25,15 @@ describe('report list DMARC outcome', () => {
     const { parseDmarcXml } = await import('@/utils/dmarc')
     for (const name of [
       'mixed-dmarc-outcome.xml',
-      'passing-dmarc-outcome.xml',
+      'spf-only-dmarc-outcome.xml',
+      'aligned-dmarc-outcome.xml',
     ]) {
       const result = await ingestParsedReport(parseDmarcXml(fixture(name)))
       expect(result.ingested).toBe(true)
     }
   })
 
-  it('counts messages where neither SPF nor DKIM is aligned as failing', async () => {
+  it('separates DMARC failures from messages aligned on SPF or DKIM only', async () => {
     const { getReports } = await import('@/services/reports')
     const { items } = await getReports(1, 25)
     const byReportId = new Map(items.map((r) => [r.reportId, r.dmarcOutcome]))
@@ -40,10 +41,17 @@ describe('report list DMARC outcome', () => {
     expect(byReportId.get('mixed-dmarc-outcome-2026-10')).toEqual({
       totalMessages: 8,
       failingMessages: 3,
+      partiallyAlignedMessages: 5,
     })
-    expect(byReportId.get('passing-dmarc-outcome-2026-10')).toEqual({
+    expect(byReportId.get('spf-only-dmarc-outcome-2026-10')).toEqual({
       totalMessages: 5,
       failingMessages: 0,
+      partiallyAlignedMessages: 5,
+    })
+    expect(byReportId.get('aligned-dmarc-outcome-2026-10')).toEqual({
+      totalMessages: 4,
+      failingMessages: 0,
+      partiallyAlignedMessages: 0,
     })
   })
 
@@ -56,6 +64,7 @@ describe('report list DMARC outcome', () => {
     expect(mixed?.dmarcOutcome).toEqual({
       totalMessages: 8,
       failingMessages: 3,
+      partiallyAlignedMessages: 5,
     })
   })
 })

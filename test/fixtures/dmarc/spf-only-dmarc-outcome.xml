@@ -4,7 +4,7 @@
   <report_metadata>
     <org_name>example.net</org_name>
     <email>dmarc-reports@example.net</email>
-    <report_id>passing-dmarc-outcome-2026-10</report_id>
+    <report_id>spf-only-dmarc-outcome-2026-10</report_id>
     <date_range>
       <begin>1717286400</begin>
       <end>1717372799</end>

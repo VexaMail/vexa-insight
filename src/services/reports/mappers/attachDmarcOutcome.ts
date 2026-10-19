@@ -4,7 +4,8 @@ import { inArray, sql } from 'drizzle-orm'
 
 /**
  * Adds each report's DMARC message totals. A message passes DMARC when SPF or
- * DKIM is aligned, so it fails only when neither is.
+ * DKIM is aligned, so it fails only when neither is; it passes partially when
+ * exactly one is, which the report page counts as requiring review.
  */
 export async function attachDmarcOutcome(
   reports: ReportRow[],
@@ -17,6 +18,9 @@ export async function attachDmarcOutcome(
       totalMessages: sql<number>`cast(coalesce(sum(${normalizedEvents.count}), 0) as integer)`,
       failingMessages: sql<number>`
         cast(coalesce(sum(case when ${normalizedEvents.spfAligned} = 0 and ${normalizedEvents.dkimAligned} = 0 then ${normalizedEvents.count} else 0 end), 0) as integer)
+      `,
+      partiallyAlignedMessages: sql<number>`
+        cast(coalesce(sum(case when ${normalizedEvents.spfAligned} <> ${normalizedEvents.dkimAligned} then ${normalizedEvents.count} else 0 end), 0) as integer)
       `,
     })
     .from(normalizedEvents)
@@ -37,6 +41,7 @@ export async function attachDmarcOutcome(
       dmarcOutcome: {
         totalMessages: row?.totalMessages ?? 0,
         failingMessages: row?.failingMessages ?? 0,
+        partiallyAlignedMessages: row?.partiallyAlignedMessages ?? 0,
       },
     }
   })

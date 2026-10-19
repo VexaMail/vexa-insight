@@ -81,6 +81,7 @@ describe('date-filtered reports list paging', () => {
     expect(second.items[0]?.dmarcOutcome).toEqual({
       totalMessages: 1,
       failingMessages: 0,
+      partiallyAlignedMessages: 0,
     })
     expect(second.items[0]?.relatedDomains?.map((d) => d.domainName)).toEqual([
       'example.com',
