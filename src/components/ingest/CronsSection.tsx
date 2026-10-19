@@ -10,6 +10,9 @@ export default function CronsSection({
   initialApiKey = '',
   isHistoricalJobContext = false,
   jobId,
+  healthPill,
+  healthFacts,
+  healthChecks,
   jobRunsNode,
   processedEmailsNode,
 }: Readonly<CronsSectionProps>) {
@@ -31,15 +34,16 @@ export default function CronsSection({
         onAbort={() => {
           void handleAbort()
         }}
-        scheduleText={viewModel.scheduleText}
-        lastRunFormatted={viewModel.lastRunFormatted}
         currentProcessed={viewModel.currentProcessed}
         totalEmails={viewModel.totalEmails}
         processingEmails={viewModel.processingEmails}
         ratePerSecond={viewModel.ratePerSecond}
         etaFormatted={viewModel.etaFormatted}
         statusText={viewModel.statusText}
+        healthPill={healthPill}
+        healthFacts={healthFacts}
       />
+      {healthChecks}
       <CronsTabsCard
         jobRunsNode={jobRunsNode}
         processedEmailsNode={processedEmailsNode}

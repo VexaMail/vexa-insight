@@ -14,8 +14,7 @@ export function EngineStopButton({
   return (
     <Button
       variant="destructive"
-      size="sm"
-      className="h-8 gap-1.5 px-3 text-xs"
+      className="h-10 w-full"
       onClick={onAbort}
       disabled={abortStatus === 'loading' || !hasApiKey}
       title={hasApiKey ? undefined : 'Set API key in settings to stop the job'}

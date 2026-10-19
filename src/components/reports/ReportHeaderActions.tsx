@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui'
 import type { ReportHeaderActionsProps } from '@/types/reports'
-import { Globe, Stethoscope } from 'lucide-react'
+import { ArrowRight, Globe, Stethoscope } from 'lucide-react'
 import Link from 'next/link'
 
 /** Where to go next from a report: the domain, then its live DNS checks. */
@@ -14,6 +14,7 @@ export function ReportHeaderActions({
         <Link href={`/diagnostics/${encoded}`}>
           <Stethoscope aria-hidden="true" />
           DNS diagnostics
+          <ArrowRight aria-hidden="true" />
         </Link>
       </Button>
       <Button asChild className="h-10">

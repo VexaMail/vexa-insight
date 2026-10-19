@@ -7,8 +7,8 @@ export function ReportHeaderFact({
   children,
 }: Readonly<ReportHeaderFactProps>) {
   return (
-    <span className="text-muted-foreground inline-flex h-6 min-w-0 items-center gap-1.5 text-sm">
-      <span aria-hidden className="shrink-0 [&_svg]:h-4 [&_svg]:w-4">
+    <span className="border-border bg-secondary/40 text-muted-foreground inline-flex h-7 min-w-0 items-center gap-1.5 rounded-md border px-2 text-xs">
+      <span aria-hidden className="shrink-0 [&_svg]:h-3.5 [&_svg]:w-3.5">
         {icon}
       </span>
       <span className="sr-only">{label}:</span>

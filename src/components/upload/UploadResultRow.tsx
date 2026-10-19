@@ -1,5 +1,6 @@
 import { StatusPill } from '@/components/ui'
 import type { UploadResultRowProps } from '@/types/upload'
+import { Check, X } from 'lucide-react'
 import Link from 'next/link'
 
 /** One finished upload: outcome, file, what the server said, and a link. */
@@ -11,7 +12,10 @@ export function UploadResultRow({ upload }: Readonly<UploadResultRowProps>) {
         <span className="text-foreground min-w-0 truncate font-mono text-xs font-medium">
           {upload.name}
         </span>
-        <StatusPill tone={accepted ? 'success' : 'danger'} dot>
+        <StatusPill
+          tone={accepted ? 'success' : 'danger'}
+          icon={accepted ? <Check /> : <X />}
+        >
           {accepted ? 'Parsed' : 'Rejected'}
         </StatusPill>
       </div>

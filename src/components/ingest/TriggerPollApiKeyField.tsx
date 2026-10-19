@@ -7,7 +7,7 @@ export function TriggerPollApiKeyField({
   onChange,
 }: Readonly<TriggerPollApiKeyFieldProps>) {
   return (
-    <div className="min-w-[200px] flex-1">
+    <div className="min-w-0">
       <label
         htmlFor="trigger-poll-api-key"
         className="text-foreground mb-1 block text-sm font-medium"
@@ -22,7 +22,7 @@ export function TriggerPollApiKeyField({
           onChange(e.target.value)
         }}
         placeholder="API key"
-        className="border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:outline-none"
+        className="border-border bg-card text-foreground placeholder:text-muted-foreground focus-visible:ring-ring h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-2 focus-visible:outline-none"
         autoComplete="off"
       />
     </div>

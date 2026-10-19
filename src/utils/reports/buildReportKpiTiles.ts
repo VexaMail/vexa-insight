@@ -24,6 +24,7 @@ export function buildReportKpiTiles(
       value: total === 0 ? 'No data' : total.toLocaleString('en-US'),
       hint: `Aligned on both: ${describeOutOf(stats.bothAlignedCount, total, 'message')}`,
       tone: 'neutral',
+      accent: 'info',
       trend: trends.messages,
       trendKind: 'bars',
     },
