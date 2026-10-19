@@ -1,9 +1,7 @@
-import { TabNav } from '@/components/ui'
-import {
-  buildDiagnosticsTabItems,
-  countActionableFindings,
-} from '@/utils/diagnostics'
+import { countActionableFindings } from '@/utils/diagnostics'
 import { DiagnosticsHeader } from './DiagnosticsHeader'
+import { DiagnosticsInPageLinks } from './DiagnosticsInPageLinks'
+import { DiagnosticsTabNav } from './DiagnosticsTabNav'
 import type { DiagnosticsViewProps } from './DiagnosticsViewProps'
 import { DiagnosticsSummary } from './summary/DiagnosticsSummary'
 import { DiagnosticsTabPanels } from './tabs/DiagnosticsTabPanels'
@@ -11,7 +9,8 @@ import { UnresolvedDomainNotice } from './UnresolvedDomainNotice'
 
 /**
  * One domain's diagnostics: header, score and protocol tiles, then the tabs.
- * Every printable tab panel is rendered so the PDF export prints all of them.
+ * Every tab panel is rendered, so the PDF export prints all of them and a tab
+ * link only switches which one shows, without another DNS run.
  */
 export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
   const base = { domain: props.currentDomainName, query: props.query }
@@ -19,6 +18,7 @@ export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
 
   return (
     <div className="flex flex-col space-y-6">
+      <DiagnosticsInPageLinks />
       <DiagnosticsHeader {...props} />
       {props.dns.nsRecords.length === 0 ? (
         <UnresolvedDomainNotice domain={props.currentDomainName} />
@@ -30,11 +30,7 @@ export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
         actionable={actionable}
       />
       <div className="print:hidden">
-        <TabNav
-          items={buildDiagnosticsTabItems(base)}
-          active={props.activeTab}
-          label="Diagnostics sections"
-        />
+        <DiagnosticsTabNav base={base} />
       </div>
       <DiagnosticsTabPanels {...props} base={base} />
     </div>

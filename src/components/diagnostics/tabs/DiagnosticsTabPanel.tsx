@@ -1,13 +1,17 @@
+'use client'
+
+import { useDiagnosticsActiveTab } from '@/hooks/diagnostics'
 import { cn } from '@/lib/utils'
 import type { DiagnosticsTabPanelProps } from './DiagnosticsTabPanelProps'
 
 /** Shows the active tab; printable panels stay in the DOM for the PDF. */
 export function DiagnosticsTabPanel({
-  active,
+  tab,
   label,
   printable = true,
   children,
 }: Readonly<DiagnosticsTabPanelProps>) {
+  const active = useDiagnosticsActiveTab() === tab
   const hidden = printable ? 'hidden space-y-4 print:block' : 'hidden'
   return (
     <section

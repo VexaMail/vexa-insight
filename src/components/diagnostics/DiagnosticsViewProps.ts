@@ -1,7 +1,6 @@
 import type {
   DiagnosticsAdminGuide,
   DiagnosticsFinding,
-  DiagnosticsTabKey,
   DnsDiagnostics,
   DomainScore,
 } from '@/types/diagnostics'
@@ -21,7 +20,6 @@ export type DiagnosticsViewProps = {
   guides: readonly DiagnosticsAdminGuide[]
   /** ISO timestamp of the live DNS run. */
   checkedAt: string
-  activeTab: DiagnosticsTabKey
   /** Date-range query string kept across tab links, without `tab`. */
   query: string
   /** The runbook and optional AI analysis, rendered in the Runbook tab. */

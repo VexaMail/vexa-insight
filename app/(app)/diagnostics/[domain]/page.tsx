@@ -7,7 +7,6 @@ import { loadDomainDiagnostics } from '@/services/diagnostics'
 import { getDomainByName } from '@/services/reports'
 import {
   buildDiagnosticsQuery,
-  parseDiagnosticsTab,
   resolveDiagnosticsQueryWindow,
 } from '@/utils/diagnostics'
 import type { Metadata } from 'next'
@@ -53,7 +52,6 @@ export default async function DomainDiagnosticsPage({
         days={days}
         fromDate={fromDate}
         toDate={toDate}
-        activeTab={parseDiagnosticsTab(sp['tab'])}
         query={buildDiagnosticsQuery(sp)}
         runbook={
           <AiDiagnosticsInsightsPanel

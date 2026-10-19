@@ -1,6 +1,7 @@
 export { DROPDOWN_MENU_ITEM_CLASS } from './dropdownMenuItemClass'
 export { DROPDOWN_MENU_ITEM_QUERY } from './dropdownMenuItemQuery'
 export { ICON_TILE_CLASSES } from './iconTileClasses'
+export { SHOWN_ELEMENT_MAX_FRAMES } from './shownElementMaxFrames'
 export { SPARKLINE_TONE_CLASSES } from './sparklineStrokeClasses'
 export { STATUS_TONE_CLASSES } from './statusToneClasses'
 export { STATUS_TONE_DOT_CLASSES } from './statusToneDotClasses'

@@ -8,7 +8,6 @@ import { RunbookTab } from './RunbookTab'
 import { TransportTab } from './TransportTab'
 
 export function DiagnosticsTabPanels({
-  activeTab,
   dns,
   score,
   findings,
@@ -20,29 +19,23 @@ export function DiagnosticsTabPanels({
 }: Readonly<DiagnosticsTabPanelsProps>) {
   return (
     <>
-      <DiagnosticsTabPanel active={activeTab === 'findings'} label="Findings">
+      <DiagnosticsTabPanel tab="findings" label="Findings">
         <FindingsTab findings={findings} guides={guides} base={base} />
       </DiagnosticsTabPanel>
-      <DiagnosticsTabPanel active={activeTab === 'dns'} label="DNS records">
+      <DiagnosticsTabPanel tab="dns" label="DNS records">
         <DnsTab dns={dns} />
       </DiagnosticsTabPanel>
-      <DiagnosticsTabPanel
-        active={activeTab === 'auth'}
-        label="Authentication flow"
-      >
+      <DiagnosticsTabPanel tab="auth" label="Authentication flow">
         <AuthTab dns={dns} />
       </DiagnosticsTabPanel>
-      <DiagnosticsTabPanel
-        active={activeTab === 'transport'}
-        label="TLS and reporting"
-      >
+      <DiagnosticsTabPanel tab="transport" label="TLS and reporting">
         <TransportTab dns={dns} />
       </DiagnosticsTabPanel>
-      <DiagnosticsTabPanel active={activeTab === 'runbook'} label="Runbook">
+      <DiagnosticsTabPanel tab="runbook" label="Runbook">
         <RunbookTab score={score}>{runbook}</RunbookTab>
       </DiagnosticsTabPanel>
       <DiagnosticsTabPanel
-        active={activeTab === 'generator'}
+        tab="generator"
         label="Record generator"
         printable={false}
       >

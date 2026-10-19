@@ -3,14 +3,7 @@ import type { DiagnosticsViewProps } from '../DiagnosticsViewProps'
 
 export type DiagnosticsTabPanelsProps = Pick<
   DiagnosticsViewProps,
-  | 'activeTab'
-  | 'dns'
-  | 'score'
-  | 'findings'
-  | 'guides'
-  | 'runbook'
-  | 'domainId'
-  | 'checkedAt'
+  'dns' | 'score' | 'findings' | 'guides' | 'runbook' | 'domainId' | 'checkedAt'
 > & {
   readonly base: DiagnosticsLinkBase
 }
