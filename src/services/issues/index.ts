@@ -1,4 +1,5 @@
 export { canAccessIssueKey } from './canAccessIssueKey'
 export { getIssueStates } from './getIssueStates'
+export { listDomainIssueEvents } from './listDomainIssueEvents'
 export { listIssueEvents } from './listIssueEvents'
 export { recordIssueEvent } from './recordIssueEvent'
