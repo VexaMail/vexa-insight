@@ -505,6 +505,8 @@ The following endpoints are stable and meant for automation:
 - `GET /api/v1/domains/{id}/dns/history` — stored changes of a domain's tracked
   DNS records, newest first; `POST /api/v1/domains/{id}/dns/check` looks them up
   now and stores what changed.
+- `GET /api/v1/domains/{id}/timeline?days=` — daily messages and DMARC-aligned
+  messages next to DNS changes, new sources, source verdicts and issue actions.
 - `POST /api/v1/domains/{id}/dns/spf-plan` — counts the DNS lookups of a
   candidate SPF record (`{"record": "v=spf1 ..."}`) against the published one
   and the limit of ten, resolving its includes; nothing is stored.
