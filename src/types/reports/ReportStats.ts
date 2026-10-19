@@ -1,21 +1,20 @@
+import type { ReportAlignmentCounts } from './ReportAlignmentCounts'
+
 /**
  * Authentication statistics scoped to a single raw report.
  *
- * complianceRate = bothAlignedCount / totalMessages.
- * A message is "compliant" only when BOTH SPF and DKIM pass alignment.
- * This is stricter than "authenticated" (where either passing suffices).
- *
- * All rates are pre-computed server-side as percentages (0-100).
+ * A message passes DMARC when SPF or DKIM is aligned, so `complianceRate`
+ * counts either; `fullyAlignedRate` is the stricter share aligned on both.
+ * All rates are pre-computed server-side as whole percentages (0-100) of
+ * `totalMessages`.
  */
-export type ReportStats = {
-  totalMessages: number
-  spfAlignedCount: number
-  dkimAlignedCount: number
-  bothAlignedCount: number
+export type ReportStats = ReportAlignmentCounts & {
   /** Distinct source IPs where SPF or DKIM fails alignment. Label: "sources requiring review". */
   sourcesRequiringReviewCount: number
-  /** bothAlignedCount / totalMessages * 100. Strict dual-alignment compliance. */
+  /** dmarcPassCount / totalMessages * 100: the DMARC pass rate. */
   complianceRate: number
+  /** bothAlignedCount / totalMessages * 100 */
+  fullyAlignedRate: number
   /** spfAlignedCount / totalMessages * 100 */
   spfAlignedRate: number
   /** dkimAlignedCount / totalMessages * 100 */

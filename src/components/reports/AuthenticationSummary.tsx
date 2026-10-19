@@ -14,10 +14,12 @@ export function AuthenticationSummary({
 
   return (
     <div
-      className={`flex items-start gap-3 rounded-lg border p-4 ${AUTH_SUMMARY_STATUS_STYLES[narrative.status]}`}
+      className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${AUTH_SUMMARY_STATUS_STYLES[narrative.status]}`}
     >
-      <Icon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-      <p className="text-sm leading-relaxed font-medium">{narrative.text}</p>
+      <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+      <p className="text-foreground text-sm leading-relaxed">
+        {narrative.text}
+      </p>
     </div>
   )
 }

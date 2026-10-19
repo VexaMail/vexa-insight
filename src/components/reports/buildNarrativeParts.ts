@@ -1,4 +1,5 @@
 import type { ReportStats } from '@/types/reports'
+import { describeOutOf } from '@/utils/reports'
 import type { AuthSummaryNarrative } from './AuthSummaryNarrative'
 import { appendDispositionNote } from './appendDispositionNote'
 import { appendFailureMode } from './appendFailureMode'
@@ -11,21 +12,22 @@ export function buildNarrativeParts(
   dominantDisposition: string,
   status: AuthSummaryNarrative['status'],
 ): string[] {
-  const parts: string[] = []
+  const passing = describeOutOf(
+    stats.dmarcPassCount,
+    stats.totalMessages,
+    'message',
+  )
+  const verb = stats.dmarcPassCount === 1 ? 'passes' : 'pass'
   const reviewCount = stats.sourcesRequiringReviewCount
-  const sourcePlural = reviewCount === 1 ? '' : 's'
-  const sourceVerb = reviewCount === 1 ? 's' : ''
+  const sources = `${String(reviewCount)} source${reviewCount === 1 ? '' : 's'}`
+  const parts: string[] = []
 
   if (status === 'healthy') {
-    parts.push('All traffic is fully aligned.')
+    parts.push(`${passing} ${verb} DMARC.`)
   } else if (status === 'degraded') {
-    parts.push(
-      `Most traffic is authenticated, but ${String(reviewCount)} source${sourcePlural} require${sourceVerb} review.`,
-    )
+    parts.push(`${passing} ${verb} DMARC; ${sources} to review.`)
   } else {
-    parts.push(
-      `Significant alignment failures detected across ${String(reviewCount)} source${sourcePlural}.`,
-    )
+    parts.push(`Only ${passing} ${verb} DMARC, across ${sources} to review.`)
   }
 
   appendFailureMode(parts, stats)

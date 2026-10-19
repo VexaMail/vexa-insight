@@ -31,6 +31,7 @@ export async function getReportSources(
       countryCode: r.countryCode ?? null,
       messageCount: r.messageCount,
       spfResult: r.spfResult,
+      spfAuthResult: r.spfAuthResult,
       dkimResult: r.dkimResult,
       spfAligned: r.spfAligned,
       dkimAligned: r.dkimAligned,
@@ -38,6 +39,7 @@ export async function getReportSources(
       overrideTypes: overridesByIp.get(r.ip) ?? [],
       primaryDkimDomain: dkim?.domain ?? null,
       primaryDkimSelector: dkim?.selector ?? null,
+      primaryDkimResult: dkim?.result ?? null,
     }
   })
 }

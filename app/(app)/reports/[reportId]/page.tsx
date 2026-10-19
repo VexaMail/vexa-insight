@@ -3,12 +3,10 @@ import type { Metadata } from 'next'
 import { AiReportInsightsPanel } from '@/components/ai'
 import {
   AuthenticationSummary,
-  ReportHeader,
-  ReportKpiCards,
-  ReportMetadata,
-  ReportSourcesTable,
-  ReportTransportSecurityPrimer,
-  XmlViewerCollapsible,
+  ReportEntityHeader,
+  ReportEvidenceSections,
+  ReportKpiTiles,
+  ReportSourcesPanel,
 } from '@/components/reports'
 import { PageContainer } from '@/components/shell'
 import { Navigator } from '@/components/ui'
@@ -18,6 +16,7 @@ import {
   getReportSources,
   getReportStats,
 } from '@/services/reports'
+import { countDistinctSourceIps, resolveReportBackLink } from '@/utils/reports'
 import { notFound } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
@@ -52,33 +51,29 @@ export default async function ReportDetailPage({
   ])
   if (!report) notFound()
 
-  const backHref =
-    typeof fromDomain === 'string' && fromDomain.length > 0
-      ? `/domains/${encodeURIComponent(fromDomain)}`
-      : '/reports'
-  const backLabel = fromDomain ? <>&larr; Domain Info</> : <>&larr; Reports</>
+  const back = resolveReportBackLink(fromDomain)
 
   const aiConfigured = isAiConfigured()
   const hasEvents = stats.totalMessages > 0
 
   return (
-    <PageContainer>
-      <ReportHeader
+    <PageContainer className="space-y-6">
+      <ReportEntityHeader
         report={report}
-        backHref={backHref}
-        backLabel={backLabel}
+        stats={stats}
+        backHref={back.href}
+        backLabel={back.label}
         navigatorSlot={<Navigator currentId={segment} basePath="/reports" />}
       />
 
-      <ReportKpiCards stats={stats} />
+      <ReportKpiTiles
+        stats={stats}
+        sourceCount={countDistinctSourceIps(sources)}
+      />
 
       <AuthenticationSummary stats={stats} sources={sources} />
 
-      <ReportSourcesTable sources={sources} />
-
-      <ReportTransportSecurityPrimer
-        domainHints={report.relatedDomains?.map((d) => d.domainName) ?? []}
-      />
+      <ReportSourcesPanel sources={sources} />
 
       <AiReportInsightsPanel
         reportId={reportId}
@@ -86,9 +81,7 @@ export default async function ReportDetailPage({
         hasEvents={hasEvents}
       />
 
-      <ReportMetadata report={report} />
-
-      <XmlViewerCollapsible rawXml={report.rawXml} />
+      <ReportEvidenceSections report={report} />
     </PageContainer>
   )
 }

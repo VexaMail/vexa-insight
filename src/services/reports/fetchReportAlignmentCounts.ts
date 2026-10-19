@@ -20,14 +20,21 @@ export async function fetchReportAlignmentCounts(
       bothAlignedCount: sql<number>`
         cast(coalesce(sum(case when ${normalizedEvents.spfAligned} = 1 and ${normalizedEvents.dkimAligned} = 1 then ${normalizedEvents.count} else 0 end), 0) as integer)
       `,
+      dmarcPassCount: sql<number>`
+        cast(coalesce(sum(case when ${normalizedEvents.spfAligned} = 1 or ${normalizedEvents.dkimAligned} = 1 then ${normalizedEvents.count} else 0 end), 0) as integer)
+      `,
     })
     .from(normalizedEvents)
     .where(eq(normalizedEvents.rawReportId, rawReportId))
 
-  return {
-    totalMessages: row?.totalMessages ?? 0,
-    spfAlignedCount: row?.spfAlignedCount ?? 0,
-    dkimAlignedCount: row?.dkimAlignedCount ?? 0,
-    bothAlignedCount: row?.bothAlignedCount ?? 0,
-  }
+  // Every sum is coalesced to 0, so a row always carries five numbers.
+  return (
+    row ?? {
+      totalMessages: 0,
+      spfAlignedCount: 0,
+      dkimAlignedCount: 0,
+      bothAlignedCount: 0,
+      dmarcPassCount: 0,
+    }
+  )
 }

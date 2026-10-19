@@ -10,7 +10,7 @@ import type { XmlViewerProps } from './XmlViewerProps'
  */
 export function XmlViewer({ rawXml }: Readonly<XmlViewerProps>) {
   return (
-    <div className="max-h-[600px] overflow-auto rounded-md border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900/40">
+    <div className="border-border bg-muted/50 max-h-[600px] overflow-auto rounded-md border">
       <pre className="w-max min-w-full py-3 font-mono text-[13px] leading-5">
         {splitXmlLines(rawXml).map((line) => (
           <XmlLineRow key={line.number} line={line} />
