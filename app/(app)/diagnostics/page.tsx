@@ -1,5 +1,5 @@
 import { PageContainer, PageHeader } from '@/components/shell'
-import { PageSkeleton } from '@/components/ui'
+import { LoadingPanel } from '@/components/ui'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { DiagnosticsOverviewLoader } from './DiagnosticsOverviewLoader'
@@ -21,7 +21,13 @@ export default function DiagnosticsIndexPage() {
         title="Diagnostics"
         description="DNS checks of DMARC, SPF, DKIM, MTA-STS, TLS-RPT and BIMI for every domain in your reports. Open a domain for its findings and fixes."
       />
-      <Suspense fallback={<PageSkeleton className="h-96" />}>
+      <Suspense
+        fallback={
+          <LoadingPanel className="min-h-96">
+            Running DNS checks for every domain…
+          </LoadingPanel>
+        }
+      >
         <DiagnosticsOverviewLoader />
       </Suspense>
     </PageContainer>

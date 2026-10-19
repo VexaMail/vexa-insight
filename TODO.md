@@ -8,6 +8,16 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+## Diagnostics load time (2026-10-19)
+
+- [ ] Diagnostics pages take many seconds to load. The index runs a full DNS
+      check of every domain (`loadDiagnosticsOverview`, 6 at a time, snapshot
+      cached for `dnsSnapshotTtlMs`), and `/diagnostics/[domain]` runs a live
+      DNS check with no cache on every visit. A spinner now shows while they
+      run. Next: time `getDomainDnsRecords` per protocol on one domain to find
+      the slow lookups, then decide between lower resolver timeouts, reusing the
+      index snapshot on the domain page, or a background refresh.
+
 ## Open Dependabot PRs (2026-10-13)
 
 - [ ] Three Dependabot PRs open on VexaMail/vexa-insight: #71
