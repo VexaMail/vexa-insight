@@ -1,36 +1,29 @@
-import {
-  findingSeverityTones,
-  protocolTileToneClasses,
-} from '@/constants/diagnostics'
+import { findingSeverityTones, protocolIcons } from '@/constants/diagnostics'
 import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
 import { cn } from '@/lib/utils'
 import { diagnosticsSectionHref } from '@/utils/diagnostics'
 import Link from 'next/link'
 import type { FindingLinkProps } from '../findings/FindingLinkProps'
 import { FindingSeverityIcon } from '../findings/FindingSeverityIcon'
-import { ProtocolTileInfo } from './ProtocolTileInfo'
 
-/** A protocol's state word on a tile tinted by that state; opens the evidence. */
+/** A protocol's icon, state icon, state word and one fact; opens the evidence. */
 export function ProtocolTile({ finding, base }: Readonly<FindingLinkProps>) {
   const tone = findingSeverityTones[finding.severity]
+  const Icon = protocolIcons[finding.id]
   return (
-    <li
-      className={cn(
-        'relative flex min-w-0 flex-col gap-1.5 rounded-xl border p-3 transition-colors duration-150',
-        protocolTileToneClasses[tone],
-      )}
-    >
-      <div className="mb-auto flex items-center justify-between gap-1.5 pb-2">
-        <span className="flex min-w-0 items-center gap-1.5">
-          <span className="shrink-0 [&_svg]:h-5 [&_svg]:w-5">
-            <FindingSeverityIcon severity={finding.severity} />
-          </span>
-          <span className="text-muted-foreground truncate font-mono text-[11px] font-medium uppercase">
-            {finding.protocol}
-          </span>
+    <li className="glass-card-hover relative flex min-w-0 flex-col p-3">
+      <div className="mb-auto flex items-start justify-between gap-2 pb-3">
+        <Icon aria-hidden strokeWidth={1.5} className="text-info h-7 w-7" />
+        <span
+          title={`${finding.state}. ${finding.detail}`}
+          className="shrink-0 [&_svg]:h-5 [&_svg]:w-5"
+        >
+          <FindingSeverityIcon severity={finding.severity} />
         </span>
-        <ProtocolTileInfo finding={finding} />
       </div>
+      <span className="text-muted-foreground truncate font-mono text-[11px] font-medium uppercase">
+        {finding.protocol}
+      </span>
       <Link
         href={diagnosticsSectionHref(base, finding.section)}
         className={cn(

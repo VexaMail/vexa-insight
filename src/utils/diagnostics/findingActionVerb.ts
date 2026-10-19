@@ -1,15 +1,13 @@
 import type { DiagnosticsFinding, FindingActionVerb } from '@/types/diagnostics'
 
 /**
- * A passing check is only viewed; a record to publish or an optional
- * protocol has a guide; SPF is
- * checked against its lookup budget; anything else needs verifying.
+ * A check that needs a change is verified after fixing it; a passing or
+ * purely informational one is only viewed.
  */
 export function findingActionVerb(
   finding: DiagnosticsFinding,
 ): FindingActionVerb {
-  if (finding.severity === 'pass') return 'View'
-  if (finding.fix !== null || finding.severity === 'info') return 'Guide'
-  if (finding.id === 'spf') return 'Check'
-  return 'Verify'
+  return finding.severity === 'pass' || finding.severity === 'info'
+    ? 'View'
+    : 'Verify'
 }
