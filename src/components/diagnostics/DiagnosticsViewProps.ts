@@ -9,6 +9,8 @@ import type { ReactNode } from 'react'
 
 export type DiagnosticsViewProps = {
   domains: { id: number; name: string }[]
+  /** Database id of the domain, for the SPF lookup planner. */
+  domainId: number
   currentDomainName: string
   days: number
   fromDate?: Date | undefined

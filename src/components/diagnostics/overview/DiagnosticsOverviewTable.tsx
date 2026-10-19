@@ -27,7 +27,9 @@ export function DiagnosticsOverviewTable({
               <TableHead className="pl-4">Domain</TableHead>
               <TableHead>Score</TableHead>
               <TableHead>Protocols</TableHead>
-              <TableHead className="text-right">Need action</TableHead>
+              <TableHead className="text-right whitespace-nowrap">
+                Need action
+              </TableHead>
               <TableHead className="pr-4">Last checked</TableHead>
             </TableRow>
           </TableHeader>

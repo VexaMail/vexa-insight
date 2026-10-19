@@ -1,4 +1,3 @@
-import { StatusPill } from '@/components/ui'
 import { gradeHeadlines } from '@/constants/diagnostics'
 import {
   describeFindingsSummary,
@@ -7,46 +6,49 @@ import {
 } from '@/utils/diagnostics'
 import Link from 'next/link'
 import type { DiagnosticsSummaryProps } from './DiagnosticsSummaryProps'
-import { ScoreFigure } from './ScoreFigure'
-import { ScoreMeter } from './ScoreMeter'
+import { GradePill } from './GradePill'
+import { ScoreRing } from './ScoreRing'
 
-/** Score, grade and one line on what it means; the breakdown is a link away. */
+/** Score ring, grade and one line on what it means; the breakdown a link away. */
 export function DiagnosticsScorePanel({
   score,
   findings,
   base,
   actionable,
 }: Readonly<DiagnosticsSummaryProps>) {
-  const tone = scoreGradeTone(score.grade)
   return (
     <section
       aria-label="Security score"
-      className="glass-card flex min-w-0 flex-col gap-3 p-4"
+      className="glass-card flex min-w-0 items-center gap-4 p-4"
     >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
-          Security score
+      <ScoreRing
+        percentage={score.percentage}
+        tone={scoreGradeTone(score.grade)}
+        label="Security score"
+      />
+      <div className="min-w-0 space-y-1.5">
+        <GradePill grade={score.grade} />
+        <h2 className="text-foreground text-sm font-semibold">
+          {gradeHeadlines[score.grade]}.
+        </h2>
+        <p
+          className="text-muted-foreground text-xs"
+          title={`${String(score.coreScore)}/100 core points, +${String(score.bonusScore)} bonus`}
+        >
+          Grade {score.grade}:{' '}
+          {describeFindingsSummary(actionable, findings.length)}.
         </p>
-        <StatusPill tone={tone} dot>
-          Grade {score.grade}
-        </StatusPill>
+        <Link
+          href={diagnosticsTabHref({
+            ...base,
+            tab: 'runbook',
+            anchor: 'score-breakdown',
+          })}
+          className="text-primary inline-block text-xs font-medium hover:underline print:hidden"
+        >
+          How the score is built
+        </Link>
       </div>
-      <ScoreFigure score={score} tone={tone} />
-      <ScoreMeter percentage={score.percentage} tone={tone} />
-      <p className="text-foreground text-sm">
-        <span className="font-medium">{gradeHeadlines[score.grade]}</span>:{' '}
-        {describeFindingsSummary(actionable, findings.length)}.
-      </p>
-      <Link
-        href={diagnosticsTabHref({
-          ...base,
-          tab: 'runbook',
-          anchor: 'score-breakdown',
-        })}
-        className="text-primary mt-auto text-xs font-medium hover:underline print:hidden"
-      >
-        How the score is built
-      </Link>
     </section>
   )
 }

@@ -1,4 +1,5 @@
 import { FindingsTab } from '../findings/FindingsTab'
+import { RecordGeneratorTab } from '../generator/RecordGeneratorTab'
 import { AuthTab } from './AuthTab'
 import { DiagnosticsTabPanel } from './DiagnosticsTabPanel'
 import type { DiagnosticsTabPanelsProps } from './DiagnosticsTabPanelsProps'
@@ -13,6 +14,8 @@ export function DiagnosticsTabPanels({
   findings,
   guides,
   runbook,
+  domainId,
+  checkedAt,
   base,
 }: Readonly<DiagnosticsTabPanelsProps>) {
   return (
@@ -37,6 +40,17 @@ export function DiagnosticsTabPanels({
       </DiagnosticsTabPanel>
       <DiagnosticsTabPanel active={activeTab === 'runbook'} label="Runbook">
         <RunbookTab score={score}>{runbook}</RunbookTab>
+      </DiagnosticsTabPanel>
+      <DiagnosticsTabPanel
+        active={activeTab === 'generator'}
+        label="Record generator"
+        printable={false}
+      >
+        <RecordGeneratorTab
+          dns={dns}
+          checkedAt={checkedAt}
+          domainId={domainId}
+        />
       </DiagnosticsTabPanel>
     </>
   )

@@ -10,7 +10,7 @@ export function NextBestActionItem({
 }: Readonly<NextBestActionItemProps>) {
   return (
     <li className="flex items-start gap-3 px-4 py-3">
-      <span className="bg-secondary text-foreground flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-xs">
+      <span className="border-border bg-secondary text-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full border font-mono text-sm font-semibold">
         {position}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
@@ -24,7 +24,7 @@ export function NextBestActionItem({
           <FindingSeverityPill severity={guide.severity} />
           <Link
             href={href}
-            className="text-primary hover:bg-primary/10 focus-visible:ring-ring inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none print:hidden"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring inline-flex h-8 items-center gap-1 rounded-md px-3 text-xs font-semibold whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none print:hidden"
           >
             View guide
             <ArrowRight aria-hidden className="h-3.5 w-3.5" />

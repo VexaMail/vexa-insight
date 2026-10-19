@@ -1,4 +1,4 @@
-import { DiagnosticsOverviewTable } from '@/components/diagnostics'
+import { DiagnosticsOverview } from '@/components/diagnostics'
 import { EmptyState } from '@/components/ui'
 import { loadDiagnosticsOverview } from '@/services/diagnostics'
 
@@ -8,5 +8,5 @@ export async function DiagnosticsOverviewLoader() {
   if (rows.length === 0) {
     return <EmptyState>No domains found with DMARC reports.</EmptyState>
   }
-  return <DiagnosticsOverviewTable rows={rows} />
+  return <DiagnosticsOverview rows={rows} />
 }

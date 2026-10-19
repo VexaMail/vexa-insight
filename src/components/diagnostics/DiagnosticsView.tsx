@@ -11,7 +11,7 @@ import { UnresolvedDomainNotice } from './UnresolvedDomainNotice'
 
 /**
  * One domain's diagnostics: header, score and protocol tiles, then the tabs.
- * Every tab panel is rendered so the PDF export prints all of them.
+ * Every printable tab panel is rendered so the PDF export prints all of them.
  */
 export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
   const base = { domain: props.currentDomainName, query: props.query }
@@ -31,7 +31,7 @@ export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
       />
       <div className="print:hidden">
         <TabNav
-          items={buildDiagnosticsTabItems(base, actionable)}
+          items={buildDiagnosticsTabItems(base)}
           active={props.activeTab}
           label="Diagnostics sections"
         />

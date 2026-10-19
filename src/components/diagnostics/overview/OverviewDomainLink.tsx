@@ -7,7 +7,7 @@ export function OverviewDomainLink({
   return (
     <Link
       href={`/diagnostics/${encodeURIComponent(row.domainName)}`}
-      className="text-foreground hover:text-primary focus-visible:ring-ring rounded font-mono text-sm font-medium break-all transition-colors focus-visible:ring-2 focus-visible:outline-none"
+      className="text-foreground hover:text-primary focus-visible:ring-ring rounded font-mono text-sm font-medium break-all transition-colors focus-visible:ring-2 focus-visible:outline-none md:break-normal md:whitespace-nowrap"
     >
       {row.domainName}
     </Link>

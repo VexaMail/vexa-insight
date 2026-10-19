@@ -4,7 +4,7 @@ import {
   guideAnchorId,
   pickNextBestActions,
 } from '@/utils/diagnostics'
-import { Target } from 'lucide-react'
+import { ArrowRight, Target } from 'lucide-react'
 import Link from 'next/link'
 import { NextBestActionItem } from './NextBestActionItem'
 import type { NextBestActionsProps } from './NextBestActionsProps'
@@ -24,9 +24,10 @@ export function NextBestActions({
       actions={
         <Link
           href={diagnosticsTabHref({ ...base, tab: 'runbook' })}
-          className="text-primary text-xs font-medium whitespace-nowrap hover:underline print:hidden"
+          className="text-primary inline-flex items-center gap-1 text-xs font-medium whitespace-nowrap hover:underline print:hidden"
         >
-          Full runbook
+          View full runbook
+          <ArrowRight aria-hidden className="h-3.5 w-3.5" />
         </Link>
       }
     >

@@ -16,13 +16,13 @@ export function RerunDiagnosticsButton() {
       onClick={rerun}
       disabled={isPending}
       aria-live="polite"
-      className="border-primary/40 text-primary hover:bg-primary/10 hover:text-primary h-9 gap-2"
+      className="border-primary/50 text-primary hover:bg-primary/10 hover:text-primary h-9 gap-2 print:hidden"
     >
       <RefreshCw
         aria-hidden
         className={cn('h-4 w-4', isPending && 'animate-spin')}
       />
-      {isPending ? 'Re-running checks…' : 'Re-run checks'}
+      {isPending ? 'Re-running diagnostics…' : 'Re-run diagnostics'}
     </Button>
   )
 }

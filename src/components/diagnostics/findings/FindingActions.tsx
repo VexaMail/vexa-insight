@@ -1,24 +1,20 @@
-import { diagnosticsSectionHref } from '@/utils/diagnostics'
-import { ArrowRight } from 'lucide-react'
+import { diagnosticsSectionHref, findingActionVerb } from '@/utils/diagnostics'
 import Link from 'next/link'
-import { CopyButton } from '../shared'
 import type { FindingLinkProps } from './FindingLinkProps'
+import { FindingMoreMenu } from './FindingMoreMenu'
 
-/** Copy the recommended record when there is one; always open the evidence. */
+/** The verb that fits the finding, then copy and details behind "...". */
 export function FindingActions({ finding, base }: Readonly<FindingLinkProps>) {
   return (
-    <div className="flex flex-wrap items-center gap-1 md:justify-end print:hidden">
-      {finding.fix === null ? null : (
-        <CopyButton text={finding.fix.value} label="Copy record" />
-      )}
+    <div className="flex items-center gap-1.5 md:justify-end print:hidden">
       <Link
         href={diagnosticsSectionHref(base, finding.section)}
-        className="text-primary hover:bg-primary/10 focus-visible:ring-ring inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        className="border-primary/50 text-primary hover:bg-primary/10 focus-visible:ring-ring inline-flex h-8 min-w-[4.5rem] items-center justify-center rounded-md border px-3 text-xs font-semibold whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none"
       >
-        View details
-        <ArrowRight aria-hidden className="h-3.5 w-3.5" />
-        <span className="sr-only"> for {finding.check}</span>
+        {findingActionVerb(finding)}
+        <span className="sr-only"> {finding.check}</span>
       </Link>
+      <FindingMoreMenu finding={finding} base={base} />
     </div>
   )
 }
