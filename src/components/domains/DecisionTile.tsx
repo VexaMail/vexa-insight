@@ -17,7 +17,7 @@ export function DecisionTile({
         <span className="text-primary shrink-0 [&_svg]:h-4 [&_svg]:w-4">
           {icon}
         </span>
-        <h2 className="text-foreground min-w-0 flex-1 truncate text-sm font-semibold">
+        <h2 className="text-foreground min-w-0 flex-1 text-sm leading-tight font-semibold">
           {title}
         </h2>
         {badge}

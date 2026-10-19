@@ -3,8 +3,9 @@ import type { Metadata } from 'next'
 import { DomainsKpiStrip, DomainsTable } from '@/components/domains'
 import { PageContainer, PageHeader } from '@/components/shell'
 import { PageSkeleton } from '@/components/ui'
+import { DAILY_VOLUME_DAYS } from '@/constants/domains'
 import { REPORT_STALE_DAYS } from '@/constants/gaps'
-import { getPublishedPolicies } from '@/services/domains'
+import { getDailyVolume, getPublishedPolicies } from '@/services/domains'
 import { getDomainsSummaryAll } from '@/services/reports'
 import { buildDomainsKpis, withPublishedPolicies } from '@/utils/domains'
 import { Suspense } from 'react'
@@ -18,9 +19,11 @@ export const dynamic = 'force-dynamic'
 
 export default async function DomainsPage() {
   const summary = await getDomainsSummaryAll()
-  const policies = await getPublishedPolicies(
-    summary.domains.map((d) => d.domainId),
-  )
+  const ids = summary.domains.map((d) => d.domainId)
+  const [policies, dailyVolume] = await Promise.all([
+    getPublishedPolicies(ids),
+    getDailyVolume(ids, DAILY_VOLUME_DAYS),
+  ])
   const rows = withPublishedPolicies(summary.domains, policies)
 
   return (
@@ -32,6 +35,7 @@ export default async function DomainsPage() {
       <DomainsKpiStrip
         kpis={buildDomainsKpis(rows)}
         staleDays={REPORT_STALE_DAYS}
+        dailyVolume={dailyVolume}
       />
       <Suspense fallback={<PageSkeleton />}>
         <DomainsTable domains={rows} />
