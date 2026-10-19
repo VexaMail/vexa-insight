@@ -18,6 +18,7 @@ import {
   filterSourcesByCause,
   parseSourceCause,
 } from '@/utils/ips'
+import { describeReportsWindow } from '@/utils/reports'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import type { PageProps } from './PageProps'
@@ -61,6 +62,7 @@ export default async function IpsPage(props: PageProps) {
       <IpsSummaryKpis
         kpis={computeIpsKpis(sources)}
         failingHref={hrefs.failing}
+        windowLabel={describeReportsWindow(days, fromDate, toDate)}
       />
       <SourceCauseChips
         counts={countSourceCauses(sources)}

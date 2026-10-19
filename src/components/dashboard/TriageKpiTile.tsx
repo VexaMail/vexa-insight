@@ -27,7 +27,7 @@ export function TriageKpiTile({
               <span className="text-muted-foreground">vs prev.</span>
             </span>
           ) : null}
-          <span className="truncate" title={model.context}>
+          <span className="line-clamp-2" title={model.context}>
             {model.context}
           </span>
         </span>
