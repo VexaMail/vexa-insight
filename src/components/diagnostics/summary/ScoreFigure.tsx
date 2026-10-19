@@ -5,7 +5,7 @@ import { ScoreRingArc } from './ScoreRingArc'
 export function ScoreFigure({ percentage, tone }: Readonly<ScoreFigureProps>) {
   return (
     <div className="flex shrink-0 items-center gap-3">
-      <div className="h-16 w-16 sm:h-20 sm:w-20">
+      <div className="h-16 w-16">
         <ScoreRingArc percentage={percentage} tone={tone} size="lg" />
       </div>
       <span className="text-foreground font-mono text-3xl font-semibold tracking-tight tabular-nums">
