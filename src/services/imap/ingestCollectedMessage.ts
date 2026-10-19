@@ -17,7 +17,7 @@ export async function ingestCollectedMessage(
       message.finalize,
       outcome.errors.join('; '),
     )
-    return { ...outcome, errors: [...outcome.errors, line] }
+    return { ...outcome, errors: [line] }
   }
 
   try {

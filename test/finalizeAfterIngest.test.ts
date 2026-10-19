@@ -145,12 +145,9 @@ describe('a report message is finalized only after its reports ingest', () => {
     expect(messageMove).not.toHaveBeenCalled()
     expect(messageFlagsAdd).not.toHaveBeenCalled()
     expect(result.ingested).toBe(0)
-    expect(result.errors).toEqual(
-      expect.arrayContaining([
-        'example.com.zip: database is locked',
-        expect.stringContaining(MESSAGE_ID),
-      ]),
-    )
+    expect(result.errors).toHaveLength(1)
+    expect(result.errors[0]).toContain(MESSAGE_ID)
+    expect(result.errors[0]).toContain('example.com.zip: database is locked')
     expect(onEmailProgress).toHaveBeenCalledWith(
       expect.objectContaining({ step: 'error', uid: String(UID) }),
     )
