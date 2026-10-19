@@ -3,7 +3,12 @@ import { msToSeconds } from './msToSeconds'
 
 /** Queues ingestion that failed, stalled or is not scheduled at all. */
 export function ingestionActions(health: IngestionHealth): ActionItem[] {
-  const base = { subject: 'Ingestion', href: '/ingest', impactMessages: null }
+  const base = {
+    subject: 'Ingestion',
+    href: '/ingest',
+    impactMessages: null,
+    impactRate: null,
+  }
   if (health.state === 'failing') {
     return [
       {

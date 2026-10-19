@@ -35,6 +35,7 @@ export function domainComplianceAction(
       domain.current.total,
     ),
     impactMessages: domain.current.total - domain.current.passed,
+    impactRate: 100 - rate,
     lastSeenAt: lastReportSeconds(domain),
     isNew: dropped || (hasPrevious && previousRate === null),
     href: domainHref(domain.domainName),

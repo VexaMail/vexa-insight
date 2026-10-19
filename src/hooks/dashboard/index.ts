@@ -1,3 +1,5 @@
 export { useDashboardFilterInitializer } from './useDashboardFilterInitializer'
 export { useDashboardFilters } from './useDashboardFilters'
+export { useGreeting } from './useGreeting'
+export { useTrendRange } from './useTrendRange'
 export { useTriggerIngest } from './useTriggerIngest'

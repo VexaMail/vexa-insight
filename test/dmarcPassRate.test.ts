@@ -32,6 +32,7 @@ describe('dmarcPassRate (the one pass-rate definition of the console)', () => {
       [domain(1, 10, 10), domain(2, 990, 495)],
       { current: 2, previous: 0 },
       window,
+      { messages: [], passRate: [], reportingDomains: [], reports: [] },
     )
     expect(dmarcPassRate(kpis.passCurrent)).toBeCloseTo(50.5, 5)
     expect(kpis.messages.current).toBe(1000)

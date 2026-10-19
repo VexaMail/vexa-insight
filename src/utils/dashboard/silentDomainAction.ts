@@ -32,6 +32,7 @@ export function silentDomainAction(
     issue: 'Reports stopped',
     detail: `No aggregate report for ${String(silentDays)} days`,
     impactMessages: reported,
+    impactRate: null,
     lastSeenAt: lastReportSeconds(domain),
     isNew: silentDays <= window.lengthDays,
     href: domainHref(domain.domainName),

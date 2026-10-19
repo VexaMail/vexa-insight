@@ -4,6 +4,8 @@ import type { RankedHeaderProps } from './RankedHeaderProps'
 /** Column labels of a ranked overview table. */
 export function RankedHeader({
   labels,
+  rightAligned,
+  hiddenOnPhone = [],
   gridClassName,
 }: Readonly<RankedHeaderProps>) {
   return (
@@ -14,9 +16,17 @@ export function RankedHeader({
         gridClassName,
       )}
     >
-      <span>{labels[0]}</span>
-      <span className="text-right">{labels[1]}</span>
-      <span>{labels[2]}</span>
+      {labels.map((label, index) => (
+        <span
+          key={`${String(index)}-${label}`}
+          className={cn(
+            rightAligned.includes(index) && 'text-right',
+            hiddenOnPhone.includes(index) && 'hidden sm:block',
+          )}
+        >
+          {label}
+        </span>
+      ))}
     </div>
   )
 }

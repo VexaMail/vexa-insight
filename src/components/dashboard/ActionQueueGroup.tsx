@@ -1,35 +1,45 @@
+import { IssueRow, IssueRowActions, IssueRowHeader } from '@/components/issues'
 import { QUEUE_GROUP_LIMIT } from '@/constants/dashboard'
+import Link from 'next/link'
 import type { ActionQueueGroupProps } from './ActionQueueGroupProps'
-import { ActionQueueHeader } from './ActionQueueHeader'
-import { ActionQueueRow } from './ActionQueueRow'
 
 /** "New or regressed" or "Long-standing": a count, column labels and rows. */
 export function ActionQueueGroup({
   title,
   items,
+  nowMs,
+  impactLabel,
   emptyText,
 }: Readonly<ActionQueueGroupProps>) {
   const shown = items.slice(0, QUEUE_GROUP_LIMIT)
   const hidden = items.length - shown.length
   return (
-    <div className="py-3">
+    <div className="@container pt-3 pb-1">
       <h3 className="text-muted-foreground px-4 pb-2 font-mono text-[11px] tracking-[0.16em] uppercase">
         {title} <span className="text-foreground">{items.length}</span>
       </h3>
       {shown.length === 0 ? (
-        <p className="text-muted-foreground px-4 text-sm">{emptyText}</p>
+        <p className="text-muted-foreground px-4 pb-3 text-sm">{emptyText}</p>
       ) : (
         <>
-          <ActionQueueHeader />
-          <ul className="divide-border border-border divide-y border-y">
+          <IssueRowHeader impactLabel={impactLabel} />
+          <ul className="divide-border border-border divide-y border-b">
             {shown.map((item) => (
-              <ActionQueueRow key={item.id} item={item} />
+              <IssueRow
+                key={item.id}
+                issue={item}
+                nowMs={nowMs}
+                actions={item.canAct ? <IssueRowActions issue={item} /> : null}
+              />
             ))}
           </ul>
           {hidden > 0 ? (
-            <p className="text-muted-foreground px-4 pt-2 text-xs">
-              and {hidden} more of the same kinds; open Domains or Sending
-              sources to see them all.
+            <p className="text-muted-foreground px-4 pt-2 pb-2 text-xs">
+              and {hidden} more;{' '}
+              <Link href="/issues" className="text-primary hover:underline">
+                see them all on the Issues page
+              </Link>
+              .
             </p>
           ) : null}
         </>

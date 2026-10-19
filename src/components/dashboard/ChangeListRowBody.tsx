@@ -1,28 +1,46 @@
+import { Sparkline } from '@/components/ui'
+import { CHANGE_ROW_GRID } from '@/constants/dashboard'
 import { cn } from '@/lib/utils'
+import { changeTone, formatAgo } from '@/utils/dashboard'
+import { ChangeDetails } from './ChangeDetails'
 import type { ChangeListRowProps } from './ChangeListRowProps'
+import { ChangeTitle } from './ChangeTitle'
 
-/** Figure, title and detail of one change. */
-export function ChangeListRowBody({ item }: Readonly<ChangeListRowProps>) {
+/** Change, domain or source, trend, details and last seen of one change. */
+export function ChangeListRowBody({
+  item,
+  nowMs,
+}: Readonly<ChangeListRowProps>) {
   return (
-    <>
+    <span
+      className={cn(
+        'grid items-center gap-x-3 gap-y-1 px-4 py-2.5',
+        CHANGE_ROW_GRID,
+      )}
+    >
+      <ChangeTitle item={item} />
       <span
-        className={cn(
-          'w-24 shrink-0 font-mono text-base font-semibold tabular-nums',
-          item.direction === 'better' && 'text-success',
-          item.direction === 'worse' && 'text-danger',
-          item.direction === 'neutral' && 'text-info',
-        )}
+        className="text-info truncate text-right text-[13px] @md:text-left"
+        title={item.subject}
       >
-        {item.value}
+        {item.subject}
       </span>
-      <span className="min-w-0">
-        <span className="text-foreground block truncate text-sm font-medium">
-          {item.title}
-        </span>
-        <span className="text-muted-foreground block truncate text-xs">
-          {item.detail}
-        </span>
+      <span className="hidden @md:block">
+        {item.trend ? (
+          <Sparkline
+            values={item.trend}
+            tone={changeTone(item.direction)}
+            className="h-7 w-full"
+            label={`Daily trend of ${item.title.toLowerCase()}`}
+          />
+        ) : null}
       </span>
-    </>
+      <ChangeDetails item={item} />
+      <span className="text-muted-foreground text-right text-xs whitespace-nowrap @md:text-left">
+        {item.lastSeenAt === null
+          ? 'n/a'
+          : formatAgo(item.lastSeenAt * 1000, nowMs)}
+      </span>
+    </span>
   )
 }

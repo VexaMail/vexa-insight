@@ -10,12 +10,14 @@ export function newFailingSourceActions(
 ): ActionItem[] {
   if (!hasPrevious) return []
   return rows.filter(isNewlyFailingSource).map((row) => ({
-    id: `source:${row.ip}:${row.domainName}`,
+    // Issue keys are `<kind>:<domain>[:<detail>]`, so the domain comes first.
+    id: `source:${row.domainName}:${row.ip}`,
     severity: 'warning',
     subject: row.ip,
     issue: 'New failing source',
     detail: `${formatCount(row.currentFailed)} of ${formatCount(row.currentTotal)} messages for ${row.domainName} fail DMARC`,
     impactMessages: row.currentFailed,
+    impactRate: (row.currentFailed / row.currentTotal) * 100,
     lastSeenAt: row.lastFailedAt,
     isNew: true,
     href: sourceHref(row.ip),

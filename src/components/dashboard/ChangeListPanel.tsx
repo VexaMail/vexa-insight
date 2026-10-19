@@ -1,12 +1,15 @@
 import { Panel } from '@/components/ui'
-import { GitCompareArrows } from 'lucide-react'
+import { CHANGE_ROW_GRID } from '@/constants/dashboard'
+import { Activity } from 'lucide-react'
 import type { ChangeListPanelProps } from './ChangeListPanelProps'
 import { ChangeListRow } from './ChangeListRow'
+import { RankedHeader } from './RankedHeader'
 
 /** The current period against the period of the same length before it. */
 export function ChangeListPanel({
   items,
   window,
+  nowMs,
   className,
 }: Readonly<ChangeListPanelProps>) {
   const compared = window.previous
@@ -16,9 +19,9 @@ export function ChangeListPanel({
     <Panel
       className={className ?? ''}
       flush
-      icon={<GitCompareArrows />}
+      icon={<Activity />}
       title="What changed since the previous period"
-      description={`Comparing ${compared}.`}
+      description={`Notable changes: ${compared}.`}
     >
       {items.length === 0 ? (
         <p className="text-muted-foreground p-4 text-sm">
@@ -27,11 +30,24 @@ export function ChangeListPanel({
             : 'Pick a shorter range to compare periods.'}
         </p>
       ) : (
-        <ul className="divide-border divide-y">
-          {items.map((item) => (
-            <ChangeListRow key={item.id} item={item} />
-          ))}
-        </ul>
+        <div className="@container">
+          <RankedHeader
+            labels={[
+              'Change',
+              'Domain / source',
+              'Trend',
+              'Details',
+              'Last seen',
+            ]}
+            rightAligned={[]}
+            gridClassName={`hidden @md:grid ${CHANGE_ROW_GRID}`}
+          />
+          <ul className="divide-border divide-y">
+            {items.map((item) => (
+              <ChangeListRow key={item.id} item={item} nowMs={nowMs} />
+            ))}
+          </ul>
+        </div>
       )}
     </Panel>
   )

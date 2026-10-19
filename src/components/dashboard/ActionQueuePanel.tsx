@@ -1,17 +1,24 @@
 import { Panel, StatusPill } from '@/components/ui'
+import { impactLabel } from '@/utils/dashboard'
 import { BellRing } from 'lucide-react'
 import { ActionQueueGroup } from './ActionQueueGroup'
 import type { ActionQueuePanelProps } from './ActionQueuePanelProps'
 import { ViewAllLink } from './ViewAllLink'
 
-/** What needs a look, new or regressed items first, each linking to its cause. */
+/** Active issues, new or regressed first, each linking to its evidence. */
 export function ActionQueuePanel({
   items,
+  parked,
   window,
+  nowMs,
   className,
 }: Readonly<ActionQueuePanelProps>) {
   const fresh = items.filter((i) => i.isNew)
   const standing = items.filter((i) => !i.isNew)
+  const parkedNote =
+    parked > 0
+      ? ` ${String(parked)} acknowledged or snoozed ${parked === 1 ? 'issue is' : 'issues are'} on the Issues page.`
+      : ''
   return (
     <Panel
       className={className ?? ''}
@@ -25,17 +32,21 @@ export function ActionQueuePanel({
           ) : null}
         </span>
       }
-      description={`Derived from report data and ingestion runs, ${window.label}. Impact counts messages in that period.`}
-      actions={<ViewAllLink href="/domains" label="All domains" />}
+      description={`High-priority issues that need your attention, ${window.label}.${parkedNote}`}
+      actions={<ViewAllLink href="/issues" label="View all issues" />}
     >
       <ActionQueueGroup
         title="New or regressed"
         items={fresh}
+        nowMs={nowMs}
+        impactLabel={impactLabel(window)}
         emptyText="Nothing new or worse than in the previous period."
       />
       <ActionQueueGroup
         title="Long-standing"
         items={standing}
+        nowMs={nowMs}
+        impactLabel={impactLabel(window)}
         emptyText="No long-standing issues."
       />
     </Panel>

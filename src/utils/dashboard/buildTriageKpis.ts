@@ -1,6 +1,7 @@
 import type {
   CountComparison,
   DomainPeriodTotals,
+  KpiSeries,
   TriageKpis,
   TriageWindow,
 } from '@/types/dashboard'
@@ -12,6 +13,7 @@ export function buildTriageKpis(
   domains: DomainPeriodTotals[],
   reports: CountComparison,
   window: TriageWindow,
+  series: KpiSeries,
 ): TriageKpis {
   const passCurrent = sumPeriodTotals(domains.map((d) => d.current))
   const passPrevious = window.previous
@@ -29,5 +31,6 @@ export function buildTriageKpis(
       .length,
     passCurrent,
     passPrevious,
+    series,
   }
 }
