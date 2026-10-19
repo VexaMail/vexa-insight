@@ -34,7 +34,10 @@ export function DomainsPhoneList({
                 <span className="text-muted-foreground font-mono tabular-nums">
                   {row.totalMessages.toLocaleString('en-US')} msgs
                 </span>
-                <LastReportLabel lastReportDay={row.lastReportDay} />
+                <LastReportLabel
+                  reportedAt={row.policy?.reportedAt}
+                  lastReportDay={row.lastReportDay}
+                />
               </span>
             </span>
             <ChevronRight

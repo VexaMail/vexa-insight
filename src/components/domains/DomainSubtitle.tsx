@@ -2,19 +2,27 @@ import { policySubtitle } from '@/utils/domains'
 import { formatRelativeDate } from '@/utils/format'
 import type { DomainSubtitleProps } from './DomainSubtitleProps'
 
-/** What the published policy does, and which report it was read from. */
+/** What the published policy does, and when the newest report period ended. */
 export function DomainSubtitle({ policy }: Readonly<DomainSubtitleProps>) {
-  const quoted = policy
-    ? `as quoted by ${policy.reporter} on ${formatRelativeDate(policy.reportedAt).absolute}`
-    : null
+  const last = policy ? formatRelativeDate(policy.reportedAt) : null
   return (
-    <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-      <span className="text-muted-foreground text-base sm:text-lg">
+    <div className="space-y-1">
+      <p className="text-muted-foreground text-base sm:text-lg">
         {policySubtitle(policy)}
-      </span>
-      {quoted ? (
-        <span className="text-muted-foreground/80 text-xs">{quoted}</span>
-      ) : null}
-    </p>
+      </p>
+      <p className="text-muted-foreground/80 text-xs">
+        {last && policy ? (
+          <>
+            Last report period ended{' '}
+            <span className="text-foreground" title={last.absolute}>
+              {last.relative}
+            </span>
+            , from {policy.reporter}; policy as quoted there
+          </>
+        ) : (
+          'No aggregate report yet'
+        )}
+      </p>
+    </div>
   )
 }

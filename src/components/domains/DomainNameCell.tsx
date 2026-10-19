@@ -1,9 +1,9 @@
 import { IpFlag } from '@/components/ips'
 import { tldCountryCode } from '@/utils/domains'
-import type { TitleControlsProps } from './TitleControlsProps'
+import type { DomainNameProps } from './DomainNameProps'
 
 /** A domain name in a list, led by its ccTLD flag or a blank of the same width. */
-export function DomainNameCell({ domainName }: Readonly<TitleControlsProps>) {
+export function DomainNameCell({ domainName }: Readonly<DomainNameProps>) {
   const code = tldCountryCode(domainName)
   return (
     <span className="flex min-w-0 items-center gap-2.5">

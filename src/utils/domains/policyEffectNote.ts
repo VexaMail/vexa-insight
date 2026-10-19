@@ -1,7 +1,7 @@
 /** One sentence on what receivers do with failing mail under a `p=` value. */
 export function policyEffectNote(policy: string | null): string {
   if (policy === 'none') {
-    return 'This domain is in monitoring mode. No enforcement is applied.'
+    return 'Monitoring only. No rejection or quarantine is applied to unauthenticated email.'
   }
   if (policy === 'quarantine') {
     return 'Receivers send failing mail to spam or quarantine.'

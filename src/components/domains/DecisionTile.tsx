@@ -1,11 +1,14 @@
 import { cn } from '@/lib/utils'
+import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import type { DecisionTileProps } from './DecisionTileProps'
 
-/** One tile of the decision row: icon, title, optional badge, body. */
+/** One card of the decision row: icon, title, badge, chevron link, body. */
 export function DecisionTile({
   icon,
   title,
   badge,
+  href,
   children,
   className,
 }: Readonly<DecisionTileProps>) {
@@ -21,6 +24,15 @@ export function DecisionTile({
           {title}
         </h2>
         {badge}
+        {href ? (
+          <Link
+            href={href}
+            aria-label={`Open ${title}`}
+            className="text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring -mr-1.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden />
+          </Link>
+        ) : null}
       </header>
       {children}
     </section>

@@ -9,7 +9,7 @@ export function ComplianceDelta({ trend }: Readonly<ComplianceDeltaProps>) {
   const window = `${String(days)} days`
   if (current.rate === null || previous.rate === null) {
     return (
-      <p className="text-muted-foreground text-center text-xs">
+      <p className="text-muted-foreground mt-auto text-xs">
         {current.rate === null
           ? `No mail in the last ${window}.`
           : `Last ${window}: ${current.rate.toFixed(1)}%; no mail before.`}
@@ -26,7 +26,7 @@ export function ComplianceDelta({ trend }: Readonly<ComplianceDeltaProps>) {
     neutral: ArrowRight,
   }[tone]
   return (
-    <div className="border-border mt-auto space-y-0.5 border-t pt-3 text-center text-xs">
+    <div className="mt-auto space-y-0.5 text-xs">
       <p className="text-muted-foreground">
         <span
           className={cn(
@@ -38,7 +38,7 @@ export function ComplianceDelta({ trend }: Readonly<ComplianceDeltaProps>) {
           {delta > 0 ? '+' : ''}
           {delta.toFixed(1)} pts
         </span>{' '}
-        vs previous {window}
+        vs. previous {window}
       </p>
       <p className="text-muted-foreground/80 tabular-nums">
         {current.rate.toFixed(1)}% of {current.total.toLocaleString('en-US')}{' '}
