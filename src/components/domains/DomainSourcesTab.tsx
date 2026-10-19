@@ -1,11 +1,9 @@
 import { EnforcementReadinessCard } from '@/components/enforcement'
-import { Panel } from '@/components/ui'
 import { sourcesCsvHref } from '@/utils/domains'
-import { Server } from 'lucide-react'
 import DomainSourcesTable from './DomainSourcesTable'
 import type { DomainSourcesTabProps } from './DomainSourcesTabProps'
 
-/** Readiness detail, then every sending source with its auth results. */
+/** Every sending source with its auth results, then the readiness detail. */
 export function DomainSourcesTab({
   domainId,
   data,
@@ -15,21 +13,20 @@ export function DomainSourcesTab({
       ? 'all reports'
       : `the last ${String(data.sourceDays)} days`
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <section id="sources-table" className="scroll-mt-20 space-y-3">
+        <p className="text-muted-foreground text-xs">
+          Every IP that sent mail as this domain in {window}. SPF and DKIM pills
+          show whether the result aligned with the From domain; the
+          authentication result shows under the pill when it differs.
+        </p>
+        <DomainSourcesTable
+          sources={data.sources}
+          csvHref={sourcesCsvHref(domainId, data.sourceDays)}
+          days={data.sourceDays}
+        />
+      </section>
       <EnforcementReadinessCard readiness={data.enforcement} />
-      <div id="sources-table" className="scroll-mt-20">
-        <Panel
-          icon={<Server />}
-          title="Sending sources"
-          description={`Every IP that sent mail as this domain in ${window}. SPF and DKIM show the authentication result and, separately, whether it aligned with the From domain.`}
-        >
-          <DomainSourcesTable
-            sources={data.sources}
-            csvHref={sourcesCsvHref(domainId, data.sourceDays)}
-            days={data.sourceDays}
-          />
-        </Panel>
-      </div>
     </div>
   )
 }

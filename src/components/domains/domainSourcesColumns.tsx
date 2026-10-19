@@ -5,7 +5,6 @@ import { createHostnameColumn } from './columns/createHostnameColumn'
 import { createSourceIpColumn } from './columns/createSourceIpColumn'
 import { dmarcColumn } from './columns/dmarcColumn'
 import { lastSeenColumn } from './columns/lastSeenColumn'
-import { senderColumn } from './columns/senderColumn'
 import { sourceCountColumn } from './columns/sourceCountColumn'
 import { sourceOpenColumn } from './columns/sourceOpenColumn'
 import type { GetDomainSourcesColumnsParams } from './GetDomainSourcesColumnsParams'
@@ -17,7 +16,6 @@ export function getDomainSourcesColumns(
   return [
     createSourceIpColumn(),
     createHostnameColumn(params),
-    senderColumn,
     sourceCountColumn,
     authPairColumn('spf'),
     authPairColumn('dkim'),

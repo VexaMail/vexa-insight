@@ -1,6 +1,7 @@
 import { StatusPill } from '@/components/ui'
 import type { StatusTone } from '@/types/ui'
 import type { DnsCheckRowProps } from './DnsCheckRowProps'
+import { ToneIcon } from './ToneIcon'
 
 /** One protocol's live DNS check: state, points and what to change. */
 export function DnsCheckRow({ check }: Readonly<DnsCheckRowProps>) {
@@ -22,7 +23,11 @@ export function DnsCheckRow({ check }: Readonly<DnsCheckRowProps>) {
         </span>
       </span>
       <span>
-        <StatusPill tone={tone} dot>
+        <StatusPill
+          tone={tone}
+          dot={tone === 'unknown'}
+          icon={tone === 'unknown' ? null : <ToneIcon tone={tone} />}
+        >
           {label}
         </StatusPill>
       </span>

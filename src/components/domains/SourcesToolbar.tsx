@@ -2,7 +2,7 @@ import {
   SOURCE_CLASS_OPTIONS,
   SOURCE_WINDOW_OPTIONS,
 } from '@/constants/domains'
-import { Download } from 'lucide-react'
+import { CalendarDays, Download, Filter, Globe } from 'lucide-react'
 import type { SourcesToolbarProps } from './SourcesToolbarProps'
 import { ToolbarSelect } from './ToolbarSelect'
 
@@ -16,12 +16,14 @@ export function SourcesToolbar(props: Readonly<SourcesToolbarProps>) {
     <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
       <ToolbarSelect
         label="Filter sources by classification"
+        icon={Filter}
         value={props.classFilter}
         options={SOURCE_CLASS_OPTIONS}
         onChange={props.onClassChange}
       />
       <ToolbarSelect
         label="Filter sources by country"
+        icon={Globe}
         value={props.country}
         options={[
           { value: 'all', label: 'All countries' },
@@ -31,6 +33,7 @@ export function SourcesToolbar(props: Readonly<SourcesToolbarProps>) {
       />
       <ToolbarSelect
         label="Window of reports"
+        icon={CalendarDays}
         value={String(props.days ?? 0)}
         options={windows}
         onChange={props.onDaysChange}
