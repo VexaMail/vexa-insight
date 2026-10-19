@@ -19,6 +19,7 @@ export function IssueRowActions({ issue }: Readonly<IssueRowActionsProps>) {
         <>
           <IssueIconButton
             label={`Acknowledge: ${issue.issue}`}
+            shortLabel="Acknowledge"
             disabled={isBusy}
             onClick={() => {
               action.act('acknowledge')
@@ -31,6 +32,7 @@ export function IssueRowActions({ issue }: Readonly<IssueRowActionsProps>) {
       ) : (
         <IssueIconButton
           label={`Reopen: ${issue.issue}`}
+          shortLabel="Reopen"
           disabled={isBusy}
           onClick={() => {
             action.act('reopen')

@@ -7,9 +7,9 @@ import type { TriageOverviewViewProps } from './TriageOverviewViewProps'
 import { TriageRankedPanels } from './TriageRankedPanels'
 
 /**
- * The home screen as a triage console. Desktop reads KPIs, then the queue
- * beside the changes, then trend and ingestion, then the ranked tables; a
- * phone puts the queue first.
+ * The home screen as a triage console: KPIs, then the queue beside the
+ * changes, then trend and ingestion, then the ranked tables. A phone keeps
+ * the same order with a compact KPI strip and a shortened queue.
  */
 export function TriageOverviewView({
   overview,
@@ -19,12 +19,8 @@ export function TriageOverviewView({
   const { window } = overview
   return (
     <div className="flex flex-col gap-4">
-      <TriageKpiStrip
-        className="order-2 lg:order-none"
-        kpis={overview.kpis}
-        window={window}
-      />
-      <div className="order-1 grid grid-cols-1 gap-4 lg:order-none xl:grid-cols-12">
+      <TriageKpiStrip kpis={overview.kpis} window={window} />
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <ActionQueuePanel
           className="xl:col-span-7"
           items={overview.actions}
@@ -39,7 +35,7 @@ export function TriageOverviewView({
           nowMs={nowMs}
         />
       </div>
-      <div className="order-3 grid grid-cols-1 gap-4 lg:order-none xl:grid-cols-12">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <PassRateTrendPanel
           className="xl:col-span-7"
           points={overview.trend}
@@ -54,9 +50,7 @@ export function TriageOverviewView({
           apiKey={apiKey}
         />
       </div>
-      <div className="order-4 lg:order-none">
-        <TriageRankedPanels overview={overview} />
-      </div>
+      <TriageRankedPanels overview={overview} />
     </div>
   )
 }

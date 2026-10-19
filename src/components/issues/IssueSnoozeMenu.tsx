@@ -19,6 +19,7 @@ export function IssueSnoozeMenu({
       <PopoverTrigger asChild>
         <IssueIconButton
           label={`Snooze: ${issueTitle}`}
+          shortLabel="Snooze"
           disabled={action.pending !== null}
         >
           <Clock aria-hidden />

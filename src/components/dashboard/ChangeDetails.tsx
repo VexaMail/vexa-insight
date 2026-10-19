@@ -7,7 +7,7 @@ import type { ChangeIconProps } from './ChangeIconProps'
 export function ChangeDetails({ item }: Readonly<ChangeIconProps>) {
   return (
     <span className="flex min-w-0 flex-col text-xs">
-      <span className="text-foreground truncate" title={item.detail}>
+      <span className="text-foreground line-clamp-2" title={item.detail}>
         {item.detail}
       </span>
       <span

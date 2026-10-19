@@ -8,4 +8,5 @@ export type IssueRowProps = {
   readonly actions?: ReactNode
   /** Content below the row, such as its history. */
   readonly children?: ReactNode
+  readonly className?: string
 }

@@ -1,8 +1,10 @@
 import { Panel, StatusPill } from '@/components/ui'
+import { PHONE_QUEUE_LIMIT } from '@/constants/dashboard'
 import { impactLabel } from '@/utils/dashboard'
 import { BellRing } from 'lucide-react'
 import { ActionQueueGroup } from './ActionQueueGroup'
 import type { ActionQueuePanelProps } from './ActionQueuePanelProps'
+import { ActionQueuePhoneFooter } from './ActionQueuePhoneFooter'
 import { ViewAllLink } from './ViewAllLink'
 
 /** Active issues, new or regressed first, each linking to its evidence. */
@@ -41,6 +43,7 @@ export function ActionQueuePanel({
         nowMs={nowMs}
         impactLabel={impactLabel(window)}
         emptyText="Nothing new or worse than in the previous period."
+        phoneLimit={PHONE_QUEUE_LIMIT}
       />
       <ActionQueueGroup
         title="Long-standing"
@@ -48,7 +51,9 @@ export function ActionQueuePanel({
         nowMs={nowMs}
         impactLabel={impactLabel(window)}
         emptyText="No long-standing issues."
+        phoneLimit={Math.max(0, PHONE_QUEUE_LIMIT - fresh.length)}
       />
+      <ActionQueuePhoneFooter total={items.length} />
     </Panel>
   )
 }

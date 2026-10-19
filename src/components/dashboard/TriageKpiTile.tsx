@@ -7,15 +7,16 @@ export function TriageKpiTile({
   model,
   icon,
   previousLabel,
+  variant = 'feature',
 }: Readonly<TriageKpiTileProps>) {
   return (
     <StatTile
-      variant="feature"
+      variant={variant}
       label={model.label}
       value={model.value}
       tone={model.tone}
       accent={model.accent}
-      icon={icon}
+      icon={variant === 'feature' ? icon : null}
       href={model.href}
       trend={model.trend}
       trendKind={model.trendKind}
@@ -27,7 +28,10 @@ export function TriageKpiTile({
               <span className="text-muted-foreground">vs prev.</span>
             </span>
           ) : null}
-          <span className="truncate" title={model.context}>
+          <span
+            className={variant === 'feature' ? 'truncate' : ''}
+            title={model.context}
+          >
             {model.context}
           </span>
         </span>

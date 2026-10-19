@@ -6,4 +6,6 @@ export type ActionQueueGroupProps = {
   readonly nowMs: number
   readonly impactLabel: string
   readonly emptyText: string
+  /** Rows of this group a phone shows; the rest wait on the Issues page. */
+  readonly phoneLimit: number
 }

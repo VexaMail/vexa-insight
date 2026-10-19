@@ -15,7 +15,10 @@ export function IssueRowTitle({ issue }: Readonly<IssueRowTitleProps>) {
       >
         {issue.issue}
       </Link>
-      <span className="text-muted-foreground block truncate text-xs">
+      <span
+        className="text-muted-foreground block text-xs @xl:line-clamp-2"
+        title={issue.detail}
+      >
         {issue.detail}
       </span>
       {issue.state === 'active' ? null : (

@@ -1,20 +1,30 @@
 import { IssueRow, IssueRowActions, IssueRowHeader } from '@/components/issues'
 import { QUEUE_GROUP_LIMIT } from '@/constants/dashboard'
-import Link from 'next/link'
+import { cn } from '@/lib/utils'
 import type { ActionQueueGroupProps } from './ActionQueueGroupProps'
+import { ActionQueueMoreNote } from './ActionQueueMoreNote'
 
-/** "New or regressed" or "Long-standing": a count, column labels and rows. */
+/**
+ * "New or regressed" or "Long-standing": a count, column labels and rows. A
+ * phone shows only the first `phoneLimit` rows and leaves the rest, with the
+ * "and N more" note, to the panel's "View all issues".
+ */
 export function ActionQueueGroup({
   title,
   items,
   nowMs,
   impactLabel,
   emptyText,
+  phoneLimit,
 }: Readonly<ActionQueueGroupProps>) {
   const shown = items.slice(0, QUEUE_GROUP_LIMIT)
-  const hidden = items.length - shown.length
   return (
-    <div className="@container pt-3 pb-1">
+    <div
+      className={cn(
+        '@container pt-3 pb-1',
+        phoneLimit === 0 && items.length > 0 ? 'max-sm:hidden' : '',
+      )}
+    >
       <h3 className="text-muted-foreground px-4 pb-2 font-mono text-[11px] tracking-[0.16em] uppercase">
         {title} <span className="text-foreground">{items.length}</span>
       </h3>
@@ -23,25 +33,23 @@ export function ActionQueueGroup({
       ) : (
         <>
           <IssueRowHeader impactLabel={impactLabel} />
-          <ul className="divide-border border-border divide-y border-b">
-            {shown.map((item) => (
+          <ul
+            className={cn(
+              'divide-border border-border divide-y border-b',
+              shown.length > phoneLimit ? 'max-sm:border-b-0' : '',
+            )}
+          >
+            {shown.map((item, index) => (
               <IssueRow
                 key={item.id}
                 issue={item}
                 nowMs={nowMs}
+                className={index < phoneLimit ? '' : 'max-sm:hidden'}
                 actions={item.canAct ? <IssueRowActions issue={item} /> : null}
               />
             ))}
           </ul>
-          {hidden > 0 ? (
-            <p className="text-muted-foreground px-4 pt-2 pb-2 text-xs">
-              and {hidden} more;{' '}
-              <Link href="/issues" className="text-primary hover:underline">
-                see them all on the Issues page
-              </Link>
-              .
-            </p>
-          ) : null}
+          <ActionQueueMoreNote hidden={items.length - shown.length} />
         </>
       )}
     </div>

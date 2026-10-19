@@ -17,9 +17,12 @@ export function IssueRow({
   nowMs,
   actions,
   children,
+  className,
 }: Readonly<IssueRowProps>) {
   return (
-    <li className="hover:bg-accent/60 relative transition-colors">
+    <li
+      className={cn('hover:bg-accent/60 relative transition-colors', className)}
+    >
       <div
         className={cn(
           'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 px-4 py-3',
@@ -27,7 +30,10 @@ export function IssueRow({
         )}
       >
         <IssueSeverityPill severity={issue.severity} />
-        <span className="text-foreground truncate text-[13px]">
+        <span
+          className="text-foreground min-w-0 text-[13px] [overflow-wrap:anywhere] @xl:truncate"
+          title={issue.subject}
+        >
           {issue.subject}
         </span>
         <IssueRowTitle issue={issue} />
@@ -37,7 +43,7 @@ export function IssueRow({
         <span className="order-5 col-span-2 @xl:order-none @xl:col-span-1">
           <IssueLastSeen seconds={issue.lastSeenAt} nowMs={nowMs} />
         </span>
-        <span className="relative z-10 order-6 flex justify-end gap-1 @xl:order-none">
+        <span className="relative z-10 order-6 col-span-3 flex flex-wrap justify-end gap-2 empty:hidden @xl:order-none @xl:col-span-1 @xl:gap-1 @xl:empty:flex">
           {actions}
         </span>
         <ChevronRight
