@@ -1,10 +1,6 @@
 import type { Metadata } from 'next'
 
-import {
-  DomainDetail,
-  DomainDetailHeader,
-  DomainDetailToolbar,
-} from '@/components/domains'
+import { DomainDetail, DomainDetailHeader } from '@/components/domains'
 import { PageContainer } from '@/components/shell'
 import { PageSkeleton } from '@/components/ui'
 import { getDomainByName } from '@/services/reports'
@@ -46,11 +42,11 @@ export default async function DomainDetailPage({
 
   return (
     <PageContainer>
-      <DomainDetailToolbar domainName={domainName} />
       <DomainDetailHeader
         domainName={domainName}
         policy={data.policy}
         totalMessages={data.summary.totalMessages}
+        dailyVolume={data.dailyVolume}
         reportsHref={domainTabHref(domainName, 'reports')}
       />
       <DomainDetail

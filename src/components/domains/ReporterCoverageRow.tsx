@@ -1,6 +1,7 @@
 import { StatusPill } from '@/components/ui'
 import type { ReporterCoverageRowProps } from '@/types/domains'
 import { formatUnixDateTime } from '@/utils/domains'
+import { ToneIcon } from './ToneIcon'
 
 /** One receiver in the coverage table. */
 export function ReporterCoverageRow({
@@ -21,7 +22,10 @@ export function ReporterCoverageRow({
         {row.recentReportCount}
       </td>
       <td className="px-4 text-right">
-        <StatusPill tone={row.silent ? 'warning' : 'success'} dot>
+        <StatusPill
+          tone={row.silent ? 'warning' : 'success'}
+          icon={<ToneIcon tone={row.silent ? 'warning' : 'success'} />}
+        >
           {state}
         </StatusPill>
       </td>

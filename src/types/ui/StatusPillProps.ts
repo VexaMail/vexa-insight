@@ -8,5 +8,7 @@ export type StatusPillProps = {
   /** A small leading icon, e.g. a check or a cross on an auth result. */
   readonly icon?: ReactNode
   readonly title?: string
+  /** `soft` (default) tints the tone; `solid` fills it, for severities. */
+  readonly variant?: 'soft' | 'solid'
   readonly className?: string
 }

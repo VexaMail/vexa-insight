@@ -1,27 +1,32 @@
 import { cn } from '@/lib/utils'
 import { RefreshCw } from 'lucide-react'
 import type { HostnameCellProps } from './HostnameCellProps'
+import { SenderLine } from './SenderLine'
 
 /** A hostname, whole or truncated with its full value on hover, plus refresh. */
 export function HostnameCell({
   hostname,
+  sender,
   isRefreshing,
   onRefresh,
 }: Readonly<HostnameCellProps>) {
   return (
-    <div className="group flex max-w-[11rem] min-w-0 items-center gap-1">
-      {hostname ? (
-        <span
-          className="text-foreground truncate font-mono text-xs"
-          title={hostname}
-        >
-          {hostname}
-        </span>
-      ) : (
-        <span className="text-muted-foreground text-xs italic">
-          No reverse DNS
-        </span>
-      )}
+    <div className="group flex max-w-[18rem] min-w-0 items-center gap-1">
+      <span className="flex min-w-0 flex-col">
+        {hostname ? (
+          <span
+            className="text-foreground truncate font-mono text-[13px]"
+            title={hostname}
+          >
+            {hostname}
+          </span>
+        ) : (
+          <span className="text-muted-foreground text-xs italic">
+            No reverse DNS
+          </span>
+        )}
+        {sender ? <SenderLine sender={sender} /> : null}
+      </span>
       <button
         type="button"
         onClick={(event) => {

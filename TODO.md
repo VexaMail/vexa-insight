@@ -212,6 +212,13 @@ coherence review over all screens in both themes.
       freshness (last run, last success, last mail seen, last report parsed).
 - [ ] Domains list, Upload, Settings, Users, Login, Install, Docs restyled to
       the same system.
+- [~] `/docs`: the API viewer is now pinned with SRI, allowed by the dev CSP,
+  mounted explicitly, and runs with telemetry, the hosted agent, MCP and
+  developer tools off (2026-10-19). Left: `next dev` still logs "Hydration
+  completed but contains mismatches" on that page, only while the viewer runs;
+  check a production build, and if it shows there too, mount the viewer in a
+  client-only boundary (`useSyncExternalStore`-based mount flag; a `setState` in
+  an effect fails the lint).
 
 **New features (marked new)**
 
