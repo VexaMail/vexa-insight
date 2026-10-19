@@ -8,6 +8,7 @@ import { IpAuthCheckRow } from './IpAuthCheckRow'
 export function IpAuthResultsPanel({ ctx }: Readonly<IpDetailContextProps>) {
   return (
     <Panel
+      flush
       title="Authentication results"
       description={`Share of ${formatMessageCount(ctx.data.totalMessages)} in the window`}
       icon={<ShieldCheck />}
@@ -18,6 +19,7 @@ export function IpAuthResultsPanel({ ctx }: Readonly<IpDetailContextProps>) {
             key={check.key}
             check={check}
             total={ctx.data.totalMessages}
+            href={ctx.tabs.timeline.href}
           />
         ))}
       </ul>

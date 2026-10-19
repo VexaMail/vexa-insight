@@ -2,10 +2,10 @@ import { InlineErrorBlock } from '@/components/ui'
 import { IP_OVERVIEW_TIMELINE_SIZE } from '@/constants/ips'
 import type { IpDetailContextProps } from '@/types/ips'
 import { Clock } from 'lucide-react'
-import { IpEventTimelineItem } from './IpEventTimelineItem'
+import { IpEventStepper } from './IpEventStepper'
 import { IpSummaryList } from './IpSummaryList'
 
-/** The latest events, linking to the full, filterable timeline tab. */
+/** The latest events as steppers, linking to the full, filterable timeline. */
 export function IpOverviewTimeline({ ctx }: Readonly<IpDetailContextProps>) {
   if (!ctx.logs) {
     return (
@@ -22,11 +22,16 @@ export function IpOverviewTimeline({ ctx }: Readonly<IpDetailContextProps>) {
       isEmpty={ctx.logs.length === 0}
       emptyText="No event in the window."
     >
-      <ol className="border-border relative ml-3 space-y-5 border-l pb-1">
+      <div className="flex flex-col gap-6">
         {ctx.logs.slice(0, IP_OVERVIEW_TIMELINE_SIZE).map((row) => (
-          <IpEventTimelineItem key={row.eventId} row={row} />
+          <IpEventStepper
+            key={row.eventId}
+            row={row}
+            ip={ctx.ip}
+            hostname={ctx.data.hostname}
+          />
         ))}
-      </ol>
+      </div>
     </IpSummaryList>
   )
 }

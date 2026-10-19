@@ -4,8 +4,9 @@ import { IpDetailFacts } from './IpDetailFacts'
 import { IpDetailHeader } from './IpDetailHeader'
 import { IpDetailKpis } from './IpDetailKpis'
 import { IpDetailTabContent } from './IpDetailTabContent'
+import { IpOperatorReview } from './IpOperatorReview'
 
-/** A sending source's page: header, KPIs, facts, tabs and the active tab. */
+/** A sending source's page: header, KPIs, facts, tabs, active tab, review. */
 export function IpDetailView({
   ctx,
   tab,
@@ -24,6 +25,11 @@ export function IpDetailView({
         />
         <IpDetailTabContent ctx={ctx} tab={tab} />
       </div>
+      <IpOperatorReview
+        ip={ctx.ip}
+        domains={ctx.domains ?? []}
+        reviews={ctx.reviews}
+      />
     </div>
   )
 }

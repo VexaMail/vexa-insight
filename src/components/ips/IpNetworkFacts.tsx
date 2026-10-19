@@ -1,34 +1,28 @@
-import { RDNS_STATUS_LABELS } from '@/constants/ips'
 import type { IpNetworkFactsProps } from '@/types/ips'
+import { describeRdnsStatus } from '@/utils/ips'
+import { IpAsnFacts } from './IpAsnFacts'
 import { IpInfoRow } from './IpInfoRow'
 
 /** The answers of a network lookup, as rows of the panel. */
 export function IpNetworkFacts({ context }: Readonly<IpNetworkFactsProps>) {
-  const { rdns, asn } = context
+  const { rdns } = context
   return (
     <dl className="divide-border -my-1.5 divide-y">
-      <IpInfoRow label="Forward-confirmed PTR">
+      <IpInfoRow label="PTR">
+        <span className="truncate font-mono">
+          {rdns.ptrNames.length > 0 ? rdns.ptrNames.join(', ') : 'None'}
+        </span>
+      </IpInfoRow>
+      <IpInfoRow label="Forward-confirmed reverse DNS">
         <span
           className={
             rdns.status === 'confirmed' ? 'text-success' : 'text-warning'
           }
         >
-          {rdns.status === 'confirmed' && rdns.confirmedName
-            ? `Yes, ${rdns.confirmedName}`
-            : RDNS_STATUS_LABELS[rdns.status]}
+          {describeRdnsStatus(rdns)}
         </span>
       </IpInfoRow>
-      <IpInfoRow label="ASN">
-        <span className="font-mono">
-          {asn ? `AS${String(asn.asn)}` : 'Unknown'}
-        </span>
-      </IpInfoRow>
-      <IpInfoRow label="Network">
-        <span className="truncate">{asn?.name ?? 'Unknown'}</span>
-      </IpInfoRow>
-      <IpInfoRow label="Prefix">
-        <span className="font-mono">{asn?.prefix ?? 'Unknown'}</span>
-      </IpInfoRow>
+      <IpAsnFacts asn={context.asn} />
     </dl>
   )
 }

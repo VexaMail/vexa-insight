@@ -1,10 +1,13 @@
 import { CopyIconButton, EntityHeader, StatusPill } from '@/components/ui'
 import type { IpDetailHeaderProps } from '@/types/ips'
 import { formatCountryName } from '@/utils/ips'
+import { ArrowUpRight, Globe } from 'lucide-react'
+import Link from 'next/link'
 import { IpFlag } from './IpFlag'
+import { IpHeaderActions } from './IpHeaderActions'
 import { SourceCausePill } from './SourceCausePill'
 
-/** IP with copy, country, reverse DNS with copy, cause and named sender. */
+/** IP with copy, country, reverse DNS, cause, named sender and actions. */
 export function IpDetailHeader({
   ctx,
   actions,
@@ -16,29 +19,37 @@ export function IpDetailHeader({
       kind="Sending source"
       title={ctx.ip}
       mono
+      leading={
+        <Globe className="text-primary h-7 w-7 shrink-0" aria-hidden="true" />
+      }
       titleAddon={<CopyIconButton value={ctx.ip} label="IP address" />}
-      actions={actions}
+      actions={<IpHeaderActions ctx={ctx} actions={actions} />}
       chips={
         <>
-          <SourceCausePill cause={ctx.cause} />
-          <span className="text-muted-foreground inline-flex h-6 items-center gap-1.5 text-xs">
+          <span className="text-foreground inline-flex h-6 items-center gap-1.5 text-sm">
             <IpFlag countryCode={data.countryCode} countryName={country} />
             {country ?? 'Unknown country'}
           </span>
+          <span aria-hidden className="bg-border h-4 w-px" />
           {data.hostname ? (
-            <span className="text-muted-foreground inline-flex min-w-0 items-center font-mono text-xs">
+            <Link
+              href={ctx.tabs.dns.href}
+              scroll={false}
+              title="Reverse DNS and network"
+              className="text-foreground hover:text-primary inline-flex min-w-0 items-center gap-1 font-mono text-sm"
+            >
               <span className="truncate">{data.hostname}</span>
-              <CopyIconButton
-                value={data.hostname}
-                label="hostname"
-                className="h-6 w-6"
+              <ArrowUpRight
+                className="text-muted-foreground h-3.5 w-3.5 shrink-0"
+                aria-hidden="true"
               />
-            </span>
+            </Link>
           ) : (
-            <span className="text-muted-foreground text-xs">
+            <span className="text-muted-foreground text-sm">
               No reverse DNS
             </span>
           )}
+          <SourceCausePill cause={ctx.cause} />
           {sender ? (
             <StatusPill tone="neutral">{sender.name}</StatusPill>
           ) : null}

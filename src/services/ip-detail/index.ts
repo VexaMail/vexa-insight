@@ -1,0 +1,1 @@
+export { getIpDetailExtras } from './getIpDetailExtras'

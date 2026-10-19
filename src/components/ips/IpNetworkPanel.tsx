@@ -4,6 +4,7 @@ import { Panel } from '@/components/ui'
 import { useIpNetworkContext } from '@/hooks/ips'
 import type { IpNetworkPanelProps } from '@/types/ips'
 import { Network } from 'lucide-react'
+import { IpLookUpButton } from './IpLookUpButton'
 import { IpNetworkFacts } from './IpNetworkFacts'
 
 /** Live PTR check and ASN, looked up over public DNS only on request. */
@@ -15,14 +16,11 @@ export function IpNetworkPanel({ ip }: Readonly<IpNetworkPanelProps>) {
       title="Network"
       description="Forward-confirmed reverse DNS and the announcing network, looked up live over public DNS."
       actions={
-        <button
-          type="button"
+        <IpLookUpButton
+          loading={loading}
           onClick={lookUp}
-          disabled={loading}
-          className="border-border bg-card text-foreground hover:bg-accent focus-visible:ring-ring inline-flex min-h-9 items-center rounded-md border px-3 text-xs font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-60"
-        >
-          {loading ? 'Looking up' : context ? 'Look up again' : 'Look up'}
-        </button>
+          label={context ? 'Look up again' : 'Look up'}
+        />
       }
     >
       {context ? (

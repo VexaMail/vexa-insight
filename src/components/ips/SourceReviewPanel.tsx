@@ -22,18 +22,21 @@ export function SourceReviewPanel({
       description="Record what this source is for each domain. A legitimate sender or forwarder is left out of unauthorized-source alerts; nothing changes in DNS or at the receivers."
     >
       <ul className="divide-border divide-y">
-        {domains.slice(0, 10).map((row) => (
-          <SourceReviewRow
-            key={row.domainId}
-            ip={ip}
-            domain={row.domain}
-            messageCount={row.messageCount}
-            initialVerdict={
-              reviews.find((review) => review.domainName === row.domain)
-                ?.verdict ?? null
-            }
-          />
-        ))}
+        {domains.slice(0, 10).map((row) => {
+          const verdict =
+            reviews.find((review) => review.domainName === row.domain)
+              ?.verdict ?? null
+          return (
+            <SourceReviewRow
+              // Remount when a refresh brings a verdict saved elsewhere.
+              key={`${String(row.domainId)}-${verdict ?? 'none'}`}
+              ip={ip}
+              domain={row.domain}
+              messageCount={row.messageCount}
+              initialVerdict={verdict}
+            />
+          )
+        })}
       </ul>
     </Panel>
   )
