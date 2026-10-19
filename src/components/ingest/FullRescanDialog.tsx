@@ -26,11 +26,10 @@ export default function FullRescanDialog({
         <Button
           type="button"
           variant="outline"
-          size="sm"
           disabled={disabled}
-          className="h-8 gap-1.5 px-3 text-xs"
+          className="h-10 w-full"
         >
-          <History className="h-3 w-3" />
+          <History aria-hidden="true" />
           Full rescan
         </Button>
       </DialogTrigger>

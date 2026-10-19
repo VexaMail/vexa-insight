@@ -11,12 +11,12 @@ export function DiagnosticsRolloutPlanCard({
   return (
     <div className="space-y-3">
       <div>
-        <h4 className="text-sm font-semibold">Rollout Plan</h4>
+        <h4 className="text-foreground text-sm font-semibold">Rollout Plan</h4>
         <p className="text-muted-foreground text-xs">
           Ordered next steps, highest impact first.
         </p>
       </div>
-      <ol className="bg-card list-decimal space-y-2 rounded-lg border p-4 pl-9 text-sm">
+      <ol className="border-border bg-secondary/30 text-foreground list-decimal space-y-2 rounded-lg border p-4 pl-9 text-sm">
         {steps.map((step, i) => (
           <li
             key={`${step.slice(0, 40)}-${String(i)}`}

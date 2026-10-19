@@ -1,27 +1,40 @@
 'use client'
 
+import { StatusPill } from '@/components/ui'
+import { STATUS_TONE_TEXT_CLASSES } from '@/constants/ui'
+import { cn } from '@/lib/utils'
 import type { AiInsightCardProps } from './AiInsightCardProps'
 import { renderInlineCode } from './renderInlineCode'
 import { severityColor } from './severityColor'
-import { severityIcon } from './severityIcon'
+import { SEVERITY_ICONS } from './severityIcons'
+import { severityTone } from './severityTone'
 
 export default function AiInsightCard({
   insight,
 }: Readonly<AiInsightCardProps>) {
+  const Icon = SEVERITY_ICONS[insight.severity]
+  const tone = severityTone(insight.severity)
   return (
     <div
-      className={`border-border bg-card rounded-lg border border-l-4 p-4 ${severityColor(insight.severity)}`}
+      className={cn(
+        'border-border bg-secondary/30 rounded-lg border border-l-4 p-4',
+        severityColor(insight.severity),
+      )}
     >
-      <div className="mb-1 flex items-center gap-2">
-        <span className="text-base" aria-hidden="true">
-          {severityIcon(insight.severity)}
-        </span>
-        <h4 className="text-foreground text-sm font-semibold">
+      <div className="mb-1 flex items-start gap-2">
+        <Icon
+          className={cn(
+            'mt-0.5 h-4 w-4 shrink-0',
+            STATUS_TONE_TEXT_CLASSES[tone],
+          )}
+          aria-hidden="true"
+        />
+        <h4 className="text-foreground min-w-0 flex-1 text-sm font-semibold">
           {insight.title}
         </h4>
-        <span className="bg-muted text-muted-foreground ml-auto rounded-full px-2 py-0.5 text-xs font-medium capitalize">
+        <StatusPill tone={tone} className="capitalize">
           {insight.severity}
-        </span>
+        </StatusPill>
       </div>
       <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
         {renderInlineCode(insight.explanation)}

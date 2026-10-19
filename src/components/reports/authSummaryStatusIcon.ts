@@ -1,7 +1,7 @@
-import { AlertTriangle, CheckCircle, Info } from 'lucide-react'
+import { CircleCheck, Info, TriangleAlert } from 'lucide-react'
 
 export const AUTH_SUMMARY_STATUS_ICON = {
-  healthy: CheckCircle,
+  healthy: CircleCheck,
   degraded: Info,
-  critical: AlertTriangle,
+  critical: TriangleAlert,
 } as const

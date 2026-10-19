@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { mockResolveTxt } from './mockResolveTxt'
 import { mockSpfZone } from './setup/mockSpfZone'
 import { resetSpfDiagnosticsCache } from './setup/resetSpfDiagnosticsCache'
@@ -8,6 +8,12 @@ vi.mock('node:dns/promises', () => ({
     resolveTxt: mockResolveTxt,
   },
 }))
+
+// The services barrel is a large cold import: load it once outside the
+// per-test timeout, so a loaded machine does not time the first test out.
+beforeAll(async () => {
+  await import('@/services/diagnostics')
+}, 60_000)
 
 afterEach(() => {
   vi.resetAllMocks()

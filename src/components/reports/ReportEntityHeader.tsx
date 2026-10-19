@@ -1,61 +1,58 @@
-import { BackButton } from '@/components/shell'
-import { EntityHeader, StatusPill } from '@/components/ui'
+import { CopyIconButton, EntityHeader, IconTile } from '@/components/ui'
 import type { ReportEntityHeaderProps } from '@/types/reports'
 import { formatReportDateRange } from '@/utils/format'
-import {
-  describeDmarcOutcome,
-  reportOutcomeLabel,
-  toReportDmarcOutcome,
-} from '@/utils/reports'
-import { ArrowLeft, Building2, CalendarRange } from 'lucide-react'
+import { toReportDmarcOutcome } from '@/utils/reports'
+import { Building2, CalendarRange, FileText } from 'lucide-react'
 import { ReportHeaderActions } from './ReportHeaderActions'
+import { ReportHeaderDomain } from './ReportHeaderDomain'
+import { ReportHeaderFact } from './ReportHeaderFact'
 import { ReportHeaderOtherDomains } from './ReportHeaderOtherDomains'
-import { ReportIdChip } from './ReportIdChip'
+import { ReportOutcomePill } from './ReportOutcomePill'
 
-/** Aggregate report header: domain, outcome, reporter, window and report id. */
+/** Report id with copy, its outcome, receiver, domain and period. */
 export function ReportEntityHeader({
   report,
   stats,
-  backHref,
-  backLabel,
   navigatorSlot,
 }: Readonly<ReportEntityHeaderProps>) {
   const domains = report.relatedDomains ?? []
   const primary = domains[0]?.domainName
-  const outcome = toReportDmarcOutcome(stats)
-  const pill = reportOutcomeLabel(outcome)
-
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <BackButton href={backHref}>
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          {backLabel}
-        </BackButton>
-        {navigatorSlot}
-      </div>
+    <div className="space-y-3">
       <EntityHeader
         kind="Aggregate report"
-        title={primary ?? `Report ${report.reportId}`}
+        title={report.reportId}
+        mono
+        leading={
+          <IconTile className="hidden sm:inline-flex">
+            <FileText />
+          </IconTile>
+        }
+        titleAddon={
+          <CopyIconButton value={report.reportId} label="report ID" />
+        }
         chips={
           <>
-            <span title={describeDmarcOutcome(outcome)}>
-              <StatusPill tone={pill.tone} dot>
-                {pill.label}
-              </StatusPill>
-            </span>
-            <StatusPill tone="neutral">
-              <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
+            <ReportOutcomePill outcome={toReportDmarcOutcome(stats)} />
+            <ReportHeaderFact icon={<Building2 />} label="Receiver">
               {report.orgName}
-            </StatusPill>
-            <StatusPill tone="neutral">
-              <CalendarRange className="h-3.5 w-3.5" aria-hidden="true" />
+            </ReportHeaderFact>
+            {primary ? <ReportHeaderDomain domain={primary} /> : null}
+            <ReportHeaderFact icon={<CalendarRange />} label="Period">
               {formatReportDateRange(report.beginDate, report.endDate)}
-            </StatusPill>
-            <ReportIdChip reportId={report.reportId} />
+            </ReportHeaderFact>
           </>
         }
-        actions={primary ? <ReportHeaderActions domain={primary} /> : null}
+        actions={
+          <>
+            {navigatorSlot ? (
+              <div className="[&>div]:border-border [&>div]:bg-card [&_svg]:text-muted-foreground [&>div]:min-h-10 [&>div]:py-0 [&>div]:shadow-none">
+                {navigatorSlot}
+              </div>
+            ) : null}
+            {primary ? <ReportHeaderActions domain={primary} /> : null}
+          </>
+        }
       />
       <ReportHeaderOtherDomains domains={domains.slice(1)} />
     </div>

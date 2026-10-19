@@ -4,6 +4,7 @@ import { useActiveSettingsSection } from '@/hooks/settings'
 import type { SettingsConfigFormProps } from '@/types/settings'
 import { useSettingsConfig } from '../../hooks/settings/useSettingsConfig'
 import { SettingsFormSections } from './SettingsFormSections'
+import { SettingsNotificationSections } from './SettingsNotificationSections'
 import { SettingsSaveBar } from './SettingsSaveBar'
 import { SettingsSectionChips } from './SettingsSectionChips'
 import { SettingsSectionNav } from './SettingsSectionNav'
@@ -38,6 +39,7 @@ export default function SettingsConfigForm({
             canSave={apiKey.trim() !== ''}
           />
         </form>
+        <SettingsNotificationSections />
       </div>
     </div>
   )

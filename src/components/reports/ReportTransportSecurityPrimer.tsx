@@ -1,6 +1,5 @@
+import { Panel } from '@/components/ui'
 import { LockKeyhole } from 'lucide-react'
-
-import { ReportCollapsible } from './ReportCollapsible'
 import type { ReportTransportSecurityPrimerProps } from './ReportTransportSecurityPrimerProps'
 import { TransportSecurityChecklist } from './TransportSecurityChecklist'
 import { TransportSecurityReferences } from './TransportSecurityReferences'
@@ -15,8 +14,9 @@ export function ReportTransportSecurityPrimer({
       : null
 
   return (
-    <ReportCollapsible
+    <Panel
       title="Transport security primer (MTA-STS & TLS-RPT)"
+      description="What DMARC does not cover: encrypted delivery to your MX hosts."
       icon={<LockKeyhole />}
     >
       <div className="text-muted-foreground space-y-4 text-sm">
@@ -42,6 +42,6 @@ export function ReportTransportSecurityPrimer({
         <TransportSecurityChecklist />
         <TransportSecurityReferences />
       </div>
-    </ReportCollapsible>
+    </Panel>
   )
 }

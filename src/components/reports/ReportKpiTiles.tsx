@@ -1,22 +1,16 @@
-import { StatTile } from '@/components/ui'
 import type { ReportKpiTilesProps } from '@/types/reports'
 import { buildReportKpiTiles } from '@/utils/reports'
+import { ReportKpiTile } from './ReportKpiTile'
 
-/** DMARC compliance, SPF and DKIM alignment, review count and volume. */
+/** Volume, SPF and DKIM alignment and the DMARC result of one report. */
 export function ReportKpiTiles({
   stats,
-  sourceCount,
+  trends,
 }: Readonly<ReportKpiTilesProps>) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
-      {buildReportKpiTiles(stats, sourceCount).map((tile) => (
-        <StatTile
-          key={tile.label}
-          label={tile.label}
-          value={tile.value}
-          hint={tile.hint}
-          tone={tile.tone}
-        />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {buildReportKpiTiles(stats, trends).map((tile) => (
+        <ReportKpiTile key={tile.id} tile={tile} />
       ))}
     </div>
   )

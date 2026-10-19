@@ -1,6 +1,7 @@
 'use client'
 
 import { DataTable } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import { getReportsColumns } from './reportsColumns'
 import type { ReportsDataTableProps } from './ReportsDataTableProps'
 
@@ -22,7 +23,12 @@ export function ReportsDataTable({
   })
 
   return (
-    <div className={loading ? 'hidden opacity-50 xl:block' : 'hidden xl:block'}>
+    <div
+      className={cn(
+        '[&_thead_tr]:bg-secondary/50 hidden xl:block [&_.glass-card]:bg-transparent [&_.glass-card]:shadow-none',
+        loading && 'opacity-50',
+      )}
+    >
       <DataTable
         columns={columns}
         data={filtered}

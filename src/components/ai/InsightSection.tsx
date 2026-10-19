@@ -11,7 +11,7 @@ export function InsightSection({
   return (
     <div className="space-y-3">
       <div>
-        <h4 className="text-sm font-semibold">{title}</h4>
+        <h4 className="text-foreground text-sm font-semibold">{title}</h4>
         <p className="text-muted-foreground text-xs">{description}</p>
       </div>
       {insights.map((insight, i) => (

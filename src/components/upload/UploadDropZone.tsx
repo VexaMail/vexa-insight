@@ -1,3 +1,4 @@
+import { IconTile } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { UploadDropZoneProps } from '@/types/upload'
 import { Upload } from 'lucide-react'
@@ -29,12 +30,12 @@ export function UploadDropZone({
           'focus-within:ring-ring flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed px-4 py-10 text-center transition-colors focus-within:ring-2 sm:py-14',
           dragActive
             ? 'border-primary bg-primary/5'
-            : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-primary/5',
+            : 'border-border bg-secondary/30 hover:border-primary/50 hover:bg-primary/5',
         )}
       >
-        <span className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-lg">
-          <Upload className="h-6 w-6" aria-hidden="true" />
-        </span>
+        <IconTile>
+          <Upload aria-hidden="true" />
+        </IconTile>
         <span className="font-display text-foreground text-sm font-semibold">
           {dragActive
             ? 'Release to upload'

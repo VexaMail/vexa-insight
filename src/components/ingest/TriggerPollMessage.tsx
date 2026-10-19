@@ -9,8 +9,8 @@ export function TriggerPollMessage({
   return (
     <p
       role="status"
-      className={`w-full text-sm ${
-        isError ? 'text-destructive' : 'text-muted-foreground'
+      className={`w-full text-xs ${
+        isError ? 'text-danger' : 'text-muted-foreground'
       }`}
     >
       {message}

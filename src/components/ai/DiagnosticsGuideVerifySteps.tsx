@@ -10,7 +10,10 @@ export function DiagnosticsGuideVerifySteps({
       </p>
       <ul className="text-muted-foreground mt-1 space-y-1 text-sm">
         {steps.map((step) => (
-          <li key={step} className="bg-background/70 rounded-md px-3 py-2">
+          <li
+            key={step}
+            className="border-border bg-card/60 rounded-md border px-3 py-2"
+          >
             <code className="font-mono text-xs break-all whitespace-pre-wrap">
               {step}
             </code>

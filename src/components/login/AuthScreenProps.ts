@@ -5,6 +5,10 @@ export type AuthScreenProps = {
   readonly eyebrow: string
   readonly title: string
   readonly description: ReactNode
+  /** Icon shown in a tinted square beside the title. */
+  readonly icon?: ReactNode
+  /** Shown under the card, above the product line. */
+  readonly footer?: ReactNode
   /** `wide` for the installer form, `narrow` for sign-in. */
   readonly width?: 'narrow' | 'wide'
   readonly children: ReactNode

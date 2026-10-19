@@ -18,7 +18,7 @@ export function EngineStatusIndicator({
 
   return (
     <div
-      className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${engineStatusClass}`}
+      className={`flex h-8 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium ${engineStatusClass}`}
     >
       <Activity className="h-3 w-3" aria-hidden="true" />
       {engineStatusText}

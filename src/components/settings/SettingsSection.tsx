@@ -1,14 +1,15 @@
-import { Panel } from '@/components/ui'
+import { IconTile, Panel } from '@/components/ui'
 import type { SettingsSectionProps } from '@/types/settings'
 
 /**
- * One anchored settings section: a Panel with an icon, a title the index can
- * link to and a single help line.
+ * One anchored settings section: a Panel led by a tinted icon square, a title
+ * the index can link to and a single help line.
  */
 export function SettingsSection({
   anchorId,
   headingId,
   icon,
+  iconTone = 'info',
   title,
   description,
   actions,
@@ -17,7 +18,11 @@ export function SettingsSection({
   return (
     <div id={anchorId} className="scroll-mt-20 lg:scroll-mt-6">
       <Panel
-        icon={icon}
+        icon={
+          <IconTile size="sm" tone={iconTone} className="-mt-0.5">
+            {icon}
+          </IconTile>
+        }
         title={<span id={headingId}>{title}</span>}
         description={description}
         actions={actions}

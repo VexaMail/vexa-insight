@@ -41,6 +41,19 @@ the portfolio repo.
 
 ## Security
 
+- [ ] Encrypt webhook signing secrets at rest. `webhook_endpoints.secret` is a
+      plain `text` column (found 2026-10-19 while building the Webhooks settings
+      UI); responses mask it, but a database copy exposes every secret, unlike
+      mailbox passwords, which are encrypted. Smallest step: reuse the mailbox
+      password encryption for this column, with a migration that encrypts
+      existing rows.
+
+- [ ] `POST /api/v1/admin/webhooks/[id]` (test ping) ignores the id and sends
+      `test.ping` to every enabled endpoint subscribed to it. Found 2026-10-19;
+      the settings UI says so and disables Test unless the endpoint is
+      subscribed. Smallest step: dispatch to the endpoint in the URL only, with
+      a test.
+
 - [!] Purge the pre-rewrite history from the laptop's clone. `main` was
   rewritten and force-pushed on 2026-09-10 to strip client screenshots and
   assistant trailers, and the remote repository was recreated, but the clone on
