@@ -1,0 +1,5 @@
+export { buildDmarcRecord } from './buildDmarcRecord'
+export { buildMtaStsPolicy } from './buildMtaStsPolicy'
+export { buildMtaStsTxtRecord } from './buildMtaStsTxtRecord'
+export { buildSpfRecord } from './buildSpfRecord'
+export { buildTlsRptRecord } from './buildTlsRptRecord'
