@@ -1,31 +1,27 @@
 'use client'
 
-import { Button, IconTile } from '@/components/ui'
+import { IconTile } from '@/components/ui'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
+/** One compact row while no AI provider is set: what it is and where to set it. */
 export default function AiNotConfiguredCta() {
   return (
-    <div className="glass-card flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 items-start gap-3">
-        <IconTile>
-          <Sparkles />
-        </IconTile>
-        <div className="min-w-0">
-          <h3 className="text-foreground text-sm font-semibold">AI insights</h3>
-          <p className="text-muted-foreground mt-0.5 text-sm leading-relaxed">
-            Explanations of authentication results, alignment issues and the
-            next action to take. Configure an AI provider in Settings to enable
-            them.
-          </p>
-        </div>
-      </div>
-      <Button asChild variant="outline" className="h-10 shrink-0">
-        <Link href="/settings">
-          Configure in Settings
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      </Button>
+    <div className="glass-card flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
+      <IconTile size="sm" tone="unknown">
+        <Sparkles />
+      </IconTile>
+      <p className="text-muted-foreground min-w-0 flex-1 text-xs">
+        <span className="text-foreground font-semibold">AI insights</span> are
+        off: no AI provider is configured.
+      </p>
+      <Link
+        href="/settings#ai"
+        className="text-primary inline-flex min-h-10 shrink-0 items-center gap-1 text-xs font-medium hover:underline"
+      >
+        Configure in Settings
+        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+      </Link>
     </div>
   )
 }

@@ -2,7 +2,6 @@ import { IconTile } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { UploadDropZoneProps } from '@/types/upload'
 import { Upload } from 'lucide-react'
-import { SelectedFileChip } from './SelectedFileChip'
 
 /**
  * File drop target. Drag events are a pointer affordance with no keyboard
@@ -11,7 +10,6 @@ import { SelectedFileChip } from './SelectedFileChip'
  */
 export function UploadDropZone({
   dragActive,
-  selectedName,
   onDrag,
   onDrop,
   onFileChange,
@@ -38,21 +36,20 @@ export function UploadDropZone({
         </IconTile>
         <span className="font-display text-foreground text-sm font-semibold">
           {dragActive
-            ? 'Release to upload'
-            : 'Drop a report here, or click to choose one'}
+            ? 'Release to add to the list'
+            : 'Drop reports here, or click to choose them'}
         </span>
         <span className="text-muted-foreground text-xs">
           Aggregate DMARC (.xml, .gz, .gzip, .zip) and TLS-RPT (.json, .json.gz)
         </span>
-        <SelectedFileChip name={selectedName} />
         <input
           id="upload-file"
           type="file"
           name="file"
           accept=".xml,.gz,.gzip,.zip,.json"
           className="sr-only"
+          multiple
           onChange={onFileChange}
-          required
         />
       </label>
     </div>

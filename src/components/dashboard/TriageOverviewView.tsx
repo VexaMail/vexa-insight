@@ -24,7 +24,7 @@ export function TriageOverviewView({
         kpis={overview.kpis}
         window={window}
       />
-      <div className="order-1 grid grid-cols-1 gap-4 lg:order-none xl:grid-cols-12">
+      <div className="order-1 grid grid-cols-1 items-start gap-4 lg:order-none xl:grid-cols-12">
         <ActionQueuePanel
           className="xl:col-span-7"
           items={overview.actions}

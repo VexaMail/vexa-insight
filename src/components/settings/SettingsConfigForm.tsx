@@ -15,7 +15,7 @@ export default function SettingsConfigForm({
 }: Readonly<SettingsConfigFormProps>) {
   const settings = useSettingsConfig(initialData)
   const activeId = useActiveSettingsSection()
-  const { apiKey, saveStatus, message, handleSubmit } = settings
+  const { apiKey, saveStatus, message, isDirty, handleSubmit } = settings
 
   return (
     <div
@@ -37,6 +37,7 @@ export default function SettingsConfigForm({
             saveStatus={saveStatus}
             message={message}
             canSave={apiKey.trim() !== ''}
+            isDirty={isDirty}
           />
         </form>
         <SettingsNotificationSections />

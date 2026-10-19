@@ -17,7 +17,7 @@ export function MailboxHealthTile({ health }: Readonly<IngestHealthProps>) {
         <p className="text-muted-foreground text-xs">
           Nothing is polled until an IMAP mailbox is added.{' '}
           <Link
-            href="/settings"
+            href="/settings#mailboxes"
             className="text-primary font-medium hover:underline"
           >
             Add one in Settings
