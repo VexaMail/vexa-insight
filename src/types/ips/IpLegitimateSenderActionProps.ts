@@ -1,6 +1,6 @@
 import type { SourceVerdict } from '@/types/source-reviews'
 
-export type IpAllowlistActionProps = {
+export type IpLegitimateSenderActionProps = {
   readonly ip: string
   readonly domain: string
   readonly initialVerdict: SourceVerdict | null

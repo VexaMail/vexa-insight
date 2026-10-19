@@ -9,6 +9,8 @@ import type { IpSummaryData } from '../IpSummaryData'
 import type { IpAuthCheck } from './IpAuthCheck'
 import type { IpDetailTab } from './IpDetailTab'
 import type { IpDkimSignature } from './IpDkimSignature'
+import type { IpEventFilter } from './IpEventFilter'
+import type { IpMenuItem } from './IpMenuItem'
 import type { IpRawRecord } from './IpRawRecord'
 import type { IpTrendSeries } from './IpTrendSeries'
 import type { SourceCause } from './SourceCause'
@@ -31,4 +33,7 @@ export type IpDetailContext = {
   /** Loaded only for the raw data tab; null elsewhere. */
   readonly rawRecords: readonly IpRawRecord[] | null
   readonly tabs: Readonly<Record<IpDetailTab, TabNavItem>>
+  /** Which events the overview stepper shows (`?events=`). */
+  readonly eventFilter: IpEventFilter
+  readonly eventFilterLinks: readonly IpMenuItem[]
 }

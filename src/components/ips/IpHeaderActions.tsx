@@ -1,6 +1,6 @@
 import type { IpDetailHeaderProps } from '@/types/ips'
 import { buildIpInvestigateLinks } from '@/utils/ips'
-import { IpAllowlistButton } from './IpAllowlistButton'
+import { IpLegitimateSenderButton } from './IpLegitimateSenderButton'
 import { IpMenu } from './IpMenu'
 import { IpMoreMenu } from './IpMoreMenu'
 
@@ -20,7 +20,7 @@ export function IpHeaderActions({
         trigger="investigate"
         items={buildIpInvestigateLinks(ctx)}
       />
-      <IpAllowlistButton
+      <IpLegitimateSenderButton
         ip={ctx.ip}
         domains={domains}
         initialVerdict={initialVerdict}

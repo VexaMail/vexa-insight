@@ -1,4 +1,4 @@
-export { useAllowlistSource } from './useAllowlistSource'
+export { useMarkLegitimateSender } from './useMarkLegitimateSender'
 export { useFilterCombobox } from './useFilterCombobox'
 export { useIpEventLogs } from './useIpEventLogs'
 export { useIpNetworkContext } from './useIpNetworkContext'

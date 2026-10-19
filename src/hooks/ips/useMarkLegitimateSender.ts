@@ -1,6 +1,6 @@
 'use client'
 
-import type { UseAllowlistSourceReturn } from '@/types/ips'
+import type { UseMarkLegitimateSenderReturn } from '@/types/ips'
 import type { SourceVerdict } from '@/types/source-reviews'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
@@ -10,11 +10,11 @@ import { useSourceReview } from './useSourceReview'
  * Records the operator verdict `legitimate` for the one domain a source sends
  * for, then refreshes the page so the operator review panel shows it.
  */
-export function useAllowlistSource(
+export function useMarkLegitimateSender(
   ip: string,
   domain: string,
   initialVerdict: SourceVerdict | null,
-): UseAllowlistSourceReturn {
+): UseMarkLegitimateSenderReturn {
   const router = useRouter()
   const refresh = useCallback(() => {
     router.refresh()

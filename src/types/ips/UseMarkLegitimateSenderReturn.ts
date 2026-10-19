@@ -1,4 +1,4 @@
-export type UseAllowlistSourceReturn = {
+export type UseMarkLegitimateSenderReturn = {
   readonly listed: boolean
   readonly saving: boolean
   readonly error: string | null

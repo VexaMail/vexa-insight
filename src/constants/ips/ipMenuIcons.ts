@@ -3,9 +3,12 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Activity,
   Ban,
+  CircleCheck,
+  CircleX,
   Clock,
   FileText,
   Landmark,
+  List,
   Network,
   Route,
 } from 'lucide-react'
@@ -19,4 +22,7 @@ export const IP_MENU_ICONS: Record<IpMenuItemKind, LucideIcon> = {
   rdap: Landmark,
   rdns: Route,
   blocklist: Ban,
+  'events-all': List,
+  'events-fail': CircleX,
+  'events-pass': CircleCheck,
 }
