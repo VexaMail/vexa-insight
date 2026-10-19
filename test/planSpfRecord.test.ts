@@ -62,3 +62,23 @@ describe('findNonPublicSpfTargets', () => {
     ).toEqual(['mail.corp', 'intranet', '10.0.0.1'])
   })
 })
+
+describe('planSpfRecord with untrusted includes', () => {
+  it('does not resolve a private name reached through a public include', async () => {
+    const { planSpfRecord } = await import('@/services/diagnostics')
+    mockSpfZone({
+      'a.example': 'v=spf1 include:mail.corp -all',
+      'mail.corp': 'v=spf1 ip4:10.0.0.0/8 -all',
+    })
+
+    const plan = await planSpfRecord(
+      'example.com',
+      'v=spf1 include:a.example -all',
+    )
+    const hidden = plan.tree.children[0]?.children[0]
+
+    expect(hidden?.domain).toBe('mail.corp')
+    expect(hidden?.record).toBeNull()
+    expect(mockResolveTxt).not.toHaveBeenCalledWith('mail.corp')
+  })
+})

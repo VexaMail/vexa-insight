@@ -22,7 +22,7 @@ export const POST = withApiAuth(
   ): Promise<NextResponse> => {
     const denied = await requirePermission('reports:read')
     if (denied) return denied
-    const limited = rejectWhenRateLimited(
+    const limited = await rejectWhenRateLimited(
       request,
       'spf-plan',
       SPF_PLAN_RATE_LIMIT,

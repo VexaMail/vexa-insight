@@ -22,6 +22,9 @@ export async function buildSpfTreeNode(
     return createSpfTreeLeaf(normalized, 'cycle')
   }
   state.visited.add(normalized)
+  if (state.isAllowedTarget && !state.isAllowedTarget(normalized)) {
+    return createSpfTreeLeaf(normalized, 'missing')
+  }
 
   const record = extractSpfRecordFromTxt(await resolveTxtSafe(normalized))
   if (record === null) {
