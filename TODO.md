@@ -155,6 +155,14 @@ Left over from the fixes for the read-only pass over the live instance.
       ingest skips records without a usable IP, that alignment breaks for such
       reports. It has no caller today; apply `withUsableSourceIps` to the
       re-parsed result before it is run again.
+- [ ] **The reports list only shows 25 reports under a date filter.** With the
+      default "Last 30 days", `GET /api/v1/reports` takes the
+      `getLatestReports({ limit: pageSize, from, to })` branch and answers
+      `total: items.length`, so the table reads "Page 1 of 1" and older reports
+      in the range, including ones with DMARC failures, cannot be reached.
+      Verified 2026-10-19 on the live instance. Fix: give the date-filtered
+      branch real paging (offset plus a count query), with a test over more than
+      one page.
 - [ ] **Guard the standalone output size.** Nothing fails if `src/`, `test/` or
       `.git` reappear in `.next/standalone`; add a check after the build.
 

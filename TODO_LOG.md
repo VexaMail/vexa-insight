@@ -8,6 +8,16 @@
 
 ### 2026-10
 
+- [x] 2026-10-19 — **Reports show their DMARC outcome at a glance.**
+  - Result: every row of the reports table, the domain page's report table and
+    the dashboard's Latest Reports carries a green check when all its messages
+    pass DMARC (SPF or DKIM aligned) and an amber warning otherwise, with the
+    count in the tooltip, e.g. "4 of 16 messages fail DMARC" (d4c4033, 6dc578e).
+  - Evidence: `test/reportDmarcOutcome.test.ts` and
+    `test/describeDmarcOutcome.test.ts`; `pnpm run check:ci` exit 0 (146 files,
+    773 tests); deployed to nova and checked in the browser on a domain page
+    showing both icons.
+
 - [x] 2026-10-19 — **Production findings from the nova pass fixed.**
   - Result: records without a usable source IP are skipped and counted instead
     of failing the whole report (7250569); `ip_hostname_enrichments` timestamps
