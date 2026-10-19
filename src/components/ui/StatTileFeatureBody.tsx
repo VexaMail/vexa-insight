@@ -24,8 +24,8 @@ export function StatTileFeatureBody({
         <p className="text-muted-foreground line-clamp-2 min-w-0 text-sm font-medium">
           {label}
         </p>
-        <div className="mt-1.5 flex items-end justify-between gap-2">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <div className="mt-1.5 flex flex-wrap items-end justify-between gap-x-2 gap-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <p
               className={cn(
                 'font-mono text-2xl leading-none font-semibold tracking-tight tabular-nums',
@@ -37,7 +37,12 @@ export function StatTileFeatureBody({
             {badge}
           </div>
           {trend ? (
-            <Sparkline values={trend} kind={trendKind} tone={lead} />
+            <Sparkline
+              values={trend}
+              kind={trendKind}
+              tone={lead}
+              className="shrink-0"
+            />
           ) : null}
         </div>
         {hint ? (
