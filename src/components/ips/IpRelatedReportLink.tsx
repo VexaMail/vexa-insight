@@ -7,7 +7,7 @@ import type { IpRelatedReportLinkProps } from './IpRelatedReportLinkProps'
 export function IpRelatedReportLink({ row }: IpRelatedReportLinkProps) {
   const startDate = formatRelativeDate(row.reportStartDate).absolute
   const endDate = formatRelativeDate(row.reportEndDate).absolute
-  const messages = `${row.messageCount.toLocaleString()} ${row.messageCount === 1 ? 'message' : 'messages'}`
+  const messages = `${row.messageCount.toLocaleString('en-US')} ${row.messageCount === 1 ? 'message' : 'messages'}`
   return (
     <Link
       href={`/reports/${String(row.id)}`}

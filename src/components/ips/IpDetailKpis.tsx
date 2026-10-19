@@ -15,7 +15,7 @@ export function IpDetailKpis({ ctx }: Readonly<IpDetailContextProps>) {
       <StatTile
         variant="feature"
         label="Total messages"
-        value={total.toLocaleString()}
+        value={total.toLocaleString('en-US')}
         hint="Reported in the window"
         icon={<Mail />}
         accent="info"

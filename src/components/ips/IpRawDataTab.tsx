@@ -29,7 +29,7 @@ export function IpRawDataTab({ records }: Readonly<IpRawDataTabProps>) {
         flush
         icon={<Table2 />}
         title="Report records"
-        description={`${records.length.toLocaleString()} ${records.length === 1 ? 'record' : 'records'} from the latest reports, read from the stored XML`}
+        description={`${records.length.toLocaleString('en-US')} ${records.length === 1 ? 'record' : 'records'} from the latest reports, read from the stored XML`}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[960px] text-left font-mono text-xs">

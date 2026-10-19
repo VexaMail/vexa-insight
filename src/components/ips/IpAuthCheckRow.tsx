@@ -31,7 +31,7 @@ export function IpAuthCheckRow({
                   'font-mono text-sm font-semibold tabular-nums',
                   STATUS_TONE_TEXT_CLASSES[check.verdict.tone],
                 )}
-                title={`${check.count.toLocaleString()} of ${total.toLocaleString()} messages`}
+                title={`${check.count.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} messages`}
               >
                 {check.rate.toFixed(1)}%
               </span>

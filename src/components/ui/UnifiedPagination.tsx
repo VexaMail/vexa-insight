@@ -23,7 +23,7 @@ export function UnifiedPagination({
       />
 
       <span className="text-muted-foreground">
-        Total: {total.toLocaleString()}
+        Total: {total.toLocaleString('en-US')}
       </span>
 
       <PageNavButtons

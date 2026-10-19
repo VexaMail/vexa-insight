@@ -26,7 +26,7 @@ export function SndsReputationRow({ row }: SndsReputationRowProps) {
         </StatusPill>
       </td>
       <td className="px-4 py-2 text-right font-mono tabular-nums">
-        {row.messageRecipients?.toLocaleString() ?? '-'}
+        {row.messageRecipients?.toLocaleString('en-US') ?? '-'}
       </td>
       <td className="px-4 py-2 text-right font-mono tabular-nums">
         {formatSndsRate(row.complaintRate)}

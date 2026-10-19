@@ -12,7 +12,7 @@ export const volumeColumn: ColumnDef<typeof dataTableFeatures, IpSourceRow> = {
   ),
   cell: ({ row }) => (
     <span className="text-foreground block text-right font-mono text-[13px] tabular-nums">
-      {row.original.totalMessages.toLocaleString()}
+      {row.original.totalMessages.toLocaleString('en-US')}
     </span>
   ),
 }

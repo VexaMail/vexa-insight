@@ -28,7 +28,7 @@ export async function* processFolder(
 
   await emitStatus(
     options,
-    `Found ${folderTotalEmails.toLocaleString()} emails in ${folder} on ${account.server}`,
+    `Found ${folderTotalEmails.toLocaleString('en-US')} emails in ${folder} on ${account.server}`,
   )
 
   const startTime = Date.now()
@@ -53,7 +53,7 @@ export async function* processFolder(
 
   await emitStatus(
     options,
-    `Completed ${folder} on ${account.server}: ${folderProcessedCount.toLocaleString()} emails scanned`,
+    `Completed ${folder} on ${account.server}: ${folderProcessedCount.toLocaleString('en-US')} emails scanned`,
   )
   if (options.onBatchProgress && folderProcessedCount > 0) {
     await options.onBatchProgress(folderProcessedCount, 0, folderTotalEmails, 0)

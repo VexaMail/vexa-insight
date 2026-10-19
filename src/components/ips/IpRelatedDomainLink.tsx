@@ -5,7 +5,7 @@ import type { IpRelatedDomainLinkProps } from './IpRelatedDomainLinkProps'
 
 /** One related domain of an IP, linking to that domain's page. */
 export function IpRelatedDomainLink({ row }: IpRelatedDomainLinkProps) {
-  const messages = `${row.messageCount.toLocaleString()} ${row.messageCount === 1 ? 'message' : 'messages'}`
+  const messages = `${row.messageCount.toLocaleString('en-US')} ${row.messageCount === 1 ? 'message' : 'messages'}`
   const active = row.lastSeenAt
     ? `Last active ${formatRelativeDate(row.lastSeenAt).relative}`
     : 'Unknown activity'

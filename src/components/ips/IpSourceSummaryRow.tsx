@@ -20,7 +20,7 @@ export function IpSourceSummaryRow({ row }: Readonly<IpSourceSummaryRowProps>) {
           {row.ip}
         </Link>
         <span className="text-foreground shrink-0 font-mono text-[13px] tabular-nums">
-          {row.totalMessages.toLocaleString()}
+          {row.totalMessages.toLocaleString('en-US')}
         </span>
       </div>
       <p className="text-muted-foreground truncate text-xs">{detail}</p>

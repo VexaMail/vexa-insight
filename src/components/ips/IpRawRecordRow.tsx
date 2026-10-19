@@ -9,7 +9,7 @@ export function IpRawRecordRow({ record }: Readonly<IpRawRecordRowProps>) {
     <tr className="align-top [&>td]:px-3 [&>td]:py-2.5">
       <IpRawReportCell record={record} />
       <td className="text-foreground text-right tabular-nums">
-        {record.count.toLocaleString()}
+        {record.count.toLocaleString('en-US')}
       </td>
       <td className="text-foreground">{record.headerFrom || '-'}</td>
       <td className="text-foreground">{record.envelopeFrom || '-'}</td>

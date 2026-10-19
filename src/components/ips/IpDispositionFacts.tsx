@@ -17,7 +17,7 @@ export function IpDispositionFacts({
         sub={formatPercentShare(data.dispositionNone, total)}
       >
         <span className="font-mono tabular-nums">
-          {data.dispositionNone.toLocaleString()}
+          {data.dispositionNone.toLocaleString('en-US')}
         </span>
       </IpFact>
       <IpFact
@@ -27,7 +27,7 @@ export function IpDispositionFacts({
         sub={formatPercentShare(data.dispositionQuarantine, total)}
       >
         <span className="font-mono tabular-nums">
-          {data.dispositionQuarantine.toLocaleString()}
+          {data.dispositionQuarantine.toLocaleString('en-US')}
         </span>
       </IpFact>
       <IpFact
@@ -37,7 +37,7 @@ export function IpDispositionFacts({
         sub={formatPercentShare(data.dispositionReject, total)}
       >
         <span className="font-mono tabular-nums">
-          {data.dispositionReject.toLocaleString()}
+          {data.dispositionReject.toLocaleString('en-US')}
         </span>
       </IpFact>
     </>

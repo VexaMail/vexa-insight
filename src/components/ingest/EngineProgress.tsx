@@ -25,7 +25,8 @@ export function EngineProgress({
         <span className="text-foreground font-medium">
           Processing (
           <span className="text-muted-foreground">
-            {currentProcessed.toLocaleString()} / {totalEmails.toLocaleString()}
+            {currentProcessed.toLocaleString('en-US')} /{' '}
+            {totalEmails.toLocaleString('en-US')}
           </span>
           )
         </span>

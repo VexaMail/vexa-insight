@@ -4,5 +4,5 @@ import { formatMessageCount } from '../../formatters/ips/formatMessageCount'
 export function describeShare(count: number, total: number): string {
   if (count >= total) return 'every message'
   if (count === 0) return 'no message'
-  return `${count.toLocaleString()} of ${formatMessageCount(total)}`
+  return `${count.toLocaleString('en-US')} of ${formatMessageCount(total)}`
 }

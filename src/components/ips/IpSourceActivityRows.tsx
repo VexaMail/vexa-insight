@@ -25,7 +25,7 @@ export function IpSourceActivityRows({
       </IpInfoRow>
       <IpInfoRow label="Total messages">
         <span className="font-mono tabular-nums">
-          {data.totalMessages.toLocaleString()}
+          {data.totalMessages.toLocaleString('en-US')}
         </span>
       </IpInfoRow>
     </>

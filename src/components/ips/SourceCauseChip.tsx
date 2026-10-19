@@ -31,7 +31,7 @@ export function SourceCauseChip({
       />
       {label}
       <span className="bg-secondary text-muted-foreground rounded px-1.5 font-mono text-[11px] tabular-nums">
-        {count.toLocaleString()}
+        {count.toLocaleString('en-US')}
       </span>
     </Link>
   )

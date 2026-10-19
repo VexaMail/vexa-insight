@@ -30,7 +30,7 @@ export function PollProgressPageSizeControl({
         ))}
       </select>
       <span className="text-muted-foreground text-sm">
-        Total: {total.toLocaleString()}
+        Total: {total.toLocaleString('en-US')}
       </span>
     </div>
   )

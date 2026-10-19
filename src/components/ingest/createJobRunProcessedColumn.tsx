@@ -25,7 +25,7 @@ export function createJobRunProcessedColumn({
         {(isActiveJobRun(row.original.id, isGlobalRunning, activeJobRunId, runs)
           ? Math.max(row.original.processed, currentProcessed)
           : row.original.processed
-        ).toLocaleString()}
+        ).toLocaleString('en-US')}
       </span>
     ),
   }

@@ -23,7 +23,7 @@ export function IpRateTile({
       hint={
         <span className="flex flex-wrap items-center gap-2">
           <IpVerdictPill verdict={check.verdict} />
-          {`${check.count.toLocaleString()} of ${formatMessageCount(total)}`}
+          {`${check.count.toLocaleString('en-US')} of ${formatMessageCount(total)}`}
         </span>
       }
     />

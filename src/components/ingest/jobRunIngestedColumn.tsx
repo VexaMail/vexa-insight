@@ -13,7 +13,7 @@ export const jobRunIngestedColumn: ColumnDef<
   ),
   cell: ({ row }) => (
     <span className="text-muted-foreground text-sm">
-      {row.original.ingested.toLocaleString()}
+      {row.original.ingested.toLocaleString('en-US')}
     </span>
   ),
 }
