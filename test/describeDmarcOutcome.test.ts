@@ -14,6 +14,18 @@ describe('describeDmarcOutcome', () => {
     ).toBe('12 of 340 messages fail DMARC')
   })
 
+  it('uses the singular for one message', () => {
+    expect(describeDmarcOutcome({ totalMessages: 1, failingMessages: 0 })).toBe(
+      'The only message passes DMARC',
+    )
+    expect(describeDmarcOutcome({ totalMessages: 1, failingMessages: 1 })).toBe(
+      '1 of 1 message fails DMARC',
+    )
+    expect(
+      describeDmarcOutcome({ totalMessages: 340, failingMessages: 1 }),
+    ).toBe('1 of 340 messages fails DMARC')
+  })
+
   it('handles a report without messages', () => {
     expect(describeDmarcOutcome({ totalMessages: 0, failingMessages: 0 })).toBe(
       'No messages in this report',
