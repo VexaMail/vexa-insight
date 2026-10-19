@@ -8,10 +8,6 @@ describe('dateRangeQuerySchema', () => {
     )
   }
 
-  function daysBetween(from: Date, to: Date): number {
-    return Math.round((to.getTime() - from.getTime()) / 86_400_000)
-  }
-
   it('returns undefined for both bounds when nothing is supplied', () => {
     expect(parseQuery('')).toEqual({ from: undefined, to: undefined })
   })
@@ -35,7 +31,9 @@ describe('dateRangeQuerySchema', () => {
     const { from, to } = parseQuery('days=7')
     expect(to).toBeUndefined()
     expect(from).toBeInstanceOf(Date)
-    expect(daysBetween(from as Date, new Date())).toBe(7)
+    // Whole UTC days: today and the six before it, from 00:00 UTC.
+    const today = Math.floor(Date.now() / 86_400_000)
+    expect((from as Date).getTime()).toBe((today - 6) * 86_400_000)
   })
 
   it('ignores days when an explicit bound is present', () => {
