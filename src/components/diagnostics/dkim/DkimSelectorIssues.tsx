@@ -1,9 +1,9 @@
 /** Deduplicated parse errors of one DKIM selector record. */
 export function DkimSelectorIssues({ errors }: Readonly<{ errors: string[] }>) {
   return (
-    <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3">
-      <h5 className="mb-1 text-xs font-semibold text-red-500">Issues Found</h5>
-      <ul className="list-inside list-disc text-xs text-red-500/90">
+    <div className="border-danger/30 bg-danger/10 rounded-lg border p-3">
+      <h5 className="text-danger mb-1 text-xs font-semibold">Issues Found</h5>
+      <ul className="text-danger list-inside list-disc text-xs">
         {[...new Set(errors)].map((error) => (
           <li key={error}>{error}</li>
         ))}

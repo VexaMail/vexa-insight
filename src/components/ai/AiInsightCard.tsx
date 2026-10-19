@@ -10,24 +10,24 @@ export default function AiInsightCard({
 }: Readonly<AiInsightCardProps>) {
   return (
     <div
-      className={`rounded-lg border border-l-4 border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800 ${severityColor(insight.severity)}`}
+      className={`border-border bg-card rounded-lg border border-l-4 p-4 ${severityColor(insight.severity)}`}
     >
       <div className="mb-1 flex items-center gap-2">
         <span className="text-base" aria-hidden="true">
           {severityIcon(insight.severity)}
         </span>
-        <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+        <h4 className="text-foreground text-sm font-semibold">
           {insight.title}
         </h4>
-        <span className="ml-auto rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 capitalize dark:bg-zinc-700 dark:text-zinc-300">
+        <span className="bg-muted text-muted-foreground ml-auto rounded-full px-2 py-0.5 text-xs font-medium capitalize">
           {insight.severity}
         </span>
       </div>
-      <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+      <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
         {renderInlineCode(insight.explanation)}
       </p>
       {insight.recommendation !== null && insight.recommendation !== '' && (
-        <p className="mt-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+        <p className="text-foreground mt-2 text-sm font-medium">
           <span className="font-semibold">Recommendation:</span>{' '}
           {renderInlineCode(insight.recommendation)}
         </p>

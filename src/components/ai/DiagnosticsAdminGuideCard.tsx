@@ -1,5 +1,6 @@
 'use client'
 
+import { guideAnchorId } from '@/utils/diagnostics'
 import type { DiagnosticsAdminGuideCardProps } from './DiagnosticsAdminGuideCardProps'
 import { DiagnosticsGuideField } from './DiagnosticsGuideField'
 import { DiagnosticsGuideVerifySteps } from './DiagnosticsGuideVerifySteps'
@@ -10,7 +11,8 @@ export function DiagnosticsAdminGuideCard({
 }: Readonly<DiagnosticsAdminGuideCardProps>) {
   return (
     <article
-      className={`rounded-xl border p-4 shadow-sm ${guideSeverityClasses(guide.severity)}`}
+      id={guideAnchorId(guide.id)}
+      className={`scroll-mt-6 rounded-xl border p-4 shadow-sm ${guideSeverityClasses(guide.severity)}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">

@@ -27,11 +27,9 @@ export function SpfDetailSection({
       />
 
       {dns.spfWarning !== null && dns.spfWarning !== '' && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-          <h4 className="mb-1 text-sm font-semibold text-red-500">
-            Important Notice
-          </h4>
-          <p className="text-sm text-red-500/90">{dns.spfWarning}</p>
+        <div className="border-warning/35 bg-warning/10 rounded-lg border p-4">
+          <h4 className="text-warning mb-1 text-sm font-semibold">Warning</h4>
+          <p className="text-foreground text-sm">{dns.spfWarning}</p>
         </div>
       )}
 

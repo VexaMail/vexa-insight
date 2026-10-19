@@ -23,11 +23,11 @@ export function SpfLookupTreeSection({
       {tree ? (
         <>
           {tree.exceedsLookupLimit ? (
-            <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-              <h4 className="mb-1 text-sm font-semibold text-red-500">
+            <div className="border-danger/30 bg-danger/10 rounded-lg border p-4">
+              <h4 className="text-danger mb-1 text-sm font-semibold">
                 Lookup limit exceeded
               </h4>
-              <p className="text-sm text-red-500/90">
+              <p className="text-danger text-sm">
                 This SPF record consumes {tree.lookupCount} DNS lookups, above
                 the 10-lookup limit. Receivers may return a permerror and ignore
                 SPF entirely.

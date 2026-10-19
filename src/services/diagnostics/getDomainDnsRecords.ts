@@ -15,6 +15,7 @@ import { sortMxRecords } from './sortMxRecords'
 
 export async function getDomainDnsRecords(
   domain: string,
+  reportedSelectors: readonly string[] = [],
 ): Promise<DnsDiagnostics> {
   const [
     txtRecords,
@@ -31,7 +32,7 @@ export async function getDomainDnsRecords(
     resolveTxtSafe(domain),
     resolveTxtSafe(`_dmarc.${domain}`),
     resolveMxSafe(domain),
-    probeDkim(domain),
+    probeDkim(domain, reportedSelectors),
     resolveBimi(domain),
     resolveMtaSts(domain),
     resolveTlsRpt(domain),

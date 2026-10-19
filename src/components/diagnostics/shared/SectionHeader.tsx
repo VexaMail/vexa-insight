@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { StatusPill } from '@/components/ui'
 import { InfoTooltip } from './InfoTooltip'
 import type { SectionHeaderProps } from './SectionHeaderProps'
 
@@ -12,22 +12,14 @@ export function SectionHeader({
     <div className="flex items-center gap-3">
       {icon}
       <div className="flex items-center gap-2">
-        <h3 className="text-foreground text-lg font-bold">{title}</h3>
+        <h3 className="text-foreground text-base font-semibold">{title}</h3>
         {helpText !== undefined && helpText !== '' && (
           <InfoTooltip content={helpText} />
         )}
       </div>
-      {found ? (
-        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-500">
-          <CheckCircle2 className="h-3.5 w-3.5" />
-          Found
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-semibold text-red-500">
-          <XCircle className="h-3.5 w-3.5" />
-          Not Found
-        </span>
-      )}
+      <StatusPill tone={found ? 'success' : 'danger'} dot>
+        {found ? 'Found' : 'Not found'}
+      </StatusPill>
     </div>
   )
 }

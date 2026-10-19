@@ -8,7 +8,7 @@ export function InsightCodeBlock({
   return (
     <div className={className}>
       <p className="text-muted-foreground text-xs">{label}</p>
-      <pre className="overflow-x-auto rounded bg-zinc-100 px-2 py-1 text-xs break-all whitespace-pre-wrap dark:bg-zinc-800">
+      <pre className="bg-muted overflow-x-auto rounded px-2 py-1 text-xs break-all whitespace-pre-wrap">
         <code>{value}</code>
       </pre>
     </div>

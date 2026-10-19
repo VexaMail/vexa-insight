@@ -19,7 +19,7 @@ export function SpfTreeNodeNotes({
         </p>
       )}
       {node.ignoredRedirect !== null && node.ignoredRedirect !== '' && (
-        <p className="pl-3 text-xs text-amber-500">
+        <p className="text-warning pl-3 text-xs">
           <span className="font-mono">redirect={node.ignoredRedirect}</span> is
           ignored because this record has an{' '}
           <span className="font-mono">all</span> mechanism (RFC 7208 6.1).

@@ -14,11 +14,11 @@ export function SpfCheckCard({
         <h4 className="text-foreground text-sm font-bold">{category}</h4>
         <div className="flex items-center gap-2">
           {allPassed ? (
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-500">
+            <span className="text-success inline-flex items-center gap-1 text-xs font-semibold">
               <CheckCircle2 className="h-4 w-4" /> Passed
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-500">
+            <span className="text-warning inline-flex items-center gap-1 text-xs font-semibold">
               <AlertTriangle className="h-4 w-4" /> {failedCount} Issue
               {failedCount > 1 ? 's' : ''}
             </span>
@@ -33,9 +33,9 @@ export function SpfCheckCard({
           >
             <div className="mt-0.5 flex-shrink-0">
               {check.passed ? (
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <CheckCircle2 className="text-success h-5 w-5" />
               ) : (
-                <AlertTriangle className="h-5 w-5 text-amber-500" />
+                <AlertTriangle className="text-warning h-5 w-5" />
               )}
             </div>
             <div className="flex flex-col gap-1">

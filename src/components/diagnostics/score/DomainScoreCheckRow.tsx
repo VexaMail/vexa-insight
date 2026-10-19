@@ -7,9 +7,9 @@ export function DomainScoreCheckRow({
   const ratio = check.max === 0 ? 0 : check.earned / check.max
   const barClass =
     ratio === 1
-      ? 'bg-emerald-500'
+      ? 'bg-success'
       : ratio > 0
-        ? 'bg-amber-500'
+        ? 'bg-warning'
         : 'bg-muted-foreground/30'
 
   return (
