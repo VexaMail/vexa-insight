@@ -292,6 +292,72 @@
   .gradient-text {
     @apply bg-linear-to-r from-[hsl(var(--primary))] to-[hsl(var(--chart-spf))] bg-clip-text text-transparent;
   }
+  /* Edge fades of a scrolling tab strip (TabNavScroller). Each fade is tied to
+     the strip's scroll timeline, so it shows only on a side with more tabs
+     and not at all when the row fits. A strip on a card sets --tabnav-fade
+     to var(--card) so the fade matches its surface. */
+  .tabnav-fade {
+    position: absolute;
+    top: 0;
+    bottom: 1px;
+    opacity: 0;
+    width: 2.5rem;
+    pointer-events: none;
+  }
+  .tabnav-fade-start {
+    left: 0;
+    background: linear-gradient(
+      to right,
+      hsl(var(--tabnav-fade, var(--background))),
+      transparent
+    );
+  }
+  .tabnav-fade-end {
+    right: 0;
+    background: linear-gradient(
+      to left,
+      hsl(var(--tabnav-fade, var(--background))),
+      transparent
+    );
+  }
+  @supports (animation-timeline: scroll()) {
+    .tabnav-fade {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --tabnav;
+    }
+    .tabnav-fade-start {
+      animation-name: tabnav-fade-start;
+    }
+    .tabnav-fade-end {
+      animation-name: tabnav-fade-end;
+    }
+  }
+  @supports not (animation-timeline: scroll()) {
+    @media (width < 48rem) {
+      .tabnav-fade-end {
+        opacity: 1;
+      }
+    }
+  }
+  @keyframes tabnav-fade-start {
+    0% {
+      opacity: 0;
+    }
+    8%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes tabnav-fade-end {
+    0%,
+    92% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
   .vexa-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
