@@ -1,4 +1,6 @@
 export { CHUNK_UID_COUNT } from './chunkUidCount'
+export { EMPTY_LAST_RUN_HEALTH } from './emptyLastRunHealth'
+export { HEALTH_WINDOW_MS } from './healthWindowMs'
 export { POLL_INTERVAL_MS } from './pollIntervalMs'
 export { RUN_ERROR_SUMMARY_MAX_ERRORS } from './runErrorSummaryMaxErrors'
 export { RUN_ERROR_SUMMARY_MAX_LENGTH } from './runErrorSummaryMaxLength'

@@ -9,7 +9,7 @@ export function IngestTabList({
   onSelect,
 }: Readonly<IngestTabListProps>) {
   return (
-    <div className="border-border/50 flex space-x-1 border-b">
+    <div className="border-border/50 -mx-1 flex gap-1 overflow-x-auto border-b px-1">
       <IngestTabButton
         active={activeTab === 'jobRuns'}
         onClick={() => {

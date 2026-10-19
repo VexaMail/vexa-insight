@@ -15,14 +15,14 @@ export function EngineHeader({
   onAbort,
 }: EngineHeaderProps) {
   return (
-    <div className="mb-4 flex items-center justify-between">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div className="flex items-center gap-2">
         <Activity className="text-primary h-4 w-4" />
         <h3 className="font-display text-foreground text-sm font-semibold">
-          DMARC Ingest Engine
+          Ingest engine
         </h3>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4">
         {isRunning || runRequested ? (
           <EngineStopButton
             abortStatus={abortStatus}

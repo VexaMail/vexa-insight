@@ -5,6 +5,7 @@ export * from './EmailPipelineCard'
 export * from './FullRescanDialog'
 export { default as FullRescanDialog } from './FullRescanDialog'
 
+export * from './IngestHealthPanel'
 export * from './IngestStoreProvider'
 export * from './IngestTabs'
 export * from './JobRunHistoryTable'
