@@ -1,4 +1,8 @@
-import { STATUS_TONE_CLASSES, STATUS_TONE_DOT_CLASSES } from '@/constants/ui'
+import {
+  STATUS_TONE_CLASSES,
+  STATUS_TONE_DOT_CLASSES,
+  STATUS_TONE_SOLID_CLASSES,
+} from '@/constants/ui'
 import { cn } from '@/lib/utils'
 import type { StatusPillProps } from '@/types/ui'
 
@@ -9,6 +13,7 @@ export function StatusPill({
   dot = false,
   icon,
   title,
+  variant = 'soft',
   className,
 }: Readonly<StatusPillProps>) {
   return (
@@ -16,7 +21,10 @@ export function StatusPill({
       title={title}
       className={cn(
         'inline-flex h-6 items-center gap-1.5 rounded-md border px-2 text-xs font-medium whitespace-nowrap',
-        STATUS_TONE_CLASSES[tone],
+        variant === 'solid'
+          ? STATUS_TONE_SOLID_CLASSES[tone]
+          : STATUS_TONE_CLASSES[tone],
+        variant === 'solid' && 'font-semibold',
         className,
       )}
     >
