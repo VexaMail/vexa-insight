@@ -8,6 +8,141 @@
 
 ### 2026-10
 
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Change detection: a domain or
+      source that starts failing (new endpoint, state snapshot).
+  - Result: Home 'What changed' table compares the window with the previous one
+    per domain and source, with trends.
+  - Evidence: b9b27cb, c5138af
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Sending sources list: classify
+      instead of 951 "Needs review" (DMARC pass, authenticated not aligned,
+      forwarded, failed, unknown).
+  - Result: Sources list classified by cause (DMARC pass, DKIM only, likely
+    forwarding, mixed or unknown, fails SPF and DKIM) with filter chips and
+    counts.
+  - Evidence: d857691; /ips screenshot 2026-10-19
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Source classification by
+      observed flow, with reason and confidence (new endpoint); operator review
+      "Mark as legitimate sender" that never claims to change DNS or receiver
+      behaviour (extends the Source approval item under Competitive gaps).
+  - Result: Sources classified by cause with a heuristic label; operator review
+    and Mark as legitimate sender record a verdict without claiming DNS or
+    receiver changes.
+  - Evidence: d857691, f3eee30, 3dbc40b
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Domain health timeline
+      correlating DNS, compliance, sources and ingest.
+  - Result: History tab on the domain page joins daily results, DNS changes and
+    events.
+  - Evidence: fb1cdf7, b0d5dd3
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** SPF lookup budget and change
+      planner (new endpoint).
+  - Result: Record generator tab plans an SPF record against the lookup route:
+    count vs limit, includes to flatten, loops, macros, ignored redirects.
+  - Evidence: 5726cb3, 588d2f5
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Re-run one DNS check on demand
+      (new endpoint).
+  - Result: Check now on the domain DNS tab and Re-run DNS check in the domain
+    Actions menu.
+  - Evidence: b0d5dd3, 90a685d
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Issues queue with acknowledge /
+      snooze (new table).
+  - Result: /issues page and home queue with acknowledge, snooze 1 or 7 days,
+    reopen and history over issue_events.
+  - Evidence: 2ab7cda; browser run acknowledge/reopen without console errors
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Ingest: separate scheduler,
+      mailbox connectivity, processing and data freshness (last run, last
+      success, last mail seen, last report parsed).
+  - Result: KPI tiles, ingestion health table (scheduler, last run, processed,
+    mailbox freshness, errors), health checks per area, icon log tabs; times in
+    UTC.
+  - Evidence: c45d4fc, e68127f
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Diagnostics: findings table
+      (severity, check, observed, recommendation, action), status tiles per
+      protocol, next best actions, re-run check, copy record, explanations moved
+      to a side panel. Supersedes the three diagnostics items under Future
+      Ideas.
+  - Result: Header with last run and Run diagnostics split button, score ring
+    with grade, six protocol tiles, filterable findings with Verify and More,
+    numbered next actions, why-this-matters, record generator tab.
+  - Evidence: 588d2f5, 0ccb1aa, a0e6676
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Sending source detail: identity
+      (PTR, FCrDNS, country, ASN), separated auth/alignment results, related
+      domains, report evidence, timeline, tabs, operator classification.
+  - Result: Header chips (country, cause, ASN, organization), Mark as legitimate
+    sender, KPI tiles, identity and network panel, five auth/alignment rows,
+    event timeline, related domain, report evidence, reputation panel, operator
+    review, DNS and raw data tabs.
+  - Evidence: 68c2383, 3dbc40b, 015a33d
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Domain detail: decision header
+      (compliance, published policy, enforcement stage Observe -> Identify ->
+      Fix -> Quarantine -> Reject, senders at risk, forwarders), tabs Sources /
+      DNS / Reports / TLS-RUF, sources filtered by classification, compliance
+      trend vs previous period.
+  - Result: Header with Actions and more menus, five decision cards, path to
+    enforcement, icon tabs incl. History, sources with Classification column,
+    filters, CSV/JSON export and an enforcement blockers strip.
+  - Evidence: 0f33cf5, 90a685d
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Home / triage: "Action
+      required" queue, "What changed since your last visit", pass-rate trend as
+      a rate (not volume), ingestion health with trigger, lowest-compliance
+      domains, top failing sources, enforcement summary (domains per
+      `p=none|quarantine|reject`). Separate new/regressed from long-standing
+      issues.
+  - Result: Greeting, four trend KPI tiles, action queue split new/regressed vs
+    long-standing with acknowledge and snooze, changes table with trends,
+    pass/fail rate chart with its own range, ingestion health table,
+    lowest-compliance domains and top failing sources with trends.
+  - Evidence: 2ab7cda, c5138af
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Report 14435 shows DKIM aligned
+      100% with compliance 0%, and `/ips/<ip>` shows DKIM pass 100% with fully
+      aligned 0%: separate SPF auth, SPF aligned, DKIM auth, DKIM aligned and
+      DMARC result everywhere, with the record evidence (header_from,
+      envelope_from, DKIM `d=`).
+  - Result: SPF auth, SPF aligned, DKIM auth, DKIM aligned and DMARC result are
+    separate tiles and rows on the report and source pages, with d= and the
+    envelope domain from the stored XML.
+  - Evidence: 120e19d, 3dbc40b; report and source screenshots
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** One detail-page pattern for
+      domain, source, report and diagnostics: identity header with copy buttons,
+      status chips, KPI strip, tabs.
+  - Result: Domain, source, report and diagnostics share identity header with
+    copy, status chips, feature KPI tiles and icon tabs.
+  - Evidence: 90a685d, 3dbc40b, 120e19d, 0ccb1aa
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Shell: grouped sidebar (Operate
+      / Investigate / Admin), a real phone layout (drawer navigation, no
+      persistent 240px sidebar; today `/ips/<ip>` at 390px splits the IP over
+      three lines and overlaps labels), global search as a command palette
+      (domain, IP, report id; `Cmd+K`).
+  - Result: Flat sidebar per the second mockup set (Overview, Issues, Domains,
+    Sending sources, Diagnostics, Reports, Ingestion, Upload; Users and Settings
+    pinned), phone drawer, wide Cmd+K palette, breadcrumbs in the shell,
+    segmented theme switch.
+  - Evidence: 1980973, 1cf61c3; phone and desktop screenshots in both themes
+
+- [x] 2026-10-19 — **UI redesign (2026-10-19):** Design tokens for the console
+      palette in both themes (dark canvas `#0B1118`, surface `#121C25`, border
+      `#243441`, accent `#2DD4A0`; light canvas `#F5F8FA`, surface `#FFFFFF`,
+      border `#DBE4E9`, accent `#008F71`), semantic status colours (healthy,
+      needs review, critical, unknown), Geist Mono for IPs, ids and DNS, 120-180
+      ms motion, denser cards and tables.
+  - Result: Console tokens in both themes (deeper navy dark canvas, solid status
+    badges, Geist Mono figures, quiet grid backdrop).
+  - Evidence: 1980973, 1cf61c3; pnpm run check:ci 912 tests and pnpm run build
+    green at 015a33d
+
 - [x] 2026-10-19 — **Remaining production findings closed.**
   - Result: the date-filtered reports list pages and counts every report in the
     range (`getReportsInDateRange`); a report message is recorded and moved only

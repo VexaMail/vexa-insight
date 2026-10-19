@@ -174,57 +174,32 @@ coherence review over all screens in both themes.
 
 **Foundation**
 
-- [ ] Design tokens for the console palette in both themes (dark canvas
-      `#0B1118`, surface `#121C25`, border `#243441`, accent `#2DD4A0`; light
-      canvas `#F5F8FA`, surface `#FFFFFF`, border `#DBE4E9`, accent `#008F71`),
-      semantic status colours (healthy, needs review, critical, unknown), Geist
-      Mono for IPs, ids and DNS, 120-180 ms motion, denser cards and tables.
-- [ ] Shell: grouped sidebar (Operate / Investigate / Admin), a real phone
-      layout (drawer navigation, no persistent 240px sidebar; today `/ips/<ip>`
-      at 390px splits the IP over three lines and overlaps labels), global
-      search as a command palette (domain, IP, report id; `Cmd+K`).
-- [ ] One detail-page pattern for domain, source, report and diagnostics:
-      identity header with copy buttons, status chips, KPI strip, tabs.
 - [ ] Global filters (date range, domain) kept in the URL across navigation, so
       every cross-link opens with the same context.
 
 **Metric correctness (before restyling the numbers)**
 
+- [ ] `event_rollup_daily.passed` counts SPF-or-DKIM _auth_ pass, not aligned
+      DMARC pass, so the domains-list compliance (`getDomainsSummaryAll`) and
+      dashboard trends built on it can overstate compliance. Found 2026-10-19 by
+      the domain redesign, whose bar charts show volume only for this reason.
+      Smallest step: add a DMARC-pass column to the rollup with a migration and
+      backfill, then switch those readers.
+
 - [ ] Dashboard shows "Compliance 96.8%" and "Global pass rate 83%" at once, and
       24,802 emails vs 24,699 on `/ips`; define each metric's denominator and
       window, reconcile, and label them.
-- [ ] Report 14435 shows DKIM aligned 100% with compliance 0%, and `/ips/<ip>`
-      shows DKIM pass 100% with fully aligned 0%: separate SPF auth, SPF
-      aligned, DKIM auth, DKIM aligned and DMARC result everywhere, with the
-      record evidence (header_from, envelope_from, DKIM `d=`).
 
 **Screens**
 
-- [ ] Home / triage: "Action required" queue, "What changed since your last
-      visit", pass-rate trend as a rate (not volume), ingestion health with
-      trigger, lowest-compliance domains, top failing sources, enforcement
-      summary (domains per `p=none|quarantine|reject`). Separate new/regressed
-      from long-standing issues.
-- [ ] Domain detail: decision header (compliance, published policy, enforcement
-      stage Observe -> Identify -> Fix -> Quarantine -> Reject, senders at risk,
-      forwarders), tabs Sources / DNS / Reports / TLS-RUF, sources filtered by
-      classification, compliance trend vs previous period.
-- [ ] Sending source detail: identity (PTR, FCrDNS, country, ASN), separated
-      auth/alignment results, related domains, report evidence, timeline, tabs,
-      operator classification.
-- [ ] Diagnostics: findings table (severity, check, observed, recommendation,
-      action), status tiles per protocol, next best actions, re-run check, copy
-      record, explanations moved to a side panel. Supersedes the three
-      diagnostics items under Future Ideas.
-- [ ] Sending sources list: classify instead of 951 "Needs review" (DMARC pass,
-      authenticated not aligned, forwarded, failed, unknown).
-- [ ] Reports list and detail: per-row volume, fail rate and signal type; detail
-      linked to the domain, source and DNS state; RUA grouping views (source,
-      result, receiver, host, country, raw reports).
-- [ ] Ingest: separate scheduler, mailbox connectivity, processing and data
-      freshness (last run, last success, last mail seen, last report parsed).
-- [ ] Domains list, Upload, Settings, Users, Login, Install, Docs restyled to
-      the same system.
+- [~] Reports list and detail: KPI tiles with trends, report identity header,
+  links to domain, source and DNS diagnostics, and source/metadata/raw XML/TLS
+  tabs shipped (120e19d, e68127f). Left: RUA grouping views (source, result,
+  receiver, host, country) and a per-row trend column, which needs per-report
+  history.
+- [~] Domains list, Upload, Settings, Users and Login restyled (0f33cf5,
+  b98f8e3, e5458d2). Left: check Install and Docs against the new palette in the
+  final coherence review.
 - [~] `/docs`: the API viewer is now pinned with SRI, allowed by the dev CSP,
   mounted explicitly, and runs with telemetry, the hosted agent, MCP and
   developer tools off (2026-10-19). Left: `next dev` still logs "Hydration
@@ -235,21 +210,34 @@ coherence review over all screens in both themes.
 
 **New features (marked new)**
 
-- [ ] Issues queue with acknowledge / snooze (new table).
-- [ ] Change detection: a domain or source that starts failing (new endpoint,
-      state snapshot).
-- [ ] Alert rules on top of the existing webhooks: compliance drop, new source
-      over a volume, DNS change, ingestion stalled, new RUF (new table).
-- [ ] Source classification by observed flow, with reason and confidence (new
-      endpoint); operator review "Mark as legitimate sender" that never claims
-      to change DNS or receiver behaviour (extends the Source approval item
-      under Competitive gaps).
-- [ ] Re-run one DNS check on demand (new endpoint).
-- [ ] SPF lookup budget and change planner (new endpoint).
-- [ ] IP network context: ASN, PTR/FCrDNS, optional DNSBL lookups (new endpoint;
-      ASN is also under Competitive gaps).
-- [ ] Domain health timeline correlating DNS, compliance, sources and ingest.
+- [~] Alert rules on top of the existing webhooks: the Settings UI manages the
+  two existing kinds (pass-rate drop, fail-rate spike) and warns when no webhook
+  listens (e5458d2). Left: new source over a volume, DNS change, ingestion
+  stalled, new RUF, and a per-rule firing history (only the last fired time is
+  stored).
+- [~] IP network context: ASN, organization, PTR and FCrDNS lookups ship on the
+  source page (50b4d9b, 3dbc40b). Left: DNSBL, shown as "Not checked"; needs an
+  outbound query policy, rate limits and a provider choice.
 - [ ] Remediation verification history (new table).
+- [ ] Ingest run duration, ingest "+n% vs previous" and StatTile deltas on the
+      reports list need a previous-window query and a run duration column.
+- [ ] "Since your last visit" on the home reads "since the previous period":
+      nothing records a user's last visit (needs a column on users).
+- [ ] Webhook delivery history per endpoint (only the last delivery is stored).
+
+**Primitives and polish found by the redesign**
+
+- [ ] Shared DropdownMenu, SplitButton and ScoreRing in `src/components/ui`;
+      domain, source, diagnostics and settings each built menus on Popover.
+- [ ] `Navigator` uses raw zinc palette classes instead of tokens.
+- [ ] `Sparkline` scales from zero, so rate lines look flat (home works around
+      it); add a domain option. Chart x-axes print ISO dates.
+- [ ] DataTable: a flush/bare variant inside a Panel and a wider search option.
+- [ ] Phone card list of domain sources still uses soft badges, not solid.
+- [ ] Source issue keys changed from `source:<ip>:<domain>` to
+      `source:<domain>:<ip>` (c5138af) so per-domain permission checks work;
+      acknowledgements saved under the old key no longer match. Decide whether
+      to migrate existing `issue_events` rows.
 - Already tracked under Competitive gaps, part of this redesign: DNS change
   history, record generator, CSV/JSON export, report coverage per reporter.
 
