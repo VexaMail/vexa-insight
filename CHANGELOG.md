@@ -188,8 +188,7 @@ and this project adheres to
 
 - Shared config packages moved to the `syntopica` scope, with the lockfile
   regenerated to match.
-- Dependencies updated (2026-09-12). ||||||| parent of c8586e7 (feat(settings):
-  allow custom project names)
+- Dependencies updated (2026-09-12).
 
 ## [0.3.1] - 2026-09-11
 
