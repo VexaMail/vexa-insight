@@ -494,6 +494,9 @@ The following endpoints are stable and meant for automation:
   trigger the self-update flow (source installs with supervisor).
 - `GET /api/v1/domains/{id}/sources` — a domain's source IPs with counts,
   hostname, country and named sender; `?format=csv` returns them as CSV.
+- `GET /api/v1/ips/{ip}/network` — live forward-confirmed reverse DNS and the
+  announcing ASN of a source address, looked up over public DNS (the IP-to-ASN
+  zones at `asn.cymru.com`) when asked; nothing is stored.
 - `GET /api/v1/domains/{id}/dns/history` — stored changes of a domain's tracked
   DNS records, newest first; `POST /api/v1/domains/{id}/dns/check` looks them up
   now and stores what changed.
