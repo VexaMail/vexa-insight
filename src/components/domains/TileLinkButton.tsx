@@ -14,7 +14,7 @@ export function TileLinkButton({
     <Link
       href={href}
       className={cn(
-        'focus-visible:ring-ring inline-flex min-h-9 w-fit items-center gap-2 rounded-md px-3.5 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
+        'focus-visible:ring-ring inline-flex min-h-9 w-fit items-center gap-2 rounded-md px-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
         variant === 'info'
           ? 'bg-info text-info-foreground hover:bg-info/90'
           : 'border-info/50 text-info hover:bg-info/10 border',

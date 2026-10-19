@@ -16,8 +16,7 @@ export function createHostnameColumn({
 > {
   return {
     id: 'hostname',
-    accessorFn: (row) =>
-      `${localHostnames[row.sourceIp] ?? row.hostname ?? ''} ${row.sender?.name ?? ''}`.trim(),
+    accessorFn: (row) => localHostnames[row.sourceIp] ?? row.hostname ?? '',
     header: ({ column }) => (
       <SortableHeaderButton column={column} label="Hostname" />
     ),
@@ -26,7 +25,6 @@ export function createHostnameColumn({
       return (
         <HostnameCell
           hostname={localHostnames[ip] ?? row.original.hostname ?? null}
-          sender={row.original.sender}
           isRefreshing={refreshingIps.has(ip)}
           onRefresh={() => {
             onRefresh(ip)

@@ -1,5 +1,6 @@
 import type { DomainInsights, DomainSourceRow } from '@/types/domains'
 import { buildFailureReasons } from './buildFailureReasons'
+import { topCountryByVolume } from './topCountryByVolume'
 
 /** Source, country and failure figures of a domain's sources. */
 export function buildDomainInsights(
@@ -12,6 +13,7 @@ export function buildDomainInsights(
   return {
     uniqueSources: rows.length,
     countries: countries.size,
+    primaryCountry: topCountryByVolume(rows),
     failingSources: failing.length,
     forwardedSources: failing.filter((row) => row.kind === 'forwarded').length,
     failingMessages: failing.reduce((total, row) => total + row.failing, 0),

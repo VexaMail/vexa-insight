@@ -1,6 +1,7 @@
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
 import { authPairColumn } from './columns/authPairColumn'
+import { classificationColumn } from './columns/classificationColumn'
 import { createHostnameColumn } from './columns/createHostnameColumn'
 import { createSourceIpColumn } from './columns/createSourceIpColumn'
 import { dmarcColumn } from './columns/dmarcColumn'
@@ -20,6 +21,7 @@ export function getDomainSourcesColumns(
     authPairColumn('spf'),
     authPairColumn('dkim'),
     dmarcColumn,
+    classificationColumn,
     lastSeenColumn,
     sourceOpenColumn,
   ]

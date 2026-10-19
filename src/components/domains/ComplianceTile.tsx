@@ -21,22 +21,22 @@ export function ComplianceTile({
       title="Domain compliance"
       href={historyHref}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <ComplianceRing
           rate={hasData ? summary.passRatePercent : null}
           tone={domainHealthTone(getDomainHealth(summary))}
           className="h-24 w-24"
         />
-        <div className="min-w-0 flex-1 space-y-2">
-          <ComplianceLegend summary={summary} />
-          <Sparkline
-            values={dailyVolume}
-            kind="bars"
-            tone="info"
-            className="h-7 w-full"
-            label="Messages per day, last 30 days"
-          />
-        </div>
+        <ComplianceLegend summary={summary} />
+      </div>
+      <div title="Messages per UTC day, last 30 days">
+        <Sparkline
+          values={dailyVolume}
+          kind="bars"
+          tone="info"
+          className="h-8 w-full"
+          label="Messages per day, last 30 days"
+        />
       </div>
       <ComplianceDelta trend={trend} />
     </DecisionTile>

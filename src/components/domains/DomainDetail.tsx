@@ -29,7 +29,11 @@ export default function DomainDetail({
           sourceDays={data.sourceDays}
         />
         {tab === 'sources' ? (
-          <DomainSourcesTab domainId={domainId} data={data} />
+          <DomainSourcesTab
+            domainId={domainId}
+            domainName={domainName}
+            data={data}
+          />
         ) : null}
         {tab === 'dns' ? dnsSlot : null}
         {tab === 'reports' ? coverageSlot : null}

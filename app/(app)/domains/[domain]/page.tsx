@@ -4,11 +4,7 @@ import { DomainDetail, DomainDetailHeader } from '@/components/domains'
 import { PageContainer } from '@/components/shell'
 import { PageSkeleton } from '@/components/ui'
 import { getDomainByName } from '@/services/reports'
-import {
-  domainTabHref,
-  parseDomainDetailTab,
-  parseSourceDays,
-} from '@/utils/domains'
+import { parseDomainDetailTab, parseSourceDays } from '@/utils/domains'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { CoveragePanelLoader } from './CoveragePanelLoader'
@@ -43,11 +39,9 @@ export default async function DomainDetailPage({
   return (
     <PageContainer>
       <DomainDetailHeader
+        domainId={domainRow.id}
         domainName={domainName}
         policy={data.policy}
-        totalMessages={data.summary.totalMessages}
-        dailyVolume={data.dailyVolume}
-        reportsHref={domainTabHref(domainName, 'reports')}
       />
       <DomainDetail
         domainId={domainRow.id}

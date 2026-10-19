@@ -1,9 +1,9 @@
 import { IpFlag } from '@/components/ips'
 import { tldCountryCode } from '@/utils/domains'
-import type { TitleControlsProps } from './TitleControlsProps'
+import type { DomainNameProps } from './DomainNameProps'
 
 /** The flag of a country-code TLD before the title; nothing for generic TLDs. */
-export function DomainFlag({ domainName }: Readonly<TitleControlsProps>) {
+export function DomainFlag({ domainName }: Readonly<DomainNameProps>) {
   const code = tldCountryCode(domainName)
   if (code === null) return null
   return (

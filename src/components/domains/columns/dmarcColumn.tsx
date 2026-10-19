@@ -1,7 +1,7 @@
 import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
-import { AuthPill } from '../AuthPill'
+import { DmarcResultPill } from '../DmarcResultPill'
 import type { SourceRow } from '../SourceRow'
 
 /** The DMARC result of a source: SPF or DKIM passed aligned. */
@@ -16,7 +16,7 @@ export const dmarcColumn: ColumnDef<typeof dataTableFeatures, SourceRow> = {
     const auth = row.original.auth
     if (!auth)
       return <span className="text-muted-foreground text-xs">No data</span>
-    return <AuthPill label="" pass={auth.dmarcPass} total={auth.messages} />
+    return <DmarcResultPill pass={auth.dmarcPass} total={auth.messages} />
   },
   enableGlobalFilter: false,
 }

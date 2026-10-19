@@ -23,6 +23,7 @@ export function AlignedAuthCell({
     >
       <StatusPill
         tone={align.tone}
+        variant="solid"
         icon={isPassOrFail ? <ToneIcon tone={align.tone} /> : null}
         className="min-w-[4.25rem]"
       >

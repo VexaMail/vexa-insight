@@ -9,7 +9,6 @@ import { SourcesToolbar } from './SourcesToolbar'
 
 export default function DomainSourcesTable({
   sources,
-  csvHref,
   days,
 }: Readonly<DomainSourcesTableProps>) {
   const state = useDomainSourcesTable(sources)
@@ -31,7 +30,6 @@ export default function DomainSourcesTable({
       country={state.country}
       days={days}
       countryOptions={state.countryOptions}
-      csvHref={csvHref}
       onClassChange={state.setClass}
       onCountryChange={state.setCountry}
       onDaysChange={state.setDays}

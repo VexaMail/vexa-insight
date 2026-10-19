@@ -9,7 +9,9 @@ export const lastSeenColumn: ColumnDef<typeof dataTableFeatures, SourceRow> = {
   id: 'lastSeen',
   accessorFn: (row) => row.auth?.lastSeen ?? 0,
   header: ({ column }) => (
-    <SortableHeaderButton column={column} label="Last seen" descendingFirst />
+    <span className="whitespace-nowrap">
+      <SortableHeaderButton column={column} label="Last seen" descendingFirst />
+    </span>
   ),
   cell: ({ row }) => {
     const lastSeen = row.original.auth?.lastSeen
