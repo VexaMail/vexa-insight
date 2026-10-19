@@ -1,6 +1,8 @@
 'use client'
 
+import { Button } from '@/components/ui'
 import { mapDiagnosticsInsightToRenderable } from '@/mappers/ai'
+import { RotateCw } from 'lucide-react'
 import type { AiDiagnosticsResultsProps } from './AiDiagnosticsResultsProps'
 import { AiInsightsHeading } from './AiInsightsHeading'
 import { DiagnosticsRolloutPlanCard } from './DiagnosticsRolloutPlanCard'
@@ -19,20 +21,23 @@ export function AiDiagnosticsResults({
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
           <AiInsightsHeading />
           <span className="text-muted-foreground text-xs">
             {data.insights.length} findings · {data.metadata.model} ·{' '}
             {data.metadata.durationMs}ms
           </span>
         </div>
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onAnalyze}
-          className="bg-muted text-muted-foreground hover:bg-accent shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition print:hidden"
+          className="shrink-0 print:hidden"
         >
+          <RotateCw aria-hidden="true" />
           Re-analyze
-        </button>
+        </Button>
       </div>
 
       <InsightSection

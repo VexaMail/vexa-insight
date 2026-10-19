@@ -12,11 +12,11 @@ export function DiagnosticsAdminGuideCard({
   return (
     <article
       id={guideAnchorId(guide.id)}
-      className={`scroll-mt-6 rounded-xl border p-4 shadow-sm ${guideSeverityClasses(guide.severity)}`}
+      className={`scroll-mt-6 rounded-lg border p-4 ${guideSeverityClasses(guide.severity)}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          <p className="text-muted-foreground font-mono text-[11px] font-medium tracking-[0.16em] uppercase">
             {guide.severity}
           </p>
           <h4 className="text-foreground text-sm font-semibold">

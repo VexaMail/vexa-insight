@@ -18,7 +18,7 @@ export function DiagnosticsAdminRunbook({
       : '0.0'
 
   return (
-    <section className="bg-card space-y-4 rounded-xl border p-5 shadow-sm">
+    <section className="glass-card space-y-4 p-4 sm:p-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <RunbookHeading domainName={domainName} />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

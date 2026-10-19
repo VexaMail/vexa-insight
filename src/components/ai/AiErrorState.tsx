@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui'
+import { TriangleAlert } from 'lucide-react'
 import type { AiErrorStateProps } from './AiErrorStateProps'
 
 export default function AiErrorState({
@@ -9,18 +11,21 @@ export default function AiErrorState({
   return (
     <div className="border-danger/30 bg-danger/10 rounded-lg border p-4">
       <div className="flex items-start gap-3">
-        <span className="text-lg" aria-hidden="true">
-          ⚠
-        </span>
+        <TriangleAlert
+          className="text-danger mt-0.5 h-4 w-4 shrink-0"
+          aria-hidden="true"
+        />
         <div>
           <p className="text-danger text-sm font-medium">{message}</p>
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={onRetry}
-            className="bg-danger/10 text-danger hover:bg-danger/20 mt-2 rounded-md px-3 py-1.5 text-xs font-medium transition print:hidden"
+            className="border-danger/35 text-danger hover:bg-danger/10 hover:text-danger mt-2 bg-transparent print:hidden"
           >
-            Try Again
-          </button>
+            Try again
+          </Button>
         </div>
       </div>
     </div>
