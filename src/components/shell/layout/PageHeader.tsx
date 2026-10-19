@@ -12,7 +12,7 @@ export function PageHeader({
   const hasTopRow = back !== undefined || actions !== undefined
 
   return (
-    <header className="space-y-5">
+    <header className="space-y-4">
       {hasTopRow ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">{back}</div>
@@ -22,7 +22,7 @@ export function PageHeader({
 
       <div className="space-y-3">
         {eyebrow ? <PageEyebrow>{eyebrow}</PageEyebrow> : null}
-        <h1 className="text-foreground font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-foreground font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           {title}
         </h1>
         {description ? (

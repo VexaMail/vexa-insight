@@ -1,6 +1,6 @@
 'use client'
 
-import { useCopyButton } from '@/hooks/diagnostics'
+import { useCopyButton } from '@/hooks/ui'
 import { Check, Copy } from 'lucide-react'
 import type { CopyButtonProps } from './CopyButtonProps'
 
@@ -18,8 +18,8 @@ export function CopyButton({ text }: Readonly<CopyButtonProps>) {
     >
       {copied ? (
         <>
-          <Check className="h-3.5 w-3.5 text-emerald-500" />
-          <span className="text-emerald-500">Copied!</span>
+          <Check className="text-success h-3.5 w-3.5" />
+          <span className="text-success">Copied!</span>
         </>
       ) : (
         <>

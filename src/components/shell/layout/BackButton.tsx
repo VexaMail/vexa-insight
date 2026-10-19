@@ -5,7 +5,7 @@ export function BackButton({ href, children }: Readonly<BackButtonProps>) {
   return (
     <Link
       href={href}
-      className="bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-ring inline-flex w-fit items-center gap-2 rounded-md px-4 py-2 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring -ml-2 inline-flex min-h-10 w-fit items-center gap-1.5 rounded-md px-2 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
     >
       {children}
     </Link>
