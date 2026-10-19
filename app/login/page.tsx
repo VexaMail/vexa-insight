@@ -7,8 +7,10 @@ import {
   LoginErrorBanner,
   LoginPasswordField,
   LoginSubmitButton,
+  LoginTrustPills,
   LoginUsernameField,
 } from '@/components/login'
+import { ShieldCheck } from 'lucide-react'
 import { useActionState } from 'react'
 
 export default function LoginPage() {
@@ -22,6 +24,8 @@ export default function LoginPage() {
       eyebrow="Sign in"
       title="Welcome back"
       description="Sign in to your Vexa Insight console."
+      icon={<ShieldCheck />}
+      footer={<LoginTrustPills />}
     >
       <form action={formAction} className="space-y-4">
         <LoginErrorBanner state={state} />
