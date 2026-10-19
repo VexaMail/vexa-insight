@@ -19,6 +19,10 @@ and this project adheres to
   row updates as its batch returns. A daily job keeps every domain's run fresh,
   and opening a domain stores its live run too. The phone list shows 50 domains
   at a time.
+- **Every page shows a spinner while it loads.** Opening a domain, an IP
+  address, a report, or the domains, sources, reports and ingest pages now shows
+  a loading panel at once instead of waiting with nothing on screen, and the
+  placeholders inside pages show a spinner instead of a faint grey box.
 
 ## [0.4.0] - 2026-09-30
 
