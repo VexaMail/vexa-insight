@@ -7,7 +7,8 @@ import { repairStaleRunningStatus } from './repairStaleRunningStatus'
 import { ROW_ID } from './rowId'
 
 /**
- * Returns the persisted poll status (isRunning, lastCheck). Ensures row exists.
+ * Returns the persisted poll status (isRunning, lastCheck). Ensures the row
+ * exists, safely when several callers race to create it.
  */
 export async function getPollStatusFromDb(): Promise<PollStatusRow> {
   const db = getDb()
@@ -36,6 +37,11 @@ export async function getPollStatusFromDb(): Promise<PollStatusRow> {
     }
   }
 
-  await db.insert(pollStatus).values({ id: ROW_ID, ...EMPTY_POLL_STATUS_ROW })
+  // Two readers can find the row missing at once; the second insert must not
+  // fail on the primary key.
+  await db
+    .insert(pollStatus)
+    .values({ id: ROW_ID, ...EMPTY_POLL_STATUS_ROW })
+    .onConflictDoNothing({ target: pollStatus.id })
   return { ...EMPTY_POLL_STATUS_ROW, lastCheck: derivedLastCheck }
 }
