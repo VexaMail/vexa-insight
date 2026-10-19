@@ -1,5 +1,6 @@
 import { getDb, issueEvents, runMigrations } from '@/lib/db'
 import { getIssueStates, recordIssueEvent } from '@/services/issues'
+import { issueKeyDomain } from '@/utils/issues'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { setupTestDb } from './setup/setupTestDb'
 
@@ -59,5 +60,14 @@ describe('issue states', () => {
       status: 'open',
       snoozedUntil: null,
     })
+  })
+})
+
+describe('issueKeyDomain', () => {
+  it('reads the domain segment of a key', () => {
+    expect(issueKeyDomain('source_failing:Example.com:192.0.2.10')).toBe(
+      'example.com',
+    )
+    expect(issueKeyDomain('ingest_stalled')).toBeNull()
   })
 })

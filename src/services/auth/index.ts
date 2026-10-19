@@ -1,6 +1,8 @@
+export { canAccessDomainName } from './canAccessDomainName'
 export { createSession } from './createSession'
 export { getAllowedDomainIds } from './domainAccess'
 export { findUserByUsername } from './findUserByUsername'
+export { getAllowedDomainNames } from './getAllowedDomainNames'
 export { getSession } from './getSession'
 export { getSessionActor } from './getSessionActor'
 export { hashPassword } from './hashPassword'

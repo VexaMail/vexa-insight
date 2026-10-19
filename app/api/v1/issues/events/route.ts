@@ -1,6 +1,10 @@
 import { withApiAuth } from '@/services/api'
 import { getSessionActor, requirePermission } from '@/services/auth'
-import { listIssueEvents, recordIssueEvent } from '@/services/issues'
+import {
+  canAccessIssueKey,
+  listIssueEvents,
+  recordIssueEvent,
+} from '@/services/issues'
 import { issueEventInputSchema } from '@/validators/issues'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -16,6 +20,9 @@ export const GET = withApiAuth(
         { error: { code: 'BAD_REQUEST', message: 'key is required' } },
         { status: 400 },
       )
+    }
+    if (!(await canAccessIssueKey(key))) {
+      return NextResponse.json({ data: [] })
     }
     return NextResponse.json({ data: await listIssueEvents([key]) })
   },
@@ -41,6 +48,12 @@ export const POST = withApiAuth(
       )
     }
     const { snoozeHours, ...input } = parsed.data
+    if (!(await canAccessIssueKey(input.issueKey))) {
+      return NextResponse.json(
+        { error: { code: 'NOT_FOUND', message: 'Issue not found' } },
+        { status: 404 },
+      )
+    }
     await recordIssueEvent({
       ...input,
       snoozedUntil: snoozeHours

@@ -1,5 +1,10 @@
 import { withApiAuth } from '@/services/api'
-import { getSessionActor, requirePermission } from '@/services/auth'
+import {
+  canAccessDomainName,
+  getAllowedDomainNames,
+  getSessionActor,
+  requirePermission,
+} from '@/services/auth'
 import {
   clearSourceReview,
   listSourceReviews,
@@ -23,8 +28,12 @@ export const GET = withApiAuth(
         { status: 400 },
       )
     }
+    const allowed = await getAllowedDomainNames()
+    const reviews = await listSourceReviews({ domainName, ip })
     return NextResponse.json({
-      data: await listSourceReviews({ domainName, ip }),
+      data: reviews.filter(
+        (review) => allowed === null || allowed.has(review.domainName),
+      ),
     })
   },
 )
@@ -49,9 +58,16 @@ export const PUT = withApiAuth(
       )
     }
     const { domain, ...rest } = parsed.data
+    const domainName = domain.toLowerCase()
+    if (!(await canAccessDomainName(domainName))) {
+      return NextResponse.json(
+        { error: { code: 'NOT_FOUND', message: 'Domain not found' } },
+        { status: 404 },
+      )
+    }
     await setSourceReview({
       ...rest,
-      domainName: domain.toLowerCase(),
+      domainName,
       actor: await getSessionActor(),
     })
     return NextResponse.json({ data: { saved: true } })
@@ -72,6 +88,12 @@ export const DELETE = withApiAuth(
           error: { code: 'BAD_REQUEST', message: 'ip and domain are required' },
         },
         { status: 400 },
+      )
+    }
+    if (!(await canAccessDomainName(domain.toLowerCase()))) {
+      return NextResponse.json(
+        { error: { code: 'NOT_FOUND', message: 'Domain not found' } },
+        { status: 404 },
       )
     }
     await clearSourceReview(ip, domain.toLowerCase())
