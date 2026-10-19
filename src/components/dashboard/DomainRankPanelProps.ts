@@ -7,5 +7,7 @@ export type DomainRankPanelProps = {
   readonly icon: ReactNode
   readonly domains: DomainPeriodTotals[]
   readonly emptyText: string
+  /** Header of the rate column, e.g. "Pass rate" or "Compliance". */
+  readonly rateLabel: string
   readonly className?: string
 }

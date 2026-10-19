@@ -10,9 +10,9 @@ export function TriageKpiStrip({
   window,
   className,
 }: Readonly<TriageKpiStripProps>) {
-  const [messages, domains, passRate, reports] = kpiTileModels(kpis, window)
+  const models = kpiTileModels(kpis, window)
   const previous = window.previous
-    ? `previous ${String(window.lengthDays)} days`
+    ? `the previous ${String(window.lengthDays)} days`
     : null
   const icons = [
     <Mail key="m" />,
@@ -27,16 +27,14 @@ export function TriageKpiStrip({
         className,
       )}
     >
-      {[messages, domains, passRate, reports].map((model, i) =>
-        model ? (
-          <TriageKpiTile
-            key={model.label}
-            model={model}
-            icon={icons[i]}
-            previousLabel={previous}
-          />
-        ) : null,
-      )}
+      {models.map((model, i) => (
+        <TriageKpiTile
+          key={model.label}
+          model={model}
+          icon={icons[i]}
+          previousLabel={previous}
+        />
+      ))}
     </div>
   )
 }

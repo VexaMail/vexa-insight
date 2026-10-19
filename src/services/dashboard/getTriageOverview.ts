@@ -1,53 +1,48 @@
-import { getAllowedDomainIds } from '@/services/auth'
 import type { TriageOverview, TriageWindowInput } from '@/types/dashboard'
 import {
-  buildActionQueue,
   buildChangeList,
+  buildKpiSeries,
   buildRateTrend,
   buildTriageKpis,
   resolveTriageWindow,
   summarizeFailingSources,
-  unixDay,
+  withChangeTrends,
 } from '@/utils/dashboard'
-import { getIngestionHealth } from './getIngestionHealth'
-import { loadDomainPeriodTotals } from './loadDomainPeriodTotals'
+import { getIssueQueue } from './getIssueQueue'
 import { loadReportCounts } from './loadReportCounts'
-import { newestReportDay } from './newestReportDay'
+import { loadTrendSeries } from './loadTrendSeries'
 import { queryDailyPassTotals } from './queryDailyPassTotals'
-import { querySourcePeriodRows } from './querySourcePeriodRows'
 
 /**
- * Everything the home screen shows for one date filter: KPIs, the action
- * queue, the changes against the previous period, the daily pass-rate trend,
- * ingestion health and the ranked tables, all over the same UTC report days.
+ * Everything the home screen shows for one date filter: KPIs with their
+ * sparklines, the active issues, the changes against the previous period, the
+ * daily pass-rate trend (over its own range when one is picked), ingestion
+ * health and the ranked tables, all over the same UTC report days.
  */
 export async function getTriageOverview(
   input: TriageWindowInput,
+  trendDays: number | null = null,
 ): Promise<TriageOverview> {
-  const window = resolveTriageWindow(input)
-  const allowedIds = await getAllowedDomainIds()
-  const [domains, sources, daily, reports] = await Promise.all([
-    loadDomainPeriodTotals(window, allowedIds),
-    querySourcePeriodRows(window, allowedIds),
-    queryDailyPassTotals(window.current, allowedIds),
+  const { issues, rules, allowedIds } = await getIssueQueue(input)
+  const { window, domains, sources } = rules
+  const trendWindow = trendDays
+    ? resolveTriageWindow({ days: trendDays, now: input.now })
+    : window
+  const [series, daily, reports] = await Promise.all([
+    loadTrendSeries(window, allowedIds, domains),
+    queryDailyPassTotals(trendWindow.current, allowedIds),
     loadReportCounts(window, allowedIds),
   ])
-  const nowMs = input.now.getTime()
-  const ingestion = await getIngestionHealth(newestReportDay(domains), nowMs)
-  const rules = {
-    window,
-    domains,
-    sources,
-    ingestion,
-    todayDay: unixDay(input.now),
-  }
+  const active = issues.filter((issue) => issue.state === 'active')
   return {
     window,
-    kpis: buildTriageKpis(domains, reports, window),
-    actions: buildActionQueue(rules),
-    changes: buildChangeList(rules),
-    trend: buildRateTrend(daily, window.current),
-    ingestion,
+    kpis: buildTriageKpis(domains, reports, window, buildKpiSeries(series)),
+    actions: active,
+    parkedIssues: issues.length - active.length,
+    changes: withChangeTrends(buildChangeList(rules), series),
+    trend: buildRateTrend(daily, trendWindow.current),
+    trendLabel: trendWindow.label,
+    ingestion: rules.ingestion,
     domains,
     failingSources: summarizeFailingSources(sources),
   }

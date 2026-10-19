@@ -18,5 +18,6 @@ export function failedMessageMover(domain: DomainPeriodTotals): ChangeItem {
     detail: `${formatCount(current)} failed vs ${formatCount(previous)} previously`,
     direction: delta > 0 ? 'worse' : 'better',
     href: domainHref(domain.domainName),
+    domainNames: [domain.domainName],
   }
 }

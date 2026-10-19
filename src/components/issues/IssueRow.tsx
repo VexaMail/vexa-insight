@@ -1,0 +1,53 @@
+import { ISSUE_ROW_GRID } from '@/constants/dashboard'
+import { cn } from '@/lib/utils'
+import { formatCount } from '@/utils/dashboard'
+import { ChevronRight } from 'lucide-react'
+import { IssueLastSeen } from './IssueLastSeen'
+import type { IssueRowProps } from './IssueRowProps'
+import { IssueRowTitle } from './IssueRowTitle'
+import { IssueSeverityPill } from './IssueSeverityPill'
+
+/**
+ * One issue. The title link stretches over the whole row and the action
+ * buttons sit above it. On a narrow list it stacks as severity, subject and
+ * impact, then the issue, then last seen and actions.
+ */
+export function IssueRow({
+  issue,
+  nowMs,
+  actions,
+  children,
+}: Readonly<IssueRowProps>) {
+  return (
+    <li className="hover:bg-accent/60 relative transition-colors">
+      <div
+        className={cn(
+          'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 px-4 py-3',
+          ISSUE_ROW_GRID,
+        )}
+      >
+        <IssueSeverityPill severity={issue.severity} />
+        <span className="text-foreground truncate text-[13px]">
+          {issue.subject}
+        </span>
+        <IssueRowTitle issue={issue} />
+        <span className="text-foreground order-3 text-right text-[13px] tabular-nums @xl:order-none">
+          {issue.impactMessages === null
+            ? 'n/a'
+            : `${formatCount(issue.impactMessages)} msgs`}
+        </span>
+        <span className="order-5 col-span-2 @xl:order-none @xl:col-span-1">
+          <IssueLastSeen seconds={issue.lastSeenAt} nowMs={nowMs} />
+        </span>
+        <span className="relative z-10 order-6 flex justify-end gap-1 @xl:order-none">
+          {actions}
+        </span>
+        <ChevronRight
+          aria-hidden
+          className="text-muted-foreground hidden h-4 w-4 @4xl:block"
+        />
+      </div>
+      {children}
+    </li>
+  )
+}

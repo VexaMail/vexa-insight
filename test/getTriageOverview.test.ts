@@ -7,6 +7,7 @@ import { setupTestDb } from './setup/setupTestDb'
 
 vi.mock('@/services/auth', () => ({
   getAllowedDomainIds: vi.fn(async () => Promise.resolve(null)),
+  getAllowedDomainNames: vi.fn(async () => Promise.resolve(null)),
   getSession: vi.fn(async () => Promise.resolve(null)),
 }))
 

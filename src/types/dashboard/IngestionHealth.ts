@@ -10,8 +10,15 @@ export type IngestionHealth = {
   lastRunProcessed: number
   lastRunIngested: number
   lastRunError: string | null
+  /** Emails the run before the latest one processed; null without one. */
+  previousRunProcessed: number | null
   lastSuccessAtMs: number | null
   nextRunAtMs: number | null
+  /**
+   * Newest sign of mail arriving, unix ms: the last successful mailbox poll
+   * or the newest stored report, whichever is later.
+   */
+  mailboxFreshAtMs: number | null
   /** Newest UTC report day across the visible domains. */
   newestReportDay: number | null
 }

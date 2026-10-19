@@ -18,6 +18,7 @@ export function TriageRankedPanels({
         icon={<Mail />}
         domains={topDomainsByVolume(domains, OVERVIEW_TABLE_ROWS)}
         emptyText="No domain reported messages in this period."
+        rateLabel="Pass rate"
       />
       <DomainRankPanel
         title="Lowest domain compliance"
@@ -25,6 +26,7 @@ export function TriageRankedPanels({
         icon={<ShieldAlert />}
         domains={lowestComplianceDomains(domains, OVERVIEW_TABLE_ROWS)}
         emptyText="No domain has enough messages to judge."
+        rateLabel="Compliance"
       />
       <FailingSourcesPanel
         className="lg:col-span-2 xl:col-span-1"

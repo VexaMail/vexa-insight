@@ -1,22 +1,20 @@
-import {
-  formatCount,
-  formatDateTime,
-  formatRelativeMinutes,
-} from '@/utils/dashboard'
-import { DAY_SECONDS, toIsoDayFromUnixSeconds } from '@/utils/dates'
+import { countDelta, formatCount, formatDateTime } from '@/utils/dashboard'
+import { DeltaText } from './DeltaText'
 import { IngestionFact } from './IngestionFact'
 import type { IngestionFactsProps } from './IngestionFactsProps'
+import { IngestionFreshness } from './IngestionFreshness'
 import { IngestionLastRun } from './IngestionLastRun'
+import { IngestionNextRun } from './IngestionNextRun'
 
-/** Scheduler, last run, processed, last success, next run and data freshness. */
+/** Scheduler, last run, processed, next run and mailbox freshness. */
 export function IngestionFacts({
   health,
   nowMs,
 }: Readonly<IngestionFactsProps>) {
-  const newest =
-    health.newestReportDay === null
-      ? 'No reports yet'
-      : toIsoDayFromUnixSeconds(health.newestReportDay * DAY_SECONDS)
+  const delta = countDelta({
+    current: health.lastRunProcessed,
+    previous: health.previousRunProcessed,
+  })
   return (
     <dl className="divide-border divide-y">
       <IngestionFact label="Scheduler">
@@ -28,23 +26,32 @@ export function IngestionFacts({
         <IngestionLastRun health={health} />
       </IngestionFact>
       <IngestionFact label="Processed">
-        {`${formatCount(health.lastRunProcessed)} emails, ${formatCount(health.lastRunIngested)} reports ingested`}
-      </IngestionFact>
-      <IngestionFact label="Last success">
-        <span className="font-mono text-[13px]">
-          {health.lastSuccessAtMs === null
-            ? 'Never'
-            : formatDateTime(health.lastSuccessAtMs)}
+        <span className="flex flex-wrap items-center gap-x-2">
+          <span
+            title={`${formatCount(health.lastRunIngested)} reports ingested`}
+          >
+            {formatCount(health.lastRunProcessed)} emails
+          </span>
+          {delta ? (
+            <span className="text-xs" title="vs the run before">
+              <DeltaText value={delta} direction="neutral" />
+            </span>
+          ) : null}
         </span>
       </IngestionFact>
       <IngestionFact label="Next run">
-        {health.nextRunAtMs === null
-          ? '—'
-          : `${formatRelativeMinutes(health.nextRunAtMs, nowMs)} (${formatDateTime(health.nextRunAtMs)})`}
+        <IngestionNextRun health={health} nowMs={nowMs} />
       </IngestionFact>
-      <IngestionFact label="Newest data">
-        <span className="font-mono text-[13px]">{newest}</span>
+      <IngestionFact label="Mailbox freshness">
+        <IngestionFreshness health={health} nowMs={nowMs} />
       </IngestionFact>
+      {health.lastRunSuccess === false && health.lastSuccessAtMs !== null ? (
+        <IngestionFact label="Last success">
+          <span className="font-mono text-[13px]">
+            {formatDateTime(health.lastSuccessAtMs)}
+          </span>
+        </IngestionFact>
+      ) : null}
     </dl>
   )
 }

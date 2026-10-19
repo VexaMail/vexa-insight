@@ -24,8 +24,10 @@ const healthy: IngestionHealth = {
   lastRunProcessed: 1,
   lastRunIngested: 1,
   lastRunError: null,
+  previousRunProcessed: null,
   lastSuccessAtMs: now.getTime(),
   nextRunAtMs: now.getTime(),
+  mailboxFreshAtMs: now.getTime(),
   newestReportDay: today,
 }
 

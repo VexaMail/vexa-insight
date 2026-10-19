@@ -1,7 +1,9 @@
-import type { ActionItem } from '@/types/dashboard'
+import type { QueuedIssue } from '@/types/dashboard'
 
 export type ActionQueueGroupProps = {
   readonly title: string
-  readonly items: ActionItem[]
+  readonly items: QueuedIssue[]
+  readonly nowMs: number
+  readonly impactLabel: string
   readonly emptyText: string
 }

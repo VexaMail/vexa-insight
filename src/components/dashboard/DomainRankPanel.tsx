@@ -11,6 +11,7 @@ export function DomainRankPanel({
   icon,
   domains,
   emptyText,
+  rateLabel,
   className,
 }: Readonly<DomainRankPanelProps>) {
   return (
@@ -27,7 +28,8 @@ export function DomainRankPanel({
       ) : (
         <>
           <RankedHeader
-            labels={['Domain', 'Messages', 'Pass rate']}
+            labels={['Domain', 'Messages', rateLabel]}
+            rightAligned={[1]}
             gridClassName="grid-cols-[minmax(0,1fr)_72px_minmax(88px,0.8fr)]"
           />
           <ul className="divide-border divide-y">

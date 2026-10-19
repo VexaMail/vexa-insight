@@ -1,6 +1,6 @@
 import { Panel } from '@/components/ui'
-import { OVERVIEW_TABLE_ROWS } from '@/constants/dashboard'
-import { Network } from 'lucide-react'
+import { FAILING_SOURCE_GRID, OVERVIEW_TABLE_ROWS } from '@/constants/dashboard'
+import { Waypoints } from 'lucide-react'
 import { FailingSourceRow } from './FailingSourceRow'
 import type { FailingSourcesPanelProps } from './FailingSourcesPanelProps'
 import { RankedHeader } from './RankedHeader'
@@ -17,7 +17,7 @@ export function FailingSourcesPanel({
     <Panel
       className={className ?? ''}
       flush
-      icon={<Network />}
+      icon={<Waypoints />}
       title="Top failing sending sources"
       description={`Most DMARC-failing messages, ${window.label}`}
       actions={<ViewAllLink href="/ips" />}
@@ -29,8 +29,15 @@ export function FailingSourcesPanel({
       ) : (
         <>
           <RankedHeader
-            labels={['IP address / domain', 'Fail rate', 'Failed / total']}
-            gridClassName="grid-cols-[minmax(0,1fr)_64px_auto]"
+            labels={[
+              'IP address',
+              'Domain (example)',
+              'Fail rate',
+              'Messages',
+              '',
+            ]}
+            rightAligned={[2, 3]}
+            gridClassName={FAILING_SOURCE_GRID}
           />
           <ul className="divide-border divide-y">
             {shown.map((s) => (

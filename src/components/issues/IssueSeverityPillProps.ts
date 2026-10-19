@@ -1,5 +1,5 @@
 import type { ActionSeverity } from '@/types/dashboard'
 
-export type SeverityPillProps = {
+export type IssueSeverityPillProps = {
   readonly severity: ActionSeverity
 }

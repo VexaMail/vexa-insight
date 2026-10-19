@@ -27,5 +27,6 @@ export function nowCompliantChange(
     detail: nameList(fixed.map((d) => d.domainName)),
     direction: 'better',
     href: fixed.length === 1 ? domainHref(first.domainName) : '/domains',
+    domainNames: fixed.map((d) => d.domainName),
   }
 }

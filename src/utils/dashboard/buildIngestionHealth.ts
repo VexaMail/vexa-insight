@@ -1,9 +1,10 @@
 import type { IngestionHealth, IngestionHealthInput } from '@/types/dashboard'
 import { ingestionState } from './ingestionState'
 import { lastRunFacts } from './lastRunFacts'
+import { latestMs } from './latestMs'
 import { nextScheduledRunMs } from './nextScheduledRunMs'
 
-/** Folds scheduler config, poll status and the latest job run into one view. */
+/** Folds scheduler config, poll status and the latest job runs into one view. */
 export function buildIngestionHealth(
   input: IngestionHealthInput,
 ): IngestionHealth {
@@ -12,10 +13,12 @@ export function buildIngestionHealth(
     ...lastRunFacts(input.latestRun),
     state: ingestionState(input),
     intervalMinutes: scheduled ? input.intervalMinutes : null,
+    previousRunProcessed: input.previousRun?.processed ?? null,
     lastSuccessAtMs: input.lastSuccessAtMs,
     nextRunAtMs: scheduled
       ? nextScheduledRunMs(input.nowMs, input.intervalMinutes)
       : null,
+    mailboxFreshAtMs: latestMs(input.lastSuccessAtMs, input.newestIngestedAtMs),
     newestReportDay: input.newestReportDay,
   }
 }

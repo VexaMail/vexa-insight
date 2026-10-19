@@ -6,6 +6,8 @@ export type IngestionHealthInput = {
   hasImapAccount: boolean
   isRunning: boolean
   latestRun: JobRunRow | null
+  previousRun: JobRunRow | null
+  newestIngestedAtMs: number | null
   lastSuccessAtMs: number | null
   newestReportDay: number | null
   nowMs: number

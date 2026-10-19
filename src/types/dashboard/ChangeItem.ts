@@ -9,4 +9,8 @@ export type ChangeItem = {
   detail: string
   direction: ChangeDirection
   href: string | null
+  /** The domains the change is about, when it is about some of them. */
+  domainNames?: readonly string[]
+  /** Daily values behind the change over the current period, oldest first. */
+  trend?: number[]
 }

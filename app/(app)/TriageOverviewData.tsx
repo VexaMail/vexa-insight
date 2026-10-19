@@ -6,8 +6,9 @@ import type { TriageOverviewDataProps } from '@/types/dashboard'
 export async function TriageOverviewData({
   input,
   apiKey,
+  trendDays,
 }: TriageOverviewDataProps) {
-  const overview = await getTriageOverview(input)
+  const overview = await getTriageOverview(input, trendDays)
   return (
     <TriageOverviewView
       overview={overview}

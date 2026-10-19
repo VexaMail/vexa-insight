@@ -28,7 +28,9 @@ export function TriageOverviewView({
         <ActionQueuePanel
           className="xl:col-span-7"
           items={overview.actions}
+          parked={overview.parkedIssues}
           window={window}
+          nowMs={nowMs}
         />
         <ChangeListPanel
           className="xl:col-span-5"
@@ -41,6 +43,7 @@ export function TriageOverviewView({
           className="xl:col-span-7"
           points={overview.trend}
           window={window}
+          trendLabel={overview.trendLabel}
         />
         <IngestionHealthPanel
           className="xl:col-span-5"

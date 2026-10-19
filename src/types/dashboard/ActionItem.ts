@@ -2,6 +2,7 @@ import type { ActionSeverity } from './ActionSeverity'
 
 /** One row of the "Action required" queue, derived from existing data. */
 export type ActionItem = {
+  /** The issue key, `<kind>:<domain>[:<detail>]`, operator actions use. */
   id: string
   severity: ActionSeverity
   /** Domain, IP address or subsystem the item is about. */
