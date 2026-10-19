@@ -1,7 +1,6 @@
 export { DnsHistoryPanel } from './DnsHistoryPanel'
 export { default as DomainDetail } from './DomainDetail'
 export { DomainDetailHeader } from './DomainDetailHeader'
-export { DomainDetailToolbar } from './DomainDetailToolbar'
 export { DomainDnsTab } from './DomainDnsTab'
 export { DomainHistoryTab } from './DomainHistoryTab'
 export { DomainsKpiStrip } from './DomainsKpiStrip'

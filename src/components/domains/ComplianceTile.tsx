@@ -18,7 +18,7 @@ export function ComplianceTile({
         tone={domainHealthTone(getDomainHealth(summary))}
       />
       <div className="text-center">
-        <p className="text-foreground text-sm font-medium tabular-nums">
+        <p className="text-foreground text-[13px] font-medium tabular-nums">
           <span className="text-success">
             {summary.passedCount.toLocaleString('en-US')} passed
           </span>
@@ -28,8 +28,8 @@ export function ComplianceTile({
           </span>
         </p>
         <p className="text-muted-foreground text-xs">
-          DMARC pass, of {summary.totalMessages.toLocaleString('en-US')}{' '}
-          messages in all reports
+          DMARC, out of {summary.totalMessages.toLocaleString('en-US')} messages
+          in all reports
         </p>
       </div>
       <ComplianceDelta trend={trend} />

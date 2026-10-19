@@ -1,9 +1,9 @@
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
 import type { ColumnDef } from '@tanstack/react-table'
-import { AuthPill } from '../AuthPill'
+import { AlignedAuthCell } from '../AlignedAuthCell'
 import type { SourceRow } from '../SourceRow'
 
-/** SPF or DKIM of a source: the auth result and, apart, its alignment. */
+/** SPF or DKIM of a source: the aligned result, and the auth one apart. */
 export function authPairColumn(
   protocol: 'spf' | 'dkim',
 ): ColumnDef<typeof dataTableFeatures, SourceRow> {
@@ -12,26 +12,23 @@ export function authPairColumn(
     id: protocol,
     header: () => (
       <span
-        className="block text-xs leading-tight whitespace-nowrap"
-        title={`${name} authentication result, then whether it aligned with the From domain`}
+        className="whitespace-nowrap"
+        title={`Whether ${name} passed aligned with the From domain. The authentication result shows under the pill when it differs.`}
       >
-        {name}
-        <span className="text-muted-foreground block text-[11px] font-normal">
-          auth / align
-        </span>
+        {name} aligned
       </span>
     ),
     cell: ({ row }) => {
       const auth = row.original.auth
       if (!auth)
         return <span className="text-muted-foreground text-xs">No data</span>
-      const passed = protocol === 'spf' ? auth.spfAuthPass : auth.dkimAuthPass
-      const aligned = protocol === 'spf' ? auth.spfAligned : auth.dkimAligned
       return (
-        <div className="flex flex-col items-start gap-1">
-          <AuthPill label="auth" pass={passed} total={auth.messages} />
-          <AuthPill label="align" pass={aligned} total={auth.messages} />
-        </div>
+        <AlignedAuthCell
+          name={name}
+          aligned={protocol === 'spf' ? auth.spfAligned : auth.dkimAligned}
+          authPass={protocol === 'spf' ? auth.spfAuthPass : auth.dkimAuthPass}
+          total={auth.messages}
+        />
       )
     },
     enableSorting: false,

@@ -16,6 +16,8 @@ export type DomainDetailData = {
   policy: PublishedDmarcPolicy | null
   trend: ComplianceTrend
   insights: DomainInsights
+  /** Messages per UTC day over the last 30 days, oldest first. */
+  dailyVolume: number[]
   /** Sources over the window the sources tab asked for. */
   sources: DomainSourceRow[]
   /** The sources tab window in days, undefined for all reports. */
