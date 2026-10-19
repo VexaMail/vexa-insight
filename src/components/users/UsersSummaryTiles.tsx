@@ -11,7 +11,7 @@ export function UsersSummaryTiles({ users }: Readonly<UsersSummaryTilesProps>) {
       <StatTile
         variant="feature"
         icon={<Users />}
-        accent="neutral"
+        accent="info"
         label="Accounts"
         value={summary.total}
         hint={`${String(summary.viewers)} viewer${summary.viewers === 1 ? '' : 's'}`}

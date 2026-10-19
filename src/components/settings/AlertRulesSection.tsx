@@ -21,7 +21,7 @@ export function AlertRulesSection({
       anchorId="alert-rules"
       headingId="settings-alert-rules-heading"
       icon={<BellRing />}
-      iconTone="warning"
+      iconTone="info"
       title="Alert rules"
       description="Checked once a day. A rule fires at most once per window and sends the auth.fail_rate_spike webhook event."
       actions={

@@ -7,7 +7,7 @@ export type SettingsSectionProps = {
   /** Id of the heading, for `aria-labelledby` on controls that need it. */
   readonly headingId: string
   readonly icon: ReactNode
-  /** Tint of the icon square; the brand accent by default. */
+  /** Tint of the icon square; info blue by default. */
   readonly iconTone?: StatusTone
   readonly title: ReactNode
   /** One help line under the title. */

@@ -11,7 +11,7 @@ export function AlertRuleKindLegend() {
           key={kind}
           className="border-border bg-secondary/40 flex items-start gap-3 rounded-lg border p-3"
         >
-          <IconTile size="sm" tone="warning">
+          <IconTile size="sm" tone="info">
             {kind === 'compliance_drop' ? (
               <TrendingDown />
             ) : (

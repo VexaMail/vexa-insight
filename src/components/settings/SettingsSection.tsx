@@ -9,7 +9,7 @@ export function SettingsSection({
   anchorId,
   headingId,
   icon,
-  iconTone = 'neutral',
+  iconTone = 'info',
   title,
   description,
   actions,

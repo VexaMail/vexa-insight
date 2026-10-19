@@ -16,7 +16,7 @@ export function AlertRuleRow({
   const busy = actions.busyId === rule.id
   return (
     <li className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 px-4 py-4 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
-      <IconTile size="sm" tone={rule.enabled ? 'warning' : 'unknown'}>
+      <IconTile size="sm" tone={rule.enabled ? 'info' : 'unknown'}>
         <BellRing />
       </IconTile>
       <div className="min-w-0 space-y-2">
