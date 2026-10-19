@@ -3,6 +3,7 @@ import { SNDS_SYNC_CRON } from '@/constants/snds'
 import { getConfig } from '@/services/config'
 import { runScheduledCoverageCheck } from '@/services/gaps'
 import { hasConfiguredImapAccount } from '@/utils/imap'
+import { log } from '@/utils/log'
 import cron from 'node-cron'
 import { getPollStatus } from './getPollStatus'
 import { processIpHostnameLookupJob } from './processIpHostnameLookupJob'
@@ -32,7 +33,7 @@ export function startScheduler(): void {
         return
       }
       const result = await runIngestJob()
-      console.info(
+      log.info(
         `[ingest] run: processed=${String(result.processed)} ingested=${String(result.ingested)} skipped=${String(result.skipped)} errors=${String(result.errorCount)}`,
       )
     })
@@ -44,7 +45,7 @@ export function startScheduler(): void {
     try {
       const result = await processIpHostnameLookupJob()
       if (result.processed > 0 || result.errors > 0) {
-        console.info(
+        log.info(
           `[ip-hostname-lookup] run: processed=${String(result.processed)} skipped=${String(result.skipped)} errors=${String(result.errors)}`,
         )
       }

@@ -1,7 +1,7 @@
 import { getDb, ipHostnameEnrichments } from '@/lib/db'
 import { getConfig } from '@/services/config'
 import { eq, lte, or } from 'drizzle-orm'
-import { resolveAndPersist } from '../ip-hostname/resolveAndPersist'
+import { lookupBatchIp } from './lookupBatchIp'
 
 export async function processIpHostnameLookupJob() {
   const config = getConfig()
@@ -33,20 +33,8 @@ export async function processIpHostnameLookupJob() {
 
     // Process sequentially to be gentle, could use Promise.allSettled but sequential is safer for DNS initially
     for (const record of batch) {
-      try {
-        const result = await resolveAndPersist(record.ip, false, 'system')
-        if (result.status === 'failed') {
-          errors++
-        } else {
-          processed++
-        }
-      } catch (e) {
-        errors++
-        console.error(
-          `[processIpHostnameLookupJob] Exception processing ${record.ip}:`,
-          e,
-        )
-      }
+      if (await lookupBatchIp(record.ip)) processed++
+      else errors++
     }
 
     return { processed, skipped, errors }

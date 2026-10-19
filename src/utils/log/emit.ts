@@ -6,9 +6,10 @@ export function emit(
   event: string,
   fields: LogFields = {},
 ): void {
+  const ts = new Date().toISOString()
   if (shouldJson()) {
     const entry = {
-      ts: new Date().toISOString(),
+      ts,
       level,
       event,
       ...fields,
@@ -20,7 +21,7 @@ export function emit(
     return
   }
   const tail = Object.keys(fields).length ? ' ' + JSON.stringify(fields) : ''
-  const msg = `[${level}] ${event}${tail}`
+  const msg = `${ts} [${level}] ${event}${tail}`
   if (level === 'error') console.error(msg)
   else if (level === 'warn') console.warn(msg)
   else console.log(msg)
