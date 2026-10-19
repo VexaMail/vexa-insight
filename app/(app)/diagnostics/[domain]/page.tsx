@@ -48,6 +48,7 @@ export default async function DomainDiagnosticsPage({
     <PageContainer>
       <DiagnosticsView
         {...data}
+        domainId={domainRow.id}
         currentDomainName={domainName}
         days={days}
         fromDate={fromDate}

@@ -6,4 +6,5 @@ export const diagnosticsTabOrder: readonly DiagnosticsTabKey[] = [
   'auth',
   'transport',
   'runbook',
+  'generator',
 ]

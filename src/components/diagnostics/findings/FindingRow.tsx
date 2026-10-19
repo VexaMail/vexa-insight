@@ -1,5 +1,6 @@
 import { TableCell, TableRow } from '@/components/ui'
 import { FindingActions } from './FindingActions'
+import { FindingCheckCell } from './FindingCheckCell'
 import type { FindingLinkProps } from './FindingLinkProps'
 import { FindingRecommendation } from './FindingRecommendation'
 import { FindingSeverityPill } from './FindingSeverityPill'
@@ -11,8 +12,8 @@ export function FindingRow({ finding, base }: Readonly<FindingLinkProps>) {
       <TableCell className="py-3 pl-4 align-top">
         <FindingSeverityPill severity={finding.severity} />
       </TableCell>
-      <TableCell className="text-foreground py-3 align-top text-sm font-medium">
-        {finding.check}
+      <TableCell className="py-3 align-top">
+        <FindingCheckCell finding={finding} />
       </TableCell>
       <TableCell className="max-w-0 py-3 align-top">
         <FindingState finding={finding} />

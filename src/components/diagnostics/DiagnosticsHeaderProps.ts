@@ -2,5 +2,11 @@ import type { DiagnosticsViewProps } from './DiagnosticsViewProps'
 
 export type DiagnosticsHeaderProps = Pick<
   DiagnosticsViewProps,
-  'domains' | 'currentDomainName' | 'days' | 'fromDate' | 'toDate' | 'checkedAt'
+  | 'domains'
+  | 'currentDomainName'
+  | 'days'
+  | 'fromDate'
+  | 'toDate'
+  | 'checkedAt'
+  | 'query'
 >

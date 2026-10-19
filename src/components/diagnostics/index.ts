@@ -5,7 +5,7 @@ export * from './dmarc/DmarcDetailSection'
 export * from './dns/DnsRecordsSection'
 export * from './ExportPdfButton'
 export * from './mtasts/MtaStsDetailSection'
-export * from './overview/DiagnosticsOverviewTable'
+export * from './overview/DiagnosticsOverview'
 // Shared primitives, re-exported so consumers outside the slice (tests, other
 // features) have a lint-sanctioned import path instead of reaching into
 // './shared/*', which 'import/no-internal-modules' forbids.

@@ -56,6 +56,7 @@ describe('diagnostics PDF export', () => {
     return renderToStaticMarkup(
       React.createElement(DiagnosticsView, {
         domains: [{ id: 1, name: 'example.com' }],
+        domainId: 1,
         currentDomainName: 'example.com',
         days: 30,
         dns: makeDns(),

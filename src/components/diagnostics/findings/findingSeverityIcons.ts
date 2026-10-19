@@ -1,21 +1,21 @@
 import type { DiagnosticsFindingSeverity } from '@/types/diagnostics'
 import type { LucideIcon } from 'lucide-react'
 import {
-  AlertTriangle,
-  CheckCircle2,
+  CircleAlert,
+  CircleCheck,
+  CircleMinus,
   Info,
-  MinusCircle,
-  XCircle,
+  TriangleAlert,
 } from 'lucide-react'
 
 export const findingSeverityIcons: Record<
   DiagnosticsFindingSeverity,
   LucideIcon
 > = {
-  critical: XCircle,
-  high: XCircle,
-  medium: AlertTriangle,
+  critical: CircleAlert,
+  high: CircleAlert,
+  medium: TriangleAlert,
   low: Info,
-  info: MinusCircle,
-  pass: CheckCircle2,
+  info: CircleMinus,
+  pass: CircleCheck,
 }

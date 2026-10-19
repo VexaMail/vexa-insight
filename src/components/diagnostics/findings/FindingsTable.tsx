@@ -16,10 +16,10 @@ export function FindingsTable({ findings, base }: Readonly<FindingsListProps>) {
         <TableHeader>
           <TableRow>
             <TableHead className="w-28 pl-4">Severity</TableHead>
-            <TableHead className="w-32">Check</TableHead>
-            <TableHead className="w-[34%]">Current state</TableHead>
+            <TableHead className="w-[19%]">Check</TableHead>
+            <TableHead className="w-[30%]">Current state</TableHead>
             <TableHead>Recommendation</TableHead>
-            <TableHead className="w-40 pr-4 text-right">Actions</TableHead>
+            <TableHead className="w-48 pr-4">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

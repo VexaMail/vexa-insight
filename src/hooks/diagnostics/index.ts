@@ -1,3 +1,7 @@
 export { useDiagnosticsRerun } from './useDiagnosticsRerun'
 export { useDiagnosticsSections } from './useDiagnosticsSections'
 export { useDiagnosticsView } from './useDiagnosticsView'
+export { useFindingsFilter } from './useFindingsFilter'
+export { useGeneratorFields } from './useGeneratorFields'
+export { useRelativeAge } from './useRelativeAge'
+export { useSpfPlan } from './useSpfPlan'

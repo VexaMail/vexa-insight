@@ -1,25 +1,37 @@
-import { CopyIconButton, EntityHeader } from '@/components/ui'
+import { CopyIconButton } from '@/components/ui'
 import { CheckedAtNote } from './CheckedAtNote'
-import { DiagnosticsBreadcrumb } from './DiagnosticsBreadcrumb'
 import { DiagnosticsHeaderControls } from './DiagnosticsHeaderControls'
 import type { DiagnosticsHeaderProps } from './DiagnosticsHeaderProps'
+import { RerunDiagnosticsButton } from './RerunDiagnosticsButton'
 
-/** Breadcrumb, domain, time of the run and the page actions. */
+/** Title, time of the run and the run button, then domain and window. */
 export function DiagnosticsHeader({
   checkedAt,
+  query,
   ...controls
 }: Readonly<DiagnosticsHeaderProps>) {
   const domain = controls.currentDomainName
   return (
-    <div className="space-y-3">
-      <DiagnosticsBreadcrumb domain={domain} />
-      <EntityHeader
-        kind="Domain diagnostics"
-        title={domain}
-        titleAddon={<CopyIconButton value={domain} label="domain" />}
-        chips={<CheckedAtNote checkedAt={checkedAt} />}
-        actions={<DiagnosticsHeaderControls {...controls} />}
-      />
-    </div>
+    <header className="space-y-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 space-y-1.5">
+          <div className="flex min-w-0 items-center gap-2">
+            <h1 className="text-foreground min-w-0 text-2xl font-semibold tracking-tight sm:text-3xl">
+              Diagnostics — <span className="break-all">{domain}</span>
+            </h1>
+            <CopyIconButton value={domain} label="domain" />
+          </div>
+          <p className="text-muted-foreground text-sm">
+            Analysis of DNS configuration, authentication setup and
+            deliverability.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <CheckedAtNote checkedAt={checkedAt} />
+          <RerunDiagnosticsButton base={{ domain, query }} />
+        </div>
+      </div>
+      <DiagnosticsHeaderControls {...controls} />
+    </header>
   )
 }

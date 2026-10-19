@@ -11,9 +11,8 @@ import {
 import { useDiagnosticsView } from '@/hooks/diagnostics'
 import type { DiagnosticsHeaderControlsProps } from './DiagnosticsHeaderControlsProps'
 import { ExportPdfButton } from './ExportPdfButton'
-import { RerunDiagnosticsButton } from './RerunDiagnosticsButton'
 
-/** Re-run, domain switcher, report window and the PDF export. */
+/** Domain switcher, report window and the PDF export, below the title. */
 export function DiagnosticsHeaderControls({
   domains,
   currentDomainName,
@@ -25,11 +24,10 @@ export function DiagnosticsHeaderControls({
 
   return (
     <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto print:hidden">
-      <RerunDiagnosticsButton />
       <Select value={currentDomainName} onValueChange={handleDomainChange}>
         <SelectTrigger
           aria-label="Domain"
-          className="bg-background h-9 w-full font-mono sm:w-[220px]"
+          className="bg-card h-9 w-full font-mono text-xs sm:w-[220px]"
         >
           <SelectValue placeholder="Select domain" />
         </SelectTrigger>
