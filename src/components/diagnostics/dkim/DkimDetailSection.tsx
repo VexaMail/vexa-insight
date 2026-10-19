@@ -1,5 +1,6 @@
 import { ShieldCheck } from 'lucide-react'
 import { CollapsibleSection, ProtocolExplainer } from '../shared'
+import { DkimCheckedSelectors } from './DkimCheckedSelectors'
 import type { DkimDetailSectionProps } from './DkimDetailSectionProps'
 import { DkimSelectorCard } from './DkimSelectorCard'
 
@@ -8,8 +9,10 @@ export function DkimDetailSection({
   open,
   onToggle,
 }: Readonly<DkimDetailSectionProps>) {
-  const parsedRecords = dns.dkimParsedRecords
-  const foundAny = parsedRecords.some((record) => record.raw !== null)
+  const published = dns.dkimParsedRecords.filter(
+    (record) => record.raw !== null,
+  )
+  const foundAny = published.length > 0
 
   return (
     <CollapsibleSection
@@ -28,11 +31,15 @@ export function DkimDetailSection({
         exampleValue="v=DKIM1; k=rsa; p=PUBLIC_KEY_BASE64"
       />
 
-      <div className="flex flex-col gap-6">
-        {parsedRecords.map((parsed) => (
-          <DkimSelectorCard key={parsed.selector} parsed={parsed} />
-        ))}
-      </div>
+      <DkimCheckedSelectors records={dns.dkim} />
+
+      {foundAny ? (
+        <div className="flex flex-col gap-6">
+          {published.map((parsed) => (
+            <DkimSelectorCard key={parsed.selector} parsed={parsed} />
+          ))}
+        </div>
+      ) : null}
     </CollapsibleSection>
   )
 }

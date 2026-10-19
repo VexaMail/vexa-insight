@@ -5,7 +5,11 @@ import { parseDateRangeParams } from '@/lib/utils'
 import { isAiConfigured } from '@/services/ai'
 import { loadDomainDiagnostics } from '@/services/diagnostics'
 import { getDomainByName } from '@/services/reports'
-import { resolveDiagnosticsQueryWindow } from '@/utils/diagnostics'
+import {
+  buildDiagnosticsQuery,
+  parseDiagnosticsTab,
+  resolveDiagnosticsQueryWindow,
+} from '@/utils/diagnostics'
 import type { Metadata } from 'next'
 
 import { notFound } from 'next/navigation'
@@ -43,23 +47,25 @@ export default async function DomainDiagnosticsPage({
   return (
     <PageContainer>
       <DiagnosticsView
-        domains={data.domains}
+        {...data}
         currentDomainName={domainName}
         days={days}
         fromDate={fromDate}
         toDate={toDate}
-        dns={data.dns}
-        score={data.score}
-      />
-      <AiDiagnosticsInsightsPanel
-        domainName={domainName}
-        domainId={domainRow.id}
-        isAiConfigured={isAiConfigured()}
-        score={data.score}
-        stats={data.stats}
-        guides={data.guides}
-        startDate={window.queryFromDate?.toISOString()}
-        endDate={window.queryToDate?.toISOString()}
+        activeTab={parseDiagnosticsTab(sp['tab'])}
+        query={buildDiagnosticsQuery(sp)}
+        runbook={
+          <AiDiagnosticsInsightsPanel
+            domainName={domainName}
+            domainId={domainRow.id}
+            isAiConfigured={isAiConfigured()}
+            score={data.score}
+            stats={data.stats}
+            guides={data.guides}
+            startDate={window.queryFromDate?.toISOString()}
+            endDate={window.queryToDate?.toISOString()}
+          />
+        }
       />
     </PageContainer>
   )

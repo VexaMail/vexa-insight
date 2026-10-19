@@ -4,8 +4,8 @@ import type { DiagnosticsAdminGuide } from '@/types/diagnostics'
 export function guideSeverityClasses(
   severity: DiagnosticsAdminGuide['severity'],
 ): string {
-  if (severity === 'critical') return 'border-red-500/30 bg-red-500/5'
-  if (severity === 'high') return 'border-orange-500/30 bg-orange-500/5'
-  if (severity === 'medium') return 'border-amber-500/30 bg-amber-500/5'
-  return 'border-emerald-500/30 bg-emerald-500/5'
+  if (severity === 'critical') return 'border-danger/30 bg-danger/5'
+  if (severity === 'high') return 'border-danger/25 bg-danger/5'
+  if (severity === 'medium') return 'border-warning/35 bg-warning/5'
+  return 'border-info/30 bg-info/5'
 }

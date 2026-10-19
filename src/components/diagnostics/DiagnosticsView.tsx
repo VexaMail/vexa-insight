@@ -1,42 +1,42 @@
-'use client'
-
-import { useDiagnosticsSections, useDiagnosticsView } from '@/hooks/diagnostics'
-import { DiagnosticsDetailSections } from './DiagnosticsDetailSections'
+import { TabNav } from '@/components/ui'
+import {
+  buildDiagnosticsTabItems,
+  countActionableFindings,
+} from '@/utils/diagnostics'
 import { DiagnosticsHeader } from './DiagnosticsHeader'
 import type { DiagnosticsViewProps } from './DiagnosticsViewProps'
-import { ProtocolOverviewPanel } from './overview/ProtocolOverviewPanel'
-import { DomainScoreBadge } from './score/DomainScoreBadge'
+import { DiagnosticsSummary } from './summary/DiagnosticsSummary'
+import { DiagnosticsTabPanels } from './tabs/DiagnosticsTabPanels'
+import { UnresolvedDomainNotice } from './UnresolvedDomainNotice'
 
-export function DiagnosticsView({
-  domains,
-  currentDomainName,
-  days,
-  fromDate,
-  toDate,
-  dns,
-  score,
-}: Readonly<DiagnosticsViewProps>) {
-  const { handleDomainChange } = useDiagnosticsView()
-  const { getSectionProps, openSection } = useDiagnosticsSections()
+/**
+ * One domain's diagnostics: header, score and protocol tiles, then the tabs.
+ * Every tab panel is rendered so the PDF export prints all of them.
+ */
+export function DiagnosticsView(props: Readonly<DiagnosticsViewProps>) {
+  const base = { domain: props.currentDomainName, query: props.query }
+  const actionable = countActionableFindings(props.findings)
 
   return (
     <div className="flex flex-col space-y-6">
-      <DiagnosticsHeader
-        domains={domains}
-        currentDomainName={currentDomainName}
-        days={days}
-        fromDate={fromDate}
-        toDate={toDate}
-        onDomainChange={handleDomainChange}
+      <DiagnosticsHeader {...props} />
+      {props.dns.nsRecords.length === 0 ? (
+        <UnresolvedDomainNotice domain={props.currentDomainName} />
+      ) : null}
+      <DiagnosticsSummary
+        score={props.score}
+        findings={props.findings}
+        base={base}
+        actionable={actionable}
       />
-
-      {/* Hero: Score & Protocol Overview */}
-      <div className="flex flex-col gap-6">
-        <DomainScoreBadge score={score} domain={currentDomainName} />
-        <ProtocolOverviewPanel dns={dns} onOpenSection={openSection} />
+      <div className="print:hidden">
+        <TabNav
+          items={buildDiagnosticsTabItems(base, actionable)}
+          active={props.activeTab}
+          label="Diagnostics sections"
+        />
       </div>
-
-      <DiagnosticsDetailSections dns={dns} getSectionProps={getSectionProps} />
+      <DiagnosticsTabPanels {...props} base={base} />
     </div>
   )
 }

@@ -13,7 +13,7 @@ export function DomainScoreBreakdown({
   const bonus = score.checks.filter((check) => check.weight === 'bonus')
 
   return (
-    <div className="mt-6 border-t pt-4">
+    <div>
       <div className="flex items-baseline justify-between">
         <h3 className="text-foreground text-sm font-semibold">
           Authentication core

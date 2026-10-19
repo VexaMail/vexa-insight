@@ -16,7 +16,7 @@ export function AiDiagnosticsIdleCard({
         <button
           type="button"
           onClick={onAnalyze}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 print:hidden"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-ring rounded-md px-4 py-2 text-sm font-medium shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 print:hidden"
         >
           Analyze Domain
         </button>

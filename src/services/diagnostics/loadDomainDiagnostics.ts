@@ -3,10 +3,12 @@ import type {
   DiagnosticsQueryWindow,
   DomainDiagnosticsData,
 } from '@/types/diagnostics'
+import { buildDiagnosticsFindings } from '@/utils/diagnostics'
 import { buildDiagnosticsAdminGuides } from './buildDiagnosticsAdminGuides'
 import { computeDomainScore } from './computeDomainScore'
 import { getDiagnosticStats } from './getDiagnosticStats'
 import { getDomainDnsRecords } from './getDomainDnsRecords'
+import { getReportedDkimSelectors } from './getReportedDkimSelectors'
 
 /** Loads, in parallel, everything the diagnostics page shows for a domain. */
 export async function loadDomainDiagnostics(
@@ -14,6 +16,8 @@ export async function loadDomainDiagnostics(
   domainName: string,
   { queryFromDate, queryToDate }: DiagnosticsQueryWindow,
 ): Promise<DomainDiagnosticsData> {
+  const checkedAt = new Date().toISOString()
+  const selectors = await getReportedDkimSelectors(domainId, domainName)
   const [summaryResponse, stats, dns] = await Promise.all([
     getDomainsSummaryAll(queryFromDate, queryToDate),
     getDiagnosticStats({
@@ -21,7 +25,7 @@ export async function loadDomainDiagnostics(
       startDate: queryFromDate,
       endDate: queryToDate,
     }),
-    getDomainDnsRecords(domainName),
+    getDomainDnsRecords(domainName, selectors),
   ])
   const score = computeDomainScore(dns)
   return {
@@ -33,5 +37,7 @@ export async function loadDomainDiagnostics(
     dns,
     score,
     guides: buildDiagnosticsAdminGuides(dns, stats, score),
+    findings: buildDiagnosticsFindings({ dns, checkedAt }),
+    checkedAt,
   }
 }

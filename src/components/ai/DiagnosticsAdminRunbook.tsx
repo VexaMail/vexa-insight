@@ -25,11 +25,15 @@ export function DiagnosticsAdminRunbook({
           <RunbookStatCard label="Score">
             {score.percentage}% ({score.grade})
           </RunbookStatCard>
-          <RunbookStatCard label="Total Events">
+          <RunbookStatCard label="Messages">
             {stats.totalEvents}
           </RunbookStatCard>
-          <RunbookStatCard label="Failed">{stats.failedEvents}</RunbookStatCard>
-          <RunbookStatCard label="Failure Rate">{failureRate}%</RunbookStatCard>
+          <RunbookStatCard label="Quarantined or rejected">
+            {stats.failedEvents}
+          </RunbookStatCard>
+          <RunbookStatCard label="Policy applied">
+            {failureRate}%
+          </RunbookStatCard>
         </div>
       </div>
 

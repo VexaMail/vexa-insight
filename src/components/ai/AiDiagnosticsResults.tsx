@@ -29,7 +29,7 @@ export function AiDiagnosticsResults({
         <button
           type="button"
           onClick={onAnalyze}
-          className="shrink-0 rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600 print:hidden"
+          className="bg-muted text-muted-foreground hover:bg-accent shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition print:hidden"
         >
           Re-analyze
         </button>

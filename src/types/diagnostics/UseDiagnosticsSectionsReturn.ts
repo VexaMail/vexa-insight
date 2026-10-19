@@ -5,5 +5,4 @@ export type UseDiagnosticsSectionsReturn = {
   readonly getSectionProps: (
     id: DiagnosticsSectionId,
   ) => DiagnosticsSectionToggleProps
-  readonly openSection: (id: DiagnosticsSectionId) => void
 }

@@ -2,6 +2,7 @@ export async function withDiagnosticsCache<T>(
   key: string,
   ttlMs: number,
   loader: () => Promise<T>,
+  shouldCache: (value: T) => boolean = () => true,
 ): Promise<T> {
   const cache =
     (
@@ -25,7 +26,8 @@ export async function withDiagnosticsCache<T>(
   }
 
   const value = await loader()
-  cache.set(key, { expiresAt: now + ttlMs, value })
+  // A failed lookup is not remembered, so the next run asks again.
+  if (shouldCache(value)) cache.set(key, { expiresAt: now + ttlMs, value })
 
   return value
 }

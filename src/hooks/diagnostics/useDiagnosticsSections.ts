@@ -2,23 +2,21 @@
 
 import { useCallback, useState } from 'react'
 
+import { diagnosticsSectionIds } from '@/constants/diagnostics'
 import type {
   DiagnosticsSectionId,
   DiagnosticsSectionToggleProps,
   UseDiagnosticsSectionsReturn,
 } from '@/types/diagnostics'
-import {
-  scrollToDiagnosticsSection,
-  toggleSectionId,
-} from '@/utils/diagnostics'
+import { toggleSectionId } from '@/utils/diagnostics'
 
 /**
- * Tracks which diagnostics detail sections are expanded. Everything starts
- * collapsed; the overview rows open a section and scroll to it.
+ * Tracks which diagnostics detail sections are expanded. Each tab shows few
+ * sections, so they start open and can be folded away.
  */
 export function useDiagnosticsSections(): UseDiagnosticsSectionsReturn {
   const [openIds, setOpenIds] = useState<ReadonlySet<DiagnosticsSectionId>>(
-    () => new Set(),
+    () => new Set(diagnosticsSectionIds),
   )
 
   const getSectionProps = useCallback(
@@ -31,12 +29,5 @@ export function useDiagnosticsSections(): UseDiagnosticsSectionsReturn {
     [openIds],
   )
 
-  const openSection = useCallback((id: DiagnosticsSectionId) => {
-    setOpenIds((previous) =>
-      previous.has(id) ? previous : new Set(previous).add(id),
-    )
-    scrollToDiagnosticsSection(id)
-  }, [])
-
-  return { getSectionProps, openSection }
+  return { getSectionProps }
 }

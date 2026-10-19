@@ -27,11 +27,11 @@ export function DmarcDetailSection({
       />
 
       {dns.dmarcWarnings.length > 0 && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-          <h4 className="mb-2 text-sm font-semibold text-red-500">
+        <div className="border-danger/30 bg-danger/10 rounded-lg border p-4">
+          <h4 className="text-danger mb-2 text-sm font-semibold">
             Issues Found
           </h4>
-          <ul className="list-inside list-disc text-sm text-red-500/90">
+          <ul className="text-danger list-inside list-disc text-sm">
             {[...new Set(dns.dmarcWarnings)].map((warning) => (
               <li key={warning}>{warning}</li>
             ))}

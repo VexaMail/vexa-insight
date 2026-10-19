@@ -1,8 +1,8 @@
 import { PageContainer, PageHeader } from '@/components/shell'
-import { EmptyState } from '@/components/ui'
-import { getDomainsSummaryAll } from '@/services/reports'
+import { PageSkeleton } from '@/components/ui'
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
+import { DiagnosticsOverviewLoader } from './DiagnosticsOverviewLoader'
 
 export const metadata: Metadata = {
   title: 'Diagnostics',
@@ -11,21 +11,19 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 /**
- * /diagnostics — redirects to the first available domain's diagnostics page,
- * or shows an empty state if no domains exist.
+ * /diagnostics — every domain's score and protocol states from a DNS run,
+ * streamed in once the lookups finish.
  */
-export default async function DiagnosticsIndexPage() {
-  const summaryResponse = await getDomainsSummaryAll()
-  const domains = summaryResponse.domains
-
-  if (domains.length === 0) {
-    return (
-      <PageContainer>
-        <PageHeader title="Diagnostics" />
-        <EmptyState>No domains found with DMARC reports.</EmptyState>
-      </PageContainer>
-    )
-  }
-
-  redirect(`/diagnostics/${domains[0]?.domainName ?? ''}`)
+export default function DiagnosticsIndexPage() {
+  return (
+    <PageContainer>
+      <PageHeader
+        title="Diagnostics"
+        description="DNS checks of DMARC, SPF, DKIM, MTA-STS, TLS-RPT and BIMI for every domain in your reports. Open a domain for its findings and fixes."
+      />
+      <Suspense fallback={<PageSkeleton className="h-96" />}>
+        <DiagnosticsOverviewLoader />
+      </Suspense>
+    </PageContainer>
+  )
 }

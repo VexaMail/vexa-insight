@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { DiagnosticsView, ExportPdfButton } from '@/components/diagnostics'
 import { AppShell } from '@/components/shell'
 import type { DnsDiagnostics, DomainScore } from '@/types/diagnostics'
+import { buildDiagnosticsFindings } from '@/utils/diagnostics'
 import { makeDomainScore } from './setup/makeDomainScore'
 
 const PRINT_HIDDEN = 'print:hidden'
@@ -59,6 +60,14 @@ describe('diagnostics PDF export', () => {
         days: 30,
         dns: makeDns(),
         score,
+        findings: buildDiagnosticsFindings({
+          dns: makeDns(),
+          checkedAt: '2026-01-01T00:00:00.000Z',
+        }),
+        guides: [],
+        checkedAt: '2026-01-01T00:00:00.000Z',
+        activeTab: 'findings',
+        query: '',
       }),
     )
   }
@@ -79,13 +88,22 @@ describe('diagnostics PDF export', () => {
 
     expect(markup).toContain('Diagnostics')
     expect(markup).toContain('Download PDF')
-    expect(markup).toContain('Domain Security Score')
+    expect(markup).toContain('Security score')
   })
 
   it('hides the header filter controls from the printed report', () => {
     const markup = renderDiagnosticsView()
 
-    expect(markup).toContain('flex flex-wrap items-center gap-4 print:hidden')
+    expect(markup).toContain(
+      'flex w-full flex-wrap items-center gap-2 sm:w-auto print:hidden',
+    )
+  })
+
+  it('keeps every tab panel in the printed report', () => {
+    const markup = renderDiagnosticsView()
+
+    expect(markup.match(/hidden space-y-4 print:block/g)).toHaveLength(4)
+    expect(markup).toContain('aria-label="TLS and reporting"')
   })
 
   it('hides the sidebar, top bar and theme toggle when printing', () => {

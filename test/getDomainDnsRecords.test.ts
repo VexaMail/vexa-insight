@@ -198,4 +198,26 @@ describe('getDomainDnsRecords — DKIM', () => {
       expect(d.record).toBeNull()
     }
   })
+
+  it('probes selectors seen in reports and marks them', async () => {
+    const { getDomainDnsRecords } =
+      await import('../src/services/diagnostics/getDomainDnsRecords')
+    mockResolveTxt.mockImplementation(async (host: string) => {
+      if (host === 's2024._domainkey.example.com')
+        return Promise.resolve([['v=DKIM1; k=rsa; p=MIIBIjANBg...']])
+      return Promise.resolve([])
+    })
+    mockResolveMx.mockResolvedValue([])
+
+    const result = await getDomainDnsRecords(DOMAIN, ['s2024', 'google'])
+
+    expect(result.dkim[0]).toMatchObject({
+      selector: 's2024',
+      valid: true,
+      fromReports: true,
+    })
+    expect(
+      result.dkim.filter((d: { selector: string }) => d.selector === 'google'),
+    ).toHaveLength(1)
+  })
 })
