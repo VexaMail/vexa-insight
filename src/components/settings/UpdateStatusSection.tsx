@@ -23,6 +23,7 @@ export default function UpdateStatusSection({
   return (
     <SettingsSection
       anchorId="updates"
+      wide
       headingId="settings-updates-heading"
       icon={updateAvailable ? <Sparkles /> : <CheckCircle2 />}
       title="Updates"

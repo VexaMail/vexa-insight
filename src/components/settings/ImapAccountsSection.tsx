@@ -24,6 +24,7 @@ export default function ImapAccountsSection({
   return (
     <SettingsSection
       anchorId="mailboxes"
+      wide
       headingId="settings-imap-heading"
       icon={<Mail />}
       title="Mailboxes"

@@ -12,7 +12,7 @@ export function SettingsNotificationSections() {
   const webhooks = useWebhooksSection()
   const rules = useAlertRulesSection()
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 2xl:grid-cols-2">
       <WebhooksSection webhooks={webhooks} />
       <AlertRulesSection rules={rules} webhooks={webhooks.collection.items} />
     </div>

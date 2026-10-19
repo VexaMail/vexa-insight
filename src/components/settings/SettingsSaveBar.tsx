@@ -16,7 +16,7 @@ export function SettingsSaveBar({
 }: Readonly<SettingsSaveBarProps>) {
   return (
     <div
-      className={`glass-card sticky bottom-0 z-10 flex flex-col gap-3 px-4 py-3 shadow-lg transition-colors sm:flex-row sm:items-center sm:justify-between ${isDirty ? 'border-warning/50' : ''}`}
+      className={`glass-card sticky bottom-0 z-10 flex flex-col gap-3 px-4 py-3 shadow-lg transition-colors sm:flex-row sm:items-center sm:justify-between 2xl:col-span-2 ${isDirty ? 'border-warning/50' : ''}`}
     >
       <SettingsSaveBarStatus
         saveStatus={saveStatus}

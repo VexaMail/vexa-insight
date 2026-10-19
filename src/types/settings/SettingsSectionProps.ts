@@ -13,5 +13,7 @@ export type SettingsSectionProps = {
   /** One help line under the title. */
   readonly description: ReactNode
   readonly actions?: ReactNode
+  /** Spans both columns of the wide two-column layout. */
+  readonly wide?: boolean
   readonly children: ReactNode
 }

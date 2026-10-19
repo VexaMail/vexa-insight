@@ -1,4 +1,5 @@
 import { IconTile, Panel } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import type { SettingsSectionProps } from '@/types/settings'
 
 /**
@@ -13,10 +14,17 @@ export function SettingsSection({
   title,
   description,
   actions,
+  wide = false,
   children,
 }: Readonly<SettingsSectionProps>) {
   return (
-    <div id={anchorId} className="scroll-mt-20 lg:scroll-mt-6">
+    <div
+      id={anchorId}
+      className={cn(
+        'scroll-mt-20 lg:scroll-mt-6 [&>*]:h-full',
+        wide && '2xl:col-span-2',
+      )}
+    >
       <Panel
         icon={
           <IconTile size="sm" tone={iconTone} className="-mt-0.5">
