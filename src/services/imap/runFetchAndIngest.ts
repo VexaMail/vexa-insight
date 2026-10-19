@@ -1,12 +1,15 @@
-import { ingestOneAttachment } from '@/services/reports'
 import type { ImapAccountConfig } from '@/types/config'
 import type { FetchAndIngestHooks, FetchAndIngestResult } from '@/types/imap'
 import { buildFetchAttachmentsOptionsFromHooks } from '@/utils/imap'
 import { fetchAttachments } from './fetchAttachments'
+import { ingestCollectedMessage } from './ingestCollectedMessage'
 
 /**
- * Fetches DMARC attachments from IMAP (last N days), parses and ingests each.
- * Skips already processed by Message-ID. Optional onEmailProgress for progress UI.
+ * Fetches DMARC report messages from IMAP (last N days) and ingests each one
+ * while its folder is still open, recording and post-processing a message
+ * only after its reports ingested. A message whose ingest failed stays
+ * unrecorded in its mailbox, so the next poll retries it; each such failure
+ * is one entry of `errors`.
  */
 export async function runFetchAndIngest(
   days: number,
@@ -20,20 +23,16 @@ export async function runFetchAndIngest(
     skipped: 0,
   }
   const options = buildFetchAttachmentsOptionsFromHooks(hooks)
-  for await (const att of fetchAttachments(days, account, options)) {
+  for await (const message of fetchAttachments(days, account, options)) {
     if (hooks.getAbortRequested && (await hooks.getAbortRequested())) break
-    result.processed += 1
+    result.processed += message.attachments.length
     if (hooks.onProgress) {
       await hooks.onProgress(result.processed)
     }
-    const r = await ingestOneAttachment(att)
-    if (r.error) {
-      result.errors.push(r.error)
-    } else if (r.ingested) {
-      result.ingested += 1
-    } else {
-      result.skipped += 1
-    }
+    const outcome = await ingestCollectedMessage(message)
+    result.ingested += outcome.ingested
+    result.skipped += outcome.skipped
+    result.errors.push(...outcome.errors)
   }
   return result
 }

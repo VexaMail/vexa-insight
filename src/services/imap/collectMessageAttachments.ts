@@ -1,42 +1,29 @@
 import type {
-  AttachmentResult,
+  CollectedMessage,
   CollectMessageAttachmentsInput,
 } from '@/types/imap'
-import { tagAttachmentSourceMessageId } from '@/utils/imap'
+import {
+  buildCollectedMessage,
+  tagAttachmentSourceMessageId,
+} from '@/utils/imap'
 import { downloadDmarcAttachments } from './downloadDmarcAttachments'
-import { finalizeProcessedMessage } from './finalizeProcessedMessage'
 
-/** Downloads the candidate parts and, when reports came out, finalizes the message. */
-export async function collectMessageAttachments({
-  account,
-  client,
-  folder,
-  options,
-  uidStr,
-  partIds,
-  bodyStructure,
-  summary,
-}: CollectMessageAttachmentsInput): Promise<AttachmentResult[]> {
+/**
+ * Downloads the candidate parts. The message is not finalized here: that
+ * waits until its reports have ingested.
+ */
+export async function collectMessageAttachments(
+  input: CollectMessageAttachmentsInput,
+): Promise<CollectedMessage | null> {
+  const { client, uidStr, partIds, bodyStructure, summary } = input
   const attachments = await downloadDmarcAttachments(
     client,
     uidStr,
     partIds,
     bodyStructure,
   )
-  if (attachments.length === 0) return []
+  if (attachments.length === 0) return null
 
   tagAttachmentSourceMessageId(attachments, summary.messageId)
-  await finalizeProcessedMessage({
-    account,
-    attachmentCount: attachments.length,
-    client,
-    emailDate: summary.emailDate,
-    folder,
-    messageId: summary.messageId,
-    options,
-    subject: summary.subject,
-    uidStr,
-  })
-
-  return attachments
+  return buildCollectedMessage(input, attachments)
 }

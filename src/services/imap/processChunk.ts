@@ -1,5 +1,5 @@
 import { getProcessedMessageIdsByMessageIds } from '@/services/processed-messages'
-import type { AttachmentResult, ProcessChunkInput } from '@/types/imap'
+import type { CollectedMessage, ProcessChunkInput } from '@/types/imap'
 import { chunkScanMessage } from '@/utils/imap'
 import type { FetchMessageObject } from 'imapflow'
 import { buildUidToMidMap } from './buildUidToMidMap'
@@ -16,7 +16,7 @@ import { reportBatchProgress } from './reportBatchProgress'
  */
 export async function* processChunk(
   input: ProcessChunkInput,
-): AsyncGenerator<AttachmentResult, number> {
+): AsyncGenerator<CollectedMessage, number> {
   const { client, account, folder, chunk, chunkIndex, options } = input
   const done = input.folderProcessedCount + chunk.length
 

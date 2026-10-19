@@ -1,6 +1,6 @@
 import type { ImapAccountConfig } from '@/types/config'
 import type {
-  AttachmentResult,
+  CollectedMessage,
   FetchAttachmentsOptions,
   MailboxListItem,
 } from '@/types/imap'
@@ -12,14 +12,16 @@ import { processFolder } from './processFolder'
 /**
  * Fetches emails from configured folders (INBOX + optional Trash + optional all).
  * Skips messages already in processed_messages by Message-ID.
- * Yields DMARC attachments; after success inserts processed_messages and optionally moves to Trash.
+ * Yields each report message with its attachments while the folder lock is
+ * held: the consumer ingests them and only then finalizes the message
+ * (processed_messages row, mark read / move), on the still-open connection.
  * Reconnects once per folder if the server closes the connection (e.g. after MOVE to Trash).
  */
 export async function* fetchAttachments(
   days: number,
   account: ImapAccountConfig,
   options: FetchAttachmentsOptions,
-): AsyncGenerator<AttachmentResult> {
+): AsyncGenerator<CollectedMessage> {
   if (options.onStatus) {
     await options.onStatus(`Connecting to ${account.server}...`)
   }

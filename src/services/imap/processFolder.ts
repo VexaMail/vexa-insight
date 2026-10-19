@@ -1,13 +1,13 @@
 import { CHUNK_UID_COUNT } from '@/constants/ingest'
-import type { AttachmentResult, ProcessFolderInput } from '@/types/imap'
+import type { CollectedMessage, ProcessFolderInput } from '@/types/imap'
 import { buildDmarcSearchQuery } from '@/utils/imap'
 import { emitStatus } from './emitStatus'
 import { processChunk } from './processChunk'
 
-/** Scan one mailbox folder, yielding every DMARC attachment it holds. */
+/** Scan one mailbox folder, yielding every report message it holds. */
 export async function* processFolder(
   input: ProcessFolderInput,
-): AsyncGenerator<AttachmentResult> {
+): AsyncGenerator<CollectedMessage> {
   const { client, account, folder, since, options } = input
 
   await emitStatus(

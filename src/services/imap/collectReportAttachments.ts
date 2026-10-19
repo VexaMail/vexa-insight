@@ -1,4 +1,4 @@
-import type { AttachmentResult, CollectForensicReportInput } from '@/types/imap'
+import type { CollectedMessage, CollectForensicReportInput } from '@/types/imap'
 import { isFeedbackReportStructure } from '@/utils/forensic'
 import { getDmarcCandidatePartIds } from '@/utils/imap'
 import { collectForensicReport } from './collectForensicReport'
@@ -11,11 +11,11 @@ import { notifyProgress } from './notifyProgress'
  */
 export async function collectReportAttachments(
   input: CollectForensicReportInput,
-): Promise<AttachmentResult[]> {
+): Promise<CollectedMessage | null> {
   const { account, bodyStructure, options, summary, uidStr } = input
   const isFailureReport = isFeedbackReportStructure(bodyStructure)
   const partIds = isFailureReport ? [] : getDmarcCandidatePartIds(bodyStructure)
-  if (!isFailureReport && partIds.length === 0) return []
+  if (!isFailureReport && partIds.length === 0) return null
 
   await notifyProgress(options, {
     accountId: account.id,

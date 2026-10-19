@@ -1,10 +1,10 @@
 import type {
-  AttachmentResult,
+  CollectedMessage,
   ProcessUnprocessedUidsInput,
 } from '@/types/imap'
 import { processOneMessageUid } from './processOneMessageUid'
 
-/** Fetch every unprocessed UID of a chunk in parallel, yielding attachments. */
+/** Fetch every unprocessed UID of a chunk in parallel, yielding each report message. */
 export async function* processUnprocessedUids({
   client,
   account,
@@ -12,7 +12,7 @@ export async function* processUnprocessedUids({
   uids,
   uidToMidMap,
   options,
-}: ProcessUnprocessedUidsInput): AsyncGenerator<AttachmentResult> {
+}: ProcessUnprocessedUidsInput): AsyncGenerator<CollectedMessage> {
   const results = await Promise.all(
     uids.map(async (uid) =>
       processOneMessageUid({
@@ -26,7 +26,7 @@ export async function* processUnprocessedUids({
     ),
   )
 
-  for (const attachments of results) {
-    for (const attachment of attachments) yield attachment
+  for (const message of results) {
+    if (message !== null) yield message
   }
 }
