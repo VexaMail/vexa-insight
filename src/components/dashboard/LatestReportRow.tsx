@@ -1,14 +1,17 @@
 import { formatReportDateRange } from '@/utils/format'
-import { FileText } from 'lucide-react'
 import Link from 'next/link'
+import { ReportDmarcStatusIcon } from '../reports/ReportDmarcStatusIcon'
 import type { LatestReportRowProps } from './LatestReportRowProps'
 
-/** One report of the latest-reports list, with its first domain when known. */
+/**
+ * One report of the latest-reports list, with its DMARC status and its first
+ * domain when known.
+ */
 export function LatestReportRow({ report }: Readonly<LatestReportRowProps>) {
   const domain = report.relatedDomains?.[0]
   return (
     <div className="border-border/30 hover:bg-accent/50 flex items-center gap-3 rounded-lg border p-3 transition-colors">
-      <FileText className="text-primary h-3.5 w-3.5 shrink-0" />
+      <ReportDmarcStatusIcon outcome={report.dmarcOutcome} />
       <div className="min-w-0 flex-1">
         <Link
           href={`/reports/${String(report.id)}`}

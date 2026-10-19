@@ -3,6 +3,7 @@ import { getAllowedDomainIds } from '@/services/auth'
 import type { GetLatestReportsParams, ReportRow } from '@/types/reports'
 import { and, desc, eq } from 'drizzle-orm'
 import { latestReportsConditions } from './latestReportsConditions'
+import { attachDmarcOutcome } from './mappers/attachDmarcOutcome'
 import { attachRelatedDomains } from './mappers/attachRelatedDomains'
 import { needsEventsJoin } from './needsEventsJoin'
 import { resolveDomainIdByName } from './resolveDomainIdByName'
@@ -53,5 +54,5 @@ export async function getLatestReports({
   }
 
   const items = await query.orderBy(desc(rawReports.ingestedAt)).limit(limit)
-  return attachRelatedDomains(items)
+  return attachDmarcOutcome(await attachRelatedDomains(items))
 }

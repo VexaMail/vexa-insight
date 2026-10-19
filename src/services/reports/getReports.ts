@@ -3,6 +3,7 @@ import { getAllowedDomainIds } from '@/services/auth'
 import type { PaginatedReports } from '@/types/reports'
 import { and, desc, eq } from 'drizzle-orm'
 import { countDistinctReports } from './countDistinctReports'
+import { attachDmarcOutcome } from './mappers/attachDmarcOutcome'
 import { attachRelatedDomains } from './mappers/attachRelatedDomains'
 import { reportListSelection } from './reportListSelection'
 import { reportsListConditions } from './reportsListConditions'
@@ -50,7 +51,7 @@ export async function getReports(
     .offset((page - 1) * pageSize)
 
   return {
-    items: await attachRelatedDomains(items),
+    items: await attachDmarcOutcome(await attachRelatedDomains(items)),
     total: countResult?.count ?? 0,
     page,
     pageSize,

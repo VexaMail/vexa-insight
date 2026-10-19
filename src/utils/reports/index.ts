@@ -1,6 +1,7 @@
 export { buildOrgOptionsQuery } from './buildOrgOptionsQuery'
 export { buildReportsQuery } from './buildReportsQuery'
 export { computeDailyRollupDeltas } from './computeDailyRollupDeltas'
+export { describeDmarcOutcome } from './describeDmarcOutcome'
 export { filterAndSortReports } from './filterAndSortReports'
 export { initialReportsTableState } from './initialReportsTableState'
 export { percentOf } from './percentOf'

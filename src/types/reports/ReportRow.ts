@@ -1,3 +1,5 @@
+import type { ReportDmarcOutcome } from './ReportDmarcOutcome'
+
 /**
  * Raw report row as returned from DB for list/detail.
  */
@@ -10,4 +12,5 @@ export type ReportRow = {
   sourceEmail: string | null
   ingestedAt: Date
   relatedDomains?: { domainId: number; domainName: string }[]
+  dmarcOutcome?: ReportDmarcOutcome
 }

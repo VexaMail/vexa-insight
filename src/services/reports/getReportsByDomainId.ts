@@ -1,6 +1,7 @@
 import { getDb, normalizedEvents, rawReports } from '@/lib/db'
 import type { ReportRow } from '@/types/reports'
 import { and, desc, eq, inArray } from 'drizzle-orm'
+import { attachDmarcOutcome } from './mappers/attachDmarcOutcome'
 import { attachRelatedDomains } from './mappers/attachRelatedDomains'
 
 /**
@@ -37,5 +38,5 @@ export async function getReportsByDomainId(
     .orderBy(desc(rawReports.ingestedAt))
 
   rows = await attachRelatedDomains(rows)
-  return rows
+  return attachDmarcOutcome(rows)
 }
