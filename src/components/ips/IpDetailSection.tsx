@@ -1,17 +1,18 @@
+import { Panel } from '@/components/ui'
 import type { IpDetailSectionProps } from './IpDetailSectionProps'
 
+/** A detail list panel: title, its own toolbar, then the rows. */
 export function IpDetailSection({
   title,
   toolbar,
   children,
 }: Readonly<IpDetailSectionProps>) {
   return (
-    <section className="glass-card flex flex-col space-y-4 p-4 sm:p-6">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-        {title}
-      </h2>
-      {toolbar}
-      <div className="flex flex-col space-y-2">{children}</div>
-    </section>
+    <Panel title={title}>
+      <div className="flex flex-col gap-4">
+        {toolbar}
+        <div className="flex min-w-0 flex-col gap-2">{children}</div>
+      </div>
+    </Panel>
   )
 }

@@ -2,32 +2,15 @@
 
 import { SortableHeaderButton } from '@/components/ui'
 import type { dataTableFeatures } from '@/lib/dataTableFeatures'
-import type { IpSummaryData } from '@/types/ips'
-import { formatRelativeDate } from '@/utils/format'
+import type { IpSourceRow } from '@/types/ips'
 import type { ColumnDef } from '@tanstack/react-table'
+import { IpLastSeen } from '../IpLastSeen'
 
-export const lastSeenColumn: ColumnDef<
-  typeof dataTableFeatures,
-  IpSummaryData
-> = {
-  accessorKey: 'lastSeen',
-  header: ({ column }) => (
-    <SortableHeaderButton column={column} label="Last Seen" />
-  ),
-  cell: ({ row }) => {
-    const lastSeen = row.original.lastSeen
-    if (!lastSeen)
-      return (
-        <span className="text-muted-foreground/50 text-sm italic">Unknown</span>
-      )
-
-    const { relative, absolute } = formatRelativeDate(lastSeen)
-
-    return (
-      <span className="text-muted-foreground text-sm" title={absolute}>
-        {relative}
-      </span>
-    )
-  },
-  meta: { className: 'hidden md:table-cell' },
-}
+export const lastSeenColumn: ColumnDef<typeof dataTableFeatures, IpSourceRow> =
+  {
+    accessorKey: 'lastSeen',
+    header: ({ column }) => (
+      <SortableHeaderButton column={column} label="Last seen" />
+    ),
+    cell: ({ row }) => <IpLastSeen lastSeen={row.original.lastSeen} />,
+  }

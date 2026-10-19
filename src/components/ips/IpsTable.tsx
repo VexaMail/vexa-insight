@@ -4,40 +4,25 @@ import { DataTable } from '@/components/ui'
 import { useListState } from '@/hooks/core'
 import { useRouter } from 'next/navigation'
 import { useIpsRefresh } from '../../hooks/ips/useIpsRefresh'
-import type { IpsTableProps } from './IpsTableProps'
 import { getIpsColumns } from './ipsColumns'
+import { IpsTableEmpty } from './IpsTableEmpty'
+import type { IpsTableProps } from './IpsTableProps'
 import { renderIpsTableToolbar } from './renderIpsTableToolbar'
 
+/**
+ * The sources table. Below `md` only the first column (a row summary) shows;
+ * from `md` up it is hidden and the dense columns show instead.
+ */
 export default function IpsTable({ ips }: IpsTableProps) {
   const router = useRouter()
   const setScope = useListState((s) => s.setScope)
-  const {
-    localHostnames,
-    localHostnameLookupTimestamps,
-    refreshingIps,
-    handleRefresh,
-  } = useIpsRefresh()
-  const columns = getIpsColumns({
-    refreshingIps,
-    localHostnames,
-    localHostnameLookupTimestamps,
-    handleRefresh,
-    ips,
-    setScope,
-  })
+  const refresh = useIpsRefresh()
+  const columns = getIpsColumns({ ...refresh, ips, setScope })
 
-  if (ips.length === 0) {
-    return (
-      <div className="glass-card p-8 text-center">
-        <p className="text-muted-foreground">
-          No IP data yet. Ingest DMARC reports to see IPs.
-        </p>
-      </div>
-    )
-  }
+  if (ips.length === 0) return <IpsTableEmpty />
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 space-y-4 duration-500">
+    <div className="max-md:[&_table]:table-fixed [&_tbody_td]:py-2.5 md:[&_tbody_td:first-child]:hidden max-md:[&_tbody_td:not(:first-child)]:hidden md:[&_th:first-child]:hidden max-md:[&_thead]:hidden">
       <DataTable
         columns={columns}
         data={ips}

@@ -1,3 +1,5 @@
+import type { IpDkimSignature } from '@/types/ips'
+import type { SenderIdentity } from '@/types/senders'
 import type { getIpDetail } from './getIpDetail'
 import type { getIpDomains } from './getIpDomains'
 import type { getIpLogs } from './getIpLogs'
@@ -8,4 +10,6 @@ export type IpDetailPageData = {
   readonly domains: Awaited<ReturnType<typeof getIpDomains>> | null
   readonly reports: Awaited<ReturnType<typeof getIpReports>> | null
   readonly logs: Awaited<ReturnType<typeof getIpLogs>> | null
+  readonly dkimSignatures: readonly IpDkimSignature[]
+  readonly sender: SenderIdentity | null
 }

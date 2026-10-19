@@ -1,38 +1,38 @@
 import type { IpDateRange } from '@/types/filters'
+import { classifySender } from '@/utils/senders'
 import { getIpDetail } from './getIpDetail'
+import { getIpDkimSignatures } from './getIpDkimSignatures'
 import { getIpDomains } from './getIpDomains'
 import { getIpLogs } from './getIpLogs'
 import { getIpReports } from './getIpReports'
 import type { IpDetailPageData } from './IpDetailPageData'
+import { settledOrNull } from './settledOrNull'
 
 export async function getIpDetailPageData(
   ip: string,
   dateRange: IpDateRange,
 ): Promise<IpDetailPageData> {
-  const [summaryResult, domainsResult, reportsResult, logsResult] =
+  const [summaryResult, domainsResult, reportsResult, logsResult, dkimResult] =
     await Promise.allSettled([
       getIpDetail(ip, dateRange),
       getIpDomains({ ip, dateRange }),
       getIpReports(ip, dateRange),
       getIpLogs({ ip, dateRange }),
+      getIpDkimSignatures(ip, dateRange),
     ])
 
-  const data = summaryResult.status === 'fulfilled' ? summaryResult.value : null
-  const domains =
-    domainsResult.status === 'fulfilled' ? domainsResult.value : null
-  const reports =
-    reportsResult.status === 'fulfilled' ? reportsResult.value : null
-  const logs = logsResult.status === 'fulfilled' ? logsResult.value : null
+  const data = settledOrNull(summaryResult, 'summary')
+  const domains = settledOrNull(domainsResult, 'domains')
+  const reports = settledOrNull(reportsResult, 'reports')
+  const logs = settledOrNull(logsResult, 'logs')
+  const dkimSignatures = settledOrNull(dkimResult, 'DKIM signatures') ?? []
 
-  if (domainsResult.status === 'rejected') {
-    console.error('Failed to fetch IP domains:', domainsResult.reason)
-  }
-  if (reportsResult.status === 'rejected') {
-    console.error('Failed to fetch IP reports:', reportsResult.reason)
-  }
-  if (logsResult.status === 'rejected') {
-    console.error('Failed to fetch IP logs:', logsResult.reason)
-  }
+  const sender = data
+    ? classifySender({
+        hostname: data.hostname,
+        dkimDomains: dkimSignatures.map((sig) => sig.domain),
+      })
+    : null
 
-  return { data, domains, reports, logs }
+  return { data, domains, reports, logs, dkimSignatures, sender }
 }

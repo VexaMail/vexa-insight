@@ -19,7 +19,7 @@ export function IpFlag({ countryCode, countryName }: IpFlagProps) {
           title={countryName || countryCode}
         />
       ) : (
-        <div className="flex h-4 w-4 items-center justify-center rounded-full bg-zinc-200 text-[8px] font-bold text-zinc-500 dark:bg-zinc-700">
+        <div className="bg-secondary text-muted-foreground flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-bold">
           ?
         </div>
       )}

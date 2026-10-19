@@ -1,5 +1,5 @@
-import type { IpSummaryData } from '@/types/ips'
+import type { IpSourceRow } from '@/types/ips'
 
 export type IpsTableProps = {
-  readonly ips: IpSummaryData[]
+  readonly ips: IpSourceRow[]
 }
