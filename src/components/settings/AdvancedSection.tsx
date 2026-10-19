@@ -24,7 +24,7 @@ export default function AdvancedSection({
       title="Advanced"
       description="Allowed CORS origins and the environment this instance reports."
     >
-      <div className="grid max-w-xl gap-4">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
         <div>
           <label htmlFor="settings-cors" className={SETTINGS_LABEL_CLASS_NAME}>
             CORS origins

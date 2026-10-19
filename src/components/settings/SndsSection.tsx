@@ -27,7 +27,7 @@ export function SndsSection({ apiKey }: Readonly<{ apiKey: string }>) {
         </StatusPill>
       }
     >
-      <div className="flex max-w-xl flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <SndsSectionIntro />
         <SndsConnectionStatus connection={snds.connection} />
         <SndsActions

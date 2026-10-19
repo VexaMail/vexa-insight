@@ -21,7 +21,7 @@ export function ProjectNameSection({
       title="General"
       description="The name shown in the sidebar and in browser titles."
     >
-      <div className="max-w-xl">
+      <div>
         <label
           htmlFor="settings-project-name"
           className={SETTINGS_LABEL_CLASS_NAME}

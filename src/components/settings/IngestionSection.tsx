@@ -20,7 +20,7 @@ export default function IngestionSection({
       title="Ingestion"
       description="How often to check mail and how far back each run looks. Older mail is only picked up by a full rescan."
     >
-      <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <IngestionIntervalField
           value={intervalMinutes}
           onChange={onIntervalChange}

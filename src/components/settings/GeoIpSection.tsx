@@ -25,7 +25,7 @@ export function GeoIpSection({ apiKey }: Readonly<{ apiKey: string }>) {
         </StatusPill>
       }
     >
-      <div className="flex max-w-xl flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <GeoIpSectionIntro />
         <GeoIpLicenseKeyField
           licenseKey={licenseKey}
