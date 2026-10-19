@@ -2,6 +2,7 @@ export { createSession } from './createSession'
 export { getAllowedDomainIds } from './domainAccess'
 export { findUserByUsername } from './findUserByUsername'
 export { getSession } from './getSession'
+export { getSessionActor } from './getSessionActor'
 export { hashPassword } from './hashPassword'
 export { invalidateSession } from './invalidateSession'
 export {

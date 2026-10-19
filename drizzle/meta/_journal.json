@@ -295,6 +295,20 @@
       "when": 1792376141169,
       "tag": "0041_dns_snapshots",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 1792376546179,
+      "tag": "0042_issue_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 1792376546730,
+      "tag": "0043_source_reviews",
+      "breakpoints": true
     }
   ]
 }
