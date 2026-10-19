@@ -1,4 +1,3 @@
 export { BackButton } from './BackButton'
 export { PageContainer } from './PageContainer'
-export { PageEyebrow } from './PageEyebrow'
 export { PageHeader } from './PageHeader'

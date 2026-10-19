@@ -9,6 +9,7 @@ import { buildIpDetailContext, parseIpDetailTab } from '@/utils/ips'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+import { OperatorPanels } from './OperatorPanels'
 import type { PageProps } from './PageProps'
 
 export const metadata: Metadata = {
@@ -64,6 +65,7 @@ export default async function IpDetailPage(props: PageProps) {
           </>
         }
       />
+      <OperatorPanels ip={ip} domains={ctx.domains ?? []} />
       {sndsRows.length > 0 ? (
         <SndsReputationCard rows={sndsRows} statusRows={[]} />
       ) : null}
