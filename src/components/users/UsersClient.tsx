@@ -5,6 +5,7 @@ import { useUsersManagement } from '@/hooks/users'
 import { CreateUserButton } from './CreateUserButton'
 import { UserDialogs } from './UserDialogs'
 import type { UsersClientProps } from './UsersClientProps'
+import { UsersSummaryTiles } from './UsersSummaryTiles'
 import { getUsersColumns } from './usersColumns'
 
 export default function UsersClient({
@@ -32,7 +33,8 @@ export default function UsersClient({
   })
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <UsersSummaryTiles users={users} />
       <DataTable
         columns={columns}
         data={users}
