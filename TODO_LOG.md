@@ -8,6 +8,18 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Public domain checker:** Published the landing at
+      `https://insight.vexamail.com/` as a separate Enhance persistent app
+      inside the Vexa Mail website, running runtime revision `4319132`.
+  - Result: Live SPF, DKIM, DMARC and MX checks, HTTPS redirect, an origin Let's
+    Encrypt certificate, and private routes blocked without a database or
+    mailbox access. Existing Vexa Mail and API root statuses are preserved.
+  - Evidence:
+    `PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com`
+    passes; production browser submission returns four cards for `vexamail.com`;
+    direct origin HTTPS certificate verification succeeds. Startup and
+    operational details are in `docs/public-website.md`.
+
 - [x] 2026-10-19 — **UI redesign (2026-10-19):** Change detection: a domain or
       source that starts failing (new endpoint, state snapshot).
   - Result: Home 'What changed' table compares the window with the previous one

@@ -60,6 +60,31 @@ safeguards. Keep a single checker process initially and configure trusted proxy
 hops for the actual ingress chain. Scale-out needs a shared or edge-enforced
 budget.
 
+## Live deployment
+
+`https://insight.vexamail.com/` runs as a separate Enhance persistent app under
+the Vexa Mail website on nova. Its working directory is
+`services/vexa-insight-public`, its command is `sh start.sh`, its Node version
+is `24.21.0`, and its port is `3003`. The startup script is maintained in
+`deploy/public/start.sh`. It sets the public-only runtime and assumes two
+trusted proxy hops for Cloudflare and Apache.
+
+The hostname has a proxied Cloudflare A record and an origin certificate issued
+by Enhance’s Let’s Encrypt integration. HTTP redirects to HTTPS. The application
+directory contains no `.env` files or database directory. The app runtime was
+built from revision `4319132`; the installed `REVISION` file records the full
+SHA.
+
+Verify the deployed site with:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com
+```
+
+The verifier uses `curl` for HTTP requests. Cloudflare’s browser integrity
+checks return error 1010 to the default Python HTTP client; the curl transport
+completes the checks without weakening the zone’s security settings.
+
 ## Production rollout
 
 Deploy a separate public process under the Vexa Mail website in the hosting
@@ -70,9 +95,10 @@ HTTPS virtual host. Use the site’s own process manager and certificate
 lifecycle.
 
 The public process needs no database mount, mailbox configuration, encryption
-key or access to the private instance. Permit outbound DNS to the two configured
-resolvers. Preserve existing mail DNS records when adding the new web hostname.
-DNS, hosting and TLS changes require a separate rollout authorization.
+key or access to the private instance. Exclude `.env` files and the `data`
+directory from the public runtime package. Permit outbound DNS to the two
+configured resolvers. Preserve existing mail DNS records when adding the new web
+hostname. DNS, hosting and TLS changes require a separate rollout authorization.
 
 Verify the HTTPS hostname after rollout: the landing and logo assets must return
 200, a domain check must return four protocol results, and `/install`,
