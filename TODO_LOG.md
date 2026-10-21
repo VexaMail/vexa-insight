@@ -8,6 +8,20 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Public domain reports:** Added shareable domain paths,
+      transparent SPF/DMARC scoring and a compact result-first interface.
+  - Result: `https://insight.vexamail.com/teleporte.es` loads automatically and
+    reports 80/100 (SPF 50, DMARC 30). SoftFail and DMARC monitoring are valid
+    policies; DKIM remains unverified and MX is outside the score. DNS failures
+    and unchecked inheritance do not receive an invented total.
+  - Evidence: `pnpm run check:ci` passed (192 files, 1,002 tests); the Linux
+    standalone build passed.
+    `PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es`
+    passed. Browser checks verified direct loading, one request per submit, URL
+    updates, history navigation, desktop/phone rendering and both themes.
+    Runtime revision `115e3d3` is deployed; the previous runtime is preserved.
+    Remaining layout refinements are tracked in `TODO.md`.
+
 - [x] 2026-10-21 — **Public domain checker:** Published the landing at
       `https://insight.vexamail.com/` as a separate Enhance persistent app
       inside the Vexa Mail website, running runtime revision `4319132`.
