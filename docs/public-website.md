@@ -153,3 +153,17 @@ The tests cover domain validation, DNS failure semantics, duplicate policies,
 null MX, public routing, startup isolation, rate limits, shared lookups, cache
 behavior and concurrency limits. Production build and browser checks also verify
 the proxy rewrite and client hydration.
+
+## Screenshot provenance
+
+The README screenshots and public dashboard preview were captured from the
+application using an isolated database seeded with the built-in synthetic
+demonstration dataset. They show example domains and documentation IP ranges,
+not customer reports. Recapture the overview, domains, sending sources and
+diagnostics when those workspaces change; keep the public preview and README
+image in sync.
+
+Crawler responses request revalidation. A successful origin rollout does not
+prove a CDN invalidation succeeded: verify the normal public robots and sitemap
+URLs after each update. The current deployment credential does not provide
+cache-purge access; do not assume a purge occurred.

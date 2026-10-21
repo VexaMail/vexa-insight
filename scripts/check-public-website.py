@@ -12,12 +12,14 @@ def main():
         assert status in (301, 308) and headers.get('Location') == base + '/', 'HTTPS redirect missing'
         print('PASS HTTP redirects to HTTPS')
     domain = sys.argv[2] if len(sys.argv) > 2 else 'teleporte.es'
-    for path in ['/', '/' + domain, '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt']:
+    for path in ['/', '/' + domain, '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt', '/vexa-insight-dashboard.png']:
         status, headers, body = public_website_response(base + path)
         assert status == 200, (path, status)
         if path == '/':
             assert 'Free DMARC &amp;' in body, 'Wrong landing'
             assert headers.get('Content-Security-Policy'), 'Missing CSP'
+        if path == '/robots.txt':
+            assert 'Sitemap: https://insight.vexamail.com/sitemap.xml' in body, 'Public sitemap not advertised'
         print('PASS 200', path)
     status, headers, body = public_website_response(base + '/sitemap.xml')
     assert status == 200 and 'application/xml' in headers.get('Content-Type', ''), 'Invalid public sitemap'

@@ -1,7 +1,7 @@
 # TODO
 
 > Known work that is not yet done, with enough context to pick each item up
-> cold. Last reviewed: 2026-09-30. Bug reports and feature requests belong in
+> cold. Last reviewed: 2026-10-21. Bug reports and feature requests belong in
 > GitHub Issues; this file tracks work the maintainers have already scoped.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
@@ -13,6 +13,13 @@
 - [ ] The app has no public account-registration flow. The landing therefore
       links to the real self-hosted installation instructions. Next: decide
       whether a hosted offering is wanted before adding a signup or paid CTA.
+
+- [ ] Public deploys do not have an automated CDN purge. A scoped purge of the
+      public crawler files returned HTTP 401 on 2026-10-21; normal requests
+      nevertheless served the updated robots and sitemap. Next: document an
+      owner-approved, zone-scoped purge capability if future cache invalidation
+      needs it; keep crawler responses revalidated and verify the ordinary
+      public URLs after every deployment.
 
 ## Email observability expansion
 

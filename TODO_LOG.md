@@ -8,6 +8,30 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Public checker discovery and interface:** Published runtime
+      `41a8fdf` with a DMARC/SPF search headline, public metadata,
+      WebApplication structured data, protocol guides, visible questions and a
+      valid public sitemap. Reports show the score and prioritized next step
+      first, keep the last valid report on retry failure and offer a copyable
+      canonical link with a bounded clipboard fallback.
+  - Result: The public site is live, its prior runtime is preserved, and private
+    routes remain blocked. The README describes the current email observability
+    product and uses current dashboard, domain, sending-source and diagnostics
+    screenshots with synthetic data. Competitor evidence and future feature
+    boundaries are in `docs/checker-competitive-review.md`; the product backlog
+    includes blocklist monitoring, real-message checks, transport health, header
+    analysis and related tools.
+  - Evidence: `pnpm run check:ci` passed (193 test files, 1,010 tests), followed
+    by focused navigation tests for the initial loading-state change. The Linux
+    standalone build passed.
+    `PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es`
+    passed. Browser verification against production passed domain navigation,
+    one request per submission, invalid retry preservation, successful retry,
+    Back/Forward, share feedback and phone overflow checks. Desktop/phone
+    captures were reviewed in both themes; remaining automated warnings describe
+    zero-duration transitions and an intentional readable paragraph width.
+    Search Console indexing and rankings remain unverified.
+
 - [x] 2026-10-21 — **Public domain reports:** Added shareable domain paths,
       transparent SPF/DMARC scoring and a compact result-first interface.
   - Result: `https://insight.vexamail.com/teleporte.es` loads automatically and
