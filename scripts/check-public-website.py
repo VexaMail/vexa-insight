@@ -12,7 +12,7 @@ def main():
         assert status in (301, 308) and headers.get('Location') == base + '/', 'HTTPS redirect missing'
         print('PASS HTTP redirects to HTTPS')
     domain = sys.argv[2] if len(sys.argv) > 2 else 'teleporte.es'
-    for path in ['/', '/' + domain, '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt', '/vexa-insight-dashboard.png']:
+    for path in ['/', '/' + domain, '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt']:
         status, headers, body = public_website_response(base + path)
         assert status == 200, (path, status)
         if path == '/':

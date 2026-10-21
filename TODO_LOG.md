@@ -29,8 +29,11 @@
     one request per submission, invalid retry preservation, successful retry,
     Back/Forward, share feedback and phone overflow checks. Desktop/phone
     captures were reviewed in both themes; remaining automated warnings describe
-    zero-duration transitions and an intentional readable paragraph width.
-    Search Console indexing and rankings remain unverified.
+    zero-duration transitions and an intentional readable paragraph width. A
+    stricter robots-sitemap assertion later found stale CDN responses on some
+    nodes; targeted invalidation remains pending because deployment access lacks
+    Cache Purge permission. Search Console indexing and rankings remain
+    unverified.
 
 - [x] 2026-10-21 — **Public domain reports:** Added shareable domain paths,
       transparent SPF/DMARC scoring and a compact result-first interface.
