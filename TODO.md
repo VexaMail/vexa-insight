@@ -10,10 +10,11 @@
 
 ## Public website follow-up (2026-10-21)
 
-- [ ] Search Console accepted the public sitemap on 2026-10-21, but URL
-      Inspection still reported the homepage as unknown. Next: recheck indexing
-      and actual search queries after Google processes the submission;
-      submission alone is not indexing or ranking evidence.
+- [ ] Search Console retrieved the public sitemap successfully on 2026-10-21
+      (zero errors/warnings, one discovered URL). Google's live homepage test
+      passed and its priority indexing request was accepted. The homepage was
+      not yet indexed. Next: recheck indexing and actual search queries after
+      Google processes the request; submission alone is not ranking evidence.
 - [ ] The app's private DMARC diagnostics still use the older tag
       interpretation. RFC 9989 (May 2026) changes policy discovery and replaces
       legacy pct with t. The public checker now handles tree-walk inheritance

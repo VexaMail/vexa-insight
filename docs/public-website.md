@@ -199,11 +199,11 @@ instructions.
 On 2026-10-21, the authorized Google account's domain property and dedicated
 `https://insight.vexamail.com/` URL-prefix property accepted the sitemap. The
 live URL Inspection test confirmed that Google could access and index the
-homepage, and its priority indexing request was accepted. The index still did
-not contain the homepage. The sitemap report retained a general HTTP error from
-its first fetch, so successful sitemap processing remains unverified despite
-normal XML responses and a successful live homepage test. Recheck it after the
-rollout and Google's next retrieval; submission is not proof of indexing.
+homepage, and its priority indexing request was accepted. Google then retrieved
+the sitemap successfully: zero errors/warnings and one discovered URL. The index
+still did not contain the homepage. An initial generic HTTP retrieval error
+cleared on Google's next fetch without changing Cloudflare security. Indexing
+and search performance remain separate, pending observations.
 
 ## Automated public rollout
 

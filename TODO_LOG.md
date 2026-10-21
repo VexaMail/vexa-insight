@@ -8,6 +8,41 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Public checker reliability, discovery and free-install
+      conversion:** Deployed runtime `6daca9d`. SPF follows bounded
+      include/redirect dependencies, detects cycles and missing policies, and
+      distinguishes transient failures. DMARC discovers inherited policies
+      through the RFC 9989 DNS tree walk, identifies their source and accounts
+      for subdomain/test policies. Known DKIM selectors are validated and
+      retained in report URLs and copied links.
+  - Result: The sole conversion is the free self-hosted installation. Optional
+    Analytics starts after acceptance and excludes scanned domains, selectors
+    and DNS records from transport. Enhanced automatic collection is disabled;
+    installation clicks are a key event, not proof of completed installation.
+    Private deployments without explicit public configuration load no Google
+    tag.
+  - Search evidence: The dedicated public Search Console property is verified.
+    Google fetched the sitemap with zero errors/warnings and one discovered URL.
+    The live homepage test passed and its priority indexing request was
+    accepted. Indexing and rankings remain pending; the initial sitemap HTTP
+    error cleared without weakening Cloudflare security.
+  - Deployment: The owner-authorized Cache Purge credential is zone-scoped and
+    stored outside the repository with owner-only permissions. The automated
+    deployment command preserves the previous runtime and startup configuration,
+    performs a four-URL purge and runs the public boundary/DNS verifier.
+  - Verification:
+    `pnpm exec vitest run --config vitest.config.mts --maxWorkers=4 --testTimeout=30000 --hookTimeout=30000`
+    passed (195 files, 1,031 tests). The default five-second budget hit existing
+    Triage and ingest-fixture timeouts under machine load; application
+    assertions were unchanged. Focused DNS tests passed after the final
+    case-handling update. Types, ESLint, oxlint, knip, dependency boundaries,
+    formatting, migrations and chart checks passed. Linux standalone build and
+    private Analytics isolation passed. The production deployment command and
+    public verifier passed; browser checks passed consent/rejection, selector
+    sharing/reload and mobile overflow. Actual Google collection returned HTTP
+    204 with sanitized payloads and no Analytics CSP errors. Vexa Mail remained
+    HTTP 200.
+
 - [x] 2026-10-21 — **Light default and public theme control:** Start in light
       mode when no theme is saved, preserve explicit dark/light preferences and
       expose both controls in the public header. Recaptured the synthetic
