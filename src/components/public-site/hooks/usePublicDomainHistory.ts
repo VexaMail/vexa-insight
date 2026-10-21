@@ -12,10 +12,10 @@ export function usePublicDomainHistory({
   useEffect(() => {
     const synchronize = () => {
       const domain = readPublicDomainPath()
+      reset()
       setDomain(domain)
       setPublicDomainMetadata(domain)
       if (domain) void load(domain)
-      else reset()
     }
     synchronize()
     window.addEventListener('popstate', synchronize)

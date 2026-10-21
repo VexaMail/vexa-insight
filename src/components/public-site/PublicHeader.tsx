@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import VexaLogo from '../shell/VexaLogo'
 
 export function PublicHeader() {
@@ -8,17 +9,17 @@ export function PublicHeader() {
         aria-label="Main navigation"
         className="flex items-center gap-5 text-sm"
       >
-        <a
-          href="#how-it-works"
+        <Link
+          href="/#how-it-works"
           className="text-muted-foreground hover:text-foreground hidden sm:block"
         >
           How it works
-        </a>
+        </Link>
         <a
           href="#monitor"
           className="text-foreground hover:bg-accent inline-flex min-h-11 items-center rounded-md border px-4 py-2 font-medium"
         >
-          Get Vexa Insight <span aria-hidden="true">↗</span>
+          About the app
         </a>
       </nav>
     </header>

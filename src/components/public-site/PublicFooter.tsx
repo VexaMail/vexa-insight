@@ -2,7 +2,7 @@ export function PublicFooter() {
   return (
     <footer className="text-muted-foreground border-t px-5 py-6 text-xs sm:px-8">
       <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4">
-        <p>Vexa Insight · Email authentication, made visible.</p>
+        <p>Vexa Insight · Email observability on your infrastructure.</p>
         <div className="flex gap-5">
           <a
             href="https://github.com/VexaMail/vexa-insight"

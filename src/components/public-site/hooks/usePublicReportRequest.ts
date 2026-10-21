@@ -21,7 +21,6 @@ export function usePublicReportRequest() {
       controller.current = active
       setPending(true)
       setError(null)
-      setReport(null)
       try {
         const result = await fetchPublicReport(domain, active.signal)
         if (active.signal.aborted) return null

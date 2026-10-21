@@ -1,10 +1,10 @@
 'use client'
 
 import type { PublicDomainCheckerProps } from '../../types/public-check/PublicDomainCheckerProps'
-import { PublicCheckFeedback } from './PublicCheckFeedback'
-import { PublicCheckForm } from './PublicCheckForm'
-import { PublicDomainHeading } from './PublicDomainHeading'
+import { PublicCheckControls } from './PublicCheckControls'
+import { PublicDomainPending } from './PublicDomainPending'
 import { PublicHero } from './PublicHero'
+import { PublicHowItWorks } from './PublicHowItWorks'
 import { PublicProtocolStrip } from './PublicProtocolStrip'
 import { PublicReport } from './PublicReport'
 import { usePublicCheck } from './hooks/usePublicCheck'
@@ -16,20 +16,27 @@ export function PublicDomainChecker({
     usePublicCheck(initialDomain)
   return (
     <div id="check">
-      {!domain ? (
-        <div className="pt-10">
-          <PublicHero />
-        </div>
+      {!domain ? <PublicHero /> : null}
+      {report ? <PublicReport report={report} /> : null}
+      {domain && !report ? (
+        <PublicDomainPending
+          domain={domain}
+          pending={pending || error === null}
+        />
       ) : null}
-      <div className={!domain ? 'mt-10' : ''}>
-        <PublicCheckForm domain={domain} pending={pending} submit={submit} />
-      </div>
-      <div className={domain ? 'min-h-[60rem]' : ''}>
-        {domain && !report ? <PublicDomainHeading domain={domain} /> : null}
-        <PublicCheckFeedback pending={pending} error={error} />
-        {report ? <PublicReport report={report} /> : null}
-      </div>
-      {!domain ? <PublicProtocolStrip /> : null}
+      <PublicCheckControls
+        hasReport={report !== null}
+        domain={domain}
+        pending={pending}
+        submit={submit}
+        error={error}
+      />
+      {!domain ? (
+        <>
+          <PublicProtocolStrip />
+          <PublicHowItWorks />
+        </>
+      ) : null}
     </div>
   )
 }

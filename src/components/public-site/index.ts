@@ -1,5 +1,4 @@
 export { PublicDomainChecker } from './PublicDomainChecker'
 export { PublicFooter } from './PublicFooter'
 export { PublicHeader } from './PublicHeader'
-export { PublicHowItWorks } from './PublicHowItWorks'
 export { PublicMonitor } from './PublicMonitor'

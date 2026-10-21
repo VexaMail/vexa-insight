@@ -10,16 +10,100 @@
 
 ## Public website follow-up (2026-10-21)
 
-- [ ] Automated public-site design review still flags the landing's heading
-      spacing, header/content alignment and repeated primary CTAs. Desktop and
-      phone screenshots remain readable in both themes. Next: consolidate the
-      result-page marketing sections and align the shared containers in a
-      dedicated layout pass. The report uses basic SPF and DMARC scoring;
-      recursive SPF evaluation and inherited DMARC remain explicitly unchecked.
-
 - [ ] The app has no public account-registration flow. The landing therefore
       links to the real self-hosted installation instructions. Next: decide
       whether a hosted offering is wanted before adding a signup or paid CTA.
+
+## Email observability expansion
+
+The product can expand beyond DMARC into sender reputation, transport health and
+real-message diagnostics. These items are future work, not shipped capabilities.
+Evidence and competitor sources are in
+[docs/checker-competitive-review.md](docs/checker-competitive-review.md),
+inspected 2026-10-21.
+
+- [ ] **P1 — Blocklist monitoring for the server and observed senders (app;
+      public lookup later).** Monitor explicitly configured outbound server IPs
+      and selected IPs observed in reports. Preserve asset role: web hosting,
+      incoming MX and outbound sender are not interchangeable. Reference:
+      MXToolbox blocklist checks and SuperTool. First step: define a licensed
+      provider/resolver adapter with listed, not-listed, unavailable and
+      query-denied states; store provider, timestamp, evidence and expiry, then
+      integrate scheduling, deduplicated alerts and delisting guidance. Verify
+      provider usage terms before enabling automated queries; never turn DNS
+      query failure into a listing.
+- [ ] **P1 — Real-message authentication test (app; landing test inbox later).**
+      Reference: mail-tester and Red Sift Investigate. First step: design an
+      expiring per-test inbox address and receive a message from the user's
+      actual sending service; report the observed IP, SPF identity, DKIM
+      signature, From alignment and trusted receiver authentication results.
+      Define retention/redaction, consent, message-size limits, expiry and abuse
+      budgets before exposing a public inbox. A score must not claim inbox
+      placement.
+- [ ] **P1 — Controlled end-to-end send/receive checks (app).** Send only to
+      owner-approved test mailboxes and distinguish connection, SMTP acceptance,
+      arrival, latency and inbox/spam placement when observable. Reference:
+      real-message testing flows above. First step: specify one opt-in mailbox
+      pair, expected message identifiers and timeout states. Never send mail to
+      arbitrary visitor-supplied recipients. Public execution remains
+      unavailable until ownership verification and rate limits exist.
+- [ ] **P2 — SMTP, STARTTLS and certificate health (app; bounded public tool
+      later).** Reference: MXToolbox SMTP and MTA-STS diagnostics. First step:
+      design a server-side transport probe with public-address validation,
+      destination/port restrictions, DNS-rebinding protection, timeouts and no
+      relay attempts. Store banner, TLS negotiation and certificate expiry as
+      transport evidence, separately from delivery claims.
+- [ ] **P2 — PTR / forward-confirmed reverse DNS checks for sender IPs (app;
+      public IP lookup later).** Reference: Red Sift Investigate and MXToolbox
+      PTR. First step: reuse the existing hostname enrichment to compare reverse
+      and forward answers, record resolver failures and show the last successful
+      check; attach changes to the sender timeline.
+- [ ] **P2 — Public DMARC inheritance and recursive SPF diagnostics.** The free
+      checker currently checks direct DMARC and basic SPF syntax only.
+      Reference: dmarcian Inspector and SPF Surveyor. First step: reuse the app
+      SPF lookup/planning services with a bounded DNS budget, Public Suffix List
+      policy discovery, cache and explicit unknown/error states; add tests for
+      inheritance, cycles, void lookups and ignored redirects before scoring the
+      expanded evidence.
+- [ ] **P2 — Known DKIM selector input and key diagnostics (app/public).**
+      Reference: EasyDMARC DKIM lookup. First step: accept one validated
+      selector, resolve its TXT/CNAME chain within a budget and display key
+      type/size and evidence. Keep a published key distinct from verified
+      message signing; never claim to enumerate every selector.
+- [ ] **P2 — Email header analyzer (app; browser-only public version
+      possible).** Reference: dmarcian's tool library. First step: parse pasted
+      headers locally where possible, expose Received hops and identity
+      alignment, redact addresses and distinguish trusted receiver
+      Authentication-Results from sender-controlled text. Reuse the real-message
+      evidence model.
+- [ ] **P2 — Public scan history, comparison and exports.** Reference: MXToolbox
+      chronological results and EasyDMARC report export. First step: choose
+      explicit persisted snapshots or local-only history, show freshness and
+      changed records, then add a printable/shareable export with retention
+      controls. The existing domain URL runs a current scan and is not a
+      historical snapshot.
+- [ ] **P2 — Sender health overview combining evidence.** Reuse existing source
+      classification, reviews, DNS history, SNDS and alert rules. First step:
+      design a per-sender view that separates authentication, reputation and
+      transport observations, their timestamps and uncertainty; do not collapse
+      unrelated evidence into an unexplained deliverability grade.
+- [ ] **P3 — Inbox-placement testing across providers.** First step: assess
+      owned seed accounts, provider permissions, operating cost and retention.
+      Keep the result limited to the tested mailboxes and message; no guarantee
+      for all recipients. This is broader than an accepted SMTP transaction or
+      one received authentication test.
+- [ ] **P3 — Useful individual tool pages and an embeddable checker.**
+      Reference: EasyDMARC's free-tool library/widget and dmarcian's tool hub.
+      First step: add a dedicated page only when it has distinct behavior and
+      content; before an embed, implement a shared/edge request budget and
+      consent-aware embedding policy. Avoid duplicate keyword pages and keep
+      acquisition pages indexable while reports remain noindex.
+- [ ] **P2 — Measure public discovery through Search Console.** The public site
+      has a canonical homepage, XML sitemap and protocol guides, but indexing
+      and query performance are unverified. First step: check the owner's
+      existing domain property and indexing status, then obtain authorization
+      for verification/submission changes. Measure impressions and actual
+      queries rather than inventing keyword volumes or rankings.
 
 ## Diagnostics load time (2026-10-19)
 

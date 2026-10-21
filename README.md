@@ -2,12 +2,13 @@
 
 # Vexa Insight
 
-### Open-source, self-hosted DMARC report analyzer and dashboard.
+### Open-source email observability on your own infrastructure.
 
-Read the DMARC aggregate reports Google, Microsoft, Yahoo and every other
-receiver send you, see who is sending mail as your domain, and fix SPF and DKIM
-before you move to `p=quarantine` or `p=reject`. One Docker container, one
-SQLite file, and your reports never leave your server.
+Investigate who sends email using your domains, review authentication failures
+and track changes across sending sources. Vexa Insight combines DMARC report
+analysis, DNS diagnostics, source review and alerts in one self-hosted app.
+Start with a [free DMARC & SPF check](https://insight.vexamail.com/), then use
+report evidence to understand your actual mail traffic.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/VexaMail/vexa-insight/ci.yml?branch=main&label=CI)](https://github.com/VexaMail/vexa-insight/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/VexaMail/vexa-insight?include_prereleases&sort=semver)](https://github.com/VexaMail/vexa-insight/releases)
@@ -19,26 +20,41 @@ SQLite file, and your reports never leave your server.
 </div>
 
 <p align="center">
-  <img src="docs/screenshots/dashboard-overview.png" alt="Vexa Insight DMARC dashboard: sending sources with SPF and DKIM pass rates, hostnames and countries" width="100%" />
+  <img src="docs/screenshots/dashboard-overview.png" alt="Vexa Insight overview with action-required issues, authentication totals and change tracking, using synthetic demonstration data" width="100%" />
 </p>
+
+Screenshots show the current interface with synthetic demonstration domains, IPs
+and reports.
 
 **Vexa Insight** turns raw DMARC aggregate reports (RUA XML, zipped or gzipped)
 into answers: which servers send mail using your domains, whether their SPF and
 DKIM results align with DMARC, which of them you do not recognise, and whether
 it is safe to tighten your policy. It polls the mailbox your `rua=` address
 points at over IMAP, or takes files you upload, and keeps everything in SQLite
-on your own server. Nothing is sent to a Vexa service, because there isn't one;
-the outbound calls the app does make are listed under
-[What still leaves your server](#what-still-leaves-your-server), and every
-optional one is off until you configure it.
+on your own server. The self-hosted app does not upload reports to the public
+checker. Its outbound integrations are listed under
+[What still leaves your server](#what-still-leaves-your-server).
 
 <p align="center">
-  <a href="docs/screenshots/domains.png"><img src="docs/screenshots/domains.png" alt="Domains list with compliance bars and status pills" width="32%" /></a>
-  <a href="docs/screenshots/ips.png"><img src="docs/screenshots/ips.png" alt="Sending Sources with hostname and geo enrichment" width="32%" /></a>
-  <a href="docs/screenshots/diagnostics.png"><img src="docs/screenshots/diagnostics.png" alt="Per-domain security score with SPF/DKIM/DMARC checks" width="32%" /></a>
+  <a href="docs/screenshots/domains.png"><img src="docs/screenshots/domains.png" alt="Domains workspace with report coverage and authentication results, using synthetic data" width="32%" /></a>
+  <a href="docs/screenshots/ips.png"><img src="docs/screenshots/ips.png" alt="Sending sources workspace with classifications and authentication evidence, using synthetic data" width="32%" /></a>
+  <a href="docs/screenshots/diagnostics.png"><img src="docs/screenshots/diagnostics.png" alt="Diagnostics workspace for reviewing domain configuration and findings, using synthetic data" width="32%" /></a>
 </p>
 
 ---
+
+## Free DMARC & SPF checker
+
+[Check your domain at insight.vexamail.com](https://insight.vexamail.com/). The
+public tool reads SPF, DMARC and MX records and tries common DKIM selectors. It
+needs no account or mailbox access. Reports use shareable domain URLs and
+explain the SPF/DMARC configuration score, uncertainty and next steps.
+
+The public checker does not send mail, monitor blocklists, verify message
+signatures or measure inbox placement. A published DNS record and a successfully
+authenticated message are different evidence. The self-hosted app adds
+historical reports and sending-source investigations. See
+[public checker behavior and deployment](docs/public-website.md).
 
 ## Quick start
 
@@ -97,21 +113,16 @@ the loopback bind, and an opt-in Watchtower auto-update layer.
 
 ## Project status
 
-Early but not a demo. One person maintains it, and it runs the published image
-in production on that person's own hosting estate, where as of 2026-09-16 it
-holds **55 domains, 3,810 aggregate reports from 14 reporting organizations, and
-63,329 messages** ingested continuously since July 2026, in a 51 MB SQLite file.
+Vexa Insight is maintained as a self-hosted application with a public DNS
+checker. The app supports aggregate DMARC reports, failure reports (RUF), SMTP
+TLS reports (TLS-RPT), DNS diagnostics, source review, alert rules, local
+accounts and OIDC sign-in. It is used on the maintainer's hosting
+infrastructure; broader deployment feedback is welcome.
 
-What that record does not yet show, stated so you can weigh it:
-
-- Every event on that instance carries disposition `none`. The estate is in
-  monitoring mode, so the tool has surfaced unaligned mail but has not yet been
-  used to defend a move to `quarantine`.
-- It has been operated by one person on one estate. The install path is
-  exercised against the published image on every release, but not yet by
-  strangers on infrastructure nobody here has seen. If it confuses you, that is
-  worth an issue — that is the gap this stage is for.
-- Forensic (RUF) report ingestion is planned, not built.
+Blocklist monitoring, a real-message test inbox, controlled end-to-end delivery
+tests and inbox-placement testing are planned. They are not part of the public
+checker or the shipped app. The scoped backlog is in
+[TODO.md](TODO.md#email-observability-expansion).
 
 The full write-up, including what it cost to build and one release that shipped
 a signature nobody could verify, is at
@@ -119,19 +130,16 @@ a signature nobody could verify, is at
 
 ---
 
-## Why self-host vs SaaS DMARC?
+## Why self-host?
 
-|                                  | Vexa Insight (self-hosted)              | SaaS DMARC tools                                 |
-| -------------------------------- | --------------------------------------- | ------------------------------------------------ |
-| **Data location**                | Your server, your control               | Sent to a third party                            |
-| **GDPR / SOC2 / data residency** | You decide — no DPA required            | Vendor risk review, DPA, data export negotiation |
-| **Cost at scale**                | Infrastructure only                     | $$$ per domain / month, tiered                   |
-| **Customization**                | Open source (Apache 2.0) — fork it      | Closed, feature requests at vendor pace          |
-| **Air-gapped support**           | Yes (`VEXA_UPDATE_CHECK_ENABLED=false`) | No                                               |
-| **Vendor lock-in**               | None — standard schema, exportable      | Migration friction                               |
+The dashboard, report database and access controls run on infrastructure you
+operate. You manage backups, retention, updates and access to the reports.
+SQLite and the application UI ship together, so an Elasticsearch or Grafana
+installation is not required.
 
-If the answer to "can we ship our authentication logs to a SaaS vendor?" is _no,
-definitely not_, this project exists for you.
+The Apache 2.0 source is available for inspection and modification. Self-hosting
+still requires infrastructure and operational work, and optional network
+integrations have their own requirements.
 
 ### What still leaves your server
 
@@ -206,7 +214,14 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
 - Moves processed mail to Trash or marks it read, if you want the mailbox kept
   clean.
 
-**Dashboard**
+**Dashboard and investigations**
+
+- Overview with actionable issues, changes since the previous period and
+  authentication trends.
+- Sending-source classifications for authenticated, unaligned, forwarded,
+  unknown and failing traffic, with per-domain review decisions.
+- Domain timelines combining reports and DNS changes, and an SPF lookup/planning
+  workspace.
 
 - DMARC, SPF and DKIM pass rates and alignment over any date range, per domain
   and overall.
@@ -288,8 +303,8 @@ parses aggregate, failure (RUF) and TLS-RPT reports.
 - **NormalizedEvent:** per-record structured data (domain, source IP, SPF/DKIM
   result + alignment, disposition, count, report window). Used for queries and
   dashboards.
-- **AggregatedMetric** _(optional / future)_: precomputed metrics if you want
-  them; otherwise computed from `NormalizedEvent` on demand.
+- **EventRollupDaily:** stored daily summaries used by aggregate queries; raw
+  events remain available for detailed investigations.
 
 ---
 
@@ -476,15 +491,26 @@ the dashboard totals lag your data. See
 
 ## Roadmap
 
-- **Phase 1 (current):** DMARC aggregate ingestion, normalization pipeline,
-  dashboard analytics, SQLite storage, web installer, recovery CLI, self-update
-  flow.
-- **Phase 2:** Slack / Teams webhook adapters. Webhook delivery retries, failure
-  reports (RUF), SMTP TLS reports (TLS-RPT), generic outbound webhooks,
-  Prometheus metrics and the OpenAPI spec already ship.
-- **Phase 3:** SSO (OIDC/SAML), multi-tenancy / RBAC for MSPs, reputation
-  scoring, threat-intel enrichment, anomaly detection.
-- **Phase 4:** Full Email Authentication Control Center.
+Vexa Insight can grow beyond DMARC into sender reputation, transport health and
+real-message diagnostics. Planned work includes:
+
+- Blocklist monitoring for configured mail-server IPs and observed sending
+  sources, with history and alerts.
+- A test inbox for real-message SPF, DKIM and DMARC evidence, followed by
+  controlled send/receive checks.
+- SMTP/TLS health, sender reverse-DNS validation and an evidence-based sender
+  health overview.
+- Public checker improvements: recursive SPF evaluation, parent-domain DMARC
+  inheritance, known DKIM selectors and report comparisons.
+- An email header analyzer and useful standalone tools, with inbox-placement
+  testing treated as a separate future service.
+
+Each item, its reference and first implementation step is tracked in
+[TODO.md](TODO.md#email-observability-expansion). The
+[competitive review](docs/checker-competitive-review.md) explains the observed
+tool flows and search strategy. OIDC sign-in, domain-scoped permissions,
+RUF/TLS-RPT ingestion, webhooks and metrics already exist; the roadmap
+distinguishes these shipped features from future work.
 
 ---
 
@@ -537,8 +563,8 @@ front of this envelope, and native adapters are Phase 2 on the roadmap.
 (Gmail, Outlook, Yahoo and so on) sends to the address in your DMARC record's
 `rua=` tag, usually once a day. It lists every IP that sent mail using your
 domain in that period, how many messages, and whether each passed SPF, DKIM and
-DMARC alignment. It is the only way to see mail sent as your domain by servers
-you do not control.
+DMARC alignment. It provides receiver-reported evidence of mail sent using your
+domain, including sources outside your infrastructure.
 
 **Is it safe to move from `p=none` to `p=quarantine`?** When every legitimate
 source you see here passes DMARC, through aligned SPF or aligned DKIM, and what
@@ -629,6 +655,7 @@ use permitted. No copyleft restrictions. Includes patent grant.
 
 ## Vision
 
-Vexa Insight aims to become the open standard for email authentication
-observability. We welcome contributors, security researchers, and infrastructure
-teams to use, extend, and improve it.
+Vexa Insight brings email authentication, sending-source investigations and
+operational evidence into one self-hosted workspace. Future reputation and
+delivery diagnostics should connect to that evidence while preserving their
+different meanings and limitations.

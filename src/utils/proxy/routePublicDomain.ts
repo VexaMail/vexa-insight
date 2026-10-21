@@ -9,7 +9,11 @@ export function routePublicDomain(
   const segment = path.startsWith('/website/')
     ? path.slice('/website/'.length)
     : path.slice(1)
-  if (segment.includes('/')) return undefined
+  if (
+    segment.includes('/') ||
+    /\.(?:xml|txt|json|webmanifest|ico|png|svg|webp|js|css)$/i.test(segment)
+  )
+    return undefined
   let decoded: string
   try {
     decoded = decodeURIComponent(segment)

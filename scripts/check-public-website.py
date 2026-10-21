@@ -16,9 +16,13 @@ def main():
         status, headers, body = public_website_response(base + path)
         assert status == 200, (path, status)
         if path == '/':
-            assert 'Your domain sends email.' in body, 'Wrong landing'
+            assert 'Free DMARC &amp;' in body, 'Wrong landing'
             assert headers.get('Content-Security-Policy'), 'Missing CSP'
         print('PASS 200', path)
+    status, headers, body = public_website_response(base + '/sitemap.xml')
+    assert status == 200 and 'application/xml' in headers.get('Content-Type', ''), 'Invalid public sitemap'
+    assert '<loc>https://insight.vexamail.com/</loc>' in body and '/login' not in body
+    print('PASS public XML sitemap')
     for path in ['/install', '/settings', '/login', '/api/install', '/api/v1/domains', '/api/v1/openapi.json', '/api/v1/health']:
         status, _, _ = public_website_response(base + path)
         assert status == 404, (path, status)

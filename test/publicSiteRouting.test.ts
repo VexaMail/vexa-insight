@@ -85,10 +85,34 @@ describe('shareable public domain routes', () => {
     '/127.0.0.1',
     '/teleporte.es/settings',
     '/api/v1/openapi.json',
+    '/website/sitemap.xml',
+    '/manifest.webmanifest',
+    '/unknown.json',
   ])('keeps unsafe route %s blocked', (path) => {
     expect(
       routePublicSite(new NextRequest(`https://insight.vexamail.com${path}`))
         ?.status,
     ).toBe(404)
+  })
+})
+
+describe('public crawler metadata', () => {
+  it('serves an XML sitemap instead of scanning its filename', async () => {
+    const response = routePublicSite(
+      new NextRequest('https://insight.vexamail.com/sitemap.xml'),
+    )
+    expect(response?.headers.get('content-type')).toContain('application/xml')
+    expect(response?.headers.get('x-middleware-rewrite')).toBeNull()
+    expect(await response?.text()).toContain(
+      '<loc>https://insight.vexamail.com/</loc>',
+    )
+  })
+  it('advertises only the public sitemap in robots', async () => {
+    const response = routePublicSite(
+      new NextRequest('https://insight.vexamail.com/robots.txt'),
+    )
+    const text = await response?.text()
+    expect(text).toContain('Sitemap: https://insight.vexamail.com/sitemap.xml')
+    expect(text).toContain('Disallow: /api/')
   })
 })

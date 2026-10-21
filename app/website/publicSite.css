@@ -10,3 +10,7 @@ html:has([data-public-site]) {
 html.dark:has([data-public-site]) {
   color-scheme: dark;
 }
+
+[data-public-site] header > a {
+  padding-inline: 0;
+}

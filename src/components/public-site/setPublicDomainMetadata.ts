@@ -1,7 +1,7 @@
 export function setPublicDomainMetadata(domain: string): void {
   document.title = domain
     ? `${domain} email DNS check | Vexa Insight`
-    : 'Free domain email security check | Vexa Insight'
+    : 'Free DMARC & SPF Checker | Vexa Insight'
   const canonical = document.querySelector<HTMLLinkElement>(
     'link[rel="canonical"]',
   )

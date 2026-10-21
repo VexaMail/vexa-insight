@@ -22,6 +22,8 @@ beforeEach(() => {
 })
 
 describe('public report navigation', () => {
+  const reportPath = '/teleporte.es'
+  const scoreHeading = 'SPF & DMARC configuration score'
   const report: PublicDomainReport = {
     domain: 'teleporte.es',
     checkedAt: '2026-10-21T00:00:00Z',
@@ -36,7 +38,7 @@ describe('public report navigation', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Check my domain' }))
     await waitFor(() => {
-      expect(window.location.pathname).toBe('/teleporte.es')
+      expect(window.location.pathname).toBe(reportPath)
     })
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
       'teleporte.es',
@@ -44,16 +46,16 @@ describe('public report navigation', () => {
     expect(fetchPublicReport).toHaveBeenCalledTimes(1)
   })
   it('loads a pasted domain URL without requiring a second submission', async () => {
-    window.history.replaceState(null, '', '/teleporte.es')
+    window.history.replaceState(null, '', reportPath)
     vi.mocked(fetchPublicReport).mockResolvedValue(report)
     render(<PublicDomainChecker initialDomain="teleporte.es" />)
     await waitFor(() => {
-      expect(screen.getByText('SPF & DMARC configuration score')).toBeTruthy()
+      expect(screen.getByText(scoreHeading)).toBeTruthy()
     })
     expect(fetchPublicReport).toHaveBeenCalledTimes(1)
   })
   it('clears the report when returning to the landing and ignores a late response', async () => {
-    window.history.replaceState(null, '', '/teleporte.es')
+    window.history.replaceState(null, '', reportPath)
     const deferred = Promise.withResolvers<PublicDomainReport>()
     vi.mocked(fetchPublicReport).mockReturnValue(deferred.promise)
     render(<PublicDomainChecker initialDomain="teleporte.es" />)
@@ -66,9 +68,46 @@ describe('public report navigation', () => {
       await deferred.promise
     })
     expect(window.location.pathname).toBe('/')
-    expect(screen.queryByText('SPF & DMARC configuration score')).toBeNull()
+    expect(screen.queryByText(scoreHeading)).toBeNull()
     expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
-      'Your domain sends email.',
+      'Free DMARC & SPF checker',
     )
+  })
+  it('keeps the last successful report visible after an invalid retry', async () => {
+    window.history.replaceState(null, '', reportPath)
+    vi.mocked(fetchPublicReport)
+      .mockResolvedValueOnce(report)
+      .mockRejectedValueOnce(new Error('Enter a public domain.'))
+    render(<PublicDomainChecker initialDomain="teleporte.es" />)
+    await screen.findByText(scoreHeading)
+    fireEvent.change(screen.getByLabelText('Your domain'), {
+      target: { value: 'localhost' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Check my domain' }))
+    await screen.findByRole('alert')
+    expect(screen.getByText(scoreHeading)).toBeTruthy()
+    expect(window.location.pathname).toBe(reportPath)
+  })
+  it('copies the canonical domain link and reports clipboard failure accessibly', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    })
+    window.history.replaceState(null, '', reportPath)
+    vi.mocked(fetchPublicReport).mockResolvedValue(report)
+    render(<PublicDomainChecker initialDomain="teleporte.es" />)
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Copy report link' }),
+    )
+    await screen.findByText('Report link copied')
+    expect(writeText).toHaveBeenCalledWith(
+      'https://insight.vexamail.com/teleporte.es',
+    )
+    writeText.mockRejectedValueOnce(new Error('Clipboard unavailable'))
+    fireEvent.click(screen.getByRole('button', { name: 'Copy report link' }))
+    const fallback =
+      await screen.findByLabelText<HTMLInputElement>('Report link')
+    expect(fallback.value).toBe('https://insight.vexamail.com/teleporte.es')
   })
 })

@@ -1,5 +1,6 @@
 import type { PublicCheckCardProps } from '../../types/public-check/PublicCheckCardProps'
 import { PublicCheckBadge } from './PublicCheckBadge'
+import { PublicCheckExplanation } from './PublicCheckExplanation'
 
 export function PublicCheckCard({ check }: Readonly<PublicCheckCardProps>) {
   return (
@@ -11,9 +12,7 @@ export function PublicCheckCard({ check }: Readonly<PublicCheckCardProps>) {
         <PublicCheckBadge status={check.status} />
       </div>
       <p className="font-medium">{check.summary}</p>
-      <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-        {check.recommendation}
-      </p>
+      <PublicCheckExplanation check={check} />
       {check.records.length > 0 && (
         <details className="mt-4 text-sm">
           <summary className="text-primary cursor-pointer py-3 font-medium">

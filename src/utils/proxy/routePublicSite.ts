@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { isPublicSiteRequest } from './isPublicSiteRequest'
 import { publicSitePaths } from './publicSitePaths'
+import { routePublicCrawlerFiles } from './routePublicCrawlerFiles'
 import { routePublicDomain } from './routePublicDomain'
 
 export function routePublicSite(
@@ -14,10 +15,8 @@ export function routePublicSite(
       destination.pathname = '/website'
       return NextResponse.rewrite(destination)
     }
-    if (path === '/robots.txt')
-      return new NextResponse('User-agent: *\nAllow: /$\nDisallow: /api/\n', {
-        headers: { 'Content-Type': 'text/plain' },
-      })
+    const crawlerFile = routePublicCrawlerFiles(path)
+    if (crawlerFile) return crawlerFile
     if (publicSitePaths.has(path) || path.startsWith('/_next/'))
       return NextResponse.next()
     return (

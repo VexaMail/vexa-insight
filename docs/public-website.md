@@ -1,6 +1,7 @@
 # Public domain checker
 
-The public website uses the application’s components and SPF/DMARC
+The public website provides a free DMARC and SPF checker, with common DKIM-key
+discovery and MX lookup. It uses the application’s components and SPF/DMARC
 interpretation services. Its checker reads public DNS records without loading
 customer reports, mailbox credentials or the application database. The call to
 action links to the self-hosted installation instructions on GitHub; there is no
@@ -74,6 +75,25 @@ with `Retry-After`; saturated processes return 503. These are process-local
 safeguards. Keep a single checker process initially and configure trusted proxy
 hops for the actual ingress chain. Scale-out needs a shared or edge-enforced
 budget.
+
+## Search and interface
+
+The indexable homepage targets DMARC checker, check DMARC, SPF checker and email
+authentication checker. It contains server-rendered protocol explanations,
+visible questions, public Open Graph/Twitter metadata and WebApplication
+structured data. The public sitemap contains the homepage only; domain snapshots
+remain noindex. Reserved filenames such as sitemap.xml must not enter
+domain-check routing.
+
+Reports show the domain, score, prioritized next step and evidence before the
+collapsed change-domain form. Copy report link uses the canonical public origin,
+with a selectable fallback when clipboard access fails. A failed retry preserves
+the last valid result. The product preview uses synthetic demonstration data,
+not customer records.
+
+See [checker research and roadmap](checker-competitive-review.md) for the
+primary-source comparison and future modules. Blocklist monitoring and
+real-message tests are not implemented by this public process.
 
 ## Live deployment
 

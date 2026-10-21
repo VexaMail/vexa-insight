@@ -1,44 +1,48 @@
-import { ArrowUpRight } from 'lucide-react'
+import Image from 'next/image'
 
 export function PublicMonitor() {
   return (
     <section
       id="monitor"
       aria-labelledby="monitor-heading"
-      className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 sm:pb-24"
+      className="border-t py-12 sm:py-16"
     >
-      <div className="bg-card grid gap-8 rounded-2xl border p-7 sm:p-10 md:grid-cols-[1.4fr_1fr] md:items-center">
+      <div className="grid gap-8 md:grid-cols-[1fr_1.4fr] md:items-center">
         <div>
-          <p className="text-primary mb-3 text-sm font-medium">
-            Vexa Insight · Open source
-          </p>
           <h2
             id="monitor-heading"
-            className="text-3xl font-semibold tracking-tight"
+            className="text-2xl font-semibold tracking-tight sm:text-3xl"
           >
-            A snapshot today.
-            <br />
-            Visibility every day.
+            See who actually sends your email
           </h2>
-          <p className="text-muted-foreground mt-4 max-w-lg text-sm leading-relaxed">
-            Run Vexa Insight on your own infrastructure. Collect DMARC reports
-            from your mailbox, investigate sending sources and track
-            authentication across your domains.
+          <p className="text-muted-foreground mt-4 max-w-prose leading-relaxed">
+            Vexa Insight is a self-hosted email observability app. Connect DMARC
+            reports to see sending sources, investigate authentication failures
+            and track changes across your domains.
           </p>
-        </div>
-        <div className="space-y-4">
+          <p className="text-muted-foreground mt-3 max-w-prose text-sm leading-relaxed">
+            Free, open source and on your infrastructure. The app includes
+            report analysis, source review, DNS diagnostics and alert rules.
+          </p>
           <a
-            href="https://github.com/VexaMail/vexa-insight#readme"
-            className="bg-primary text-primary-foreground flex items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold"
+            href="https://github.com/VexaMail/vexa-insight#quick-start"
+            className="bg-primary text-primary-foreground focus-visible:ring-ring mt-6 inline-flex min-h-11 items-center justify-center rounded-md px-5 py-3 font-semibold focus-visible:ring-2"
           >
-            Get Vexa Insight{' '}
-            <ArrowUpRight aria-hidden="true" className="size-4" />
+            Install Vexa Insight
           </a>
-          <p className="text-muted-foreground text-center text-xs leading-relaxed">
-            Free, self-hosted software. Your reports stay on your
-            infrastructure. Setup instructions on GitHub.
-          </p>
         </div>
+        <figure>
+          <Image
+            src="/vexa-insight-dashboard.png"
+            alt="Vexa Insight dashboard showing authentication trends and sending sources with synthetic demonstration data"
+            width={1920}
+            height={1080}
+            className="h-auto w-full rounded-lg border"
+          />
+          <figcaption className="text-muted-foreground mt-3 text-xs">
+            Dashboard preview · synthetic demonstration data
+          </figcaption>
+        </figure>
       </div>
     </section>
   )
