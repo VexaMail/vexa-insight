@@ -16,7 +16,12 @@
   - Evidence: `pnpm run type-check`, focused ESLint and
     `pnpm exec vitest run --config vitest.config.mts test/publicSiteRouting.test.ts test/publicDomainNavigation.test.tsx`.
     Browser checks verify light startup with a dark OS preference, dark/light
-    persistence after reload and no horizontal overflow at 390px.
+    persistence after reload and no horizontal overflow at 390px. These checks
+    also passed against production after deploying runtime `e872ecf`.
+    `PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es`
+    passed. The new image returned HTTP 200 with a SHA-256 matching the
+    committed capture; Vexa Mail remained HTTP 200. The prior public runtime is
+    preserved.
 
 - [x] 2026-10-21 — **Public checker discovery and interface:** Published runtime
       `41a8fdf` with a DMARC/SPF search headline, public metadata,
