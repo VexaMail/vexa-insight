@@ -1,0 +1,1 @@
+export { validatePublicSpfTerm } from './validatePublicSpfTerm'

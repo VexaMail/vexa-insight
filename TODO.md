@@ -10,6 +10,13 @@
 
 ## Public website follow-up (2026-10-21)
 
+- [ ] Automated public-site design review still flags the landing's heading
+      spacing, header/content alignment and repeated primary CTAs. Desktop and
+      phone screenshots remain readable in both themes. Next: consolidate the
+      result-page marketing sections and align the shared containers in a
+      dedicated layout pass. The report uses basic SPF and DMARC scoring;
+      recursive SPF evaluation and inherited DMARC remain explicitly unchecked.
+
 - [ ] The app has no public account-registration flow. The landing therefore
       links to the real self-hosted installation instructions. Next: decide
       whether a hosted offering is wanted before adding a signup or paid CTA.

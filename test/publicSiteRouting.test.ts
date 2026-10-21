@@ -61,3 +61,34 @@ describe('public website boundary', () => {
     await expect(register()).resolves.toBeUndefined()
   })
 })
+
+describe('shareable public domain routes', () => {
+  it('rewrites only a valid single domain segment to the public report', () => {
+    const response = routePublicSite(
+      new NextRequest('https://insight.vexamail.com/teleporte.es'),
+    )
+    expect(response?.headers.get('x-middleware-rewrite')).toBe(
+      'https://insight.vexamail.com/website/teleporte.es',
+    )
+  })
+  it('canonicalizes casing and the final dot', () => {
+    const response = routePublicSite(
+      new NextRequest('https://insight.vexamail.com/TELEPORTE.ES.'),
+    )
+    expect(response?.status).toBe(308)
+    expect(response?.headers.get('location')).toBe(
+      'https://insight.vexamail.com/teleporte.es',
+    )
+  })
+  it.each([
+    '/test.local',
+    '/127.0.0.1',
+    '/teleporte.es/settings',
+    '/api/v1/openapi.json',
+  ])('keeps unsafe route %s blocked', (path) => {
+    expect(
+      routePublicSite(new NextRequest(`https://insight.vexamail.com${path}`))
+        ?.status,
+    ).toBe(404)
+  })
+})

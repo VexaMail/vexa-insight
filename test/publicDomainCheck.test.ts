@@ -41,9 +41,7 @@ describe('public domain check', () => {
     )
   })
   it('distinguishes monitoring from enforcement and rejects multiple DMARC records', () => {
-    expect(buildPublicDmarcCheck([['v=DMARC1; p=none']]).status).toBe(
-      'attention',
-    )
+    expect(buildPublicDmarcCheck([['v=DMARC1; p=none']]).status).toBe('info')
     expect(buildPublicDmarcCheck([['v=DMARC1; p=reject']]).status).toBe('pass')
     expect(
       buildPublicDmarcCheck([['v=DMARC1; p=reject'], ['v=DMARC1; p=none']])
@@ -51,7 +49,7 @@ describe('public domain check', () => {
     ).toBe('attention')
   })
   it('does not present null MX as a receiving mail server', () => {
-    expect(buildPublicMxCheck(['0 .']).status).toBe('attention')
+    expect(buildPublicMxCheck(['0 .']).status).toBe('info')
     expect(buildPublicMxCheck(['10 mail.example.com']).status).toBe('pass')
   })
 })

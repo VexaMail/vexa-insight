@@ -1,4 +1,5 @@
 import type { PublicDomainReport } from '../../types/public-check/PublicDomainReport'
+import { buildPublicConfigurationScore } from './buildPublicConfigurationScore'
 import { buildPublicDkimCheck } from './buildPublicDkimCheck'
 import { buildPublicDmarcCheck } from './buildPublicDmarcCheck'
 import { buildPublicMxCheck } from './buildPublicMxCheck'
@@ -18,15 +19,17 @@ export async function runPublicDomainCheck(
       resolvePublicMx(resolver, domain),
       buildPublicDkimCheck(resolver, domain),
     ])
+    const checks = [
+      buildPublicSpfCheck(txt),
+      dkim,
+      buildPublicDmarcCheck(dmarc),
+      buildPublicMxCheck(mx),
+    ]
     return {
       domain,
       checkedAt: new Date().toISOString(),
-      checks: [
-        buildPublicSpfCheck(txt),
-        dkim,
-        buildPublicDmarcCheck(dmarc),
-        buildPublicMxCheck(mx),
-      ],
+      checks,
+      score: buildPublicConfigurationScore(checks),
     }
   } finally {
     resolver.cancel()

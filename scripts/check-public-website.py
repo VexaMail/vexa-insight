@@ -11,7 +11,8 @@ def main():
         status, headers, _ = public_website_response('http://' + base.removeprefix('https://') + '/')
         assert status in (301, 308) and headers.get('Location') == base + '/', 'HTTPS redirect missing'
         print('PASS HTTP redirects to HTTPS')
-    for path in ['/', '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt']:
+    domain = sys.argv[2] if len(sys.argv) > 2 else 'teleporte.es'
+    for path in ['/', '/' + domain, '/vexa-insight-logo.svg', '/vexa-insight-logo-dark.svg', '/robots.txt']:
         status, headers, body = public_website_response(base + path)
         assert status == 200, (path, status)
         if path == '/':
@@ -24,10 +25,13 @@ def main():
         print('PASS 404', path)
     status, _, _ = public_website_response(base + '/api/public/domain-check?domain=localhost')
     assert status == 400, ('Private domain input accepted', status)
-    status, headers, body = public_website_response(base + '/api/public/domain-check?domain=vexamail.com')
+    status, headers, body = public_website_response(base + '/api/public/domain-check?domain=' + domain)
     assert status == 200, ('DNS report', status)
     report = json.loads(body)
-    assert report['domain'] == 'vexamail.com'
+    assert report['domain'] == domain
+    score = report['score']
+    assert score['value'] is None or score['value'] == score['spf'] + score['dmarc']
+    assert score['value'] is None or 0 <= score['value'] <= 100
     assert {item['name'] for item in report['checks']} == {'SPF', 'DKIM', 'DMARC', 'MX'}
     assert any(item['status'] != 'unknown' for item in report['checks']), 'All DNS checks failed'
     assert headers['Cache-Control'] == 'no-store'

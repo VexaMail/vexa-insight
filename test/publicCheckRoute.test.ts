@@ -40,6 +40,7 @@ describe('public checker resource limits', () => {
   it('deduplicates concurrent checks and serves the timestamped cached report', async () => {
     const report = {
       domain,
+      score: { value: null, spf: null, dmarc: null },
       checkedAt: '2026-10-21T00:00:00Z',
       checks: [],
     }
@@ -56,6 +57,7 @@ describe('public checker resource limits', () => {
   it('does not cache failed DNS results as missing records', async () => {
     vi.mocked(runPublicDomainCheck).mockResolvedValue({
       domain,
+      score: { value: null, spf: null, dmarc: null },
       checkedAt: 'now',
       checks: [
         {

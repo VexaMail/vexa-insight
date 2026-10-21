@@ -1,6 +1,8 @@
 import type { PublicReportProps } from '../../types/public-check/PublicReportProps'
 import { PublicCheckCard } from './PublicCheckCard'
 import { PublicReportNote } from './PublicReportNote'
+import { PublicReportSummary } from './PublicReportSummary'
+import { PublicScore } from './PublicScore'
 
 export function PublicReport({ report }: Readonly<PublicReportProps>) {
   return (
@@ -10,9 +12,9 @@ export function PublicReport({ report }: Readonly<PublicReportProps>) {
           <p className="text-muted-foreground mb-1 text-xs font-medium tracking-widest uppercase">
             Your DNS snapshot
           </p>
-          <h2 id="report-heading" className="text-2xl font-semibold break-all">
+          <h1 id="report-heading" className="text-2xl font-semibold break-all">
             {report.domain}
-          </h2>
+          </h1>
         </div>
         <p className="text-muted-foreground text-xs">
           Checked{' '}
@@ -22,6 +24,8 @@ export function PublicReport({ report }: Readonly<PublicReportProps>) {
           · cached up to 5 minutes
         </p>
       </div>
+      <PublicScore score={report.score} />
+      <PublicReportSummary report={report} />
       <div className="grid gap-4 md:grid-cols-2">
         {report.checks.map((check) => (
           <PublicCheckCard key={check.name} check={check} />

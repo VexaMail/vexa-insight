@@ -6,13 +6,13 @@ export function PublicFooter() {
         <div className="flex gap-5">
           <a
             href="https://github.com/VexaMail/vexa-insight"
-            className="hover:text-foreground"
+            className="hover:text-foreground inline-flex min-h-11 items-center"
           >
             Source code
           </a>
           <a
             href="https://github.com/VexaMail/vexa-insight/blob/main/LICENSE"
-            className="hover:text-foreground"
+            className="hover:text-foreground inline-flex min-h-11 items-center"
           >
             Apache 2.0
           </a>

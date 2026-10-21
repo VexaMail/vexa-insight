@@ -1,32 +1,35 @@
 'use client'
 
+import type { PublicDomainCheckerProps } from '../../types/public-check/PublicDomainCheckerProps'
+import { PublicCheckFeedback } from './PublicCheckFeedback'
 import { PublicCheckForm } from './PublicCheckForm'
+import { PublicDomainHeading } from './PublicDomainHeading'
+import { PublicHero } from './PublicHero'
+import { PublicProtocolStrip } from './PublicProtocolStrip'
 import { PublicReport } from './PublicReport'
 import { usePublicCheck } from './hooks/usePublicCheck'
 
-export function PublicDomainChecker() {
-  const { report, error, pending, submit } = usePublicCheck()
+export function PublicDomainChecker({
+  initialDomain = '',
+}: Readonly<PublicDomainCheckerProps>) {
+  const { report, error, pending, submit, domain } =
+    usePublicCheck(initialDomain)
   return (
-    <div id="check" className="mt-10">
-      <PublicCheckForm pending={pending} submit={submit} />
-      <div
-        role="status"
-        aria-live="polite"
-        className="text-muted-foreground mt-4 text-center text-sm"
-      >
-        {pending
-          ? 'Looking up SPF, DKIM, DMARC and MX records. This may take a few seconds.'
-          : null}
-      </div>
-      {error ? (
-        <p
-          role="alert"
-          className="text-danger mx-auto mt-3 max-w-2xl rounded-md border p-4 text-sm"
-        >
-          {error}
-        </p>
+    <div id="check">
+      {!domain ? (
+        <div className="pt-10">
+          <PublicHero />
+        </div>
       ) : null}
-      {report ? <PublicReport report={report} /> : null}
+      <div className={!domain ? 'mt-10' : ''}>
+        <PublicCheckForm domain={domain} pending={pending} submit={submit} />
+      </div>
+      <div className={domain ? 'min-h-[60rem]' : ''}>
+        {domain && !report ? <PublicDomainHeading domain={domain} /> : null}
+        <PublicCheckFeedback pending={pending} error={error} />
+        {report ? <PublicReport report={report} /> : null}
+      </div>
+      {!domain ? <PublicProtocolStrip /> : null}
     </div>
   )
 }

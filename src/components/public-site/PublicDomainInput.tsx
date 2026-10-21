@@ -1,4 +1,8 @@
-export function PublicDomainInput() {
+import type { PublicDomainInputProps } from '../../types/public-check/PublicDomainInputProps'
+
+export function PublicDomainInput({
+  domain,
+}: Readonly<PublicDomainInputProps>) {
   return (
     <input
       id="public-domain"
@@ -6,6 +10,7 @@ export function PublicDomainInput() {
       type="text"
       required
       maxLength={253}
+      defaultValue={domain}
       placeholder="example.com"
       autoCapitalize="none"
       autoCorrect="off"

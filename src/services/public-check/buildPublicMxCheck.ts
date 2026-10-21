@@ -6,7 +6,7 @@ export function buildPublicMxCheck(records: string[] | null): PublicCheck {
   const nullMx = records.includes('0 .')
   return {
     name: 'MX',
-    status: records.length > 0 && !nullMx ? 'pass' : 'attention',
+    status: records.length > 0 && !nullMx ? 'pass' : 'info',
     summary: nullMx
       ? 'This domain declares that it does not receive email.'
       : `${String(records.length)} mail server records found.`,

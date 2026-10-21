@@ -39,6 +39,21 @@ for SPF, DKIM, DMARC and MX. URLs, email addresses, IP literals and private DNS
 suffixes are rejected before resolution. International domain names are
 converted to ASCII.
 
+A completed check uses a shareable `/<domain>` URL, for example
+`https://insight.vexamail.com/teleporte.es`. Opening that URL runs a fresh
+check; it is not an immutable historical snapshot. Browser Back and Forward
+restore the corresponding report or landing. Domain reports are `noindex`.
+
+The visible score is a Vexa DNS configuration rubric, not a deliverability
+measurement. SPF earns 50 points when one record passes basic validation. Valid
+SoftFail (`~all`) policies are accepted. DMARC earns 30 points for a valid
+policy, plus up to 10 for quarantine or 20 for reject, scaled by `pct`.
+Monitoring (`p=none`) is valid and shown as policy information. DNS failures or
+unevaluated organizational-domain inheritance leave the total unavailable. DKIM
+and MX are displayed separately and do not affect the score. A missing MX does
+not prove an outbound-mail error. Recursive SPF dependencies and actual message
+authentication require additional evidence.
+
 The resolver uses public DNS servers at `1.1.1.1` and `8.8.8.8`, with a
 two-second timeout and one try per server. The checker makes DNS requests only:
 it does not fetch arbitrary websites, MTA-STS policies or addresses from
@@ -71,9 +86,8 @@ trusted proxy hops for Cloudflare and Apache.
 
 The hostname has a proxied Cloudflare A record and an origin certificate issued
 by Enhance’s Let’s Encrypt integration. HTTP redirects to HTTPS. The application
-directory contains no `.env` files or database directory. The app runtime was
-built from revision `4319132`; the installed `REVISION` file records the full
-SHA.
+directory contains no `.env` files or database directory. The installed
+`REVISION` file records the full source SHA of the app runtime.
 
 Verify the deployed site with:
 
@@ -109,7 +123,7 @@ leaves a readable error and an enabled retry button.
 ## Verification
 
 ```sh
-pnpm exec vitest run --config vitest.config.mts test/publicDomainCheck.test.ts test/publicSiteRouting.test.ts test/publicCheckRoute.test.ts
+pnpm exec vitest run --config vitest.config.mts test/publicDomainCheck.test.ts test/publicSiteRouting.test.ts test/publicCheckRoute.test.ts test/publicScoreRegression.test.ts test/publicDomainNavigation.test.tsx
 pnpm run type-check
 pnpm run knip
 pnpm run deps:graph

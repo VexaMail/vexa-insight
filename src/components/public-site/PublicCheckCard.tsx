@@ -5,7 +5,9 @@ export function PublicCheckCard({ check }: Readonly<PublicCheckCardProps>) {
   return (
     <article className="bg-card rounded-xl border p-5 sm:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-mono text-lg font-semibold">{check.name}</h3>
+        <h3 className="font-mono text-lg font-semibold tracking-normal">
+          {check.name}
+        </h3>
         <PublicCheckBadge status={check.status} />
       </div>
       <p className="font-medium">{check.summary}</p>
@@ -14,7 +16,7 @@ export function PublicCheckCard({ check }: Readonly<PublicCheckCardProps>) {
       </p>
       {check.records.length > 0 && (
         <details className="mt-4 text-sm">
-          <summary className="text-primary cursor-pointer font-medium">
+          <summary className="text-primary cursor-pointer py-3 font-medium">
             View DNS records ({check.records.length})
           </summary>
           <ul className="mt-3 space-y-2">

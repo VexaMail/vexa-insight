@@ -1,6 +1,8 @@
 import type { PublicLayoutProps } from '@/types/public-check'
 import type { Metadata } from 'next'
 
+export { publicWebsiteViewport as viewport } from './viewport'
+
 export const metadata: Metadata = {
   title: { absolute: 'Free domain email security check | Vexa Insight' },
   description:

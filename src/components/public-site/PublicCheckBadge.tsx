@@ -7,6 +7,12 @@ export function PublicCheckBadge({ status }: Readonly<PublicCheckBadgeProps>) {
         ✓ Record check passed
       </span>
     )
+  if (status === 'info')
+    return (
+      <span className="text-info bg-info/10 rounded-md px-2.5 py-1 text-xs font-medium">
+        ⓘ Policy information
+      </span>
+    )
   if (status === 'attention')
     return (
       <span className="text-warning bg-warning/10 rounded-md px-2.5 py-1 text-xs font-medium">

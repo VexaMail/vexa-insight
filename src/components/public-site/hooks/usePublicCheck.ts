@@ -1,30 +1,32 @@
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
-import type { PublicDomainReport } from '../../../types/public-check/PublicDomainReport'
-import { fetchPublicReport } from '../fetchPublicReport'
+import { updatePublicDomainUrl } from '../updatePublicDomainUrl'
+import { usePublicDomainHistory } from './usePublicDomainHistory'
+import { usePublicReportRequest } from './usePublicReportRequest'
 
-export function usePublicCheck() {
-  const [report, setReport] = useState<PublicDomainReport | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
+export function usePublicCheck(initialDomain: string) {
+  const request = usePublicReportRequest()
+  const [domain, setDomain] = useState(initialDomain)
+  usePublicDomainHistory({
+    initialDomain,
+    load: request.load,
+    reset: request.reset,
+    setDomain,
+  })
   const submit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     const field = new FormData(event.currentTarget).get('domain')
-    const domain = typeof field === 'string' ? field : ''
-    setPending(true)
-    setError(null)
-    setReport(null)
-    try {
-      setReport(await fetchPublicReport(domain))
-    } catch (failure) {
-      setError(
-        failure instanceof Error
-          ? failure.message
-          : 'The check could not finish. Please try again.',
-      )
-    } finally {
-      setPending(false)
+    const result = await request.load(typeof field === 'string' ? field : '')
+    if (result) {
+      setDomain(result.domain)
+      updatePublicDomainUrl(result.domain)
     }
   }
-  return { report, error, pending, submit }
+  return {
+    report: request.report,
+    error: request.error,
+    pending: request.pending,
+    domain,
+    submit,
+  }
 }

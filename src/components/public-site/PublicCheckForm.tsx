@@ -3,6 +3,7 @@ import type { PublicCheckFormProps } from '../../types/public-check/PublicCheckF
 import { PublicDomainInput } from './PublicDomainInput'
 
 export function PublicCheckForm({
+  domain,
   pending,
   submit,
 }: Readonly<PublicCheckFormProps>) {
@@ -18,7 +19,7 @@ export function PublicCheckForm({
         Your domain
       </label>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <PublicDomainInput />
+        <PublicDomainInput key={domain} domain={domain} />
         <button
           type="submit"
           disabled={pending}

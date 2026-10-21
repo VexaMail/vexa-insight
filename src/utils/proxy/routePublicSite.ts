@@ -1,16 +1,14 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { isPublicSiteRequest } from './isPublicSiteRequest'
 import { publicSitePaths } from './publicSitePaths'
+import { routePublicDomain } from './routePublicDomain'
 
 export function routePublicSite(
   request: NextRequest,
 ): NextResponse | undefined {
-  const publicHost = process.env['PUBLIC_SITE_HOST'] ?? 'insight.vexamail.com'
-  const publicOnly =
-    process.env['PUBLIC_SITE_ONLY'] === 'true' ||
-    request.nextUrl.hostname === publicHost
   const path = request.nextUrl.pathname
-  if (publicOnly) {
+  if (isPublicSiteRequest(request)) {
     if (path === '/') {
       const destination = request.nextUrl.clone()
       destination.pathname = '/website'
@@ -22,7 +20,10 @@ export function routePublicSite(
       })
     if (publicSitePaths.has(path) || path.startsWith('/_next/'))
       return NextResponse.next()
-    return new NextResponse('Not found', { status: 404 })
+    return (
+      routePublicDomain(request) ??
+      new NextResponse('Not found', { status: 404 })
+    )
   }
   if (path === '/website' || path === '/api/public/domain-check')
     return NextResponse.next()

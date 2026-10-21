@@ -1,26 +1,31 @@
 import type { PublicCheck } from '../../types/public-check/PublicCheck'
-import { deriveDmarcSummary } from '../diagnostics/deriveDmarcSummary'
+import { buildPublishedDmarcCheck } from './buildPublishedDmarcCheck'
 import { unknownPublicCheck } from './unknownPublicCheck'
 
 export function buildPublicDmarcCheck(records: string[][] | null): PublicCheck {
   if (records === null) return unknownPublicCheck('DMARC')
-  const policies = records.filter((record) =>
-    /^v=DMARC1(?:;|$)/i.test(record.join('').trim()),
-  )
-  const dmarc = deriveDmarcSummary(policies)
-  const valid = policies.length === 1 && dmarc.dmarcValid
-  const enforced =
-    valid &&
-    (dmarc.dmarcPolicy === 'reject' || dmarc.dmarcPolicy === 'quarantine')
-  return {
-    name: 'DMARC',
-    status: enforced ? 'pass' : 'attention',
-    summary: valid
-      ? `Published policy: ${dmarc.dmarcPolicy ?? 'unknown'}.`
-      : 'A single valid DMARC policy was not found.',
-    recommendation: enforced
-      ? 'An enforcement policy is published. Monitor aggregate reports before changing it; DNS alone cannot prove alignment or full enforcement.'
-      : 'Start collecting DMARC reports and identify legitimate senders before moving to quarantine or reject.',
-    records: policies.map((record) => record.join('')),
-  }
+  const policies = records
+    .map((record) => record.join(''))
+    .filter((record) => /^v\s*=\s*DMARC1(?:\s*;|$)/i.test(record.trim()))
+  if (policies.length === 0)
+    return {
+      name: 'DMARC',
+      status: 'unknown',
+      points: null,
+      summary: 'No direct DMARC record found at this name.',
+      recommendation:
+        'A subdomain may inherit its parent’s policy. Inheritance is not evaluated, so DMARC and the overall score remain unverified.',
+      records: [],
+    }
+  if (policies.length > 1)
+    return {
+      name: 'DMARC',
+      status: 'attention',
+      points: 0,
+      summary: 'Multiple DMARC records found.',
+      recommendation:
+        'Only one DMARC record may be published at this name. Confirm the intended policy with your provider.',
+      records: policies,
+    }
+  return buildPublishedDmarcCheck(policies[0] ?? '')
 }

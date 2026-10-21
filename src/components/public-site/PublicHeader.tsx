@@ -16,7 +16,7 @@ export function PublicHeader() {
         </a>
         <a
           href="#monitor"
-          className="text-foreground hover:bg-accent rounded-md border px-4 py-2 font-medium"
+          className="text-foreground hover:bg-accent inline-flex min-h-11 items-center rounded-md border px-4 py-2 font-medium"
         >
           Get Vexa Insight <span aria-hidden="true">↗</span>
         </a>

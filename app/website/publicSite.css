@@ -1,0 +1,12 @@
+html:has([data-public-site]),
+body:has([data-public-site]) {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+html:has([data-public-site]) {
+  color-scheme: light;
+}
+html.dark:has([data-public-site]) {
+  color-scheme: dark;
+}
