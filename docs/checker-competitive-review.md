@@ -73,3 +73,13 @@ preserve that distinction.
 Public exposure of any active test follows the authenticated app implementation
 and its abuse controls. A future feature is not advertised as available until
 its server behavior, empty/error states and verification are present.
+
+## Implemented follow-up (2026-10-21)
+
+The checker now resolves SPF include/redirect dependencies within a budget,
+discovers inherited DMARC policies using the current
+[RFC 9989 DNS tree walk](https://www.rfc-editor.org/rfc/rfc9989.html#section-4.10),
+and accepts a known DKIM selector. Full sender-specific SPF evaluation, key-size
+diagnostics and message authentication remain separate work. Search Console
+sitemap submission and consent-gated Analytics measure the free-installation
+flow; indexing remains pending.

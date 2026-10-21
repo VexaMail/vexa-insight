@@ -15,7 +15,12 @@ export function usePublicDomainHistory({
       reset()
       setDomain(domain)
       setPublicDomainMetadata(domain)
-      if (domain) void load(domain)
+      if (domain)
+        void load(
+          domain,
+          new URLSearchParams(window.location.search).get('selector') ??
+            undefined,
+        )
     }
     synchronize()
     window.addEventListener('popstate', synchronize)

@@ -4,9 +4,10 @@ import type { PublicDomainReport } from '../../types/public-check/PublicDomainRe
 export async function fetchPublicReport(
   domain: string,
   signal?: AbortSignal,
+  selector?: string,
 ): Promise<PublicDomainReport> {
   const response = await fetch(
-    `/api/public/domain-check?domain=${encodeURIComponent(domain)}`,
+    `/api/public/domain-check?domain=${encodeURIComponent(domain)}${selector ? `&selector=${encodeURIComponent(selector)}` : ''}`,
     {
       signal: signal
         ? AbortSignal.any([signal, AbortSignal.timeout(20_000)])

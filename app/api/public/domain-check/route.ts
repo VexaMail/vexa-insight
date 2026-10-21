@@ -4,6 +4,7 @@ import {
   normalizePublicDomain,
 } from '@/services/public-check'
 import { clientIpFromHeaders } from '@/utils/security'
+import { normalizePublicDkimLabel } from '@/validators/public-check'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -11,6 +12,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const domain = normalizePublicDomain(
     request.nextUrl.searchParams.get('domain') ?? '',
   )
+  const selector = normalizePublicDkimLabel(
+    request.nextUrl.searchParams.get('selector') ?? '',
+  )
+  if (selector === null)
+    return NextResponse.json(
+      { error: 'Enter a valid DKIM selector, such as google or selector1.' },
+      { status: 400 },
+    )
   if (!domain)
     return NextResponse.json(
       {
@@ -26,7 +35,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     )
   }
   try {
-    const report = await getPublicDomainReport(domain)
+    const report = await getPublicDomainReport(domain, selector || undefined)
     if (!report)
       return NextResponse.json(
         { error: 'The checker is busy. Please try again shortly.' },

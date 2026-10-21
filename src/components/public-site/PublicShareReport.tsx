@@ -1,12 +1,13 @@
 'use client'
 
-import type { PublicDomainInputProps } from '../../types/public-check/PublicDomainInputProps'
+import type { PublicShareReportProps } from '../../types/public-check/PublicShareReportProps'
 import { usePublicReportShare } from './hooks/usePublicReportShare'
 
 export function PublicShareReport({
   domain,
-}: Readonly<PublicDomainInputProps>) {
-  const { url, feedback, copy } = usePublicReportShare(domain)
+  selector,
+}: Readonly<PublicShareReportProps>) {
+  const { url, feedback, copy } = usePublicReportShare(domain, selector)
   return (
     <div>
       <button

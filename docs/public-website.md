@@ -1,11 +1,11 @@
 # Public domain checker
 
-The public website provides a free DMARC and SPF checker, with common DKIM-key
-discovery and MX lookup. It uses the application’s components and SPF/DMARC
-interpretation services. Its checker reads public DNS records without loading
-customer reports, mailbox credentials or the application database. The call to
-action links to the self-hosted installation instructions on GitHub; there is no
-public account-registration flow.
+The public website provides a free DMARC and SPF checker, with common or
+explicitly selected DKIM-key discovery and MX lookup. It uses the application’s
+components and SPF/DMARC interpretation services. Its checker reads public DNS
+records without loading customer reports, mailbox credentials or the application
+database. The call to action links to the self-hosted installation instructions
+on GitHub; there is no public account-registration flow.
 
 ## Run locally
 
@@ -46,28 +46,38 @@ check; it is not an immutable historical snapshot. Browser Back and Forward
 restore the corresponding report or landing. Domain reports are `noindex`.
 
 The visible score is a Vexa DNS configuration rubric, not a deliverability
-measurement. SPF earns 50 points when one record passes basic validation. Valid
-SoftFail (`~all`) policies are accepted. DMARC earns 30 points for a valid
-policy, plus up to 10 for quarantine or 20 for reject, scaled by `pct`.
-Monitoring (`p=none`) is valid and shown as policy information. DNS failures or
-unevaluated organizational-domain inheritance leave the total unavailable. DKIM
-and MX are displayed separately and do not affect the score. A missing MX does
-not prove an outbound-mail error. Recursive SPF dependencies and actual message
-authentication require additional evidence.
+measurement. SPF earns 50 points when one record passes basic validation and
+bounded include/redirect dependency checks. SoftFail (`~all`) is valid. The
+expanded lookup count is a static upper bound: the actual path, A/MX/exists/ptr
+address answers and their void lookups depend on message evidence. Cycles,
+missing or duplicate dependency policies and trees that can exceed ten lookup
+terms need attention. Timeouts, sender-specific macros and exhausted budgets
+leave SPF unverified. Each SPF scan has a six-second dependency deadline and at
+most 24 dependency queries.
 
-The resolver uses public DNS servers at `1.1.1.1` and `8.8.8.8`, with a
-two-second timeout and one try per server. The checker makes DNS requests only:
-it does not fetch arbitrary websites, MTA-STS policies or addresses from
-user-supplied records. SPF includes are not expanded. DKIM discovery uses the
-application’s fixed selector list and always explains that DNS cannot verify
-message signing. DMARC checks the supplied name directly; organizational-domain
-inheritance is not evaluated.
+DMARC discovery checks the supplied name, then uses the RFC 9989 DNS tree walk
+with at most eight names. Reports identify the inherited policy source and apply
+`sp` when present. `psd=n` and `psd=y` establish policy boundaries. Records
+containing `np` are left unscored when domain-existence evidence is unavailable.
+Legacy PSL-based receivers may select a different policy. A valid policy earns
+30 points, plus up to 10 for quarantine or 20 for reject. `t=y` reduces the
+policy by one level. The rubric conservatively scales its bonus by legacy `pct`;
+RFC 9989 receivers may ignore that obsolete tag. Monitoring is policy
+information, not a configuration error.
 
-A timeout or resolver failure produces an unknown result rather than a
-missing-record claim. NXDOMAIN and NODATA are treated as absent records. Unknown
-SPF, DMARC or MX results are not cached. Successful snapshots are cached in
-memory for five minutes, with at most 200 entries; requests for the same domain
-share an in-flight lookup.
+The public resolver uses `1.1.1.1` and `8.8.8.8`, with a two-second timeout and
+one try per server. The request cancels outstanding DNS work after twelve
+seconds. It never fetches websites or connects to mail servers; non-public SPF
+dependency names are rejected before lookup. NXDOMAIN and NODATA are absence;
+temporary DNS failures remain unknown. Unknown SPF, DMARC or MX results are not
+cached. Successful snapshots are cached for five minutes with at most 200
+entries; coalescing and cache keys include the optional DKIM selector.
+
+`GET /api/public/domain-check?domain=teleporte.es&selector=default` checks one
+validated selector instead of the common-selector list. The report URL and
+copied link retain `?selector=default`, including after reload or browser
+navigation. DKIM and MX do not affect the score. Published keys cannot verify
+message signing, and a missing MX does not prove an outbound-mail error.
 
 Each process allows ten checks per caller per minute, sixty requests in total
 per minute and four concurrent domain checks. Rate-limited responses return 429
@@ -168,23 +178,62 @@ not customer reports. Recapture the overview, domains, sending sources and
 diagnostics when those workspaces change; keep the public preview and README
 image in sync.
 
-Crawler responses request revalidation. A successful origin rollout does not
-prove a CDN invalidation succeeded: verify the normal public robots and sitemap
-URLs after each update. The current deployment credential does not provide
-cache-purge access; do not assume a purge occurred.
+## Analytics and search measurement
 
-When separately authorized, a temporary token can invalidate only
-`https://insight.vexamail.com/robots.txt`,
-`https://insight.vexamail.com/sitemap.xml` and
-`https://insight.vexamail.com/vexa-insight-dashboard-light.png`. Limit it to
-Cache Purge for the `vexamail.com` zone and at most one hour. Keep its value
-only in process memory, allow for permission propagation, revoke it in a cleanup
-block even if purging fails, and verify revocation against the token inventory.
-This is a manual recovery procedure, not an automated deployment capability.
+The owned public deployment enables Google Analytics with
+`PUBLIC_ANALYTICS_ID=G-RDQN39NVX8` in `deploy/public/start.sh`. Private
+instances and the `/website` preview do not enable it unless explicitly
+configured. Collection starts only after accepting the optional analytics panel.
+Rejecting keeps the Google tag unloaded; preferences remain available in the
+footer. Withdrawal stops custom events and removes this host's analytics
+cookies.
 
-Verify the normal public URLs after invalidation:
+The property records `page_view`, `checker_started`, `checker_completed`,
+`checker_failed` and `installation_click`. The installation click is a key
+event, not evidence that installation completed. Page locations are replaced
+with the public origin; events exclude scanned domains, selectors and DNS
+answers. Enhanced automatic measurement, Google signals and ad personalization
+are disabled. The installation CTA leads only to the free self-hosted
+instructions.
+
+On 2026-10-21, the authorized Google account's domain property and dedicated
+`https://insight.vexamail.com/` URL-prefix property accepted the sitemap. The
+live URL Inspection test confirmed that Google could access and index the
+homepage, and its priority indexing request was accepted. The index still did
+not contain the homepage. The sitemap report retained a general HTTP error from
+its first fetch, so successful sitemap processing remains unverified despite
+normal XML responses and a successful live homepage test. Recheck it after the
+rollout and Google's next retrieval; submission is not proof of indexing.
+
+## Automated public rollout
+
+Keep the deployment configuration and zone-scoped Cache Purge token outside the
+repository. Both files must be owner-only. The configuration describes the SSH
+host, port, identity file, service root, website and app identifiers, remote
+restart-token location, production URL, Cloudflare zone and purge-token path.
+The token grants only Cache Purge on the owned zone; its value is never logged.
+
+After producing a verified Linux standalone artifact with its full source SHA in
+`REVISION`, run:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es
-curl -fsS -o /dev/null -w 'Preview HTTP %{http_code}\n' https://insight.vexamail.com/vexa-insight-dashboard-light.png
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/deploy-public-website.py /path/to/standalone --config "$HOME/.config/vexa-insight/public-deploy.json"
 ```
+
+Replace the runtime path with the built artifact. The command stages a fresh
+runtime, rejects environment/database files, preserves the previous app and
+startup script, installs the public startup configuration and restarts the
+process through Enhance. Enhance's PATCH also restarts sibling persistent apps.
+It then purges only the homepage, robots, sitemap and light dashboard-preview
+URLs, and runs the public boundary/DNS smoke check. A purge failure fails the
+command; it is never reported as a successful invalidation.
+
+For a standalone invalidation and verification:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/purge-public-cache.py
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es
+```
+
+The prior runtime remains available for recovery. No history, database or
+customer data is removed by this workflow.

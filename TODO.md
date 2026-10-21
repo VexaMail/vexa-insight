@@ -10,16 +10,16 @@
 
 ## Public website follow-up (2026-10-21)
 
-- [ ] The app has no public account-registration flow. The landing therefore
-      links to the real self-hosted installation instructions. Next: decide
-      whether a hosted offering is wanted before adding a signup or paid CTA.
-
-- [ ] Public deploys do not have an automated CDN purge. Stale crawler files
-      observed on 2026-10-21 were cleared with an owner-approved temporary
-      token, which was revoked immediately afterward. Next: define an
-      owner-approved, zone-scoped invalidation mechanism for future deploys;
-      keep crawler responses revalidated and verify ordinary public URLs after
-      every rollout.
+- [ ] Search Console accepted the public sitemap on 2026-10-21, but URL
+      Inspection still reported the homepage as unknown. Next: recheck indexing
+      and actual search queries after Google processes the submission;
+      submission alone is not indexing or ranking evidence.
+- [ ] The app's private DMARC diagnostics still use the older tag
+      interpretation. RFC 9989 (May 2026) changes policy discovery and replaces
+      legacy pct with t. The public checker now handles tree-walk inheritance
+      and t=y while retaining conservative pct scoring. Next: audit private
+      diagnostics and document compatibility before changing its persisted score
+      semantics.
 
 ## Email observability expansion
 
@@ -65,18 +65,14 @@ inspected 2026-10-21.
       PTR. First step: reuse the existing hostname enrichment to compare reverse
       and forward answers, record resolver failures and show the last successful
       check; attach changes to the sender timeline.
-- [ ] **P2 — Public DMARC inheritance and recursive SPF diagnostics.** The free
-      checker currently checks direct DMARC and basic SPF syntax only.
-      Reference: dmarcian Inspector and SPF Surveyor. First step: reuse the app
-      SPF lookup/planning services with a bounded DNS budget, Public Suffix List
-      policy discovery, cache and explicit unknown/error states; add tests for
-      inheritance, cycles, void lookups and ignored redirects before scoring the
-      expanded evidence.
-- [ ] **P2 — Known DKIM selector input and key diagnostics (app/public).**
-      Reference: EasyDMARC DKIM lookup. First step: accept one validated
-      selector, resolve its TXT/CNAME chain within a budget and display key
-      type/size and evidence. Keep a published key distinct from verified
-      message signing; never claim to enumerate every selector.
+- [ ] **P2 — Full sender-specific SPF evaluation and void-lookup diagnostics.**
+      Public include/redirect expansion is implemented. Next: accept a verified
+      test message or explicit evaluation identity before evaluating macros,
+      A/MX/exists/ptr results and path-specific limits. Keep static upper bounds
+      separate from actual SPF pass/fail.
+- [ ] **P2 — DKIM key diagnostics (app/public).** The public checker now accepts
+      a known selector. Next: show revoked keys, key type/size and malformed or
+      duplicate key evidence without claiming verified message signing.
 - [ ] **P2 — Email header analyzer (app; browser-only public version
       possible).** Reference: dmarcian's tool library. First step: parse pasted
       headers locally where possible, expose Received hops and identity
@@ -105,12 +101,6 @@ inspected 2026-10-21.
       content; before an embed, implement a shared/edge request budget and
       consent-aware embedding policy. Avoid duplicate keyword pages and keep
       acquisition pages indexable while reports remain noindex.
-- [ ] **P2 — Measure public discovery through Search Console.** The public site
-      has a canonical homepage, XML sitemap and protocol guides, but indexing
-      and query performance are unverified. First step: check the owner's
-      existing domain property and indexing status, then obtain authorization
-      for verification/submission changes. Measure impressions and actual
-      queries rather than inventing keyword volumes or rankings.
 
 ## Diagnostics load time (2026-10-19)
 
@@ -129,7 +119,11 @@ inspected 2026-10-21.
 - [ ] `test/getTriageOverview.test.ts` ("counts the same messages in the KPIs,
       the domains and the trend") hits the 5 s vitest timeout in the full suite
       under machine load (load average 25-56 on 2026-10-19) and passes alone.
-      Next: profile its seed step, or give that test a longer timeout.
+      Also observed on 2026-10-21 at machine load 155: the ingest page fixture
+      test exceeded its timeout. All 1,031 assertions passed with four workers
+      and a 30-second test/hook budget. Next: profile fixture imports/seeding
+      and set a justified per-test budget rather than changing application
+      logic.
 
 ## Open Dependabot PRs (2026-10-13)
 

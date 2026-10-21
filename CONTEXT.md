@@ -23,3 +23,11 @@ current check rather than a permanent historical snapshot.
 
 Avoid: immutable scan, saved historical report unless a persisted snapshot is
 explicitly meant.
+
+## Installation conversion
+
+A visitor's click from the public checker to the free self-hosted installation
+instructions. It expresses interest in installing; it does not establish a
+completed installation.
+
+Avoid: paid signup, demo request, completed installation.

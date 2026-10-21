@@ -16,10 +16,14 @@ export function usePublicCheck(initialDomain: string) {
   const submit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     const field = new FormData(event.currentTarget).get('domain')
-    const result = await request.load(typeof field === 'string' ? field : '')
+    const selector = new FormData(event.currentTarget).get('selector')
+    const result = await request.load(
+      typeof field === 'string' ? field : '',
+      typeof selector === 'string' ? selector : undefined,
+    )
     if (result) {
       setDomain(result.domain)
-      updatePublicDomainUrl(result.domain)
+      updatePublicDomainUrl(result.domain, result.selector)
     }
   }
   return {

@@ -19,7 +19,11 @@ export function PublicReportHeader({ report }: Readonly<PublicReportProps>) {
           · cached up to 5 minutes
         </p>
       </div>
-      <PublicShareReport key={report.domain} domain={report.domain} />
+      <PublicShareReport
+        key={`${report.domain}:${report.selector ?? ''}`}
+        domain={report.domain}
+        selector={report.selector}
+      />
     </div>
   )
 }

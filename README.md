@@ -46,9 +46,10 @@ checker. Its outbound integrations are listed under
 ## Free DMARC & SPF checker
 
 [Check your domain at insight.vexamail.com](https://insight.vexamail.com/). The
-public tool reads SPF, DMARC and MX records and tries common DKIM selectors. It
-needs no account or mailbox access. Reports use shareable domain URLs and
-explain the SPF/DMARC configuration score, uncertainty and next steps.
+public tool checks SPF include/redirect dependencies, discovers direct or
+inherited DMARC policies, reads MX records and accepts an optional DKIM
+selector. It needs no account or mailbox access. Reports use shareable domain
+URLs and explain the SPF/DMARC configuration score, uncertainty and next steps.
 
 The public checker does not send mail, monitor blocklists, verify message
 signatures or measure inbox placement. A published DNS record and a successfully

@@ -22,12 +22,15 @@ export function PublicScore({ score }: Readonly<PublicScoreProps>) {
           </summary>
           <p className="text-muted-foreground mt-2 leading-relaxed">
             Vexa’s DNS rubric awards 50 points for a single SPF record passing
-            basic checks, including valid ~all policies. A valid DMARC policy
-            earns 30 points, plus up to 10 for quarantine or 20 for reject,
-            scaled by its pct setting. A DNS failure leaves the score
-            unavailable. DKIM and MX do not affect this score. Recursive SPF
-            dependencies, inherited DMARC policies and actual message
-            authentication need further evidence.
+            basic and include/redirect dependency checks, including valid ~all
+            policies. A valid DMARC policy earns 30 points, plus up to 10 for
+            quarantine or 20 for reject, scaled by its pct setting. A DNS
+            failure leaves the score unavailable. DKIM and MX do not affect this
+            score. Lookup counts are static upper bounds. Sender-specific SPF
+            evaluation and actual message authentication need further evidence.
+            Inherited DMARC uses the RFC 9989 DNS tree walk; t=y lowers its
+            policy. Legacy pct is used conservatively in this rubric, although
+            current receivers may ignore it.
           </p>
         </details>
       </div>

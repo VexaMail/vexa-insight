@@ -4,6 +4,7 @@ import { runPublicDomainCheck } from './runPublicDomainCheck'
 
 export async function loadPublicReport(
   domain: string,
+  selector?: string,
 ): Promise<PublicDomainReport> {
-  return cachePublicReport(await runPublicDomainCheck(domain))
+  return cachePublicReport(await runPublicDomainCheck(domain, selector))
 }

@@ -1,9 +1,10 @@
 import type { PublicCheck } from '../../types/public-check/PublicCheck'
+import { getEffectivePublicDmarcRecord } from './getEffectivePublicDmarcRecord'
 import { parsePublicDmarcPolicy } from './parsePublicDmarcPolicy'
 import { scorePublicDmarcPolicy } from './scorePublicDmarcPolicy'
 
 export function buildPublishedDmarcCheck(record: string): PublicCheck {
-  const policy = parsePublicDmarcPolicy(record)
+  const policy = parsePublicDmarcPolicy(getEffectivePublicDmarcRecord(record))
   const monitoring = policy.policy === 'none' || policy.percentage === 0
   return {
     name: 'DMARC',

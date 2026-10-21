@@ -1,6 +1,7 @@
 import { LoaderCircle, Search } from 'lucide-react'
 import type { PublicCheckFormProps } from '../../types/public-check/PublicCheckFormProps'
 import { PublicDomainInput } from './PublicDomainInput'
+import { PublicSelectorInput } from './PublicSelectorInput'
 
 export function PublicCheckForm({
   domain,
@@ -36,6 +37,7 @@ export function PublicCheckForm({
           {pending ? 'Checking DNS…' : 'Check my domain'}
         </button>
       </div>
+      <PublicSelectorInput />
       <p id="domain-help" className="text-muted-foreground mt-3 text-xs">
         No account. No email address. Only public DNS records.
       </p>
