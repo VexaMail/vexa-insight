@@ -8,6 +8,19 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+## Public domain checker rollout (2026-10-21)
+
+- [ ] Publish the public website at `insight.vexamail.com` as a separate
+      persistent app under the Vexa Mail website on nova. Observation: the
+      implementation passes `pnpm run check:ci` and a production build, but the
+      hostname returns no address in `dig +short insight.vexamail.com`. Next:
+      authorize the hosting/DNS/TLS changes, deploy with
+      `PUBLIC_SITE_ONLY=true`, and run the HTTPS acceptance checks in
+      `docs/public-website.md`.
+- [ ] The app has no public account-registration flow. The landing therefore
+      links to the real self-hosted installation instructions. Next: decide
+      whether a hosted offering is wanted before adding a signup or paid CTA.
+
 ## Diagnostics load time (2026-10-19)
 
 - [ ] `/diagnostics/[domain]` still runs a live DNS check with no cache on every

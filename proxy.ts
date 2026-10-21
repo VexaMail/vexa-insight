@@ -3,6 +3,8 @@ import { checkInstall } from './src/services/install/checkInstall'
 import { applyProdCspHeaders } from './src/utils/proxy/applyProdCspHeaders'
 import { checkAuth } from './src/utils/proxy/checkAuth'
 import { getAllowedOriginForwardedHost } from './src/utils/proxy/getAllowedOriginForwardedHost'
+import { protectPublicResponse } from './src/utils/proxy/protectPublicResponse'
+import { routePublicSite } from './src/utils/proxy/routePublicSite'
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   // Server Actions from a runtime-allow-listed origin: rewrite the forwarded
@@ -15,6 +17,16 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     request = new NextRequest(request, { headers })
   }
 
+  const publicResponse = routePublicSite(request)
+  if (publicResponse) return protectPublicResponse(request, publicResponse)
+  if (
+    request.nextUrl.pathname.startsWith('/api/') ||
+    ['/robots.txt', '/sitemap.xml', '/manifest.webmanifest'].includes(
+      request.nextUrl.pathname,
+    )
+  )
+    return applyProdCspHeaders(request)
+
   const installResponse = await checkInstall(request)
   if (installResponse) return installResponse
 
@@ -25,7 +37,5 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next|favicon\\.ico|manifest\\.webmanifest|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpe?g|gif|webp|avif|svg|ico|css|js|map|woff2?|ttf|otf|eot|txt|xml|json|webmanifest)).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }

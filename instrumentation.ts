@@ -4,6 +4,8 @@
  */
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
+  // The standalone public checker never opens a database or starts mail jobs.
+  if (process.env['PUBLIC_SITE_ONLY'] === 'true') return
 
   // Fail-fast environment validation. Throws on invalid env with a clear
   // Zod error before any other module loads.
