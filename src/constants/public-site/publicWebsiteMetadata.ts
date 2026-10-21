@@ -17,7 +17,7 @@ export const publicWebsiteMetadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: `${publicSiteUrl}/vexa-insight-dashboard.png`,
+        url: `${publicSiteUrl}/vexa-insight-dashboard-light.png`,
         alt: 'Vexa Insight dashboard with synthetic demonstration data',
       },
     ],
@@ -27,6 +27,6 @@ export const publicWebsiteMetadata: Metadata = {
     title: 'Free DMARC & SPF Checker | Vexa Insight',
     description:
       'Look up DMARC, SPF and MX records and discover common DKIM keys. Free, no account required.',
-    images: [`${publicSiteUrl}/vexa-insight-dashboard.png`],
+    images: [`${publicSiteUrl}/vexa-insight-dashboard-light.png`],
   },
 }

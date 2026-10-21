@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import ThemeToggle from '../shell/ThemeToggle'
 import VexaLogo from '../shell/VexaLogo'
 
 export function PublicHeader() {
@@ -7,7 +8,7 @@ export function PublicHeader() {
       <VexaLogo projectName="Vexa Insight" />
       <nav
         aria-label="Main navigation"
-        className="flex items-center gap-5 text-sm"
+        className="flex items-center gap-2 text-sm sm:gap-5"
       >
         <Link
           href="/#how-it-works"
@@ -15,6 +16,7 @@ export function PublicHeader() {
         >
           How it works
         </Link>
+        <ThemeToggle />
         <a
           href="#monitor"
           className="text-foreground hover:bg-accent inline-flex min-h-11 items-center rounded-md border px-4 py-2 font-medium"

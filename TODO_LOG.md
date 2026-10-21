@@ -8,6 +8,16 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Light default and public theme control:** Start in light
+      mode when no theme is saved, preserve explicit dark/light preferences and
+      expose both controls in the public header. Recaptured the synthetic
+      dashboard in light mode for the landing, social preview and README
+      overview. The new public image URL avoids reusing a cached dark preview.
+  - Evidence: `pnpm run type-check`, focused ESLint and
+    `pnpm exec vitest run --config vitest.config.mts test/publicSiteRouting.test.ts test/publicDomainNavigation.test.tsx`.
+    Browser checks verify light startup with a dark OS preference, dark/light
+    persistence after reload and no horizontal overflow at 390px.
+
 - [x] 2026-10-21 — **Public checker discovery and interface:** Published runtime
       `41a8fdf` with a DMARC/SPF search headline, public metadata,
       WebApplication structured data, protocol guides, visible questions and a

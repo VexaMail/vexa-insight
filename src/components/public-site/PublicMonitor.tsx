@@ -33,7 +33,7 @@ export function PublicMonitor() {
         </div>
         <figure>
           <Image
-            src="/vexa-insight-dashboard.png"
+            src="/vexa-insight-dashboard-light.png"
             alt="Vexa Insight dashboard showing authentication trends and sending sources with synthetic demonstration data"
             width={1920}
             height={1080}

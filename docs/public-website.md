@@ -156,6 +156,11 @@ the proxy rewrite and client hydration.
 
 ## Screenshot provenance
 
+The public site starts in light mode unless the visitor has explicitly saved a
+different theme. The header offers light and dark controls, and the choice
+persists across visits. The public dashboard preview and README overview use a
+light-mode capture; the other workspace screenshots retain their original theme.
+
 The README screenshots and public dashboard preview were captured from the
 application using an isolated database seeded with the built-in synthetic
 demonstration dataset. They show example domains and documentation IP ranges,
