@@ -167,3 +167,19 @@ Crawler responses request revalidation. A successful origin rollout does not
 prove a CDN invalidation succeeded: verify the normal public robots and sitemap
 URLs after each update. The current deployment credential does not provide
 cache-purge access; do not assume a purge occurred.
+
+When separately authorized, a temporary token can invalidate only
+`https://insight.vexamail.com/robots.txt`,
+`https://insight.vexamail.com/sitemap.xml` and
+`https://insight.vexamail.com/vexa-insight-dashboard.png`. Limit it to Cache
+Purge for the `vexamail.com` zone and at most one hour. Keep its value only in
+process memory, allow for permission propagation, revoke it in a cleanup block
+even if purging fails, and verify revocation against the token inventory. This
+is a manual recovery procedure, not an automated deployment capability.
+
+Verify the normal public URLs after invalidation:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es
+curl -fsS -o /dev/null -w 'Preview HTTP %{http_code}\n' https://insight.vexamail.com/vexa-insight-dashboard.png
+```

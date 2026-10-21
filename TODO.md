@@ -14,12 +14,12 @@
       links to the real self-hosted installation instructions. Next: decide
       whether a hosted offering is wanted before adding a signup or paid CTA.
 
-- [ ] Public deploys do not have an automated CDN purge. A scoped purge of the
-      public crawler files returned HTTP 401 on 2026-10-21; normal requests
-      nevertheless served the updated robots and sitemap. Next: document an
-      owner-approved, zone-scoped purge capability if future cache invalidation
-      needs it; keep crawler responses revalidated and verify the ordinary
-      public URLs after every deployment.
+- [ ] Public deploys do not have an automated CDN purge. Stale crawler files
+      observed on 2026-10-21 were cleared with an owner-approved temporary
+      token, which was revoked immediately afterward. Next: define an
+      owner-approved, zone-scoped invalidation mechanism for future deploys;
+      keep crawler responses revalidated and verify ordinary public URLs after
+      every rollout.
 
 ## Email observability expansion
 

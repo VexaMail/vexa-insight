@@ -31,9 +31,13 @@
     captures were reviewed in both themes; remaining automated warnings describe
     zero-duration transitions and an intentional readable paragraph width. A
     stricter robots-sitemap assertion later found stale CDN responses on some
-    nodes; targeted invalidation remains pending because deployment access lacks
-    Cache Purge permission. Search Console indexing and rankings remain
-    unverified.
+    nodes. An owner-approved, one-hour temporary token purged only the public
+    robots, sitemap and dashboard-preview URLs; token revocation was verified
+    against the token inventory. The first immediate purge attempt returned 401;
+    a fresh temporary token succeeded after a short propagation delay. Both
+    temporary tokens were revoked. The stricter public verification command
+    above then passed, including the robots sitemap declaration; the preview
+    returned HTTP 200. Search Console indexing and rankings remain unverified.
 
 - [x] 2026-10-21 — **Public domain reports:** Added shareable domain paths,
       transparent SPF/DMARC scoring and a compact result-first interface.
