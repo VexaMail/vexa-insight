@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation'
 import { useReducer } from 'react'
 import { reducer } from './reportsReducer'
 import { useFilteredReports } from './useFilteredReports'
+import { useReportsDatePagination } from './useReportsDatePagination'
 import { useReportsFetch } from './useReportsFetch'
 import { useReportsFetchParams } from './useReportsFetchParams'
 import { useReportsFilterOptions } from './useReportsFilterOptions'
@@ -25,6 +26,7 @@ export function useReportsTable({
     initialReportsTableState,
   )
   const dateFilterParams = useDateFilterParams()
+  useReportsDatePagination(dateFilterParams, dispatch)
   const updateUrlParams = useUrlParamUpdater()
 
   const fetchParams = useReportsFetchParams(state, dateFilterParams, domainId)

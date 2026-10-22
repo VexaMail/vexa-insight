@@ -8,6 +8,20 @@
 
 ### 2026-10
 
+- [x] 2026-10-22 — **Production findings (2026-10-19):** **Changing the date
+      filter keeps the current page.** On page 3, switching to a shorter range
+      can land on an empty page. Reset the reports table to page 1 when the date
+      filter changes.
+  - Result: Reset reports pagination to page one when the date range changes,
+    before the report fetch runs; preserve the current page for unchanged ranges
+    and allow subsequent pagination.
+  - Evidence: The actual hook and fetch-effect regression passed all four cases
+    after reproducing three failures before the fix. Independently
+    source-matched isolated pnpm run check and pnpm run check:ci passed; the CI
+    gate passed 196 test files and 1035 tests with original timeouts and one
+    worker. Dependency parity covered 92 direct and 989 installed packages; all
+    5130 source files remained unchanged. Independent review found no issues.
+
 - [x] 2026-10-21 — **Public checker reliability, discovery and free-install
       conversion:** Deployed runtime `6daca9d`. SPF follows bounded
       include/redirect dependencies, detects cycles and missing policies, and
@@ -30,7 +44,7 @@
     stored outside the repository with owner-only permissions. The automated
     deployment command preserves the previous runtime and startup configuration,
     performs a four-URL purge and runs the public boundary/DNS verifier.
-  - Verification:
+  - Evidence:
     `pnpm exec vitest run --config vitest.config.mts --maxWorkers=4 --testTimeout=30000 --hookTimeout=30000`
     passed (195 files, 1,031 tests). The default five-second budget hit existing
     Triage and ingest-fixture timeouts under machine load; application

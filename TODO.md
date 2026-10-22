@@ -269,13 +269,17 @@ the portfolio repo.
 
 ## Production findings (2026-10-19)
 
-- [ ] **`backfillDiagnosticFields` can never select an event.** It picks events
-      whose `spfAuthResult` is null, but that column is now NOT NULL, so the
-      public backfill entry point is dead code. Either drop it or select on a
-      column that can still be empty.
-- [ ] **Changing the date filter keeps the current page.** On page 3, switching
-      to a shorter range can land on an empty page. Reset the reports table to
-      page 1 when the date filter changes.
+- [!] **Define the diagnostic backfill contract before enabling its selector.**
+  Migration `drizzle/0020_dizzy_dazzler.sql` makes `spf_auth_result` NOT NULL
+  with the legitimate default `none`, so `backfillDiagnosticFields` currently
+  selects no rows. Replacing the predicate alone risks attaching another XML
+  record's fields to an event: `groupEventIdsByReport` preserves an unordered
+  query's order, while `backfillReportEvents` pairs event IDs and parsed records
+  by index. **Blocked on:** choosing an explicit whole-report reparse contract
+  with stable identity/order and count validation, or a reliable legacy
+  ownership marker. Verify that contract with reordered and subset fixtures
+  before enabling writes. No database operation was run during the 2026-10-22
+  audit.
 
 ## UI redesign (2026-10-19)
 
