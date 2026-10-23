@@ -3,6 +3,7 @@ import { KeyRound } from 'lucide-react'
 import { RecordDisplay } from '../shared'
 import { DkimSelectorChecks } from './DkimSelectorChecks'
 import { DkimSelectorIssues } from './DkimSelectorIssues'
+import { DkimSelectorWarnings } from './DkimSelectorWarnings'
 
 /** One selector of the DKIM section: its record, issues and parsed checks. */
 export function DkimSelectorCard({
@@ -22,6 +23,9 @@ export function DkimSelectorCard({
 
       {parsed.errors.length > 0 && (
         <DkimSelectorIssues errors={parsed.errors} />
+      )}
+      {(parsed.warnings?.length ?? 0) > 0 && (
+        <DkimSelectorWarnings warnings={parsed.warnings ?? []} />
       )}
 
       {parsed.raw !== null && <DkimSelectorChecks parsed={parsed} />}

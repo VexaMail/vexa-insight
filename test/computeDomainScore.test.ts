@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { computeDomainScore } from '../src/services/diagnostics/computeDomainScore'
+import { parseDkimRecord } from '../src/services/diagnostics/parseDkimRecord'
+import { dkimRsa2048PublicKey } from './setup/dkimRsa2048PublicKey'
 import { makeEmptyDnsDiagnostics as makeDns } from './setup/makeEmptyDnsDiagnostics'
 
 describe('computeDomainScore', () => {
@@ -8,11 +10,12 @@ describe('computeDomainScore', () => {
     spfValid: true,
   }
 
-  const validDkim = {
-    dkim: [
-      { selector: 'google', record: 'v=DKIM1; k=rsa; p=MIIBIjAN', valid: true },
-    ],
+  const key = {
+    selector: 'google',
+    record: `v=DKIM1; k=rsa; p=${dkimRsa2048PublicKey}`,
+    valid: true,
   }
+  const validDkim = { dkim: [key], dkimParsedRecords: [parseDkimRecord(key)] }
 
   const dmarcReject = {
     dmarc: 'v=DMARC1; p=reject; rua=mailto:dmarc@example.com',
@@ -161,10 +164,8 @@ describe('computeDomainScore', () => {
     )
     const oneValid = computeDomainScore(
       makeDns({
-        dkim: [
-          { selector: 'selector1', record: null, valid: false },
-          { selector: 'google', record: 'v=DKIM1; p=MIIBIjAN', valid: true },
-        ],
+        dkim: [{ selector: 'selector1', record: null, valid: false }, key],
+        dkimParsedRecords: [parseDkimRecord(key)],
       }),
     )
 

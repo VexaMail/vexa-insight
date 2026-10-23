@@ -14,7 +14,7 @@ export function parseDkimRecord(dkim: DkimRecord): DkimParsedRecord {
   const { version, error: versionError } = parseDkimVersion(record)
   if (versionError) errors.push(versionError)
 
-  const keyTypeMatch = /k=([^;]+)/.exec(record)
+  const keyTypeMatch = /(?:^|;)\s*k\s*=\s*([^;]*)/.exec(record)
   const keyType = keyTypeMatch?.[1]?.trim() ?? 'rsa'
 
   const publicKey = parseDkimPublicKey(record, keyType)
@@ -30,5 +30,6 @@ export function parseDkimRecord(dkim: DkimRecord): DkimParsedRecord {
     keyLengthBits: publicKey.keyLengthBits,
     publicKeyPresent: publicKey.publicKeyPresent,
     errors,
+    warnings: publicKey.warnings,
   }
 }

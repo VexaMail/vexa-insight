@@ -1,13 +1,11 @@
+import { createPublicKey } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { parseDkimRecord } from '../src/services/diagnostics/parseDkimRecord'
+import { dkimRsa1024PublicKey as mediumKey } from './setup/dkimRsa1024PublicKey'
+import { dkimRsa2048PublicKey as strongKey } from './setup/dkimRsa2048PublicKey'
+import { dkimRsa512PublicKey as weakKey } from './setup/dkimRsa512PublicKey'
 
 describe('parseDkimRecord', () => {
-  // Base64 lengths match real RSA SubjectPublicKeyInfo encodings: the
-  // estimator subtracts the DER overhead and rounds to the nearest 256 bits.
-  const strongKey = 'A'.repeat(392) // 294 bytes -> 2048-bit modulus
-  const mediumKey = 'A'.repeat(216) // 162 bytes -> 1024-bit modulus
-  const weakKey = 'A'.repeat(100) // 75 bytes -> ~256-bit modulus
-
   it('reports a missing record for the selector', () => {
     const result = parseDkimRecord({
       selector: 'selector1',
@@ -46,6 +44,44 @@ describe('parseDkimRecord', () => {
 
     expect(result.keyType).toBe('rsa')
     expect(result.valid).toBe(true)
+  })
+
+  it('reads PKCS1 public keys without estimating their size from DER overhead', () => {
+    const key = createPublicKey({
+      key: Buffer.from(strongKey, 'base64'),
+      format: 'der',
+      type: 'spki',
+    })
+      .export({ type: 'pkcs1', format: 'der' })
+      .toString('base64')
+    const result = parseDkimRecord({
+      selector: 'hostingcp',
+      record: `k=rsa; p=${key}`,
+      valid: true,
+    })
+    expect(result.valid).toBe(true)
+    expect(result.keyLengthBits).toBe(2048)
+  })
+
+  it('rejects malformed key bytes even when their length resembles a strong key', () => {
+    const result = parseDkimRecord({
+      selector: 'default',
+      record: `v=DKIM1; p=${'A'.repeat(392)}`,
+      valid: true,
+    })
+    expect(result.valid).toBe(false)
+    expect(result.keyLengthBits).toBeNull()
+    expect(result.errors).toContain('Public key is not a valid RSA public key.')
+  })
+
+  it('accepts folding whitespace in the public key and whitespace around tags', () => {
+    const result = parseDkimRecord({
+      selector: 'hostingcp',
+      record: `v = DKIM1; k = rsa; p = ${strongKey.slice(0, 100)}\r\n ${strongKey.slice(100)}`,
+      valid: true,
+    })
+    expect(result.valid).toBe(true)
+    expect(result.keyLengthBits).toBe(2048)
   })
 
   it('treats a missing v= tag as valid with a null version', () => {
@@ -94,9 +130,9 @@ describe('parseDkimRecord', () => {
     })
 
     expect(result.valid).toBe(false)
-    expect(result.keyLengthBits).toBe(256)
+    expect(result.keyLengthBits).toBe(512)
     expect(result.errors).toContain(
-      'Key length is approximately 256 bits. Minimum recommended is 1024 bits.',
+      'RSA key length is 512 bits. At least 1024 bits are required.',
     )
   })
 
@@ -107,10 +143,11 @@ describe('parseDkimRecord', () => {
       valid: true,
     })
 
-    expect(result.valid).toBe(false)
+    expect(result.valid).toBe(true)
     expect(result.keyLengthBits).toBe(1024)
-    expect(result.errors).toContain(
-      'Key length is approximately 1024 bits. 2048 bits or higher is recommended for better security.',
+    expect(result.errors).toEqual([])
+    expect(result.warnings).toContain(
+      'RSA key length is 1024 bits. 2048 bits or higher is recommended for better security.',
     )
   })
 
@@ -139,7 +176,7 @@ describe('parseDkimRecord', () => {
   it('extracts a non-rsa key type', () => {
     const result = parseDkimRecord({
       selector: 'selector1',
-      record: `v=DKIM1; k=ed25519; p=${'A'.repeat(44)}`,
+      record: `v=DKIM1; k=ed25519; p=${Buffer.alloc(33).toString('base64')}`,
       valid: true,
     })
 

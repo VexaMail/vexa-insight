@@ -1,7 +1,7 @@
 import {
   computeDomainScore,
   getDiagnosticStats,
-  getDomainDnsRecords,
+  getMonitoredDomainDnsRecords,
 } from '@/services/diagnostics'
 import { settledValue } from '@/utils/async'
 import type {
@@ -27,7 +27,7 @@ export async function buildDiagnosticsAnalysisInput(
 ): Promise<DiagnosticsAnalysisInput> {
   const [dnsResult, statsResult, reportAggregateResult] =
     await Promise.allSettled([
-      getDomainDnsRecords(options.domainName),
+      getMonitoredDomainDnsRecords(options.domainId, options.domainName),
       getDiagnosticStats({
         domainId: options.domainId,
         startDate: options.startDate,

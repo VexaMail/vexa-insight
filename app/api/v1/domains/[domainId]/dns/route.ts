@@ -1,5 +1,5 @@
 import { withApiAuth } from '@/services/api'
-import { getDomainDnsRecords } from '@/services/diagnostics'
+import { getMonitoredDomainDnsRecords } from '@/services/diagnostics'
 import { getDomainSummary } from '@/services/reports'
 import { parseIdParam } from '@/utils/api'
 import type { NextRequest } from 'next/server'
@@ -28,7 +28,10 @@ export const GET = withApiAuth(
       )
     }
 
-    const data = await getDomainDnsRecords(summary.domainName)
+    const data = await getMonitoredDomainDnsRecords(
+      domainId,
+      summary.domainName,
+    )
     return NextResponse.json({ data })
   },
 )

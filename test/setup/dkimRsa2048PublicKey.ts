@@ -1,0 +1,3 @@
+/** Disposable test public key; no private key is retained. */
+export const dkimRsa2048PublicKey =
+  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn8Lp7HrvEmPQrjJ9HAF7/LIUj2ePRs6tSNbvaxuExKb02uzzzguFjNXbNBVSgfVvaB3+rPsCMZOggViGYLm1knFCzc36yXeP7GjRllXBdbTVw27CX0Q5gMjqUyNc8Dat/I/mYPm9TIfpkPjVBCb5RGauNSrIeiowgFR3B6pKjogQI6NFlN+I933c900PjN+t3HXTaP50vWZMsAtYMIVazxLIH8bIDZmz8AFC+kcSt2QQMOT754ts0lZ+ltmjcnxMZ0hC+5fKGw6LxJarcM1LXzLZWQTKKTdTsU44psoKAW7NjYg0mom3rWN80AvObXPbQKdfVNFrKR+sMtKGyDqIRQIDAQAB'

@@ -1,4 +1,5 @@
 export type DkimKeyAssessment = {
-  keyLengthBits: number
+  keyLengthBits: number | null
   errors: string[]
+  warnings: string[]
 }

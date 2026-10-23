@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mockResolveMx } from './mockResolveMx'
 import { mockResolveTxt } from './mockResolveTxt'
+import { dkimRsa2048PublicKey } from './setup/dkimRsa2048PublicKey'
 
 const DOMAIN = 'example.com'
 
@@ -170,7 +171,7 @@ describe('getDomainDnsRecords — DKIM', () => {
       await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 'google._domainkey.example.com')
-        return Promise.resolve([['v=DKIM1; k=rsa; p=MIIBIjANBg...']])
+        return Promise.resolve([[`v=DKIM1; k=rsa; p=${dkimRsa2048PublicKey}`]])
       return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])
@@ -204,7 +205,7 @@ describe('getDomainDnsRecords — DKIM', () => {
       await import('../src/services/diagnostics/getDomainDnsRecords')
     mockResolveTxt.mockImplementation(async (host: string) => {
       if (host === 's2024._domainkey.example.com')
-        return Promise.resolve([['v=DKIM1; k=rsa; p=MIIBIjANBg...']])
+        return Promise.resolve([[`v=DKIM1; k=rsa; p=${dkimRsa2048PublicKey}`]])
       return Promise.resolve([])
     })
     mockResolveMx.mockResolvedValue([])

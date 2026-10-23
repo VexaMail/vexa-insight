@@ -1,5 +1,6 @@
 import type { DkimRecord } from '@/types/diagnostics'
 import { KNOWN_SELECTORS } from './knownSelectors'
+import { parseDkimRecord } from './parseDkimRecord'
 import { resolveTxtSafe } from './resolveTxtSafe'
 
 /**
@@ -18,12 +19,16 @@ export async function probeDkim(
   return Promise.all(
     selectors.map(async (selector) => {
       const txt = await resolveTxtSafe(`${selector}._domainkey.${domain}`)
-      const flat = txt.flat().join('')
+      const flat = txt.map((chunks) => chunks.join('')).join('; ')
       const fromReports = reported.has(selector)
       if (flat.length === 0) {
         return { selector, record: null, valid: false, fromReports }
       }
-      const valid = flat.includes('v=DKIM1') && flat.includes('p=')
+      const valid = parseDkimRecord({
+        selector,
+        record: flat,
+        valid: txt.length === 1,
+      }).valid
       return { selector, record: flat, valid, fromReports }
     }),
   )

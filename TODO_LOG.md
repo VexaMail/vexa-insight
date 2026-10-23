@@ -8,6 +8,18 @@
 
 ### 2026-10
 
+- [x] 2026-10-24 — **Diagnostics:** Corrected private DKIM discovery, validity
+      and strength findings
+  - Result: Added Enhance and observed selectors to private DNS views/API,
+    separated RSA-1024 strength recommendations from invalid keys, parsed real
+    RSA key sizes and aligned scores with parsed validity. Common-selector
+    misses are informational; actual missing reported selectors remain
+    actionable. Public structured key details remain open.
+  - Evidence: 69 regression tests passed across ten focused files; full suite
+    1046 tests passed; type-check, Knip and dependency graph passed.
+    Verification command and generic fixtures: docs/dkim-diagnostics.md.
+    Production verification belongs to the private deployment record.
+
 - [x] 2026-10-22 — **Production findings (2026-10-19):** **Changing the date
       filter keeps the current page.** On page 3, switching to a shorter range
       can land on an empty page. Reset the reports table to page 1 when the date

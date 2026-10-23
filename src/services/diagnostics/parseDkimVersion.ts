@@ -3,10 +3,10 @@ export function parseDkimVersion(record: string): {
   version: string | null
   error: string | null
 } {
-  const versionMatch = /v=([^;]+)/.exec(record)
+  const versionMatch = /(?:^|;)\s*v\s*=\s*([^;]*)/.exec(record)
   const version = versionMatch?.[1]?.trim() ?? null
   const error =
-    version && version !== 'DKIM1'
+    version !== null && version !== 'DKIM1'
       ? `Invalid version: "${version}". Expected "DKIM1".`
       : null
   return { version, error }

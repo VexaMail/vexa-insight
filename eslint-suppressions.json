@@ -244,56 +244,6 @@
       "count": 2
     }
   },
-  "src/hooks/charts/useDispositionChart.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/charts/useSpfDkimChart.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/charts/useTrendChart.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/useKpiCards.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/useLatestReportsTable.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/usePassRateRing.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/usePollStatusLive.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/useTopDomainsTable.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 2
-    }
-  },
-  "src/hooks/dashboard/useTopIpSendersFetch.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/hooks/dashboard/useVolumeByOrgTable.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
   "src/hooks/ingest/useProcessedEmailsTable.ts": {
     "code-policy/no-inline-types-in-runtime-files": {
       "count": 1
@@ -327,21 +277,6 @@
   "src/hooks/shell/useSidebarVersionStatus.ts": {
     "code-policy/no-inline-types-in-runtime-files": {
       "count": 1
-    }
-  },
-  "src/lib/charts/fetchDispositionSummary.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/lib/charts/fetchSpfDkimBreakdown.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/lib/charts/fetchTrendData.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 2
     }
   },
   "src/lib/config/configCacheState.ts": {
@@ -440,11 +375,6 @@
     }
   },
   "src/services/auth/requirePermission.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/services/diagnostics/parseDkimPublicKey.ts": {
     "code-policy/no-inline-types-in-runtime-files": {
       "count": 1
     }
@@ -585,11 +515,6 @@
     }
   },
   "src/utils/csv/toCsv.ts": {
-    "code-policy/no-inline-types-in-runtime-files": {
-      "count": 1
-    }
-  },
-  "src/utils/dates/getDurationHours.ts": {
     "code-policy/no-inline-types-in-runtime-files": {
       "count": 1
     }

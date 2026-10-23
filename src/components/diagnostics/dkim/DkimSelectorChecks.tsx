@@ -18,9 +18,7 @@ export function DkimSelectorChecks({
     ['Key Type', parsed.keyType ?? 'Unknown'],
     [
       'Key Length',
-      parsed.keyLengthBits
-        ? `~${String(parsed.keyLengthBits)} bits`
-        : 'Unknown',
+      parsed.keyLengthBits ? `${String(parsed.keyLengthBits)} bits` : 'Unknown',
     ],
     ['Public Key', parsed.publicKeyPresent ? 'Present' : 'Missing'],
   ]

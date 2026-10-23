@@ -58,16 +58,16 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
     expect(guides.map((guide) => guide.id)).toEqual([
       'missing-spf',
       'missing-dmarc',
-      'dkim-not-valid',
       'missing-mta-sts',
+      'dkim-not-valid',
       'missing-bimi',
       'missing-tlsrpt',
     ])
     expect(guides.map((guide) => guide.severity)).toEqual([
       'high',
       'high',
-      'high',
       'medium',
+      'low',
       'low',
       'low',
     ])
@@ -94,9 +94,9 @@ describe('buildDiagnosticsAdminGuides: selection, order and cap', () => {
       LOW_SCORE_GUIDE,
       'missing-spf',
       'missing-dmarc',
-      'dkim-not-valid',
       'spf-permerror-traffic',
       'dkim-failure-rate',
+      'missing-mta-sts',
     ])
   })
 })

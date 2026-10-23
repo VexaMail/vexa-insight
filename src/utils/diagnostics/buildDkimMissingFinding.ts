@@ -30,7 +30,7 @@ export function buildDkimMissingFinding(
   }
   return {
     ...dkimFindingBase(dns),
-    severity: 'high',
+    severity: reported.length > 0 ? 'high' : 'info',
     state: 'No valid DKIM selector found among those checked',
     detail: `Checked ${String(checked)} selectors${fromReports} (${describeCheckedSelectors(dns.dkim)}). A sender using another selector would not show here.`,
     recommendation,

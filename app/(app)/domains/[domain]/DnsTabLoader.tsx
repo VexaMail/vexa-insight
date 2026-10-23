@@ -1,5 +1,8 @@
 import { DnsHistoryPanel, DomainDnsTab } from '@/components/domains'
-import { computeDomainScore, getDomainDnsRecords } from '@/services/diagnostics'
+import {
+  computeDomainScore,
+  getMonitoredDomainDnsRecords,
+} from '@/services/diagnostics'
 import { listDnsHistory } from '@/services/dns-history'
 import type { DnsTabLoaderProps } from './DnsTabLoaderProps'
 
@@ -9,7 +12,7 @@ export async function DnsTabLoader({
   domainId = 0,
 }: Readonly<DnsTabLoaderProps>) {
   const [dns, history] = await Promise.all([
-    getDomainDnsRecords(domainName),
+    getMonitoredDomainDnsRecords(domainId, domainName),
     listDnsHistory(domainName),
   ])
   return (

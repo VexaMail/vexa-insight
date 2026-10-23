@@ -8,6 +8,8 @@ export const KNOWN_SELECTORS = [
   'dkim',
   'mail',
   'smtp',
+  // Enhance / cPanel hosting
+  'hostingcp',
   // Google Workspace
   'google',
   // Microsoft 365

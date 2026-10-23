@@ -71,20 +71,14 @@ inspected 2026-10-21.
       test message or explicit evaluation identity before evaluating macros,
       A/MX/exists/ptr results and path-specific limits. Keep static upper bounds
       separate from actual SPF pass/fail.
-- [ ] **P2 — DKIM key diagnostics (app/public).** The public checker now accepts
-      a known selector. Next: show revoked keys, key type/size and malformed or
-      duplicate key evidence without claiming verified message signing.
-      Operational review 2026-10-24: include Enhance's `hostingcp` selector and
-      reported selectors in private diagnostics, and distinguish an unknown
-      selector from proof that a domain has no signing key. Keep RSA-1024
-      strength recommendations separate from invalid/revoked-key errors (RFC
-      8301 section 3.2). Acceptance: a usable `hostingcp` key is discovered; a
-      usable RSA-1024 key is reported as valid with a strength warning; missing,
-      malformed and revoked keys retain distinct outcomes. Inspect
-      `knownSelectors.ts`, `parseDkimRecord.ts` and `parseDkimPublicKey.ts`
-      under `src/services/diagnostics/`. DNS evidence must not imply verified
-      message signing. No customer domains, reports or message data belong in
-      fixtures.
+- [~] **P2 — DKIM key diagnostics (app/public).** Private diagnostics now
+  discover Enhance's `hostingcp` and observed provider selectors, parse actual
+  RSA key sizes, distinguish revoked/malformed keys from strength
+  recommendations, and use parsed validity consistently in scores and findings.
+  See `docs/dkim-diagnostics.md`. The public checker remains conservative DNS
+  discovery with an optional selector. Next: show key details in the public
+  checker, including revocation, duplicate records and strength warnings without
+  claiming verified message signing. Keep customer data out of tests.
 - [ ] **P2 — Email header analyzer (app; browser-only public version
       possible).** Reference: dmarcian's tool library. First step: parse pasted
       headers locally where possible, expose Received hops and identity
@@ -549,3 +543,5 @@ remains below is what those passes did not reach.
       are unchanged.
 
 ## Shared package scope migration (2026-09-14)
+
+## DKIM diagnostics correction (2026-10-24)

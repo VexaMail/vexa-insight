@@ -1,17 +1,27 @@
 import type { DkimKeyAssessment } from '@/types/diagnostics'
+import { assessDkimRsaKeyStrength } from './assessDkimRsaKeyStrength'
 import { decodeBase64ByteLength } from './decodeBase64ByteLength'
 
 export function assessDkimKeyStrength(
   keyType: string,
   publicKeyBase64: string,
 ): DkimKeyAssessment {
-  // RSA p= values are SubjectPublicKeyInfo DER, whose fixed structures add
-  // roughly this many bytes on top of the modulus itself.
-  const rsaSpkiOverheadBytes = 38
   const ed25519KeyBytes = 32
-
   const errors: string[] = []
-  const byteLength = decodeBase64ByteLength(publicKeyBase64)
+  const warnings: string[] = []
+  const compact = publicKeyBase64.replace(/\s/g, '')
+  if (
+    !/^[a-z0-9+/]+={0,2}$/i.test(compact) ||
+    Buffer.from(compact, 'base64').toString('base64').replace(/=+$/, '') !==
+      compact.replace(/=+$/, '')
+  ) {
+    return {
+      keyLengthBits: null,
+      errors: ['Public key is not valid base64.'],
+      warnings,
+    }
+  }
+  const byteLength = decodeBase64ByteLength(compact)
 
   if (keyType === 'ed25519') {
     if (byteLength !== ed25519KeyBytes) {
@@ -19,21 +29,14 @@ export function assessDkimKeyStrength(
         `Unexpected Ed25519 key size (${String(byteLength)} bytes; expected ${String(ed25519KeyBytes)}).`,
       )
     }
-    return { keyLengthBits: byteLength * 8, errors }
+    return { keyLengthBits: byteLength * 8, errors, warnings }
   }
-
-  const modulusBits = Math.max(0, (byteLength - rsaSpkiOverheadBytes) * 8)
-  const keyLengthBits = Math.round(modulusBits / 256) * 256
-
-  if (keyLengthBits < 1024) {
-    errors.push(
-      `Key length is approximately ${String(keyLengthBits)} bits. Minimum recommended is 1024 bits.`,
-    )
-  } else if (keyLengthBits < 2048) {
-    errors.push(
-      `Key length is approximately ${String(keyLengthBits)} bits. 2048 bits or higher is recommended for better security.`,
-    )
+  if (keyType !== 'rsa') {
+    return {
+      keyLengthBits: null,
+      errors: [`Unsupported key type: "${keyType}".`],
+      warnings,
+    }
   }
-
-  return { keyLengthBits, errors }
+  return assessDkimRsaKeyStrength(compact)
 }

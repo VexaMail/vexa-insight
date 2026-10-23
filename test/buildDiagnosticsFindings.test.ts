@@ -36,7 +36,7 @@ describe('buildDiagnosticsFindings', () => {
     expect(findings.map((entry) => entry.id).toSorted()).toEqual(
       ['bimi', 'dkim', 'dmarc', 'mtaSts', 'spf', 'tlsRpt'].toSorted(),
     )
-    expect(findings[0]?.severity).toBe('high')
+    expect(findings[0]?.severity).toBe('medium')
     expect(findings.at(-1)?.severity).toBe('pass')
   })
 

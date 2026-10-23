@@ -8,14 +8,14 @@ export function scoreDkim(dns: DnsDiagnostics): DomainScoreCheck {
     max: domainScoreWeights.dkim,
     weight: 'core',
   } as const
-  const valid = dns.dkim.filter((record) => record.valid)
+  const valid = dns.dkimParsedRecords.filter((record) => record.valid)
 
   if (valid.length === 0) {
     return {
       ...base,
       earned: 0,
       detail:
-        'No valid DKIM key found on the scanned selectors. Publish a key and sign outgoing mail.',
+        'No usable key found among the checked selectors. Confirm the selector used by your sender; DNS probes cannot enumerate every selector or verify message signing.',
     }
   }
 
