@@ -8,6 +8,18 @@
 
 ### 2026-10
 
+- [x] 2026-10-24 — **Diagnostics:** Classified negative DKIM wildcards without
+      hiding real revocations Common-selector probes receive a catch-all
+      empty-key answer even when no sender uses them; verify a nonce selector
+      and keep actual reported revocations actionable.
+  - Result: Added a nonce-selector check for catch-all empty-key answers and
+    ignored unrelated TXT wildcards. Common-probe revocations without report
+    evidence are informational; observed revoked selectors remain actionable and
+    real selector overrides stay valid.
+  - Evidence: pnpm check:ci passed: 1050 tests across 200 files, type-check,
+    linters, format, Knip, dependency graph, migrations and chart checks. Four
+    wildcard regression cases use generic domains and synthetic data.
+
 - [x] 2026-10-24 — **Diagnostics:** Corrected private DKIM discovery, validity
       and strength findings
   - Result: Added Enhance and observed selectors to private DNS views/API,

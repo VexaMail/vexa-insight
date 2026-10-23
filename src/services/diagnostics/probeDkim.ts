@@ -1,7 +1,9 @@
 import type { DkimRecord } from '@/types/diagnostics'
+import { isDkimKeyRecord } from '@/validators/diagnostics'
 import { KNOWN_SELECTORS } from './knownSelectors'
 import { parseDkimRecord } from './parseDkimRecord'
 import { resolveTxtSafe } from './resolveTxtSafe'
+import { resolveWildcardDkimRevocation } from './resolveWildcardDkimRevocation'
 
 /**
  * Looks up every selector of the fixed list plus the ones seen in reports,
@@ -11,6 +13,7 @@ export async function probeDkim(
   domain: string,
   reportedSelectors: readonly string[] = [],
 ): Promise<DkimRecord[]> {
+  const wildcardRevocation = await resolveWildcardDkimRevocation(domain)
   const reported = new Set(reportedSelectors)
   const selectors = [
     ...reported,
@@ -21,8 +24,21 @@ export async function probeDkim(
       const txt = await resolveTxtSafe(`${selector}._domainkey.${domain}`)
       const flat = txt.map((chunks) => chunks.join('')).join('; ')
       const fromReports = reported.has(selector)
-      if (flat.length === 0) {
+      if (!isDkimKeyRecord(flat)) {
         return { selector, record: null, valid: false, fromReports }
+      }
+      if (
+        !fromReports &&
+        wildcardRevocation !== null &&
+        flat.trim() === wildcardRevocation
+      ) {
+        return {
+          selector,
+          record: null,
+          valid: false,
+          fromReports,
+          wildcardRevocation: true,
+        }
       }
       const valid = parseDkimRecord({
         selector,

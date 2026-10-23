@@ -9,6 +9,7 @@ export function buildDkimMissingFinding(
   const checked = dns.dkim.length
   const reported = dns.dkim.filter((record) => record.fromReports === true)
   const published = dns.dkimParsedRecords.filter((r) => r.raw !== null)
+  const wildcard = dns.dkim.some((record) => record.wildcardRevocation)
   const fromReports =
     reported.length > 0
       ? `, including ${String(reported.length)} seen in received reports`
@@ -32,7 +33,7 @@ export function buildDkimMissingFinding(
     ...dkimFindingBase(dns),
     severity: reported.length > 0 ? 'high' : 'info',
     state: 'No valid DKIM selector found among those checked',
-    detail: `Checked ${String(checked)} selectors${fromReports} (${describeCheckedSelectors(dns.dkim)}). A sender using another selector would not show here.`,
+    detail: `Checked ${String(checked)} selectors${fromReports} (${describeCheckedSelectors(dns.dkim)}). A sender using another selector would not show here.${wildcard ? ' A negative DNS wildcard revokes unused selectors; these answers do not identify configured signing keys.' : ''}`,
     recommendation,
     fix: null,
     tileValue: 'None found',

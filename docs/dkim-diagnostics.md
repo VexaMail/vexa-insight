@@ -11,6 +11,11 @@ informational unless the selector was observed in the domain's reports. Key
 presence does not establish that a message was signed or that its signature
 verifies.
 
+An unrelated wildcard TXT answer is not treated as a published DKIM key. A
+nonce-selector lookup identifies catch-all empty-key revocations: matching
+unobserved common probes remain informational instead of producing a list of
+broken keys. A revoked selector observed in actual reports remains actionable.
+
 ## Key validity and strength
 
 The parser accepts a missing `v=` tag, which defaults to DKIM1, and joins the
@@ -37,7 +42,7 @@ compatible with snapshots saved before this change.
 Run the regression checks from the repository root:
 
 ```bash
-pnpm exec vitest run --config vitest.config.mts test/parseDkimRecord.test.ts test/dkimSelectorDiscovery.test.ts test/getDomainDnsRecords.test.ts test/getMonitoredDomainDnsRecords.test.ts test/dkimDiagnosticValidity.test.ts test/computeDomainScore.test.ts test/buildDiagnosticsFindings.test.ts test/buildDiagnosticsAdminGuides.test.ts test/diagnosticsAdminGuidesDns.test.ts test/publicDkimSelector.test.ts
+pnpm exec vitest run --config vitest.config.mts test/parseDkimRecord.test.ts test/dkimSelectorDiscovery.test.ts test/getDomainDnsRecords.test.ts test/getMonitoredDomainDnsRecords.test.ts test/dkimDiagnosticValidity.test.ts test/computeDomainScore.test.ts test/buildDiagnosticsFindings.test.ts test/buildDiagnosticsAdminGuides.test.ts test/diagnosticsAdminGuidesDns.test.ts test/publicDkimSelector.test.ts test/dkimWildcardDiscovery.test.ts
 ```
 
 The checks exercise selector discovery, provider-specific selectors, TXT
