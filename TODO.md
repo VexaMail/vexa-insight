@@ -74,6 +74,17 @@ inspected 2026-10-21.
 - [ ] **P2 — DKIM key diagnostics (app/public).** The public checker now accepts
       a known selector. Next: show revoked keys, key type/size and malformed or
       duplicate key evidence without claiming verified message signing.
+      Operational review 2026-10-24: include Enhance's `hostingcp` selector and
+      reported selectors in private diagnostics, and distinguish an unknown
+      selector from proof that a domain has no signing key. Keep RSA-1024
+      strength recommendations separate from invalid/revoked-key errors (RFC
+      8301 section 3.2). Acceptance: a usable `hostingcp` key is discovered; a
+      usable RSA-1024 key is reported as valid with a strength warning; missing,
+      malformed and revoked keys retain distinct outcomes. Inspect
+      `knownSelectors.ts`, `parseDkimRecord.ts` and `parseDkimPublicKey.ts`
+      under `src/services/diagnostics/`. DNS evidence must not imply verified
+      message signing. No customer domains, reports or message data belong in
+      fixtures.
 - [ ] **P2 — Email header analyzer (app; browser-only public version
       possible).** Reference: dmarcian's tool library. First step: parse pasted
       headers locally where possible, expose Received hops and identity
