@@ -8,6 +8,24 @@
 
 ### 2026-10
 
+- [x] 2026-10-29 — **Public website follow-up (2026-10-21):** Search Console
+      retrieved the public sitemap successfully on 2026-10-21 (zero
+      errors/warnings, one discovered URL). Google's live homepage test passed
+      and its priority indexing request was accepted. The homepage was not yet
+      indexed. Next: recheck indexing and actual search queries after Google
+      processes the request; submission alone is not ranking evidence.
+  - Result: Search Console (URL-prefix property https://insight.vexamail.com/,
+    page indexing report updated 2026-10-23) now shows the homepage indexed (1
+    indexed page). Performance for 2026-10-20..27: 4 impressions, 0 clicks,
+    average position 9.3, all on the homepage; Google withholds the query
+    strings (anonymized). The six non-indexed URLs are non-pages: /dashboard and
+    /manifest.webmanifest as 404, two font files and two favicon URLs as
+    crawled-not-indexed.
+  - Evidence: Read-only Search Console check on 2026-10-29 in the signed-in
+    browser profile: Pages report 'Indexadas 1', Performance 'Páginas
+    principales' row https://insight.vexamail.com/ 0 clicks / 4 impressions.
+    Ranking for real queries is not yet measurable.
+
 - [x] 2026-10-24 — **Diagnostics:** Classified negative DKIM wildcards without
       hiding real revocations Common-selector probes receive a catch-all
       empty-key answer even when no sender uses them; verify a nonce selector
