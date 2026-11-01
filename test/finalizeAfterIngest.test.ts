@@ -107,6 +107,10 @@ describe('a report message is finalized only after its reports ingest', () => {
       .returning({ id: imapAccounts.id })
       .all()
     accountId = rows[0]?.id ?? 0
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/services/imap')
   })
 
   beforeEach(async () => {

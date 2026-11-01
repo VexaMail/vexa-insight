@@ -128,12 +128,14 @@ inspected 2026-10-21.
 
 ## Open Dependabot PRs (2026-10-13)
 
-- [ ] Three Dependabot PRs open on VexaMail/vexa-insight: #71
-      production-minor-patch (13 updates), #72 development-minor-patch (19
-      updates), #73 github-actions group (6 updates). Source:
-      notifications@github.com to info@busirocket.com, 2026-10-11 and 2026-10-12
-      (threads "build(deps): bump the production-minor-patch group"). Next: let
-      CI run, merge or rebase each.
+- [ ] Three Dependabot PRs open on VexaMail/vexa-insight (#71-#73 were
+      superseded and closed): #77 github-actions group, #78
+      production-minor-patch, #79 development-minor-patch. Checked 2026-11-01:
+      all three failed "Dependency audit", which `main` has fixed since (raised
+      overrides and two dated waivers); #78 and #79 also fail lint with one
+      `@typescript-eslint/no-unnecessary-condition` error at line 17:10 of a
+      file the log does not name. Next: let Dependabot rebase onto `main`, then
+      fix that lint error on the branch or in `main` before merging.
 
 ## Open-source launch
 
@@ -527,23 +529,29 @@ remains below is what those passes did not reach.
       unchanged — `@lhci/cli` latest is still 0.15.1, pinning
       `lighthouse@12.6.1`; the override stays.
 
-- [ ] Two DB-backed tests fail only under the full parallel suite. `pnpm test`
-      spawns 107 workers and `test/recoveryCommands.test.ts` ("creates an admin
-      and refuses to create it twice") plus `test/secretKeyResolution.test.ts`
-      time out intermittently -- 5.6 s and 12.1 s for work that takes under a
-      second alone. Both pass every time when run on their own
-      (`pnpm vitest run <file>`, checked twice on 2026-09-17), and a clean
-      checkout fails the same way, so this is worker contention on SQLite, not a
-      regression. Smallest next step: give the DB-backed files their own
-      `poolOptions` or a shared worker, rather than raising the timeout.
-      **2026-09-30:** now hits CI too: `test/migrationLedger.test.ts` ("records
-      a checksum for every migration it applies") timed out at 5 s under
-      coverage on the Dependabot branch run for `development-minor-patch`.
-      Raises the priority: a flaky gate teaches people to re-run red CI.
-      **2026-10-01:** `recoveryCommands` failed on its own at load 33: the first
-      test paid the cold dynamic import of the service graph. The imports now
-      run in `beforeAll`; 3 of 3 runs pass at the same load. The other two files
-      are unchanged.
+- [~] Two DB-backed tests fail only under the full parallel suite. `pnpm test`
+  spawns 107 workers and `test/recoveryCommands.test.ts` ("creates an admin and
+  refuses to create it twice") plus `test/secretKeyResolution.test.ts` time out
+  intermittently -- 5.6 s and 12.1 s for work that takes under a second alone.
+  Both pass every time when run on their own (`pnpm vitest run <file>`, checked
+  twice on 2026-09-17), and a clean checkout fails the same way, so this is
+  worker contention on SQLite, not a regression. Smallest next step: give the
+  DB-backed files their own `poolOptions` or a shared worker, rather than
+  raising the timeout. **2026-09-30:** now hits CI too:
+  `test/migrationLedger.test.ts` ("records a checksum for every migration it
+  applies") timed out at 5 s under coverage on the Dependabot branch run for
+  `development-minor-patch`. Raises the priority: a flaky gate teaches people to
+  re-run red CI. **2026-10-01:** `recoveryCommands` failed on its own at load
+  33: the first test paid the cold dynamic import of the service graph. The
+  imports now run in `beforeAll`; 3 of 3 runs pass at the same load. The other
+  two files are unchanged. **2026-11-01:** after the dependency upgrades, a cold
+  run failed seven tests in seven files (`finalizeAfterIngest`, `getDomainIds`,
+  `getIngestPageData`, `getTriageOverview`, `installStateMarker`,
+  `secretKeyResolution`, `eventRollup`), each the first test's cold import.
+  Those files now warm their service graph in `beforeAll`; with
+  `node_modules/.vitest-cache` deleted, two full runs passed 1051/1051. Still
+  open: other files with the same pattern have not been audited, so the next
+  cold failure names the next file to fix the same way.
 
 ## Shared package scope migration (2026-09-14)
 
