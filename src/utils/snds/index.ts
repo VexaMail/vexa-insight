@@ -1,6 +1,7 @@
 export { formatSndsRate } from '../../formatters/snds/formatSndsRate'
 export { buildSndsAuthorizeUrl } from './buildSndsAuthorizeUrl'
 export { createPkcePair } from './createPkcePair'
+export { describeSndsFailedDates } from './describeSndsFailedDates'
 export { describeSndsSync } from './describeSndsSync'
 export { extractSndsAuthCode } from './extractSndsAuthCode'
 export { isSndsAlertRow } from './isSndsAlertRow'

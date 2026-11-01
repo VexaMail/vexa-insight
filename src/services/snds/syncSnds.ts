@@ -1,4 +1,5 @@
 import type { SndsSyncResult } from '@/types/snds'
+import { describeSndsFailedDates } from '@/utils/snds'
 import { backfillSndsDays } from './backfillSndsDays'
 import { getSndsAccessToken } from './getSndsAccessToken'
 import { getSndsConnectionRow } from './getSndsConnectionRow'
@@ -20,20 +21,25 @@ export async function syncSnds(
       daysFetched: 0,
       rowsStored: 0,
       statusRows: 0,
+      failedDates: [],
       error: null,
     }
   }
   try {
     const accessToken = await getSndsAccessToken(secretKey)
-    const { daysFetched, rowsStored } = await backfillSndsDays(accessToken, now)
+    const { daysFetched, rowsStored, failedDates } = await backfillSndsDays(
+      accessToken,
+      now,
+    )
     const statusRows = await syncSndsStatusList(accessToken, now)
     const status = rowsStored > 0 || statusRows > 0 ? 'ok' : 'no-data'
+    const error = describeSndsFailedDates(failedDates)
     saveSndsConnection({
       lastSyncAt: now,
       lastSyncStatus: status,
-      lastSyncError: null,
+      lastSyncError: error,
     })
-    return { status, daysFetched, rowsStored, statusRows, error: null }
+    return { status, daysFetched, rowsStored, statusRows, failedDates, error }
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err)
     saveSndsConnection({
@@ -46,6 +52,7 @@ export async function syncSnds(
       daysFetched: 0,
       rowsStored: 0,
       statusRows: 0,
+      failedDates: [],
       error,
     }
   }

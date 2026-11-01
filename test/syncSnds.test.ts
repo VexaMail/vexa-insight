@@ -85,6 +85,7 @@ describe('syncSnds', () => {
       daysFetched: 0,
       rowsStored: 0,
       statusRows: 0,
+      failedDates: [],
       error: null,
     })
     const row = getSndsConnectionRow()
@@ -135,6 +136,43 @@ describe('syncSnds', () => {
         reportDate: '2026-10-01',
         filterResult: 'GREEN',
       }),
+    ])
+  })
+
+  it('keeps going past a day SNDS answers with HTTP 500 and reports that day', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/token'))
+          return Promise.resolve(tokenResponse('refresh-3'))
+        if (url.endsWith('report/data/2026-09-30'))
+          return Promise.resolve(new Response('', { status: 500 }))
+        if (url.endsWith('report/data/2026-10-01')) {
+          return Promise.resolve(
+            new Response(
+              '192.0.2.1,9/30/2026 8:00 AM,10/1/2026 8:00 AM,40,40,40,GREEN,< 0.1%,,,,,@example.com,\n',
+            ),
+          )
+        }
+        return Promise.resolve(new Response('', { status: 404 }))
+      }),
+    )
+    const { getSndsConnectionRow, listSndsLatestByIp, syncSnds } =
+      await import('@/services/snds')
+
+    const result = await syncSnds(KEY, NOW)
+
+    expect(result).toMatchObject({
+      status: 'ok',
+      daysFetched: 1,
+      rowsStored: 1,
+      failedDates: ['2026-09-30'],
+    })
+    expect(result.error).toContain('2026-09-30')
+    expect(getSndsConnectionRow()?.lastSyncStatus).toBe('ok')
+    expect(getSndsConnectionRow()?.lastSyncError).toContain('2026-09-30')
+    expect(listSndsLatestByIp()).toEqual([
+      expect.objectContaining({ ip: '192.0.2.1', reportDate: '2026-10-01' }),
     ])
   })
 

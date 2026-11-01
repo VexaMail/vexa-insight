@@ -6,6 +6,26 @@
 
 ## 2026
 
+### 2026-11
+
+- [x] 2026-11-01 — **Future Ideas:** **SNDS: one day answering HTTP 500 aborts
+      the whole sync (2026-11-01).** Production (nova)
+      `snds_connection.last_sync_error`: "SNDS report/data/2026-10-21 answered
+      HTTP 500" on 2026-10-28 and "SNDS report/data/2026-10-27 answered HTTP
+      500" on 2026-11-01 06:17 UTC, `no-data` on 2026-10-31 in between, so the
+      token works. `fetchSndsReport` throws on any non-200 except 404, and
+      `backfillSndsDays` loops the missing days without a per-day catch, so the
+      first 500 drops every later day of that run and marks the sync `error`;
+      the newest stored row is still 2026-10-03. Next: in `backfillSndsDays`,
+      catch a per-day failure, keep going, and report the failed dates in the
+      sync result (retried next run, like 404), with a test where one date
+      returns 500.
+  - Result: backfillSndsDays catches each day's fetch failure, keeps going, and
+    returns failedDates; syncSnds keeps status ok/no-data and records the failed
+    dates in lastSyncError so Settings shows them; they are retried next run.
+  - Evidence: test/syncSnds.test.ts 'keeps going past a day SNDS answers with
+    HTTP 500'; pnpm run check:ci 1051/1051 passed
+
 ### 2026-10
 
 - [x] 2026-10-29 — **Public website follow-up (2026-10-21):** Search Console
