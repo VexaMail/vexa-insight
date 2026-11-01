@@ -60,7 +60,7 @@ overrides:
   '@typescript-eslint/eslint-plugin': ^8.65.0
   '@typescript-eslint/parser': ^8.65.0
   dompurify: ^3.4.7
-  esbuild: ^0.25.0
+  esbuild: ^0.28.2
   postcss: ^8.5.18
   tmp: ^0.2.6
   # Capped, not open-ended: an unbounded `>=` range resolves to the next major
