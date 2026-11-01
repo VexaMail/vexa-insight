@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 /**
  * Microsoft refuses the SNDS client's code redemption when the request looks
@@ -6,6 +6,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
  * so the token request shape is pinned here.
  */
 describe('postSndsTokenRequest', () => {
+  beforeAll(async () => {
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/services/snds')
+  })
+
   afterEach(() => {
     vi.unstubAllGlobals()
   })

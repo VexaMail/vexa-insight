@@ -35,9 +35,13 @@ const reportXml = (reportId: string, end: number): Buffer =>
 const inRangeIds = Array.from({ length: 30 }, (_, i) => `in-range-${String(i)}`)
 
 describe('date-filtered reports list paging', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     setupTestDb()
     runMigrations()
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/services/reports')
   })
 
   beforeEach(async () => {

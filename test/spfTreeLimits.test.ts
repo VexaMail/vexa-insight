@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { mockResolveTxt } from './mockResolveTxt'
 import { freshSpfTreeState } from './setup/freshSpfTreeState'
 import { loadBuildSpfTreeNode } from './setup/loadBuildSpfTreeNode'
@@ -10,6 +10,13 @@ vi.mock('node:dns/promises', () => ({
     resolveTxt: mockResolveTxt,
   },
 }))
+
+beforeAll(async () => {
+  // Warm the service graph here, under the hook timeout: the first test
+  // otherwise pays the cold import under its own 5 s limit and times out
+  // when the full suite loads every worker at once.
+  await loadBuildSpfTreeNode()
+})
 
 afterEach(() => {
   vi.resetAllMocks()

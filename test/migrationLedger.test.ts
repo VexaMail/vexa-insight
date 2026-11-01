@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { setupTestDb } from './setup/setupTestDb'
 
 /**
@@ -11,6 +11,13 @@ import { setupTestDb } from './setup/setupTestDb'
  * look healthy.
  */
 describe('migration ledger', () => {
+  beforeAll(async () => {
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/lib/db')
+  })
+
   let dbPath = ''
 
   beforeEach(() => {

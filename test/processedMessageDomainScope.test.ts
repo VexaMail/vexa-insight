@@ -100,6 +100,10 @@ describe('processed-message reads honour the per-user domain allow-list', () => 
     setupTestDb()
     const { runMigrations } = await import('@/lib/db')
     runMigrations()
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/services/processed-messages')
   })
 
   beforeEach(async () => {

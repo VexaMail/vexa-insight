@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { setupTestDb } from './setup/setupTestDb'
 
 /**
@@ -9,6 +9,14 @@ import { setupTestDb } from './setup/setupTestDb'
  * they lost. This pins the difference.
  */
 describe('database snapshot', () => {
+  beforeAll(async () => {
+    // Warm the service graph here, under the hook timeout: the first test
+    // otherwise pays the cold import under its own 5 s limit and times out
+    // when the full suite loads every worker at once.
+    await import('@/services/backup')
+    await import('@/services/users')
+  })
+
   let dbPath = ''
 
   beforeEach(async () => {
