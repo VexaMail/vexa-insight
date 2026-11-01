@@ -10,6 +10,6 @@ import net from 'node:net'
 export async function resolveHostAddresses(host: string): Promise<string[]> {
   const stripped = host.replace(/^\[|\]$/g, '')
   if (net.isIP(stripped) !== 0) return [stripped]
-  const lookups = await dns.lookup(host, { all: true, verbatim: true })
+  const lookups = await dns.lookup(host, { all: true, order: 'verbatim' })
   return lookups.map((l) => l.address)
 }
