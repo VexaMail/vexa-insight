@@ -8,6 +8,60 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-01
+
+Upgrading from 0.4.x applies six migrations (`0040` to `0045`) on start; no
+configuration change is required.
+
+### Security
+
+- **Next.js 16.4.3.** Next.js 16.0.0 through 16.4.0, including the 16.3.6 that
+  0.4.0 shipped, is affected by two unauthenticated remote code execution
+  advisories (GHSA-2464-fhr4-w9xw, GHSA-673q-mjm6-r5xr) and a Server Actions
+  denial of service (GHSA-p3m5-59mp-jv5r). Instances on 0.4.x should upgrade.
+- Issue, source review and network routes are scoped to the domains the caller
+  may see.
+- The SPF planner only resolves public names and is rate limited, and three gaps
+  in the planner, the timeline and the rate limit found in review are closed.
+- Patched releases of transitive dependencies flagged by the audit, among them
+  handlebars, undici, vite, sharp, body-parser, qs and fast-uri.
+
+### Added
+
+- **A redesigned console.** Grouped navigation, a phone drawer, a command
+  palette, a light and dark theme switch (light by default), and one rule for
+  badges, buttons, headers and KPI tiles across every page.
+- **Triage overview.** The home screen becomes an issue queue with acknowledge
+  and snooze, KPI sparklines, recent changes and ingestion status, plus an
+  Issues page with each issue's action history (migration `0042`).
+- **Domain decision page.** A health timeline that joins daily results with what
+  changed, DNS history, receiver coverage, a History tab, and a sources export
+  from the actions menu.
+- **DNS change history.** A daily snapshot of each domain's records fires a
+  `dns.record_changed` webhook when one changes (migration `0041`).
+- **Source pages.** Sending sources are classified by cause, an operator can
+  review a source and mark it as a legitimate sender (migration `0043`), and the
+  page shows live network context (ASN, PTR, FCrDNS) with DNS and raw record
+  tabs.
+- **Alert rules.** Daily rules on DMARC pass rate, managed in Settings next to
+  the webhooks, and quieter unauthorized-source alerts (migration `0044`).
+- **Record builders and SPF planner.** Copy-ready DMARC, SPF, TLS-RPT and
+  MTA-STS records, and a lookup count for a planned SPF record before it is
+  published.
+- **Findings-first diagnostics.** Each domain's diagnostics lead with what to
+  fix, with a findings filter and a record generator tab.
+- **Ingestion health.** Separate checks for the scheduler, the mailboxes,
+  processing and freshness, and mailbox setup offered when none is configured.
+- **Upload.** A drop zone and a result list linking to each stored report.
+- **Reports.** A pass or warning icon on each listed report, a KPI strip for the
+  selected window, and a warning when a report passes DMARC on SPF or DKIM
+  alone.
+- **Retention.** Expired sessions and old poll events are pruned daily.
+- **Optional public website mode.** `PUBLIC_SITE_ONLY=true` serves only a
+  landing page and a free DMARC, SPF, DKIM and MX checker with shareable
+  reports, without the database or mail jobs; `PUBLIC_SITE_HOST` routes one
+  hostname of an existing instance to it. See `docs/public-website.md`.
+
 ### Changed
 
 - **The diagnostics index opens at once and fills in as it checks.** Each
@@ -23,6 +77,33 @@ and this project adheres to
   address, a report, or the domains, sources, reports and ingest pages now shows
   a loading panel at once instead of waiting with nothing on screen, and the
   placeholders inside pages show a spinner instead of a faint grey box.
+- DMARC compliance counts a message as compliant when SPF or DKIM is aligned,
+  and the report page leads with the DMARC result.
+- "Last N days" counts whole UTC days everywhere, and dates and numbers follow
+  one format across the console.
+- Dependencies are on their latest releases, the container image builds on a
+  current `node:26-alpine`, and the pinned pnpm is 12.17.0.
+
+### Fixed
+
+- **SNDS sync no longer stops at a day Microsoft answers with an error.** The
+  remaining days are still fetched, and the failed ones are shown in Settings
+  and retried on the next sync.
+- DKIM checks tell an invalid key from a weak one, and a negative wildcard no
+  longer raises a false key alert.
+- Report records without a usable source IP are skipped instead of failing the
+  whole report, and an IMAP report message is finalized only after its reports
+  ingest.
+- The date-filtered reports list pages correctly and resets to the first page
+  when the dates change.
+- IP hostname enrichment timestamps are stored as Unix seconds (migration
+  `0040`).
+- The standalone output ships the GeoIP updater script and no longer traces the
+  project root.
+- A source build on a machine with downloaded GeoIP data no longer copies that
+  data into `.next/standalone`.
+- Migration `0002_job_runs` has a journal timestamp in order, which silences a
+  `drizzle-kit check` warning.
 
 ## [0.4.0] - 2026-09-30
 
@@ -697,7 +778,8 @@ Recorded as the baseline of the codebase; no `v0.1.0` tag was ever pushed.
   `Authorization: Bearer`).
 - `/install` permanently locked after the first user exists.
 
-[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/VexaMail/vexa-insight/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/VexaMail/vexa-insight/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/VexaMail/vexa-insight/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.3
 [0.3.2]: https://github.com/VexaMail/vexa-insight/releases/tag/v0.3.2
