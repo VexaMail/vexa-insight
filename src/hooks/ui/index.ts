@@ -1,3 +1,4 @@
+export { useCalendarDayButton } from './useCalendarDayButton'
 export { useCopyButton } from './useCopyButton'
 export { useDataTable } from './useDataTable'
 export { useDropdownMenu } from './useDropdownMenu'

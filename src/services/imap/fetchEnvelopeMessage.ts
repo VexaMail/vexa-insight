@@ -8,11 +8,10 @@ export async function fetchEnvelopeMessage(
 ): Promise<FetchMessageObject | false> {
   if (providedEnvMsg !== undefined) return providedEnvMsg
 
-  const fetched = await client.fetchOne(
+  // imapflow resolves `false` when the message is gone.
+  return client.fetchOne(
     uidStr,
     { envelope: true, bodyStructure: true, uid: true },
     { uid: true },
   )
-
-  return fetched ?? false
 }

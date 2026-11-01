@@ -1,4 +1,5 @@
 export * from './buildDiagnosticsAdminGuides'
+export * from './buildSpfTreeNode'
 export * from './computeDomainScore'
 export * from './findNonPublicSpfTargets'
 export * from './getDiagnosticStats'

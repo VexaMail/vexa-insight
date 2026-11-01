@@ -1,5 +1,6 @@
+import { useCalendarDayButton } from '@/hooks/ui'
 import { cn } from '@/lib/utils'
-import * as React from 'react'
+import type * as React from 'react'
 import type { DayButton } from 'react-day-picker'
 import { getDefaultClassNames } from 'react-day-picker'
 import { Button } from './button'
@@ -12,11 +13,7 @@ export function CalendarDayButton({
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames()
 
-  const ref = React.useRef<HTMLButtonElement>(null)
-  const isFocused = modifiers['focused'] === true
-  React.useEffect(() => {
-    if (isFocused) ref.current?.focus()
-  }, [isFocused])
+  const ref = useCalendarDayButton(modifiers['focused'] === true)
 
   return (
     <Button
