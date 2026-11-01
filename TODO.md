@@ -237,8 +237,11 @@ the portfolio repo.
   (2026-11-01).** `main` carries `d90d553` (SNDS keeps syncing past a day that
   answers HTTP 500) and the upgrade of `next` 16.4.0 -> 16.4.1, which closes
   Dependabot alerts #9 and #11 (critical, unauthenticated RCE) and #10 (high,
-  Server Actions DoS). Production still runs the earlier build. **Blocked on:**
-  the owner choosing when to deploy. After deploying, check that
+  Server Actions DoS). Since then `main` also moved every dependency to its
+  latest release (`next` 16.4.3, React 19.3.1, imapflow 2.10, esbuild 0.28, pnpm
+  12.17.0, refreshed `node:26-alpine` digest; through `eb915a4`), all verified
+  by CI and `scripts/smoke.sh`. Production still runs the earlier build.
+  **Blocked on:** the owner choosing when to deploy. After deploying, check that
   `snds_connection.last_sync_error` is empty or lists only retried dates and
   that SNDS rows after 2026-10-03 appear.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
