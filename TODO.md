@@ -242,6 +242,14 @@ the portfolio repo.
 
 ## Infrastructure
 
+- [!] **Deploy to nova: SNDS sync fix and the Next.js 16.4.1 security patch
+  (2026-11-01).** `main` carries `d90d553` (SNDS keeps syncing past a day that
+  answers HTTP 500) and the upgrade of `next` 16.4.0 -> 16.4.1, which closes
+  Dependabot alerts #9 and #11 (critical, unauthenticated RCE) and #10 (high,
+  Server Actions DoS). Production still runs the earlier build. **Blocked on:**
+  the owner choosing when to deploy. After deploying, check that
+  `snds_connection.last_sync_error` is empty or lists only retried dates and
+  that SNDS rows after 2026-10-03 appear.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for
