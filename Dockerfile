@@ -1,5 +1,5 @@
 # Build stage
-FROM node:26-alpine@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868 AS builder
+FROM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS builder
 
 # better-sqlite3 ships no musl/arm64 prebuilt binary, so pnpm install falls
 # back to node-gyp, which needs a Python and a C++ toolchain.
@@ -28,7 +28,7 @@ RUN pnpm run build:seed
 RUN pnpm run build:recovery
 
 # Run stage
-FROM node:26-alpine@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868 AS runner
+FROM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS runner
 
 WORKDIR /app
 
