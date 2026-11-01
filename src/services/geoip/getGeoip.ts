@@ -23,7 +23,11 @@ export const getGeoip = (() => {
   return async function getGeoip(): Promise<GeoipLookup> {
     if (geoipModule) return geoipModule
     if (!env.GEODATADIR) {
-      process.env.GEODATADIR = path.join(process.cwd(), 'data', 'geoip')
+      process.env.GEODATADIR = path.join(
+        /* turbopackIgnore: true */ process.cwd(),
+        'data',
+        'geoip',
+      )
     }
     try {
       geoipModule = await import('geoip-lite')

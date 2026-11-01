@@ -7,7 +7,9 @@ import path from 'node:path'
  * back to project_root/data/geoip.
  */
 export function ensureGeoipDataDir(): string {
-  const dataDir = env.GEODATADIR ?? path.join(process.cwd(), 'data', 'geoip')
+  const dataDir =
+    env.GEODATADIR ??
+    path.join(/* turbopackIgnore: true */ process.cwd(), 'data', 'geoip')
   mkdirSync(dataDir, { recursive: true })
   return dataDir
 }
