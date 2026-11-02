@@ -233,7 +233,7 @@ the portfolio repo.
 
 ## Infrastructure
 
-- [!] **Deploy to nova: SNDS sync fix and the Next.js 16.4.1 security patch
+- [~] **Deploy to nova: SNDS sync fix and the Next.js 16.4.1 security patch
   (2026-11-01).** `main` carries `d90d553` (SNDS keeps syncing past a day that
   answers HTTP 500) and the upgrade of `next` 16.4.0 -> 16.4.1, which closes
   Dependabot alerts #9 and #11 (critical, unauthenticated RCE) and #10 (high,
@@ -241,9 +241,11 @@ the portfolio repo.
   latest release (`next` 16.4.3, React 19.3.1, imapflow 2.10, esbuild 0.28, pnpm
   12.17.0, refreshed `node:26-alpine` digest; through `eb915a4`), all verified
   by CI and `scripts/smoke.sh`. Production still runs the earlier build.
-  **Blocked on:** the owner choosing when to deploy. After deploying, check that
-  `snds_connection.last_sync_error` is empty or lists only retried dates and
-  that SNDS rows after 2026-10-03 appear.
+  **Deployed 2026-11-02** (`a6a84b3` through `nubenode/scripts/vexa-deploy.sh`:
+  health 200, `/` redirects to `/login`, database backup `vexa.db.pre-a6a84b3`;
+  owner: "arregla todo"). Still to check after the 06:17 UTC sync on 2026-11-03:
+  `snds_connection.last_sync_error` is empty or lists only retried dates, and
+  SNDS rows after 2026-10-03 appear.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for
