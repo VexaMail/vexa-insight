@@ -1,0 +1,59 @@
+{
+  "baseUrl": "http://localhost:3210",
+  "auth": {
+    "loginPath": "/login",
+    "usernameEnv": "UI_QUALITY_USER",
+    "passwordEnv": "UI_QUALITY_PASSWORD"
+  },
+  "routes": [
+    {
+      "path": "/dashboard"
+    },
+    {
+      "path": "/domains"
+    },
+    {
+      "path": "/reports"
+    },
+    {
+      "path": "/ips"
+    },
+    {
+      "path": "/diagnostics"
+    },
+    {
+      "path": "/ingest"
+    },
+    {
+      "path": "/settings"
+    },
+    {
+      "path": "/domains/agropex.es"
+    },
+    {
+      "path": "/diagnostics/agropex.es"
+    },
+    {
+      "path": "/reports/14435"
+    },
+    {
+      "path": "/ips/5.56.58.244"
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    }
+  ],
+  "colorSchemes": ["light", "dark"],
+  "palette": {
+    "variablePrefixes": ["--color-"],
+    "colors": ["#ffffff"]
+  }
+}
