@@ -8,6 +8,14 @@
 
 ### 2026-11
 
+- [x] 2026-11-15 — **Infrastructure:** **Dependency audit failed on every PR
+      (GHSA-3g3m-2fjr-6pw4, glob 13.0.6 via lhci > lighthouse > @sentry/node).**
+      Added the `'glob@13': ^14.0.2` override to `pnpm-workspace.yaml`; the
+      lockfile now resolves glob 14.0.6.
+  - Result: `pnpm run audit:check` reports 0 unwaived advisories.
+  - Evidence: `pnpm run audit:check` failed on main before the change and passes
+    after; `pnpm run check:ci` passes locally.
+
 - [x] 2026-11-03 — **Infrastructure:** **Deploy to nova: SNDS sync fix and the
       Next.js 16.4.1 security patch (2026-11-01).** `main` carries `d90d553`
       (SNDS keeps syncing past a day that answers HTTP 500) and the upgrade of
