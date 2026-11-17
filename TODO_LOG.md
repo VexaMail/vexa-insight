@@ -8,6 +8,15 @@
 
 ### 2026-11
 
+- [x] 2026-11-17 — **UI redesign:** Phone card list of domain sources still uses
+      soft badges, not solid.
+  - Result: Already solid. `AuthPill` (used by `SourceAuthPills` in
+    `SourcePhoneRow`) picks its variant with `verdictPillVariant` (2461899):
+    solid for pass, fail and partial, soft only for unknown or neutral (not
+    enough data), which is the intended rule.
+  - Evidence: Code read of `AuthPill.tsx` and `verdictPillVariant.ts`;
+    `pnpm run check` passes.
+
 - [x] 2026-11-15 — **Infrastructure:** **Dependency audit failed on every PR
       (GHSA-3g3m-2fjr-6pw4, glob 13.0.6 via lhci > lighthouse > @sentry/node).**
       Added the `'glob@13': ^14.0.2` override to `pnpm-workspace.yaml`; the
