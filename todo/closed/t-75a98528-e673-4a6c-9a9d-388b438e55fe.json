@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-75a98528-e673-4a6c-9a9d-388b438e55fe",
+  "title": "Start in light",
+  "state": "done",
+  "category": "light-default-and-public-theme-control",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    mode when no theme is saved, preserve explicit dark/light preferences and",
+    "    expose both controls in the public header. Recaptured the synthetic",
+    "    dashboard in light mode for the landing, social preview and README",
+    "    overview. The new public image URL avoids reusing a cached dark preview."
+  ],
+  "closed": "2026-10-21",
+  "result": "Start in light",
+  "evidence": [
+    "`pnpm run type-check`, focused ESLint and `pnpm exec vitest run --config vitest.config.mts test/publicSiteRouting.test.ts test/publicDomainNavigation.test.tsx`. Browser checks verify light startup with a dark OS preference, dark/light persistence after reload and no horizontal overflow at 390px. These checks also passed against production after deploying runtime `e872ecf`. `PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com teleporte.es` passed. The new image returned HTTP 200 with a SHA-256 matching the committed capture; Vexa Mail remained HTTP 200. The prior public runtime is preserved."
+  ]
+}

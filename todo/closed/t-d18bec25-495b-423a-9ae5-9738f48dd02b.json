@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-d18bec25-495b-423a-9ae5-9738f48dd02b",
+  "title": "The admin API token is no longer the encryption root",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The",
+    "",
+    "    settings page rendered `SECRET_KEY` into a browser as the API key, and",
+    "    every cron job and script held the same string that decrypts the stored",
+    "    mailbox credentials.",
+    "- Breaking: every existing API token changes on upgrade. README, the API",
+    "  requirements doc and the settings card say where to read the new one."
+  ],
+  "closed": "2026-09-11",
+  "result": "`deriveApiToken()` derives a 64-character token from `SECRET_KEY` with HKDF-SHA256 under its own info label, beside the existing encryption key derivation. `AppConfig.apiToken` carries it, the three auth paths compare against it, and `getSettingsForAdmin()` returns it instead of the key. Nothing recovers the root from the token.",
+  "evidence": [
+    "`pnpm run check:ci` green — 107 test files, 623 tests. `test/deriveApiToken.test.ts` pins determinism, length, sensitivity to the key, and that the token differs from the AES key derived from the same secret (only the info label separates them)."
+  ]
+}

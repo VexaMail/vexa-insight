@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-ed77a9de-0143-4cc7-a8c9-935ffb4e4496",
+  "title": "Settle DMARC archive promises on `yauzl` errors",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-19",
+  "result": "Added error-event handling so failed ZIP reads no longer leave ingestion promises pending.",
+  "evidence": [
+    "`ee5cddc7`."
+  ],
+  "files": [
+    "services/dmarc/"
+  ]
+}

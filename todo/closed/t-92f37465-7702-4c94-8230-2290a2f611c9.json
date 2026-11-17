@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-92f37465-7702-4c94-8230-2290a2f611c9",
+  "title": "Replace wildcard database barrels with",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    explicit exports."
+  ],
+  "closed": "2026-05-19",
+  "result": "Replaced `export *` usage in the database public API with named re-exports.",
+  "evidence": [
+    "`d4958269`."
+  ],
+  "files": [
+    "lib/db/index.ts",
+    "lib/db/schema/index.ts"
+  ]
+}

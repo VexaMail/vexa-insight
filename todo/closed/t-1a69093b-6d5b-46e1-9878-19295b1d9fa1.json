@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-1a69093b-6d5b-46e1-9878-19295b1d9fa1",
+  "title": "Ingest: separate scheduler,",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    mailbox connectivity, processing and data freshness (last run, last",
+    "    success, last mail seen, last report parsed)."
+  ],
+  "closed": "2026-10-19",
+  "result": "KPI tiles, ingestion health table (scheduler, last run, processed, mailbox freshness, errors), health checks per area, icon log tabs; times in UTC.",
+  "evidence": [
+    "c45d4fc, e68127f"
+  ]
+}

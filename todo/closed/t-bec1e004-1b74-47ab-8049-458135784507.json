@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-bec1e004-1b74-47ab-8049-458135784507",
+  "title": "Tighten AI rate limits, password hashing, and",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    local MCP handling."
+  ],
+  "closed": "2026-05-18",
+  "result": "Limited AI endpoints to 10 requests per minute per IP, increased scrypt cost, and ignored token-bearing local MCP configuration.",
+  "evidence": [
+    "`3e6c1308`, `47ca0a35`; covered by `test/scryptBackcompat.test.ts`."
+  ],
+  "files": [
+    "utils/rateLimit/",
+    "services/auth/",
+    "gitignore"
+  ]
+}

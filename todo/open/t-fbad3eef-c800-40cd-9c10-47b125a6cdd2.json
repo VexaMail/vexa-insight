@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-fbad3eef-c800-40cd-9c10-47b125a6cdd2",
+  "title": "Shared DropdownMenu, SplitButton and ScoreRing in `src/components/ui`;",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    domain, source, diagnostics and settings each built menus on Popover."
+  ]
+}

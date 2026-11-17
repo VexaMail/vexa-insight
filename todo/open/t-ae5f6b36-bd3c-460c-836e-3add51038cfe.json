@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-ae5f6b36-bd3c-460c-836e-3add51038cfe",
+  "title": "`Sparkline` scales from zero, so rate lines look flat (home works around",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    it); add a domain option. Chart x-axes print ISO dates."
+  ]
+}

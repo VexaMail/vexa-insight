@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-b501e78f-dbc0-4f59-849e-5ffb5c37d63e",
+  "title": "SNDS report format confirmed against real data",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The REST",
+    "",
+    "    API answers `report/data/<date>` with CSV (`application/octet-stream`), no",
+    "    header row, in the legacy export's column order; `report/status/ip`",
+    "    answers 404 when no IP is listed. The first live sync failed with",
+    "    \"returned a body that is not JSON\"; the parser now reads CSV (quoted cells",
+    "    included) and still accepts JSON. Covered by CSV fixtures in",
+    "    `test/parseSndsDataRows.test.ts` and `test/syncSnds.test.ts`."
+  ],
+  "closed": "2026-09-30",
+  "result": "SNDS report format confirmed against real data",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

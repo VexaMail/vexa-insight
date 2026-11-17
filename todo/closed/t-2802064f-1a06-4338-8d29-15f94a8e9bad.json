@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-2802064f-1a06-4338-8d29-15f94a8e9bad",
+  "title": "Benchmark and improve full-repository lint",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    performance."
+  ],
+  "closed": "2026-07-24",
+  "result": "Cold `eslint .` is 75.6 s (dominated by type-aware linting); enabled `--cache` in the lint scripts, warm runs now 5.4 s (14x). CI stays effectively cold (no cache file in fresh checkouts). Caveat: cache skips unchanged files even when a dependency's types changed; run a cold lint (`rm .eslintcache`) before releases.",
+  "evidence": [
+    "timed runs 2026-07-24."
+  ],
+  "files": [
+    "package.json",
+    "gitignore"
+  ]
+}

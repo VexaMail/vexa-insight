@@ -1,0 +1,37 @@
+{
+  "tadu": 2,
+  "id": "t-46e42c68-4404-4e51-9cdd-bce2b6631929",
+  "title": "Move the `update-db-stream` admin key out of",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    the URL query string.",
+    "- Behavior note: a mid-stream transport drop can no longer silently reconnect",
+    "  on the same URL (the ticket is spent) — the client surfaces the error and",
+    "  the operator restarts the update. That is the intended trade for",
+    "  non-replayable URLs."
+  ],
+  "closed": "2026-07-25",
+  "result": "The GeoIP update SSE stream no longer takes `?apiKey=<SECRET_KEY>`. New `POST /api/v1/admin/geoip/update-db-ticket` authenticates the normal header way (`requireAdminAuth`) and mints a 24-byte random ticket; the stream takes `?ticket=` and redeems it through `consumeStreamTicket`, which deletes it on first read and rejects anything past `STREAM_TICKET_TTL_MS` (30s). What lands in proxy logs and browser history is now a spent, short-lived value instead of the long-lived admin secret. Ticket store is in-process, which matches the single-replica topology (ADR 0003). ADR 0001 records the SSE exception.",
+  "evidence": [
+    "new `test/streamTicket.test.ts` (single-use, unknown/empty/undefined rejected, 48-hex distinctness over 50 mints, TTL expiry); `test/apiAuthSmoke.test.ts` extended with a per-file allowlist that still requires the route to call `consumeStreamTicket`; `pnpm run test` 435/435, `pnpm run test:a11y` 15/15, `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean, `pnpm run build` exit 0."
+  ],
+  "files": [
+    "app/api/v1/admin/geoip/{update-db-ticket",
+    "update-db-stream}/route.ts",
+    "services/api/{issueStreamTicket",
+    "consumeStreamTicket",
+    "streamTicketStorePrivate",
+    "index}.ts",
+    "constants/api/",
+    "utils/settings/{fetchGeoIpStreamTicket",
+    "attachGeoIpStreamHandlers}.ts",
+    "types/settings/GeoIpStreamHandlers.ts",
+    "hooks/settings/useGeoIp.ts",
+    "test/{streamTicket",
+    "apiAuthSmoke}.test.ts",
+    "docs/adr/0001-default-deny-api-surface.md"
+  ]
+}

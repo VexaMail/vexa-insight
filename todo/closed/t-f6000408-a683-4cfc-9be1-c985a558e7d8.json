@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-f6000408-a683-4cfc-9be1-c985a558e7d8",
+  "title": "Delete the dead `formatters/index.ts`",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    aggregator barrel."
+  ],
+  "closed": "2026-07-25",
+  "result": "The TODO asked to convert its 14 `export *` lines to explicit re-exports. It turned out to have zero importers: its own header says \"Import from '@/utils'\", but no `utils/index.ts` exists and `@/*` maps straight to the repo root, so that entrypoint was never resolvable. Deleted rather than converted — the barrel-policy violation and ~80 symbols of re-export churn both disappear. The real formatters are still reached directly (`@/formatters/metrics`, `utils/format/index.ts`).",
+  "evidence": [
+    "`grep` for `@/formatters`, `@/utils`, and relative `../formatters` imports found only `@/formatters/metrics` (a different file); cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run build` exit 0."
+  ],
+  "files": [
+    "formatters/index.ts` (deleted)"
+  ]
+}

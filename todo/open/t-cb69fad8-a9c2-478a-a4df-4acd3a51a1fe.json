@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-cb69fad8-a9c2-478a-a4df-4acd3a51a1fe",
+  "title": "P2 — Full sender-specific SPF evaluation and void-lookup diagnostics",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Public include/redirect expansion is implemented. Next: accept a verified",
+    "    test message or explicit evaluation identity before evaluating macros,",
+    "    A/MX/exists/ptr results and path-specific limits. Keep static upper bounds",
+    "    separate from actual SPF pass/fail."
+  ]
+}

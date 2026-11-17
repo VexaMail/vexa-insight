@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-5d592886-3c63-4595-9d35-fe4f51008f02",
+  "title": "**P1 — Blocklist monitoring for the server and observed senders (app;",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    public lookup later).** Monitor explicitly configured outbound server IPs",
+    "    and selected IPs observed in reports. Preserve asset role: web hosting,",
+    "    incoming MX and outbound sender are not interchangeable. Reference:",
+    "    MXToolbox blocklist checks and SuperTool. First step: define a licensed",
+    "    provider/resolver adapter with listed, not-listed, unavailable and",
+    "    query-denied states; store provider, timestamp, evidence and expiry, then",
+    "    integrate scheduling, deduplicated alerts and delisting guidance. Verify",
+    "    provider usage terms before enabling automated queries; never turn DNS",
+    "    query failure into a listing."
+  ]
+}

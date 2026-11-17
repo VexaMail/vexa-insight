@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-816d4a4f-6a81-4aa8-83d4-626a2479ff1e",
+  "title": "**`main` was failing `pnpm run type-check` after the",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    2026-09-12 dependency bump.** Two IMAP call sites stopped matching the",
+    "    current `imapflow` types under `exactOptionalPropertyTypes`.",
+    "- `client.fetchOne` can now resolve to `undefined`, so the `??` chain in",
+    "  `fetchEnvelopeMessage` widened its return past `FetchMessageObject | false`.",
+    "  The miss is now normalized to `false` explicitly.",
+    "- `client.downloadMany` declares its parts' `content` and `meta` as",
+    "  optional-and-possibly-undefined, which the narrower `DownloadedPartsResult`",
+    "  rejected. Both members widened; `parseDmarcAttachmentsFromParts` already",
+    "  guards on `!partData?.content`, so behavior is unchanged.",
+    "- Found incidentally while investigating a DMARC failure spike; the repository",
+    "  gate caught it, CI had not run since the bump."
+  ],
+  "closed": "2026-09-13",
+  "result": "**`main` was failing `pnpm run type-check` after the",
+  "evidence": [
+    "`pnpm run check:ci` green (107 test files, 623 tests, `check-migrations: OK`, `check-chart-version: OK (0.3.1)`). Commit `ccbd4cb`."
+  ]
+}

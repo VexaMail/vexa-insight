@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-a5fa24b4-6785-49e3-b353-2f5a71e3f921",
+  "title": "Eliminate the domain-summary N+1 query",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-19",
+  "result": "Replaced per-domain lookups with SQL aggregation.",
+  "evidence": [
+    "`cc6954f9`; covered by `test/getDomainsSummaryAll.test.ts`."
+  ],
+  "files": [
+    "services/reports/getDomainsSummaryAll.ts",
+    "test/getDomainsSummaryAll.test.ts"
+  ]
+}

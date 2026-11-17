@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-fcf2f3a7-d2c8-4005-b31a-f7a7f105e811",
+  "title": "Enforce reversible database migrations in",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    CI."
+  ],
+  "closed": "2026-05-19",
+  "result": "Added the migration policy, checker, and CI gate.",
+  "evidence": [
+    "`8dfe7f2a`."
+  ],
+  "files": [
+    "scripts/check-migrations.sh",
+    "github/workflows/ci.yml"
+  ]
+}

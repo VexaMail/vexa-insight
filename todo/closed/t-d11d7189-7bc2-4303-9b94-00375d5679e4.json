@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-d11d7189-7bc2-4303-9b94-00375d5679e4",
+  "title": "Remove the unrendered legacy diagnostics",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    chain."
+  ],
+  "closed": "2026-07-24",
+  "result": "Deleted 46 unreachable files (DnsDiagnosticsPanel/DnsRecordsLoader chain, dns card set, assessment/, executive summary, useDnsDiagnostics hook stack, entire lib/diagnostics) and trimmed 4 barrels; live `METRIC_*` style constants and `DnsRecordsSection` preserved.",
+  "evidence": [
+    "grep unreachability audit + `tsc` + knip; full suite green."
+  ],
+  "files": [
+    "components/diagnostics/",
+    "hooks/diagnostics/",
+    "lib/"
+  ]
+}

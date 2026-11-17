@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-08dc945a-2be1-43ea-ae13-ac41f234bf28",
+  "title": "Keep raw mail and replay",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "after parser fixes, with a quarantine for",
+    "",
+    "    unparsed mail (pescheckit). Reports cannot be re-requested."
+  ]
+}

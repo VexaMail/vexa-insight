@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-09ccec08-7dab-4ab4-b3f4-461e1d5bfd6a",
+  "title": "Microsoft Graph and Gmail API with OAuth (M365",
+  "state": "pending",
+  "category": "more-intake-paths",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    blocks basic IMAP auth), IMAP IDLE, `.eml` upload with `message/rfc822`",
+    "    unwrapping (parsedmarc, parse-dmarc)."
+  ]
+}

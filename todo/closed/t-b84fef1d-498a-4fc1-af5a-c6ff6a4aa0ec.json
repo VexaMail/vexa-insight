@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-b84fef1d-498a-4fc1-af5a-c6ff6a4aa0ec",
+  "title": "Add contextual protocol help and examples",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Added tooltips and protocol explainers with example DNS hosts and values.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "components/diagnostics/shared/InfoTooltip.tsx",
+    "components/diagnostics/shared/ProtocolExplainer.tsx"
+  ]
+}

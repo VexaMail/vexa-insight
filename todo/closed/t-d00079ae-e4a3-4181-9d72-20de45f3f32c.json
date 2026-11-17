@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-d00079ae-e4a3-4181-9d72-20de45f3f32c",
+  "title": "Decide whether experimental OIDC SSO",
+  "state": "done",
+  "category": "pending-decisions",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    is production-ready.",
+    "- Decision: no, it stays experimental, with session revocation named as the",
+    "  condition to revisit. `docs/SSO.md` keeps its experimental banner and",
+    "  known-gaps list.",
+    "- Finding while scoping the condition: two of the three gaps the backlog",
+    "  attributed to SSO are already covered — deleting a user cascades to",
+    "  `sessions` (FK `onDelete: 'cascade'`), and `getSession` joins `users` on",
+    "  every request, so a role or allow-list change applies on the next request",
+    "  rather than at session expiry. The real gap is that a password change leaves",
+    "  existing sessions alive; that is now a concrete `[ ]` item in `TODO.md`",
+    "  rather than an open-ended decision."
+  ],
+  "closed": "2026-07-26",
+  "result": "Decide whether experimental OIDC SSO",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

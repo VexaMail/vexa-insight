@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-ffa6b580-fe9e-4683-82be-be5c9fd7a2b5",
+  "title": "PR #90: bump `azure/setup-helm` 5.0.1 to 5.1.0",
+  "state": "pending",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "created": "2026-11-17",
+  "notes": [
+    "    Dependabot PR, review requested from the owner, checks green. Next: create",
+    "    the missing dependabot labels, then merge."
+  ]
+}

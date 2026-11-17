@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-0c499c5e-e744-4b35-a531-790542b8be85",
+  "title": "Encrypt IMAP credentials at rest",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-18",
+  "result": "Added AES-256-GCM encryption derived from `SECRET_KEY` and migration-compatible reads.",
+  "evidence": [
+    "`38f3e71c`; covered by `test/encryptSecret.test.ts`."
+  ],
+  "files": [
+    "services/crypto/",
+    "services/settings/"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-e9dbd1f5-ab6e-4d02-87a4-7a0e8aef9524",
+  "title": "Mail the parser does not recognise is re-downloaded on every poll",
+  "state": "pending",
+  "category": "future-ideas",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Checked 2026-09-30 (`processOneMessageUid` ->",
+    "    `collectMessageAttachments`): a message whose candidate parts fail to",
+    "    parse is left where it is, not moved or trashed, and no per-message error",
+    "    is raised (`parseDmarcFileToResult` returns null). So nothing is lost, but",
+    "    because only parsed messages are recorded as processed, a TLS-RPT",
+    "    `.json.gz` (accepted by the `.gz` extension and `application/gzip`) is",
+    "    downloaded and decompressed again on every poll until the mailbox is",
+    "    cleaned. Smallest fix: record the Message-ID as seen-but-unparsed so the",
+    "    next poll skips it, or narrow `.gz` candidates to `.xml.gz`/`.gz` whose",
+    "    content type is not a `tlsrpt` one. TLS-RPT is now parsed (2026-09-30), so",
+    "    what remains is ARF and any other unparsed mail. **2026-09-30,",
+    "    production:** the six Google TLS reports in the mailbox are typed",
+    "    `application/tlsrpt+gzip`, and the server log shows `body_count=0` for",
+    "    them, so they are _not_ downloaded each poll; only a report typed plain",
+    "    `application/gzip` would be."
+  ]
+}

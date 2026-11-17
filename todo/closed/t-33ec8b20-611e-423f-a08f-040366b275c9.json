@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-33ec8b20-611e-423f-a08f-040366b275c9",
+  "title": "Correct the health endpoint in",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `docs/DEPLOY-BEHIND-PROXY.md`."
+  ],
+  "closed": "2026-08-28",
+  "result": "`/api/health` -> `/api/v1/health` and the real `{ \"data\": { \"status\": \"ok\" } }` body in the nginx snippet, k8s probes and smoke test. Commit: `docs(deploy): correct the health endpoint path and response shape`.",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

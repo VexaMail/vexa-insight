@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-d87fe9d0-ab5e-4cd2-b550-a2efd0f84dc1",
+  "title": "Add regression tests for report-detail rendering",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    failures."
+  ],
+  "closed": "2026-04-22",
+  "result": "Added server-render checks for the IP link and deterministic country-flag markup.",
+  "evidence": [
+    "Historical targeted Vitest and type-check passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "test/IpAddressLink.test.ts",
+    "test/IpFlag.test.ts"
+  ]
+}

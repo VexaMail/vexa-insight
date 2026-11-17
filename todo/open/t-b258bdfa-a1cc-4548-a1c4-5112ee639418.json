@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-b258bdfa-a1cc-4548-a1c4-5112ee639418",
+  "title": "P3 — Inbox-placement testing across providers",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "First step: assess",
+    "",
+    "    owned seed accounts, provider permissions, operating cost and retention.",
+    "    Keep the result limited to the tested mailboxes and message; no guarantee",
+    "    for all recipients. This is broader than an accepted SMTP transaction or",
+    "    one received authentication test."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-f5dbc770-6f0a-416f-a5fe-f5c5285f7852",
+  "title": "Published the landing at",
+  "state": "done",
+  "category": "public-domain-checker",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `https://insight.vexamail.com/` as a separate Enhance persistent app",
+    "    inside the Vexa Mail website, running runtime revision `4319132`."
+  ],
+  "closed": "2026-10-21",
+  "result": "Live SPF, DKIM, DMARC and MX checks, HTTPS redirect, an origin Let's Encrypt certificate, and private routes blocked without a database or mailbox access. Existing Vexa Mail and API root statuses are preserved.",
+  "evidence": [
+    "`PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-public-website.py https://insight.vexamail.com` passes; production browser submission returns four cards for `vexamail.com`; direct origin HTTPS certificate verification succeeds. Startup and operational details are in `docs/public-website.md`."
+  ]
+}

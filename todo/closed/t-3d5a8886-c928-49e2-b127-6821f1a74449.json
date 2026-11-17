@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-3d5a8886-c928-49e2-b127-6821f1a74449",
+  "title": "Remove duplicate legacy blocks from the",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    active diagnostics view."
+  ],
+  "closed": "2026-04-22",
+  "result": "Removed the old DNS panel, executive summary, assessment, and authentication breakdown from `DiagnosticsView`.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "components/diagnostics/DiagnosticsView.tsx"
+  ]
+}

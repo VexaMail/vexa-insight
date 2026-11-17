@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-bcc0ae24-512f-4e74-b928-1691e4ffeee0",
+  "title": "Declare `tsx` as a devDependency",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-25",
+  "result": "`seed:demo` and `backfill:rollup` both shell out to `tsx`, but it was only present transitively (`drizzle-kit` -> `tsx@4.22.1`) and hoisted into `node_modules/.bin`. A drizzle-kit bump that drops or replaces it would have silently broken both documented scripts. Declared `tsx: ^4.22.1`, resolving to the version already in the lockfile.",
+  "evidence": [
+    "`pnpm-lock.yaml` diff is 3 additive lines in the importer block, no dependency versions changed; `pnpm exec tsx --version` -> `tsx v4.22.1`; `pnpm install --lockfile-only` reports the lockfile up to date. Found 2026-07-25 while documenting the backfill step."
+  ],
+  "files": [
+    "package.json",
+    "pnpm-lock.yaml"
+  ]
+}

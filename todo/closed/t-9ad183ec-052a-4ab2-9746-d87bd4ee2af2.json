@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-9ad183ec-052a-4ab2-9746-d87bd4ee2af2",
+  "title": "Default-deny `/api/v1/**`",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-18",
+  "result": "Wrapped API routes with `withApiAuth` and added a structural smoke test for route coverage.",
+  "evidence": [
+    "`d11cb99d`, `dc0a0845`; covered by `test/apiAuthSmoke.test.ts` and `test/withApiAuth.test.ts`."
+  ],
+  "files": [
+    "services/api/withApiAuth.ts",
+    "test/apiAuthSmoke.test.ts"
+  ]
+}

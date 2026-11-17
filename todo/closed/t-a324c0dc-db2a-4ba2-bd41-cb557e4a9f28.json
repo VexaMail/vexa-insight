@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-a324c0dc-db2a-4ba2-bd41-cb557e4a9f28",
+  "title": "Reject an empty `allowedDomains` array at the",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    API boundary (found while fixing the IP scoping leak above)."
+  ],
+  "closed": "2026-07-26",
+  "result": "`createUserInputSchema` and `updateUserInputSchema` now require `.min(1)` on `allowedDomains`. The field was `z.array(z.string()).optional()`, so `POST/PUT /api/v1/users` could store `\"[]\"` while only the modal blocked it client-side. Since `getAllowedDomainIds` now reads an empty list as deny-all, that was a way to create a user who silently sees nothing; omitting the field (or sending null) remains the way to express \"all domains\". Both routes already `safeParse`, so this surfaces as a 400 `VALIDATION_ERROR`, not a 500.",
+  "evidence": [
+    "`pnpm run check:ci` clean (457/457, migrations OK); new `test/userInputSchemas.test.ts`."
+  ],
+  "files": [
+    "validators/users/{create",
+    "update}UserInputSchema.ts",
+    "test/userInputSchemas.test.ts"
+  ]
+}

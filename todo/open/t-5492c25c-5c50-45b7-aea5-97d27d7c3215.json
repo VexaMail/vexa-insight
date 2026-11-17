@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-5492c25c-5c50-45b7-aea5-97d27d7c3215",
+  "title": "`POST /api/v1/admin/webhooks/[id]` (test ping) ignores the id and sends",
+  "state": "pending",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `test.ping` to every enabled endpoint subscribed to it. Found 2026-10-19;",
+    "    the settings UI says so and disables Test unless the endpoint is",
+    "    subscribed. Smallest step: dispatch to the endpoint in the URL only, with",
+    "    a test."
+  ]
+}

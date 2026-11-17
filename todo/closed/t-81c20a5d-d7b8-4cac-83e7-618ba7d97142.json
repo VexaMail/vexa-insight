@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-81c20a5d-d7b8-4cac-83e7-618ba7d97142",
+  "title": "Report 14435 shows DKIM aligned",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    100% with compliance 0%, and `/ips/<ip>` shows DKIM pass 100% with fully",
+    "    aligned 0%: separate SPF auth, SPF aligned, DKIM auth, DKIM aligned and",
+    "    DMARC result everywhere, with the record evidence (header_from,",
+    "    envelope_from, DKIM `d=`)."
+  ],
+  "closed": "2026-10-19",
+  "result": "SPF auth, SPF aligned, DKIM auth, DKIM aligned and DMARC result are separate tiles and rows on the report and source pages, with d= and the envelope domain from the stored XML.",
+  "evidence": [
+    "120e19d, 3dbc40b; report and source screenshots"
+  ]
+}

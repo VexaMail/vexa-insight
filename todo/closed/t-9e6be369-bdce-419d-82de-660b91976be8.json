@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-9e6be369-bdce-419d-82de-660b91976be8",
+  "title": "Feed all domain TXT records into SPF",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    analysis."
+  ],
+  "closed": "2026-04-22",
+  "result": "Restored duplicate and conflict detection by passing the resolved TXT set to `analyzeSpfRecord`.",
+  "evidence": [
+    "Type-check and focused ESLint passed; current integration coverage in `test/getDomainDnsRecords.test.ts`."
+  ],
+  "files": [
+    "services/diagnostics/getDomainDnsRecords.ts"
+  ]
+}

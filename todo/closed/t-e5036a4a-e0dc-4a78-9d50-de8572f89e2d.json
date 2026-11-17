@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-e5036a4a-e0dc-4a78-9d50-de8572f89e2d",
+  "title": "Design tokens for the console",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    palette in both themes (dark canvas `#0B1118`, surface `#121C25`, border",
+    "    `#243441`, accent `#2DD4A0`; light canvas `#F5F8FA`, surface `#FFFFFF`,",
+    "    border `#DBE4E9`, accent `#008F71`), semantic status colours (healthy,",
+    "    needs review, critical, unknown), Geist Mono for IPs, ids and DNS, 120-180",
+    "    ms motion, denser cards and tables."
+  ],
+  "closed": "2026-10-19",
+  "result": "Console tokens in both themes (deeper navy dark canvas, solid status badges, Geist Mono figures, quiet grid backdrop).",
+  "evidence": [
+    "1980973, 1cf61c3; pnpm run check:ci 912 tests and pnpm run build green at 015a33d"
+  ]
+}

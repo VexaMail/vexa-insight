@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-4496a30b-e924-4f2e-abed-90569fa6b371",
+  "title": "Classified negative DKIM wildcards without",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    hiding real revocations Common-selector probes receive a catch-all",
+    "    empty-key answer even when no sender uses them; verify a nonce selector",
+    "    and keep actual reported revocations actionable."
+  ],
+  "closed": "2026-10-24",
+  "result": "Added a nonce-selector check for catch-all empty-key answers and ignored unrelated TXT wildcards. Common-probe revocations without report evidence are informational; observed revoked selectors remain actionable and real selector overrides stay valid.",
+  "evidence": [
+    "pnpm check:ci passed: 1050 tests across 200 files, type-check, linters, format, Knip, dependency graph, migrations and chart checks. Four wildcard regression cases use generic domains and synthetic data."
+  ]
+}

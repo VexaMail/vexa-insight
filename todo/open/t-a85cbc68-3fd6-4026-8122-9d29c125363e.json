@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-a85cbc68-3fd6-4026-8122-9d29c125363e",
+  "title": "Dashboard shows \"Compliance 96.8%\" and \"Global pass rate 83%\" at once, and",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    24,802 emails vs 24,699 on `/ips`; define each metric's denominator and",
+    "    window, reconcile, and label them. The two \"last 30 days\" windows were",
+    "    aligned on 2026-10-19 (`getFromDateFromDays` starts at 00:00 UTC;",
+    "    overview, reports and sources agree at 24,612 messages and 1,334 reports)",
+    "    and tile hints name each scope. Left: compliance vs pass-rate labelling."
+  ]
+}

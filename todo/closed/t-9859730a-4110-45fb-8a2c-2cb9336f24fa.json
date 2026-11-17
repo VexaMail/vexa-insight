@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-9859730a-4110-45fb-8a2c-2cb9336f24fa",
+  "title": "`drizzle-kit migrate`",
+  "state": "done",
+  "category": "pnpm-run-db-migrate-works-again",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    exited 1 with no message on every `DATABASE_URL` shape while the app's own",
+    "    `runMigrations()` applied the same files at boot, and CONTRIBUTING named",
+    "    the command as setup step 2. The script now runs `scripts/migrate.ts`, a",
+    "    `tsx` entrypoint around `runMigrations()` shaped like",
+    "    `scripts/seed-demo.ts`, so the CLI and the booting app share one",
+    "    definition of \"migrated\" and `__app_migrations` stays the single ledger.",
+    "    Evidence: against an empty scratch file the command creates 21 tables and",
+    "    records 31 migrations, a second run is a no-op, `pnpm run check` green.",
+    "    `drizzle-kit` stays for `db:generate`."
+  ],
+  "closed": "2026-09-09",
+  "result": "`drizzle-kit migrate`",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

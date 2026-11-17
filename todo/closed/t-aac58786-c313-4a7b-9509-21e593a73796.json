@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-aac58786-c313-4a7b-9509-21e593a73796",
+  "title": "Add DMARC parser and ingestion regression",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    coverage."
+  ],
+  "closed": "2026-05-19",
+  "result": "Added major-provider fixtures, ZIP edge cases, duplicate-report idempotency, and per-report IP deduplication tests.",
+  "evidence": [
+    "`c9227e17`, `7f862ffc`, `125ab20d`."
+  ],
+  "files": [
+    "test/parseDmarcXmlFixtures.test.ts",
+    "test/zipEdgeCases.test.ts",
+    "test/ingestIdempotency.test.ts",
+    "test/ingestIpDedup.test.ts"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-da84b8d1-1c05-450a-bbd3-ef6935d891a2",
+  "title": "`/diagnostics/[domain]` still runs a live DNS check with no cache on every",
+  "state": "pending",
+  "category": "diagnostics-load-time-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    visit, which takes several seconds; a spinner shows meanwhile. The index",
+    "    no longer waits on DNS: it reads stored runs and refreshes stale ones in",
+    "    batches. Next: time `getDomainDnsRecords` per protocol on one domain to",
+    "    find the slow lookups, then decide between lower resolver timeouts or",
+    "    serving the stored run first."
+  ]
+}

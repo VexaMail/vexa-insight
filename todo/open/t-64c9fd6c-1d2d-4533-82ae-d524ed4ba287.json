@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-64c9fd6c-1d2d-4533-82ae-d524ed4ba287",
+  "title": "Verify the diagnostics AI rollout plan against a live provider call",
+  "state": "blocked",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "(implemented 2026-07-24 with prompt+parser tests only; no end-to-end AI call was run). Blocked: needs a real provider API key and spends paid model quota, which this run has no authorization for.",
+  "unblock": "The user names the provider/key and authorizes one metered call."
+}

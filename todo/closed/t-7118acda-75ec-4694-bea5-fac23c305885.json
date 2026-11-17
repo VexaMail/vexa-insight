@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-7118acda-75ec-4694-bea5-fac23c305885",
+  "title": "Webhook delivery retries (issue #27)",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Transient failures",
+    "",
+    "    (network, timeout, DNS, 429, 5xx) retried after 1/4/16 s, nothing else;",
+    "    `last_attempts` column (migration 0039); test ping stays single-attempt.",
+    "    Evidence: `test/deliverWebhookWithRetry.test.ts` (500 then 200 delivers in",
+    "    2 attempts, 404 and an SSRF rejection make 1)."
+  ],
+  "closed": "2026-09-30",
+  "result": "Webhook delivery retries (issue #27)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

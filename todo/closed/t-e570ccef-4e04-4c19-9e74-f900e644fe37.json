@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-e570ccef-4e04-4c19-9e74-f900e644fe37",
+  "title": "Security: domain allow-list on the sources endpoint",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `GET /api/v1/domains/{id}/sources` skipped `getAllowedDomainIds`; a",
+    "    restricted user could read other domains' sources by id. Now 404, like its",
+    "    siblings. Evidence: `test/domainSourcesRouteAccess.test.ts` fails on the",
+    "    old route and passes on the new; deployed 442c15a."
+  ],
+  "closed": "2026-09-30",
+  "result": "Security: domain allow-list on the sources endpoint",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

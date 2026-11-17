@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-066f7eaa-2328-444c-bedd-4a414961fa31",
+  "title": "P2 — Public scan history, comparison and exports",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Reference: MXToolbox",
+    "",
+    "    chronological results and EasyDMARC report export. First step: choose",
+    "    explicit persisted snapshots or local-only history, show freshness and",
+    "    changed records, then add a printable/shareable export with retention",
+    "    controls. The existing domain URL runs a current scan and is not a",
+    "    historical snapshot."
+  ]
+}

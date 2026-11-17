@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-7005ae4b-93a1-4cee-9cd8-d5e36bcabd5d",
+  "title": "Corrected private DKIM discovery, validity",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    and strength findings"
+  ],
+  "closed": "2026-10-24",
+  "result": "Added Enhance and observed selectors to private DNS views/API, separated RSA-1024 strength recommendations from invalid keys, parsed real RSA key sizes and aligned scores with parsed validity. Common-selector misses are informational; actual missing reported selectors remain actionable. Public structured key details remain open.",
+  "evidence": [
+    "69 regression tests passed across ten focused files; full suite 1046 tests passed; type-check, Knip and dependency graph passed. Verification command and generic fixtures: docs/dkim-diagnostics.md. Production verification belongs to the private deployment record."
+  ]
+}

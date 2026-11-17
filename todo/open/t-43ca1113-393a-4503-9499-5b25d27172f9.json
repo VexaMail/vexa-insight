@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-43ca1113-393a-4503-9499-5b25d27172f9",
+  "title": "Source approval workflow",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Mark a sender approved / unknown / threat",
+    "",
+    "    (Cloudflare, Valimail, MxToolbox) so alerts and dashboards stop repeating",
+    "    known senders; dmarcian also buckets forwarders separately."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-556e66c2-61f3-4461-874f-b887645b46cc",
+  "title": "`event_rollup_daily.passed` counts SPF-or-DKIM _auth_ pass, not aligned",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    DMARC pass, so the domains-list compliance (`getDomainsSummaryAll`) and",
+    "    dashboard trends built on it can overstate compliance. Found 2026-10-19 by",
+    "    the domain redesign, whose bar charts show volume only for this reason.",
+    "    Smallest step: add a DMARC-pass column to the rollup with a migration and",
+    "    backfill, then switch those readers."
+  ]
+}

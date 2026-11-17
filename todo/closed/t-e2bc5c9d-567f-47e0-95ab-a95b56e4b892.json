@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-e2bc5c9d-567f-47e0-95ab-a95b56e4b892",
+  "title": "**First outside contribution merged: PR #34 by @QIU-Guanzong",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (project name in Settings, closes issue #28).** Rebased onto `main` by the",
+    "    maintainer, with the author's commit kept (eabd3e9), plus f671dce making",
+    "    \"Vexa Insight\" the default name: migration 0036 renames instances still on",
+    "    \"Vexa Mail Insight\" and keeps chosen names. Fork runs needed maintainer",
+    "    approval before CI started. Evidence: all six PR checks green, local",
+    "    `check:ci` 695 tests plus `pnpm run build`; thanks posted on the PR."
+  ],
+  "closed": "2026-09-30",
+  "result": "**First outside contribution merged: PR #34 by @QIU-Guanzong",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

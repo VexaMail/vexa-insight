@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-8bb72967-749f-4edd-a51e-e8de988625d7",
+  "title": "Fix the empty-state ARIA of the `Command`",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    palette."
+  ],
+  "closed": "2026-07-26",
+  "result": "The fix landed in `components/ui/CommandEmpty.tsx`, not `CommandList.tsx` as the backlog assumed. cmdk hardcodes `role` _after_ the caller's prop spread in both `List` and `Empty`, so neither role can be overridden from outside. Both candidate fixes were measured with axe rather than reasoned about: dropping the listbox while the filtered count is zero only trades one violation for another (`aria-valid-attr-value`, because the input's `aria-controls` then dangles), while exposing the empty message as `role=\"option\" aria-disabled=\"true\"` reports zero violations. `CommandEmpty` now renders its own element instead of `Command.Empty`, keeping the `[cmdk-item]` attribute off it so arrow-key navigation still skips it.",
+  "evidence": [
+    "`pnpm run test:a11y` 42/42 (the two empty-state cases fail before the change); `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run build` succeeds."
+  ],
+  "files": [
+    "components/ui/CommandEmpty.tsx",
+    "test/a11y/Command.test.tsx"
+  ]
+}

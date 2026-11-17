@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-37459d5b-96f8-4831-9491-bdf8357e0ea7",
+  "title": "CI green again after nine days red",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Every install since",
+    "",
+    "    the 2026-09-21 pnpm 11 to 12 upgrade failed: pnpm 12 runs an implicit",
+    "    `node-gyp rebuild` for better-sqlite3 (it has a `binding.gyp`) and no",
+    "    longer bundles node-gyp (`sh: 1: node-gyp: not found`, exit 127).",
+    "    better-sqlite3 13 ships prebuilds and loads them, so `allowBuilds` now",
+    "    says `false` for it (4e25b8e). The audit then failed on",
+    "    GHSA-vcvr-r3jv-pc5j (critical, `next/og` RCE, fixed in 16.3.6); this app",
+    "    never imports `next/og`, so it was not exploitable. Evidence:",
+    "    `pnpm run check:ci` green locally at every commit, `pnpm run build` green."
+  ],
+  "closed": "2026-09-30",
+  "result": "CI green again after nine days red",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

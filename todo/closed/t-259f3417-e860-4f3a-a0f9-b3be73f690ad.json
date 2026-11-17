@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-259f3417-e860-4f3a-a0f9-b3be73f690ad",
+  "title": "Decide how a pre-aggregated `getVolumeByOrg`",
+  "state": "cancelled",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "should count reports."
+  ],
+  "closed": "2026-07-26",
+  "resolution": "dropped in favor of leaving the query live. It measures ~35ms on the dev DB, and no rollup reproduces its `count(distinct raw_reports.id)` exactly once a domain filter is applied later — a per-`(org, domain, day)` bucket double-counts any report whose events span more than one allowed domain. The two alternatives (an approximate count, or a `report_domains` bridge table) both cost correctness or a migration for no measured gain. Reconsider only if the query becomes slow; the bridge table is the option that keeps the count exact."
+}

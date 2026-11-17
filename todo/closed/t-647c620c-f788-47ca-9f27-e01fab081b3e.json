@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-647c620c-f788-47ca-9f27-e01fab081b3e",
+  "title": "Home / triage: \"Action",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    required\" queue, \"What changed since your last visit\", pass-rate trend as",
+    "    a rate (not volume), ingestion health with trigger, lowest-compliance",
+    "    domains, top failing sources, enforcement summary (domains per",
+    "    `p=none|quarantine|reject`). Separate new/regressed from long-standing",
+    "    issues."
+  ],
+  "closed": "2026-10-19",
+  "result": "Greeting, four trend KPI tiles, action queue split new/regressed vs long-standing with acknowledge and snooze, changes table with trends, pass/fail rate chart with its own range, ingestion health table, lowest-compliance domains and top failing sources with trends.",
+  "evidence": [
+    "2ab7cda, c5138af"
+  ]
+}

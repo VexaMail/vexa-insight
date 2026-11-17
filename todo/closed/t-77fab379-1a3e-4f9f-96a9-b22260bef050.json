@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-77fab379-1a3e-4f9f-96a9-b22260bef050",
+  "title": "Document the one-time",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `pnpm run backfill:rollup` upgrade step."
+  ],
+  "closed": "2026-07-25",
+  "result": "Added a \"One-time post-upgrade steps\" section to `docs/UPDATING.md` explaining that `event_rollup_daily` starts empty on existing installs, so dashboard totals lag until the backfill runs; documents idempotency, the ingestion-idle requirement (single-writer SQLite, ADR 0003), the Docker `docker compose exec web` form, and that new installs need nothing. README's Updating section links to it.",
+  "evidence": [
+    "`pnpm run format:check` clean; ADR links resolve to real files under `docs/adr/`."
+  ],
+  "files": [
+    "docs/UPDATING.md",
+    "README.md"
+  ]
+}

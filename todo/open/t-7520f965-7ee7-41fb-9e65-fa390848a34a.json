@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-7520f965-7ee7-41fb-9e65-fa390848a34a",
+  "title": "Domains list, Upload, Settings, Users and Login restyled (0f33cf5,",
+  "state": "in_progress",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "b98f8e3, e5458d2). Left: check Install and Docs against the new palette in the",
+    "final coherence review."
+  ]
+}

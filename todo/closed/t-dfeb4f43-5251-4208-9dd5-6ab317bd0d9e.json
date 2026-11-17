@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-dfeb4f43-5251-4208-9dd5-6ab317bd0d9e",
+  "title": "**Health check sees a stalled scheduler; failed runs keep",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    their error.** `/api/v1/health` gains `ingest: ok|stale|idle` (status code",
+    "    unchanged, Helm readiness uses it); `job_runs.error_summary`",
+    "    (migration 0035) stores the first five errors, shown on hover (b0864fc).",
+    "    The 2026-09-25 production failures could not be diagnosed for lack of",
+    "    exactly this."
+  ],
+  "closed": "2026-09-30",
+  "result": "**Health check sees a stalled scheduler; failed runs keep",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

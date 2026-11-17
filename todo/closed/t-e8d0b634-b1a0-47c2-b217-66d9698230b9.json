@@ -1,0 +1,38 @@
+{
+  "tadu": 2,
+  "id": "t-e8d0b634-b1a0-47c2-b217-66d9698230b9",
+  "title": "Extend a11y coverage to the settings forms",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "- Also fixed: `components/settings/index.ts` had five dead `export *` lines.",
+    "  Every section in that folder is a default export, and `export *` never",
+    "  re-exports a default, so the barrel exported nothing for `AdvancedSection`,",
+    "  `ApiKeySection`, `ImapAccountsSection`, `IngestionSection`, and",
+    "  `SettingsConfigForm`. Rewritten with explicit named re-exports,",
+    "  `AiSettingsSection` added, and that component switched from a relative deep",
+    "  import of its hooks to the `@/hooks/settings` barrel like its siblings.",
+    "- Note: assertions use `toBeInTheDocument` rather than `toBeVisible`. Every",
+    "  section is a framer-motion element starting at `opacity: 0` and jsdom never",
+    "  advances the animation, so `toBeVisible` fails for a reason unrelated to",
+    "  accessibility. axe still audits the subtree, which the `nested-interactive`",
+    "  finding proves — the passing suites are not vacuous."
+  ],
+  "closed": "2026-07-26",
+  "result": "Four new suites (`AiSettingsSection`, `ImapAccountsSection`, `IngestionSection`, `ApiKeySection`); suites 12 -> 16, tests 26 -> 42. Three real defects found and fixed, all in the IMAP section: the collapsed account header was a `role=\"button\"` div wrapping a real `<button>` (axe `nested-interactive`, serious/wcag2a) and is now a real `<button aria-expanded>` with the Edit/Close affordance rendered via `Button asChild` as a span; none of the five account fields were associated with their labels (`htmlFor`/`id` per row index) so every one had an empty accessible name; and `FolderPicker`'s folder `select` plus its new-folder input had no accessible name at all. The two `<label>` elements used as group captions (\"Fetch Options\", \"Post-Processing\") labelled no control and are now spans.",
+  "evidence": [
+    "`pnpm run test:a11y` 42/42; `pnpm run check:all` clean, `pnpm run test` 443/443; `pnpm run format:check` and `pnpm run check:migrations` clean; `pnpm run build` succeeds."
+  ],
+  "files": [
+    "components/settings/{ImapAccountsSection",
+    "FolderPicker",
+    "AiSettingsSection",
+    "index}.tsx|ts",
+    "test/a11y/{AiSettingsSection",
+    "ImapAccountsSection",
+    "IngestionSection",
+    "ApiKeySection}.test.tsx"
+  ]
+}

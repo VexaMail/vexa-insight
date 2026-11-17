@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-aa3bd367-9a37-42d2-b2c3-877e4e2806df",
+  "title": "Stop re-fetching envelopes for folders that",
+  "state": "cancelled",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "never carry DMARC mail."
+  ],
+  "closed": "2026-08-26",
+  "resolution": "superseded by the owner draining the noisy folder at source. With `ingestion_include_all_folders` on, `processFolder` runs one IMAP `SEARCH SINCE` per folder and bulk-fetches the envelope of every UID it returns, because both the DMARC subject test and the `processed_messages` de-duplication need the envelope. Measured on the the production host mailbox: a `.Logs` folder held 5,038 messages of which 5,037 fell inside the 30-day window, so every hourly run pulled ~5,000 envelopes to discard all of them while the run's real work was 1-22 reports. The 30-day window does not help, because the noise folder is entirely recent. Moving that log mail to a separate processor removes the cost at source and is cheaper than a folder allow-list plus its migration and UI. Still true on 2026-09-08: the folder holds 8,456 messages and the flag is still on. Reopen only if a mailbox shows the same cost with no way to drain the noisy folder."
+}

@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-fbb7547f-8489-41a1-b387-8f95c176f935",
+  "title": "Alert rules on top of the existing webhooks: the Settings UI manages the",
+  "state": "in_progress",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "two existing kinds (pass-rate drop, fail-rate spike) and warns when no webhook",
+    "listens (e5458d2). Left: new source over a volume, DNS change, ingestion",
+    "stalled, new RUF, and a per-rule firing history (only the last fired time is",
+    "stored)."
+  ]
+}

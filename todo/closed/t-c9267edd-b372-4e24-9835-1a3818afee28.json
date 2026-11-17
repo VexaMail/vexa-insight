@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-c9267edd-b372-4e24-9835-1a3818afee28",
+  "title": "Resolve the `config`/`settings`",
+  "state": "done",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    deep-import pair (2 of the 13 exceptions)."
+  ],
+  "closed": "2026-08-28",
+  "result": "`getSettingsRow`, `getImapAccountsRow`, `seedSettingsFromEnv`, `SETTINGS_ID` and the `ImapAccountRow` type moved to a new `services/settings-store` slice; `getConfig` and `updateSettings` import slice barrels; exception list down to eleven.",
+  "evidence": [
+    "type-check clean, `depcruise` no-circular clean (1664 modules), knip exit 0. Commit: `refactor: extract the settings row readers into services/settings-store`."
+  ]
+}

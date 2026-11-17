@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-f2d79313-b794-493d-87a0-5e3f97b684a3",
+  "title": "Global filters (date range, domain) kept in the URL across navigation, so",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    every cross-link opens with the same context."
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-5591d48d-da6d-4128-ab49-e01b3ed41b66",
+  "title": "\"Since your last visit\" on the home reads \"since the previous period\":",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    nothing records a user's last visit (needs a column on users)."
+  ]
+}

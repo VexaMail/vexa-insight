@@ -1,0 +1,32 @@
+{
+  "tadu": 2,
+  "id": "t-1b4cd8b8-6862-44bf-83c2-959f2b67d3ef",
+  "title": "Aggregate `getReportSources` in SQL instead",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    of a JS join.",
+    "- Note: `resetDmarcDb` now also clears `ip_hostname_enrichments`; it was",
+    "  leaking rows across tests in the same file.",
+    "- Not done: the same TODO named `getReportStats` and",
+    "  `getReportEventSummaries`. Inspected both — `getReportStats` is already two",
+    "  SQL aggregates over the indexed predicate, and `getReportEventSummaries`",
+    "  intentionally returns row-level detail for the AI prompt, so neither has a",
+    "  GROUP BY to move to."
+  ],
+  "closed": "2026-07-25",
+  "result": "Dropped the two extra per-report event-id scans and the `IN (...)` list of every event id in the report (unbounded — SQLite's parameter/expression limits were a real ceiling on large reports), plus the O(sources x events) JS join. Override types are now a `GROUP BY ip, type` in SQL, and the primary DKIM identity comes from one ordered join taking the first row per IP. Five queries down to three, all scoped by `rawReportId` and served by `event_raw_report_idx`. Per-IP (not per-group) resolution semantics preserved exactly, and DKIM selection is now deterministically ordered by event id rather than relying on unordered scan order.",
+  "evidence": [
+    "new `test/getReportSources.test.ts` (5 cases) written against the _old_ implementation first and passing unchanged after the rewrite — grouping/collapse + volume ordering, hostname enrichment vs null, per-IP override union, first-DKIM-wins, empty report. `pnpm run test` 435/435."
+  ],
+  "files": [
+    "services/reports/getReportSources.ts",
+    "test/getReportSources.test.ts",
+    "test/setup/{seedReportSourcesFixture",
+    "SeedReportSourcesResult",
+    "requireInsertedId",
+    "resetDmarcDb}.ts"
+  ]
+}

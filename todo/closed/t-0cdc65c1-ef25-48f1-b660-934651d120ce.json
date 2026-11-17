@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-0cdc65c1-ef25-48f1-b660-934651d120ce",
+  "title": "Fix the report-detail server/client boundary crash",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Removed the server-side click handler passed into `next/link`.",
+  "evidence": [
+    "Historical `pnpm test -- test/IpAddressLink.test.ts` and `pnpm type-check` passed."
+  ],
+  "files": [
+    "components/ips/IpAddressLink.tsx",
+    "test/IpAddressLink.test.ts"
+  ]
+}

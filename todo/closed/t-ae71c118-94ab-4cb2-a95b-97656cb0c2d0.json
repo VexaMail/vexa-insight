@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-ae71c118-94ab-4cb2-a95b-97656cb0c2d0",
+  "title": "Reclassify valid SPF `~all` guidance",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Changed soft-fail guidance from a high-severity correction to a low-priority hardening suggestion.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "services/diagnostics/"
+  ]
+}

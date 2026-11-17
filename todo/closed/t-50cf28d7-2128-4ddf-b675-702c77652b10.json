@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-50cf28d7-2128-4ddf-b675-702c77652b10",
+  "title": "the live instance",
+  "state": "done",
+  "category": "production-redeployed-to-0-2-2-on-nova",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    was still running 0.2.0, with the pre-rename repository slug compiled into",
+    "    its update checker. It kept working only because GitHub redirects the old",
+    "    path."
+  ],
+  "closed": "2026-09-10",
+  "result": "`vexa-deploy` ran from a clean worktree (the script rsyncs the working tree) after a backup at `/opt/vexa/backups/vexa.db.pre-0.2.2-20260910` (mode 600, root, integrity check OK). No schema change: 31 migration files and 31 applied migrations on both sides before and after. A forced `POST /api/v1/admin/update-check` replaced the cached row, which had been written before the rename.",
+  "evidence": [
+    "deploy exit 0, with the script's own checks printing `bind: loopback only`, `health: ok` and `public /login: 200`; `systemctl is-active vexa` reports `active` with no errors in the journal since the restart; the app reports version `0.2.2`; the update state now reads `latestUrl` under `VexaMail/vexa-insight` with `updateAvailable: false`; 3609 raw reports intact."
+  ]
+}

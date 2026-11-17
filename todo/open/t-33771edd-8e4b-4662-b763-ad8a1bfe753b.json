@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-33771edd-8e4b-4662-b763-ad8a1bfe753b",
+  "title": "P1 — Controlled end-to-end send/receive checks (app)",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Send only to",
+    "",
+    "    owner-approved test mailboxes and distinguish connection, SMTP acceptance,",
+    "    arrival, latency and inbox/spam placement when observable. Reference:",
+    "    real-message testing flows above. First step: specify one opt-in mailbox",
+    "    pair, expected message identifiers and timeout states. Never send mail to",
+    "    arbitrary visitor-supplied recipients. Public execution remains",
+    "    unavailable until ownership verification and rate limits exist."
+  ]
+}

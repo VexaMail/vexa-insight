@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-d4be7897-26b3-4573-91cf-82343d232d02",
+  "title": "SPF lookup budget and change",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    planner (new endpoint)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Record generator tab plans an SPF record against the lookup route: count vs limit, includes to flatten, loops, macros, ignored redirects.",
+  "evidence": [
+    "5726cb3, 588d2f5"
+  ]
+}

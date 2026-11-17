@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-c618482b-5543-4434-ae9b-e1440c1f4433",
+  "title": "Publish the TODO-maintenance rule through",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    a tracked instruction source."
+  ],
+  "closed": "2026-07-23",
+  "result": "Removed `CLAUDE.md` and `AGENTS.md` from `.gitignore` and committed `CLAUDE.md` with the backlog and work-log conventions.",
+  "evidence": [
+    "commit `7021f658`."
+  ],
+  "files": [
+    "gitignore",
+    "CLAUDE.md"
+  ]
+}

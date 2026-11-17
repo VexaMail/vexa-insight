@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-73d723fb-2f73-4dd1-b21b-76057cd02009",
+  "title": "Add an `ai:invoke` permission for per-role AI",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    cost control."
+  ],
+  "closed": "2026-07-25",
+  "result": "AI insight generation spends the operator's paid provider quota but was gated only by `reports:read`, so any role that could look at a report could spend money. Added `ai:invoke` to the permission union and switched both `/api/v1/ai/report-insights` and `/api/v1/ai/diagnostics-insights` to require it. Mechanism only, no policy change: `ai:invoke` is granted to exactly the roles that hold `reports:read` today (admin, operator, viewer, user), so nobody's access changed. Revoking AI spend from `viewer`/`user` is now a one-line edit in `constants/auth/rolePermissions.ts`. The 10/min/IP rate limit is unchanged. Who _should_ hold it is the owner's call and stays open in `TODO.md`.",
+  "evidence": [
+    "new case in `test/hasPermission.test.ts` asserting `ai:invoke` matches `reports:read` for every role (so the no-op-today property is pinned and a future change is deliberate); `test/apiRbacSmoke.test.ts` still green; `pnpm run test` 443/443, `pnpm run test:a11y` 15/15, cold type-check/lint clean, `pnpm run build` exit 0."
+  ],
+  "files": [
+    "types/auth/Permission.ts",
+    "constants/auth/rolePermissions.ts",
+    "app/api/v1/ai/{report-insights",
+    "diagnostics-insights}/route.ts",
+    "test/hasPermission.test.ts"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-91b2d05d-37b6-4227-ba72-55885215ef89",
+  "title": "Remove the unused",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `services/imap/getImapTotalCount.ts`."
+  ],
+  "closed": "2026-07-25",
+  "result": "Deleted the function, its `types/imap/GetImapTotalCountOptions.ts` type, and both barrel entries. It had no callers; wiring it into the job would have re-added the redundant full-mailbox IMAP SEARCH that ADR 0008 removed. ADR 0008's \"alternatives considered\" note updated to record the deletion.",
+  "evidence": [
+    "`grep -rn getImapTotalCount` returns only the ADR note; `pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424."
+  ],
+  "files": [
+    "services/imap/{getImapTotalCount.ts",
+    "index.ts}",
+    "types/imap/{GetImapTotalCountOptions.ts",
+    "docs/adr/0008-batched-ingest-and-daily-rollups.md"
+  ]
+}

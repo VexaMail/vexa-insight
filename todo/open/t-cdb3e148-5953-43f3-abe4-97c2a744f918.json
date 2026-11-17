@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-cdb3e148-5953-43f3-abe4-97c2a744f918",
+  "title": "Named sender classification",
+  "state": "in_progress",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Done 2026-09-30 for a domain's sources",
+    "",
+    "table (PTR first, then DKIM `d=`; 56-service JSON catalog). Still to do: the",
+    "same column on `/ips` and the IP detail page, and a way to name the operator's",
+    "own servers (they show as Unknown; ties into the source approval item below)."
+  ]
+}

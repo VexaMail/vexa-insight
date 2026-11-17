@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-4f595680-d745-4830-83e2-f6e97ff21b21",
+  "title": "**P2 — SMTP, STARTTLS and certificate health (app; bounded public tool",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    later).** Reference: MXToolbox SMTP and MTA-STS diagnostics. First step:",
+    "    design a server-side transport probe with public-address validation,",
+    "    destination/port restrictions, DNS-rebinding protection, timeouts and no",
+    "    relay attempts. Store banner, TLS negotiation and certificate expiry as",
+    "    transport evidence, separately from delivery claims."
+  ]
+}

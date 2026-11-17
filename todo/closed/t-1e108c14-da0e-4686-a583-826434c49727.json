@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-1e108c14-da0e-4686-a583-826434c49727",
+  "title": "Fix the `next/image` aspect-ratio warning for the",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    sidebar logo."
+  ],
+  "closed": "2026-07-24",
+  "result": "The logo was declared 140x32 but the artwork's viewBox is 2286.29x592.55 (~3.86), so it always rendered 123px wide — exactly one dimension differing from the attributes, which is what `next/image` warns about. Declared 123x32 with `h-8 w-auto`. The LCP warning was already gone.",
+  "evidence": [
+    "Captured the real dev-mode console over the Chrome DevTools Protocol: warning present before, absent after; rendered 123 vs attribute \"123\", `widthModified: false`. `/login`, `/reports`, `/domains`, `/upload`, `/settings` all report a clean console."
+  ],
+  "files": [
+    "components/shell/VexaLogo.tsx"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-14d9a9e6-2231-4279-8be4-34c449699e0c",
+  "title": "Expand the DKIM selector probe list",
+  "state": "done",
+  "category": "pending-decisions",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "Expand the DKIM selector probe list",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ],
+  "resolution": "Expanded from 9 to 28 documented, stable provider selectors (Google, M365, SendGrid, Mailgun, Zoho, Postmark legacy, Fastmail, Proton, iCloud, Constant Contact, Zendesk, Mailchimp/Mandrill); providers with per-account selectors (SES, HubSpot) cannot be probed with a fixed list. Each entry costs one parallel TXT lookup per uncached run.",
+  "files": [
+    "services/diagnostics/knownSelectors.ts"
+  ]
+}

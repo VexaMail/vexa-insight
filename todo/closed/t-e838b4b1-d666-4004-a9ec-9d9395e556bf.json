@@ -1,0 +1,44 @@
+{
+  "tadu": 2,
+  "id": "t-e838b4b1-d666-4004-a9ec-9d9395e556bf",
+  "title": "Restructure the diagnostics",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    system prompt around the 2026 model prompting guidance.",
+    "- Context: Anthropic's per-model guides (Opus 5, Fable 5) and OpenAI's GPT-5.6",
+    "  guidance now agree that prompts written for older models reduce quality on",
+    "  current ones, and that most of the work is deletion.",
+    "  `DIAGNOSTICS_ANALYSIS_SYSTEM` was 64 numbered rules;",
+    "  `REPORT_ANALYSIS_SYSTEM` was already lean and was left alone.",
+    "- The first attempt was a measured regression, caught by the eval harness",
+    "  rather than by reading: promoting \"prefer fewer, higher-confidence insights\"",
+    "  into the opening paragraph cost the `policy` enforcement finding in 2 of 2",
+    "  runs, which took `tone: improvement` from 2/9 insights to 0/6 — and with it",
+    "  every insight eligible for `recordValue`/`verifyCommand`, since those",
+    "  require that tone. Moving the sentence back into NOISE REDUCTION and naming",
+    "  enforcement posture as a first-class finding restored it.",
+    "- Two assertions in `diagnosticsAiPrompts.test.ts` pinned prompt prose",
+    "  (`'Do NOT simply restate it'`, `'ROLLOUT PLAN RULES'`) and were reworded to",
+    "  the new phrasing; the instructions they guard are unchanged.",
+    "  `isAiConfigured.test.ts` got an explicit 30s timeout: it imports the whole",
+    "  `@/services/ai` barrel and began failing reproducibly under `check:ci`,",
+    "  where vitest starts on a cold transform cache after type-check and lint.",
+    "- Open: 2 of 6 runs on the new wording wrapped the JSON in a markdown fence",
+    "  where 0 of 2 baseline runs did. The parser strips them and nothing breaks;",
+    "  too few baseline samples to call it a regression, so it is tracked in",
+    "  `TODO.md` rather than fixed blind."
+  ],
+  "closed": "2026-07-26",
+  "result": "named sections instead of the numbered list, 12,897 -> 10,025 system characters (-22%), with every enum, required and optional field, severity/tone/evidenceStrength definition, correlation rule, recommendation constraint, and example preserved.",
+  "evidence": [
+    "`pnpm run eval:ai diagnostics` on the free Max lane, same domain and model (`claude-sonnet-5`) across all arms. Baseline 2 runs: 9 insights, 2 improvement-tone, 2 verifyCommand, ~11,486 tokens. First rewrite 2 runs: 6 / 0 / 1, ~9,993 tokens. Corrected 6 runs: improvement-tone present in 6/6, `rolloutPlan` 5 well-formed `[PROTOCOL]`-prefixed steps every run, `parseError` null on all 10 runs, ~10,755 tokens (-6% against baseline). `pnpm run check:ci` clean (504/504, migrations OK)."
+  ],
+  "files": [
+    "services/ai/prompts/diagnosticsAnalysisSystem.ts",
+    "test/diagnosticsAiPrompts.test.ts",
+    "test/isAiConfigured.test.ts"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-492e4dc9-9ad1-4b0f-844d-7044d19761ab",
+  "title": "Guided path to enforcement and policy simulation",
+  "state": "in_progress",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Readiness card",
+    "",
+    "shipped 2026-09-30 (30-day simulation, legitimate/forwarded/unknown split,",
+    "verdict). Still to do: read the published policy (`p`, `sp`, `pct`) from the",
+    "reports so the advice names the next step from where the domain is, and a",
+    "`pct` simulation."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-3d6807d7-f1ab-40f3-86e4-982ba043a154",
+  "title": "Validate environment variables and migrate",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    direct environment access."
+  ],
+  "closed": "2026-05-19",
+  "result": "Added fail-fast Zod validation and moved application call sites to the validated environment module.",
+  "evidence": [
+    "`6e420be4`, `fd244390`."
+  ],
+  "files": [
+    "lib/env.ts",
+    "instrumentation.ts"
+  ]
+}

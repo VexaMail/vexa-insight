@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-2164b765-829d-4ff5-9971-a69fb581823c",
+  "title": "Fix the a11y Vitest config alias",
+  "state": "done",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "- Cause: `vitest.a11y.config.ts` mapped `@` to the repository root; the source",
+    "  moved under `src/` on 2026-08-27 and the main config was updated, the a11y",
+    "  one was not, so every a11y test failed to resolve `@/components/...`."
+  ],
+  "closed": "2026-09-08",
+  "result": "alias points at `./src`, matching `vitest.config.mts`.",
+  "evidence": [
+    "`pnpm test:a11y` before: 17 files failed, no tests; after: 17 files, 47 tests passed."
+  ],
+  "files": [
+    "vitest.a11y.config.ts"
+  ]
+}

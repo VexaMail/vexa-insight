@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-08941f8a-f522-4a7e-a529-65298439ae25",
+  "title": "Remaining production findings closed",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-19",
+  "result": "the date-filtered reports list pages and counts every report in the range (`getReportsInDateRange`); a report message is recorded and moved only after all its reports ingest, and is otherwise left in place for the next poll with one error line; the standalone output ships the GeoIP updater script, and CI fails if it ships `src/`, `test/`, `docs/` or `.git` again; `backfillReportEvents` filters unusable source IPs before aligning; hostname lookup exceptions go through the logger.",
+  "evidence": [
+    "`pnpm run check:ci` exit 0 on the integrated main (149 files, 781 tests); `test/reportsDateRangePaging.test.ts`, `test/finalizeAfterIngest.test.ts`; each change reviewed separately."
+  ]
+}

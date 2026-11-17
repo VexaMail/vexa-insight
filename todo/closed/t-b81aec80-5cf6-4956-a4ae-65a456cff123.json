@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-b81aec80-5cf6-4956-a4ae-65a456cff123",
+  "title": "Lazy-load Monaco on the ingest route",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-19",
+  "result": "Removed roughly 3 MB of eager editor code from the route bundle.",
+  "evidence": [
+    "`55e45cea`."
+  ],
+  "files": [
+    "components/ingest/"
+  ]
+}

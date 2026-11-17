@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-059ea2c7-9317-4a3b-973b-dd69ee5dad77",
+  "title": "Harden DMARC parsing against hostile archives",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    and XML."
+  ],
+  "closed": "2026-05-18",
+  "result": "Added XXE, ZIP-bomb, ZIP-slip, and archive-boundary protections.",
+  "evidence": [
+    "`9e15f07f`; later regression coverage in `c9227e17` and `125ab20d`."
+  ],
+  "files": [
+    "services/dmarc/",
+    "test/dmarcParserHardening.test.ts"
+  ]
+}

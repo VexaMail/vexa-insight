@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-9b6239ba-4049-4f61-9a89-095c9e8b2e06",
+  "title": "CSV/JSON export",
+  "state": "in_progress",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Domain sources CSV shipped 2026-09-30. Still to do:",
+    "",
+    "reports list, IP list and failure/TLS reports."
+  ]
+}

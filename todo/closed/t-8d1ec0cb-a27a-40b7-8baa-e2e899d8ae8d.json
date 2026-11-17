@@ -1,0 +1,32 @@
+{
+  "tadu": 2,
+  "id": "t-8d1ec0cb-a27a-40b7-8baa-e2e899d8ae8d",
+  "title": "Apply Zod at route boundaries and move Drizzle",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    queries out of `app/**`.",
+    "- Behavior notes: malformed (never valid) input differs slightly —",
+    "  `z.coerce.number()` uses `Number()` not `parseInt()`, so `?days=30abc` now",
+    "  yields no filter instead of 30; duplicated params take the last value rather",
+    "  than the first."
+  ],
+  "closed": "2026-07-24",
+  "result": "All direct Drizzle access removed from `app/**` (only `runMigrations` remains, a service call) into named service functions. Zod validation applied at 22 route boundaries: 6 body-input routes (`validators/{imap,updates,geoip,ai}/`) and 16 query-param routes via a shared `validators/query/` layer. Error codes, statuses and messages preserved verbatim; `stats/trend` `period` moved from a cast to `z.enum`. Removed the now-dead `utils/api/parseDateParams.ts`, 4 route-local constant files, and `utils/validation/coerceNumber.ts`; converted `utils/validation/index.ts` off `export *`.",
+  "evidence": [
+    "61 new schema tests; `pnpm run test` 420/420; `pnpm run lint` clean; `pnpm run build` succeeds."
+  ],
+  "files": [
+    "app/api/**` (22 routes)",
+    "validators/query/` (13 files)",
+    "validators/{imap",
+    "updates",
+    "geoip",
+    "ai}/",
+    "services/{reports",
+    "notifications",
+    "ip-hostname}/"
+  ]
+}

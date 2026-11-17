@@ -1,0 +1,37 @@
+{
+  "tadu": 2,
+  "id": "t-7f1d4553-83f1-4c58-ae11-42f958b0aa9d",
+  "title": "Handle SPF macro targets and conditional",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `redirect=` in the lookup tree.",
+    "- Deviation from the original note: the TODO assumed an ignored redirect still",
+    "  consumes its lookup. It does not — an ignored term is never evaluated, so it",
+    "  issues no DNS query. Counted as 0, which also means `exceedsLookupLimit` no",
+    "  longer fires on lookups the receiver will never perform.",
+    "- Process note: an earlier \"type-check clean\" in this run was a stale",
+    "  `tsconfig.tsbuildinfo`; adding two required fields to `SpfTreeNode` only",
+    "  surfaced after deleting the incremental cache. Final verification ran cold."
+  ],
+  "closed": "2026-07-25",
+  "result": "Two real misreports fixed. (1) A macro target (`include:%{d}...`, `exists:%{ir}.%{v}...`) was fed to DNS literally; the query always failed, so the tree rendered a child badged \"No SPF record\" — a misconfiguration warning for a perfectly valid record. Macro mechanisms are now counted as lookups but not expanded, and surfaced as `macroMechanisms` with a \"not expanded (resolved per sender)\" line. (2) A `redirect=` in a record that also has an `all` was followed and its whole subtree rolled into `lookupCount`, though RFC 7208 6.1 requires receivers to ignore it \"regardless of the relative ordering of the terms\". It is now excluded from `mechanisms`, not followed, not counted, and reported as `ignoredRedirect` with an explanation of why the redirect is dead. A redirect with no `all` is unchanged.",
+  "evidence": [
+    "5 new cases in `test/resolveSpfTree.test.ts` (redirect ignored with `all`; redirect honored without `all`; redirect ignored when written before a `~all`; macro counted but not queried, asserting no DNS call contains `%{`; macro include not rendered as a missing record) and 2 in `test/SpfLookupTreeSection.test.ts`. `pnpm run test` 442/442, `pnpm run test:a11y` 15/15, `pnpm run check:migrations` OK, cold `pnpm run type-check` and `pnpm run lint` clean."
+  ],
+  "files": [
+    "services/diagnostics/{hasSpfAllMechanism",
+    "containsSpfMacro",
+    "extractSpfEffectiveLookupMechanisms",
+    "extractSpfIgnoredRedirect",
+    "extractSpfMacroMechanisms",
+    "extractSpfChildDomains",
+    "buildSpfTreeNode}.ts",
+    "types/diagnostics/SpfTreeNode.ts",
+    "components/diagnostics/spf/SpfLookupTreeNodeItem.tsx",
+    "test/{resolveSpfTree",
+    "SpfLookupTreeSection}.test.ts"
+  ]
+}

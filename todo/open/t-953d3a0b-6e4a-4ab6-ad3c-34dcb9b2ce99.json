@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-953d3a0b-6e4a-4ab6-ad3c-34dcb9b2ce99",
+  "title": "`test/getTriageOverview.test.ts` (\"counts the same messages in the KPIs,",
+  "state": "pending",
+  "category": "diagnostics-load-time-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    the domains and the trend\") hits the 5 s vitest timeout in the full suite",
+    "    under machine load (load average 25-56 on 2026-10-19) and passes alone.",
+    "    Also observed on 2026-10-21 at machine load 155: the ingest page fixture",
+    "    test exceeded its timeout. All 1,031 assertions passed with four workers",
+    "    and a 30-second test/hook budget. Next: profile fixture imports/seeding",
+    "    and set a justified per-test budget rather than changing application",
+    "    logic."
+  ]
+}

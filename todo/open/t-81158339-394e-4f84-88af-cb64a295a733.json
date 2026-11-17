@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-81158339-394e-4f84-88af-cb64a295a733",
+  "title": "P3 — Useful individual tool pages and an embeddable checker",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Reference: EasyDMARC's free-tool library/widget and dmarcian's tool hub.",
+    "    First step: add a dedicated page only when it has distinct behavior and",
+    "    content; before an embed, implement a shared/edge request budget and",
+    "    consent-aware embedding policy. Avoid duplicate keyword pages and keep",
+    "    acquisition pages indexable while reports remain noindex."
+  ]
+}

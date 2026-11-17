@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-6e317bb3-d009-4fc0-8ab4-447779f97523",
+  "title": "TOTP second factor",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "for local accounts (dmarcian, YADT)."
+  ]
+}

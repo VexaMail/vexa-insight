@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-c9d84652-2ba3-4e82-92e8-2c50841eba16",
+  "title": "**Helm chart version pinned to the app, and the drift",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    guarded:** `Chart.yaml` carried `version: 0.1.0` and `appVersion: '0.1.0'`",
+    "    while the app was on `0.2.2`. That was not cosmetic:",
+    "    `templates/deployment.yaml` resolves the image as",
+    "    `{{ .Values.image.tag | default .Chart.AppVersion }}` and `values.yaml`",
+    "    ships an empty tag, so a default `helm install` pulled",
+    "    `ghcr.io/vexamail/vexa-insight:0.1.0`, a tag that has never existed."
+  ],
+  "closed": "2026-09-10",
+  "result": "both fields set to `0.2.2`, and `scripts/check-chart-version.sh` added on the shape of `check-migrations.sh` — it compares the chart's `version` and `appVersion` against `package.json` and fails the build on either mismatch. Wired into `check:ci` as `pnpm run check:chart`, so the answer to \"automatic or by hand\" is: by hand with the release commit, and CI refuses to let it drift again.",
+  "evidence": [
+    "`pnpm run check:chart` prints `OK (0.2.2)`; `check:ci` green."
+  ],
+  "files": [
+    "deploy/helm/vexa-insight/Chart.yaml",
+    "scripts/check-chart-version.sh",
+    "package.json"
+  ]
+}

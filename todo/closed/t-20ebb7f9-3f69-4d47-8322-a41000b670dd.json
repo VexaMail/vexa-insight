@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-20ebb7f9-3f69-4d47-8322-a41000b670dd",
+  "title": "The demo seeder no longer deletes genuine reports",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `wipeDemoData` matched `report_id LIKE 'demo-%'`, and a report id is",
+    "    written by the reporting organisation, so `--force` deleted any real",
+    "    aggregate report whose id began `demo-`, its normalized events, and its",
+    "    domain's rollup rows with them."
+  ],
+  "closed": "2026-09-11",
+  "result": "migration `0033` adds `raw_reports.is_demo`, set at insert time by the seeder and backfilled for rows it wrote before the column existed (prefix plus the two other values only the seeder writes, so the backfill does not repeat the bug it fixes). `wipeDemoData` and `isDemoAlreadySeeded` both select on that column.",
+  "evidence": [
+    "`pnpm run check:ci` green — 106 test files, 618 tests, `check-migrations: OK`. `test/wipeDemoData.test.ts` keeps a genuine `demo-`-prefixed report across a wipe and reports nothing seeded when only such a report exists."
+  ]
+}

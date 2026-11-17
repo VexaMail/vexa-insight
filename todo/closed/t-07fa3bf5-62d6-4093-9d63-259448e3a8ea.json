@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-07fa3bf5-62d6-4093-9d63-259448e3a8ea",
+  "title": "Implement PDF export for the domain report",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "- Correction during review: the grade badge was white text on a gradient,",
+    "  which disappears when \"Background graphics\" is off (confirmed: backgrounds",
+    "  are dropped, ~131 KB smaller PDF). In print the circle now renders as a 4px",
+    "  colored ring with grade-colored text — both print as foreground. Screen",
+    "  appearance unchanged (white on gradient)."
+  ],
+  "closed": "2026-07-24",
+  "result": "Print-first export (`ExportPdfButton` + `@media print` styles), no new dependency. Verified by generating a real PDF through the browser's own print pipeline: **22 pages**, so the fixed-height shell no longer clips the report to one page (`html`/`body`/`main` all resolve to `overflow: visible` under print media, sidebar hidden). A dark-themed session prints white-on-black-free: body forced to `rgb(255,255,255)` with `rgb(13,13,13)` text.",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ],
+  "files": [
+    "components/diagnostics/ExportPdfButton.tsx",
+    "components/diagnostics/score/DomainScoreBadge.tsx",
+    "components/shell/",
+    "components/ai/",
+    "app/globals.css"
+  ]
+}

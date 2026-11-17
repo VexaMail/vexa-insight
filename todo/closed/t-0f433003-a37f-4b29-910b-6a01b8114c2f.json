@@ -1,0 +1,29 @@
+{
+  "tadu": 2,
+  "id": "t-0f433003-a37f-4b29-910b-6a01b8114c2f",
+  "title": "Extend a11y coverage beyond the first three",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    suites.",
+    "- Note: the `makeDns` fixture exported from `test/ProtocolExplainer.test.ts`",
+    "  moved to `test/setup/makeDnsDiagnostics.ts`. A second copy still lives",
+    "  inside `test/computeDomainScore.test.ts`; left alone as unrelated churn."
+  ],
+  "closed": "2026-07-25",
+  "result": "Unblocked the import path by re-exporting `ProtocolExplainer`, `RecordDisplay`, and `SectionHeader` from `components/diagnostics/index.ts`, so consumers no longer have to reach into `./shared/*` (which `import/no-internal-modules` forbids) or dodge the rule with a relative import. Added four a11y suites: the three shared primitives plus the real `SpfDetailSection` / `DmarcDetailSection` in both healthy and missing-record states. Suites 3 -> 7, tests 5 -> 15.",
+  "evidence": [
+    "`pnpm run test:a11y` 15/15 with zero axe violations; `pnpm run test` 435/435."
+  ],
+  "files": [
+    "components/diagnostics/index.ts",
+    "test/a11y/{ProtocolExplainer",
+    "RecordDisplay",
+    "SectionHeader",
+    "DiagnosticsDetailSections}.test.tsx",
+    "test/setup/makeDnsDiagnostics.ts",
+    "test/ProtocolExplainer.test.ts"
+  ]
+}

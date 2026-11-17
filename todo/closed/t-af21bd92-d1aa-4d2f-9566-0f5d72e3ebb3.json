@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-af21bd92-d1aa-4d2f-9566-0f5d72e3ebb3",
+  "title": "Verify `/diagnostics/<domain>` against real",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    domains in a browser."
+  ],
+  "closed": "2026-07-24",
+  "result": "Rendered six real domains from a production build. Both branches exercised for every protocol — BIMI present (paypal.com, cnn.com) and absent (google.com, github.com, example.com, wikipedia.org); MTA-STS and TLS-RPT present (google.com) and absent (the rest). Verdicts cross-checked against live DNS: no false positives or negatives. SPF lookup tree correct, including github.com's 8 direct includes plus 2 nested = 10 total.",
+  "evidence": [
+    "HTTP 200 on all six; DNS cross-check via `dns.resolveTxt`."
+  ]
+}

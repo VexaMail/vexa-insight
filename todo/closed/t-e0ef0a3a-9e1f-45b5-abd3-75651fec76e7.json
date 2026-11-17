@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-e0ef0a3a-9e1f-45b5-abd3-75651fec76e7",
+  "title": "Stop re-fetching envelopes for folders that",
+  "state": "cancelled",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "never carry DMARC mail.",
+    "- Superseded by an owner decision, not by code. Measured on the the production",
+    "  host mailbox: a `.Logs` folder holds 5,038 messages of which 5,037 fall",
+    "  inside the 30-day window, so every hourly run bulk-fetches ~5,000 envelopes",
+    "  and discards them against 1-22 real reports. The envelope fetch is",
+    "  unavoidable — both the DMARC subject test and the `processed_messages`",
+    "  de-duplication need it — so the only levers were a folder allow-list or a",
+    "  narrower server-side SEARCH."
+  ],
+  "closed": "2026-08-26",
+  "result": "the owner is moving that log mail to a separate processor, which removes the cost at source. No folder allow-list, no migration, no UI. Reopen only if a mailbox shows the same cost with no way to drain the noisy folder.",
+  "resolution": "legacy item migrated to format 2 without a recorded resolution"
+}

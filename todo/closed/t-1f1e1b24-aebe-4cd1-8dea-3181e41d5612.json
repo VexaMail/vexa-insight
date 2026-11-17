@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-1f1e1b24-aebe-4cd1-8dea-3181e41d5612",
+  "title": "Expand diagnostics analysis",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    context."
+  ],
+  "closed": "2026-04-22",
+  "result": "Included score, deterministic guides, SPF checks, DMARC tags, DKIM details, A/NS, BIMI, MTA-STS, TLS-RPT, statistics, and aggregate report data while asking the model not to repeat the runbook.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "services/ai/prompts/",
+    "services/ai/use-cases/",
+    "components/ai/"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-50454b35-9e40-4cc0-a9b7-c149043b02e0",
+  "title": "**P2 — Email header analyzer (app; browser-only public version",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    possible).** Reference: dmarcian's tool library. First step: parse pasted",
+    "    headers locally where possible, expose Received hops and identity",
+    "    alignment, redact addresses and distinguish trusted receiver",
+    "    Authentication-Results from sender-controlled text. Reuse the real-message",
+    "    evidence model."
+  ]
+}

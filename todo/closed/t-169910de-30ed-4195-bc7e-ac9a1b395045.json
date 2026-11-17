@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-169910de-30ed-4195-bc7e-ac9a1b395045",
+  "title": "Sending source detail: identity",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (PTR, FCrDNS, country, ASN), separated auth/alignment results, related",
+    "    domains, report evidence, timeline, tabs, operator classification."
+  ],
+  "closed": "2026-10-19",
+  "result": "Header chips (country, cause, ASN, organization), Mark as legitimate sender, KPI tiles, identity and network panel, five auth/alignment rows, event timeline, related domain, report evidence, reputation panel, operator review, DNS and raw data tabs.",
+  "evidence": [
+    "68c2383, 3dbc40b, 015a33d"
+  ]
+}

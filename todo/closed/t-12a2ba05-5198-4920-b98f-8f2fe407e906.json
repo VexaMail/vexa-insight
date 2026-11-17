@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-12a2ba05-5198-4920-b98f-8f2fe407e906",
+  "title": "Fix the DKIM key-length estimator",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "Base64 padding-aware byte count, RSA SPKI DER overhead subtracted and rounded to the nearest 256 bits (real 2048-bit keys now report 2048, not 2352); standard 32-byte Ed25519 keys are no longer flagged weak.",
+  "evidence": [
+    "`test/parseDkimRecord.test.ts` (13 tests, updated expectations)."
+  ],
+  "files": [
+    "services/diagnostics/assessDkimKeyStrength.ts",
+    "decodeBase64ByteLength.ts",
+    "parseDkimRecord.ts",
+    "types/diagnostics/DkimKeyAssessment.ts"
+  ]
+}

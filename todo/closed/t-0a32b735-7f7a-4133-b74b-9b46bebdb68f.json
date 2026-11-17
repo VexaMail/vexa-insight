@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-0a32b735-7f7a-4133-b74b-9b46bebdb68f",
+  "title": "Implement the SPF lookup-tree visualization",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "Recursive include/redirect tree resolver (`services/diagnostics/resolveSpfTree.ts` + single-purpose helpers) with RFC 7208 lookup counting, cycle detection, depth 10 / 30-node budgets, 5-minute cache; rendered as an accessible nested list after the SPF detail section in `DiagnosticsView`.",
+  "evidence": [
+    "`test/resolveSpfTree.test.ts` (9 tests), `test/SpfLookupTreeSection.test.ts` (4 tests); full suite 347/347."
+  ],
+  "files": [
+    "services/diagnostics/` (10 new files)",
+    "components/diagnostics/spf/` (4 new files)",
+    "types/diagnostics/SpfTreeNode.ts",
+    "getDomainDnsRecords.ts",
+    "DiagnosticsView.tsx"
+  ]
+}

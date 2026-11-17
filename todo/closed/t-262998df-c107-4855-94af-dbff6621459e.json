@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-262998df-c107-4855-94af-dbff6621459e",
+  "title": "Rate limits keyed on a client-chosen address",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Found by",
+    "",
+    "    the production audit: the login, upload, poll-trigger and AI limits read",
+    "    the first `X-Forwarded-For` entry, which a client writes whenever a proxy",
+    "    appends. `clientIpFromHeaders` now reads `VEXA_TRUSTED_PROXY_HOPS`",
+    "    (default 1) entries from the right (72850dd, 79ebcd7). On the production",
+    "    host Apache's `mod_remoteip` resolves `CF-Connecting-IP` and `mod_proxy`",
+    "    appends it, so the default is right there. Test",
+    "    `getRateLimitKeyFromHeaders` fails on the old code."
+  ],
+  "closed": "2026-09-30",
+  "result": "Rate limits keyed on a client-chosen address",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-051d580e-e305-4235-823c-2de9ae7a0755",
+  "title": "Decide whether the diagnostics prompt should stop the model emitting",
+  "state": "pending",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    markdown fences. The rewritten prompt still says \"No markdown fences\", and",
+    "    the parser strips them (`parseError` was null on all 10 eval runs), but 2",
+    "    of 6 runs on the new wording wrapped the JSON in a ```json fence where 0",
+    "    of 2 baseline runs did. Two baseline samples cannot establish that as a",
+    "    regression, and nothing breaks today. Smallest next step: 4 more baseline",
+    "    runs to see whether the rates actually differ before touching the wording;",
+    "    each run spends model quota, so it wants the owner's go-ahead like the",
+    "    blocked item below. `test/parseDiagnosticsInsightsFromContent.test.ts` (5",
+    "    cases, on `main` since 2026-09-10) pins today's behaviour either way: the",
+    "    parser accepts fenced and unfenced JSON, so the wording can change without",
+    "    breaking the pipeline."
+  ]
+}

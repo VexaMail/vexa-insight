@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-18b8157d-53be-4edb-9d90-8dc6384350b4",
+  "title": "Unblock and re-upgrade",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `@radix-ui/react-slot` past the 1.2.x pin.",
+    "- Note: 1.4.0 remains RC-only; 1.3.3 is the current stable and is sufficient.",
+    "  The standing lesson is unchanged and still worth keeping: Radix bumps must",
+    "  be verified with `pnpm run build`, since type-check, lint, and vitest were",
+    "  all green while the RSC build was broken."
+  ],
+  "closed": "2026-07-25",
+  "result": "Blocker resolved upstream. Bumped `~1.2.4` -> `^1.3.3`. The 1.3.0/1.3.1 failure was a module-scope `SlotContext` (`React.createContext`) shipped without a `\"use client\"` directive, which crashed `next build` page-data collection with `e.createContext is not a function`; 1.3.3's dist contains no `createContext` at all, so the failure mode is gone.",
+  "evidence": [
+    "`pnpm run build` exit 0, \"Compiled successfully\", 49/49 static pages generated, no `createContext` error; `grep createContext node_modules/@radix-ui/react-slot/dist/` returns nothing. Cold `pnpm run type-check` and `pnpm run lint` clean; `pnpm run test` 442/442; `pnpm run test:a11y` 15/15. Lockfile diff is additive (slot 1.3.3 + its `react-compose-refs@1.1.5`), no unrelated version moves."
+  ],
+  "files": [
+    "package.json",
+    "pnpm-lock.yaml"
+  ]
+}

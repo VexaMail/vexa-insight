@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-34495d6a-9ac6-4f32-ac67-dfc6b7ad2755",
+  "title": "Fix `deploy/vexa.service`",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-08-28",
+  "result": "`ExecStart=node .next/standalone/server.js`, `Environment=HOSTNAME=127.0.0.1`, and the standalone assembly steps (`public/`, `.next/static/`, `drizzle/`) documented in the unit header.",
+  "evidence": [
+    "config change only, validated by reading `next start`'s standalone rejection and the standalone server's `HOSTNAME` default; not run under a live systemd. Commit: `fix(deploy): run the standalone server from the systemd unit`."
+  ]
+}

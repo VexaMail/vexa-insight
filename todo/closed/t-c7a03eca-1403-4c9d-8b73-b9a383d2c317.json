@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-c7a03eca-1403-4c9d-8b73-b9a383d2c317",
+  "title": "Make `pnpm run test:a11y` pass by adding the",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    first a11y suites."
+  ],
+  "closed": "2026-07-24",
+  "result": "axe-based tests for `InstallForm` (full + partial), `UnifiedPagination`, and `EmptyState`; zero violations found; `vitest-axe`'s broken `extend-expect` bypassed by asserting `results.violations` directly.",
+  "evidence": [
+    "`pnpm run test:a11y` exit 0 (3 files, 5 tests)."
+  ],
+  "files": [
+    "test/a11y/"
+  ]
+}

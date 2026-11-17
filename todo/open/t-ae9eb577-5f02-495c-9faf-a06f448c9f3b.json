@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-ae9eb577-5f02-495c-9faf-a06f448c9f3b",
+  "title": "SNDS: keep the \"<\" of \"< 0.1%\" complaint rates",
+  "state": "pending",
+  "category": "future-ideas",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The SNDS CSV reports",
+    "",
+    "    low complaint rates as `< 0.1%`; the parser stores 0.001 and the card",
+    "    shows \"0.10%\", which reads as a measured value. Store a flag (or the raw",
+    "    string) and render \"< 0.1%\"."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-3200d29e-67da-4553-8b44-39c55bd90fce",
+  "title": "Issues queue with acknowledge /",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    snooze (new table)."
+  ],
+  "closed": "2026-10-19",
+  "result": "/issues page and home queue with acknowledge, snooze 1 or 7 days, reopen and history over issue_events.",
+  "evidence": [
+    "2ab7cda; browser run acknowledge/reopen without console errors"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-9cfe04f4-c53a-44d4-bad0-fb41d94372c8",
+  "title": "Revoke a user's sessions when their password",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    changes.",
+    "- The two neighbouring revocation paths were already covered and needed no",
+    "  change: deleting a user cascades to `sessions` (FK `onDelete: 'cascade'`),",
+    "  and `getSession` joins `users` per request, so role and allow-list changes",
+    "  apply on the next request rather than at expiry."
+  ],
+  "closed": "2026-07-26",
+  "result": "`updateUser` rewrote `passwordHash` without touching `sessions`, so a stolen cookie outlived the reset meant to kill it. New `services/auth/revokeUserSessions.ts` deletes every session row for the user; `updateUser` calls it only on a password change and records one `auth.sessions.revoked` audit event with the target and the number of cookies killed. Per the 2026-07-26 decision this is unconditional: an admin who changes their own password is signed out too. The actor is read from the session before the delete, otherwise a self-reset would erase its own attribution.",
+  "evidence": [
+    "`pnpm run check:ci` clean (466/466, migrations OK). New `test/revokeUserSessions.test.ts` (4 cases); 2 of them fail with the `updateUser` change stashed, verified by re-running against the stash."
+  ],
+  "files": [
+    "services/auth/revokeUserSessions.ts",
+    "services/users/updateUser.ts",
+    "types/audit/AuditAction.ts",
+    "test/revokeUserSessions.test.ts"
+  ]
+}

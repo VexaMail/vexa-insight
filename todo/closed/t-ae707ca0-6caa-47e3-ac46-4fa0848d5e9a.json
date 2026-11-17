@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-ae707ca0-6caa-47e3-ac46-4fa0848d5e9a",
+  "title": "Check whether the Gemini and",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    OpenRouter adapters need the sampling-parameter gate."
+  ],
+  "closed": "2026-08-28",
+  "result": "Gemini yes, OpenRouter no. Google's Gemini 3 developer guide says to keep `temperature` at its default 1.0 (\"may lead to unexpected behavior, such as looping or degraded performance\" below 1.0) — the field is accepted, not rejected, so this is an output-quality gate: `createGeminiAdapter` now sends `temperature` only to the `gemini-1`/ `gemini-2` families. OpenRouter's API reference states unsupported parameters \"are ignored\", and its `/api/v1/models` metadata confirms it: `supported_parameters` omits `temperature` for `anthropic/claude-*-5`, `openai/o3`/`gpt-5.6-*` while listing it for `google/gemini-3.7-flash` — so the pass-through is already safe and no deny-list is needed.",
+  "evidence": [
+    "`test/createGeminiAdapter.test.ts` (2/2), type-check clean. Commit: `fix(ai): keep temperature off Gemini 3 requests`."
+  ]
+}

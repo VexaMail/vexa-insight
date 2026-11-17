@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-d7afe681-c545-4182-93a9-91b753b6cfad",
+  "title": "Source issue keys changed from `source:<ip>:<domain>` to",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `source:<domain>:<ip>` (c5138af) so per-domain permission checks work;",
+    "    acknowledgements saved under the old key no longer match. Decide whether",
+    "    to migrate existing `issue_events` rows."
+  ]
+}

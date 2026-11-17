@@ -1,0 +1,40 @@
+{
+  "tadu": 2,
+  "id": "t-71dc6b34-c4da-4951-bf42-93f5da3698b4",
+  "title": "Two DB-backed tests fail only under",
+  "state": "done",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    the full parallel suite. `pnpm test` spawns 107 workers and",
+    "    `test/recoveryCommands.test.ts` (\"creates an admin and refuses to create",
+    "    it twice\") plus `test/secretKeyResolution.test.ts` time out intermittently",
+    "    -- 5.6 s and 12.1 s for work that takes under a second alone. Both pass",
+    "    every time when run on their own (`pnpm vitest run <file>`, checked twice",
+    "    on 2026-09-17), and a clean checkout fails the same way, so this is worker",
+    "    contention on SQLite, not a regression. Smallest next step: give the",
+    "    DB-backed files their own `poolOptions` or a shared worker, rather than",
+    "    raising the timeout. **2026-09-30:** now hits CI too:",
+    "    `test/migrationLedger.test.ts` (\"records a checksum for every migration it",
+    "    applies\") timed out at 5 s under coverage on the Dependabot branch run for",
+    "    `development-minor-patch`. Raises the priority: a flaky gate teaches",
+    "    people to re-run red CI. **2026-10-01:** `recoveryCommands` failed on its",
+    "    own at load 33: the first test paid the cold dynamic import of the service",
+    "    graph. The imports now run in `beforeAll`; 3 of 3 runs pass at the same",
+    "    load. The other two files are unchanged. **2026-11-01:** after the",
+    "    dependency upgrades, a cold run failed seven tests in seven files",
+    "    (`finalizeAfterIngest`, `getDomainIds`, `getIngestPageData`,",
+    "    `getTriageOverview`, `installStateMarker`, `secretKeyResolution`,",
+    "    `eventRollup`), each the first test's cold import. Those files now warm",
+    "    their service graph in `beforeAll`; with `node_modules/.vitest-cache`",
+    "    deleted, two full runs passed 1051/1051. Still open: other files with the",
+    "    same pattern have not been audited, so the next cold failure names the",
+    "    next file to fix the same way."
+  ],
+  "closed": "2026-11-01",
+  "result": "Every test file whose first test dynamically imported a service module now warms it in beforeAll: 7 files in ff6eb63, then 18 more found by a static scan plus the four spfTree files whose helper import was missed by that scan. migrationSmoke keeps its own 30 s timeout and requirePermission already warmed in beforeEach.",
+  "evidence": [
+    "Two runs with node_modules/.vitest-cache deleted: 1051 passed, 0 failed, 0 skipped each (vitest JSON reporter)"
+  ]
+}

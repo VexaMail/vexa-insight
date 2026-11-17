@@ -1,0 +1,31 @@
+{
+  "tadu": 2,
+  "id": "t-bda15b02-8d15-4d96-8dfa-6c4106a7e47d",
+  "title": "Make \"move to trash after process\" actually",
+  "state": "done",
+  "category": "ingestion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    move the message to the trash.",
+    "- Symptom found while checking the the production host mailbox:",
+    "  `handleMoveToTrash` called ImapFlow's `client.messageDelete()`, which is",
+    "  `EXPUNGE` — the message was destroyed on the server, not moved. The trash",
+    "  folder held 0 messages after 3,141 ingested reports, while the setting name,",
+    "  the UI label, the `moving_to_trash` progress step and the",
+    "  `move_to_trash_after_process` column all promised something recoverable."
+  ],
+  "closed": "2026-08-26",
+  "result": "the handler now issues `client.messageMove()` to the mailbox flagged `\\Trash`, resolved by `fetchAttachments` from the server's mailbox list and threaded to both post-process call sites. A server with no `\\Trash` mailbox raises instead of falling back to the destructive path, so the message is left in place and the failure is logged; a message already in the trash is skipped. Decision recorded 2026-08-26: honour the label rather than rename the setting to `delete`, because the safe direction for an ambiguous promise is the non-destructive one.",
+  "evidence": [
+    "`pnpm run check:ci` green in a clean worktree (540 tests). New `test/moveToTrashIsAMove.test.ts` asserts the move, asserts `messageDelete` is never called, and asserts the message survives a failed move. Confirmed on the production host after deploy that the server advertises `INBOX.Trash` with `specialUse=\"\\Trash\"`, so `getTrashPath` resolves and the non-destructive path is the one that runs."
+  ],
+  "files": [
+    "utils/imap/handleMoveToTrash.ts",
+    "utils/imap/HandlePostProcessParams.ts",
+    "types/imap/FetchAttachmentsOptions.ts",
+    "services/imap/fetchAttachments.ts",
+    "services/imap/processOneMessageUid.ts",
+    "services/imap/handleAlreadyProcessed.ts"
+  ]
+}

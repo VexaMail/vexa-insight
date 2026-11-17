@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-12d6d166-5bb1-4939-a7ae-da7eebeb75b8",
+  "title": "Sending sources list: classify",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    instead of 951 \"Needs review\" (DMARC pass, authenticated not aligned,",
+    "    forwarded, failed, unknown)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Sources list classified by cause (DMARC pass, DKIM only, likely forwarding, mixed or unknown, fails SPF and DKIM) with filter chips and counts.",
+  "evidence": [
+    "d857691; /ips screenshot 2026-10-19"
+  ]
+}

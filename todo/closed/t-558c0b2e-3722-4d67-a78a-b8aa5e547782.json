@@ -1,0 +1,30 @@
+{
+  "tadu": 2,
+  "id": "t-558c0b2e-3722-4d67-a78a-b8aa5e547782",
+  "title": "Complete the RBAC rollout across privileged and",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    mutating routes.",
+    "- Correction during review: `reports:write` was initially granted only to",
+    "  `admin` and `operator`, which would have 403'd report upload for the legacy",
+    "  `user` role — the DB default, the only non-admin role the app assigns, and",
+    "  one that sees an ungated `/upload` page. Granted `reports:write` to `user`",
+    "  as well; `viewer` stays strictly read-only."
+  ],
+  "closed": "2026-07-24",
+  "result": "Every privileged/mutating `/api/v1` route and server action now enforces a catalog permission via `requirePermission`; API key maps to the `admin` role (`services/api/getApiKeyRole.ts`); new `reports:write` permission; closed two previously unauthenticated admin GETs (`/api/v1/admin/settings`, `/api/v1/admin/ai-settings`) that leaked masked IMAP/CORS/AI config; unauthenticated `fetchMoreIp*` server actions now require `reports:read`.",
+  "evidence": [
+    "`test/apiRbacSmoke.test.ts` structural gate; `pnpm run test` 328/328; inventory in the session report."
+  ],
+  "files": [
+    "app/api/v1/**` (13 route files)",
+    "actions/fetchMoreIp*.ts",
+    "services/api/",
+    "services/auth/",
+    "types/auth/Permission.ts",
+    "constants/auth/rolePermissions.ts"
+  ]
+}

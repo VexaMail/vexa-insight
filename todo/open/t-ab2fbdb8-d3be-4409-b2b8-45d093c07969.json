@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-ab2fbdb8-d3be-4409-b2b8-45d093c07969",
+  "title": "Revisit rollup-style pre-aggregation for `getTopIpSenders` once the",
+  "state": "pending",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    dataset justifies it. Measured 2026-07-26 against the local dev DB (6,901",
+    "    `normalized_events`, 2,178 `raw_reports`, 899 IPs, 51 domains): the query",
+    "    returns in ~20ms, most of it `sqlite3` CLI overhead, so a rollup table",
+    "    would be speculative complexity today. The 2026-07-26 domain-scoping",
+    "    change also improved the restricted-user path from",
+    "    `SCAN normalized_events` to",
+    "    `SEARCH ... USING INDEX event_domain_end_count_idx`. Reconsider when",
+    "    `normalized_events` reaches the \"millions of rows\" the",
+    "    `event_rollup_daily` doc comment describes; the rollup would need",
+    "    `domain_id` in its key to stay compatible with the allow-list filter, plus",
+    "    a migration, ingest-transaction maintenance, a backfill path, and an ADR",
+    "    0008-style consistency test."
+  ]
+}

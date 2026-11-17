@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-62386ac1-df90-46e0-b11a-9976f800f9bf",
+  "title": "Make a clean checkout build",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-08-28",
+  "result": "the top-level `await import('geoip-lite')` in the geoip service became a memoized `getGeoip()` resolved on first lookup, so collecting page data no longer opens the MaxMind `.dat` files that only exist after a download.",
+  "evidence": [
+    "`git clone` into a scratch dir with no `data/`, `pnpm install && pnpm run build` exit 0. Commit: `fix(build): load geoip-lite lazily so a clean checkout builds`."
+  ]
+}

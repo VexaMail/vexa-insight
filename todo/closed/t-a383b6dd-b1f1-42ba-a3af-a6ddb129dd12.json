@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-a383b6dd-b1f1-42ba-a3af-a6ddb129dd12",
+  "title": "Fix the report sources hydration mismatch",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Replaced the unstable Radix tooltip wrapper around the IP flag with deterministic markup.",
+  "evidence": [
+    "Historical targeted Vitest and type-check passed."
+  ],
+  "files": [
+    "components/ips/IpFlag.tsx",
+    "test/IpFlag.test.ts"
+  ]
+}

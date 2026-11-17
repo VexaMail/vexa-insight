@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-040b017f-5cea-4c07-98a8-23c134bc6497",
+  "title": "Resolve absolute SQLite `file:` URL paths",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    correctly."
+  ],
+  "closed": "2026-05-19",
+  "result": "Normalized absolute database URLs without treating them as relative paths.",
+  "evidence": [
+    "`3b7ee4aa`; covered by `test/resolveDbFilePath.test.ts`."
+  ],
+  "files": [
+    "lib/db/resolveDbFilePath.ts",
+    "test/resolveDbFilePath.test.ts"
+  ]
+}

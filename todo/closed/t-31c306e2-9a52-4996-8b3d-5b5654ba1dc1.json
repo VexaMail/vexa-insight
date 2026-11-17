@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-31c306e2-9a52-4996-8b3d-5b5654ba1dc1",
+  "title": "Failure report (RUF/ARF) ingestion",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Candidates are now",
+    "",
+    "    also picked by MIME structure",
+    "    (`multipart/report;     report-type=feedback-report`), since OpenDMARC's",
+    "    reports carry the failed message's subject (\"FW: ...\"), which the subject",
+    "    filter dropped. Envelope fetch now includes BODYSTRUCTURE. Stored in",
+    "    `forensic_reports` (migration 0038) with identifiers only and a",
+    "    500/domain/day cap; shown on the domain page; `failure_report.received`",
+    "    webhook. Evidence: `test/parseForensicReport.test.ts`,",
+    "    `test/ingestForensicReport.test.ts`, and a one-off parse of a real",
+    "    OpenDMARC report from the production mailbox (IPv6 source, kernel List-Id)",
+    "    giving the expected fields."
+  ],
+  "closed": "2026-09-30",
+  "result": "Failure report (RUF/ARF) ingestion",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

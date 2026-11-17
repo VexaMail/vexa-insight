@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-a26f2b92-ecfe-45a4-a33b-46b5bd575cae",
+  "title": "Code scanning cleared",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "`js/file-system-race` in",
+    "",
+    "    `readSelfUpdateLog` fixed by reading through one descriptor, with a test",
+    "    (10d2572). The two `js/insufficient-password-hash` alerts on",
+    "    `timingSafeTokenEqual` dismissed as false positives: SHA-256 only",
+    "    equalises lengths before `crypto.timingSafeEqual` on an in-memory token."
+  ],
+  "closed": "2026-09-30",
+  "result": "Code scanning cleared",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

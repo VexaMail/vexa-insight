@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-df8c528a-0186-4aa4-99e3-eda8e7ec4845",
+  "title": "`@busirocket/tsconfig` 0.3.0 adopted",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(commit",
+    "",
+    "    `1f987ec7b`): the six new correctness flags are on, the two the repo set",
+    "    by hand moved to the base, `process.env` reads go through the declared",
+    "    contract in `src/processEnv.d.ts`, and the 141 index-signature accesses",
+    "    `noPropertyAccessFromIndexSignature` rejected were rewritten to bracket",
+    "    form across 31 files with a one-off ts codemod. Evidence:",
+    "    `pnpm run     type-check` clean after deleting the stale",
+    "    `tsconfig.tsbuildinfo`, `pnpm run check:ci` green."
+  ],
+  "closed": "2026-09-09",
+  "result": "`@busirocket/tsconfig` 0.3.0 adopted",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

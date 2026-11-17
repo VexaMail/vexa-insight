@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-91403ed1-a0f2-4f94-acdd-6f6dc7af1278",
+  "title": "`v0.2.0` tagged on",
+  "state": "done",
+  "category": "open-source-launch-first-release",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `610cb8c7a` (minor bump: the Unreleased changelog was all features and",
+    "    fixes on top of a `0.1.0` that was never tagged). `release.yml` run",
+    "    34290113725 published the GitHub Release with the CycloneDX SBOM, and",
+    "    built, pushed and cosign-signed the multi-arch image",
+    "    `ghcr.io/vexamail/vexa-insight:{latest,0,0.2,0.2.0}`. The only failed step",
+    "    was the build-provenance attestation (\"Feature not available for the",
+    "    VexaMail organization\"), which is a private-repo limitation; the step now",
+    "    skips while the repo is private. Local `pnpm run check:ci` before tagging:",
+    "    91 files, 564 tests, migrations OK."
+  ],
+  "closed": "2026-09-09",
+  "result": "`v0.2.0` tagged on",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

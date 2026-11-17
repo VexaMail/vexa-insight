@@ -1,0 +1,31 @@
+{
+  "tadu": 2,
+  "id": "t-7d8b31d1-8d19-4c39-a111-c2329b0bb2c4",
+  "title": "the eight detail",
+  "state": "done",
+  "category": "diagnostics-page-split-first-step",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    sections (DNS, DMARC, SPF, SPF tree, DKIM, BIMI, MTA-STS, TLS-RPT) now",
+    "    render through `CollapsibleSection` and start collapsed; the score hero",
+    "    and the protocol overview stay. Each overview row is a button that opens",
+    "    its section, focuses it and scrolls it into view",
+    "    (`useDiagnosticsSections`, `scrollToDiagnosticsSection`). Bodies stay in",
+    "    the DOM under `hidden     print:flex`, so \"Download PDF\" still prints",
+    "    every section. Along the way the BIMI and MTA-STS check tables, the",
+    "    overview status config and the toggle button became their own files, and",
+    "    four suppressions left the ledger. Verified on the demo dataset at",
+    "    1440x900: collapsed page, DMARC row click opens and focuses the section;",
+    "    `docs/screenshots/diagnostics.png` regenerated. Evidence:",
+    "    `pnpm run check:ci` green (93 files, 568 tests), `pnpm run test:a11y`",
+    "    green (18 files, 49 tests, new `CollapsibleSection` axe test),",
+    "    `pnpm run build` green. The remaining \"Future Ideas\" about the page (tabs,",
+    "    per-protocol routes) stay open."
+  ],
+  "closed": "2026-09-09",
+  "result": "the eight detail",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

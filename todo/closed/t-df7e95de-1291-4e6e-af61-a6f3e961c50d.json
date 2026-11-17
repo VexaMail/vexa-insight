@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-df7e95de-1291-4e6e-af61-a6f3e961c50d",
+  "title": "Add a `.dockerignore`, and make the Docker",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    build actually work.",
+    "- Commits:",
+    "  `fix(security): keep local data and env files out of the docker image`,",
+    "  `fix(docker): install the node-gyp toolchain in the build stage`."
+  ],
+  "closed": "2026-08-28",
+  "result": "`.dockerignore` covers `data/`, `.env*`, `.next/`, `node_modules/`, `coverage/`, `evals/results/`, `.git/` and friends. While validating, the Docker build itself turned out broken on alpine/arm64: `better-sqlite3` has no musl/arm64 prebuilt and node-gyp failed with `gyp ERR! find Python`; the build stage now installs `python3 make g++`.",
+  "evidence": [
+    "`docker build` exit 0; `docker run --rm <img> ls -la /app/data` shows an empty directory and no `.env*` in `/app`, with 261 MB of local `data/` present in the build context."
+  ]
+}

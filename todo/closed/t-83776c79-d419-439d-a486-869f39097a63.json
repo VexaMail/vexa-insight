@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-83776c79-d419-439d-a486-869f39097a63",
+  "title": "Fix SPF third-party include filter and lookup",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    counting."
+  ],
+  "closed": "2026-07-24",
+  "result": "All `include:` mechanisms are listed as third-party dependencies (the old condition inverted its own intent); `analyzeLimits` now counts qualified (`-a`), CIDR (`a/24`), and record-final `a`/`mx` mechanisms.",
+  "evidence": [
+    "`test/analyzeSpfRecord.test.ts` (18 tests incl. new counting regression)."
+  ],
+  "files": [
+    "services/diagnostics/analyzeDependencies.ts",
+    "analyzeLimits.ts"
+  ]
+}

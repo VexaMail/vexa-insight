@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-80472199-64c8-4e21-a88c-97f70baeba56",
+  "title": "Re-check `extract-zip`: the advisory names `>=2.0.2` and no such release",
+  "state": "pending",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    exists. Closed here by overriding `@puppeteer/browsers` to `^3.2.1`, which",
+    "    dropped the dependency for `modern-tar`. Drop the override if `@lhci/cli`",
+    "    ever ships a version that no longer needs it. Re-checked 2026-09-10:",
+    "    unchanged — `@lhci/cli` latest is still 0.15.1, pinning",
+    "    `lighthouse@12.6.1`; the override stays."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-681e6fd5-6c22-4461-890a-8b5374f0df5f",
+  "title": "Add tests for admin guides, AI prompt builders,",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    and protocol explainers."
+  ],
+  "closed": "2026-07-24",
+  "result": "34 tests covering guide severity ordering/caps/thresholds, prompt section content and runbook-non-repetition instructions, and server-rendered explainer output.",
+  "evidence": [
+    "`pnpm run test` green."
+  ],
+  "files": [
+    "test/buildDiagnosticsAdminGuides.test.ts",
+    "test/diagnosticsAiPrompts.test.ts",
+    "test/ProtocolExplainer.test.ts"
+  ]
+}

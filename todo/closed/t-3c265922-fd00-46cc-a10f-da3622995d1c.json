@@ -1,0 +1,52 @@
+{
+  "tadu": 2,
+  "id": "t-3c265922-fd00-46cc-a10f-da3622995d1c",
+  "title": "Extend a11y coverage to the interactive",
+  "state": "done",
+  "category": "testing-bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    surfaces, and fix an unnamed combobox it found.",
+    "- Real defect found and fixed: the date-range `SelectTrigger` had no",
+    "  accessible name (axe `button-name`, serious). Its only text comes from",
+    "  `SelectValue`, which renders nothing until the matching `SelectItem` mounts,",
+    "  so screen readers announced an unnamed button. Added an explicit",
+    "  `aria-label=\"Date range\"`, pinned by a",
+    "  `getByRole('combobox', { name: 'Date range' })` assertion.",
+    "- Harness: `test/setupA11y.ts` now stubs `scrollIntoView`, the pointer-capture",
+    "  methods, and `ResizeObserver`. jsdom has no layout engine and Radix calls",
+    "  these while opening, so without them the component threw before axe could",
+    "  audit the portalled content. Axe checks roles, names, and relationships,",
+    "  none of which depend on real geometry.",
+    "- The open-listbox audit runs against `document.body`, not the render",
+    "  container, because Radix portals the content out — auditing the container",
+    "  would have silently skipped the popover. The `region` rule is disabled for",
+    "  that one audit only, with the reason inline: the portal mounts as a direct",
+    "  child of `<body>` by design, so it fires in every correct implementation.",
+    "- Also covered `Dialog` (closed, and open with an asserted accessible name +",
+    "  description) and the `Command` palette. Suites 7 -> 12, tests 15 -> 26.",
+    "- Second real finding, not fixed: cmdk puts `role=\"listbox\"` on `CommandList`",
+    "  unconditionally, so with no results the listbox has no `option` children and",
+    "  axe raises `aria-required-children` (wcag2a). Not silently patched — the fix",
+    "  changes a shared UI primitive's ARIA semantics and belongs in",
+    "  `components/ui/CommandList.tsx`, so it is filed in `TODO.md`. The",
+    "  empty-state test asserts that this is the _only_ violation, so any other",
+    "  empty-state regression still fails, and the test fails once the issue is",
+    "  fixed."
+  ],
+  "closed": "2026-07-25",
+  "result": "Covered the surfaces with focus management and Radix portals that the earlier static pass could not reach — `DataTable` (populated, empty, and chrome-hidden), `Select` (closed and with the listbox open), and `DateRangeFilter` (preset and custom-range).",
+  "evidence": [
+    "`pnpm run test:a11y` 26/26 (the `DateRangeFilter` cases fail before the `aria-label` fix); `pnpm run check:ci` exit 0 (type-check, lint, format:check, 443/443 tests, migrations) from cleared `tsconfig.tsbuildinfo` and `.eslintcache`; `pnpm run build` exit 0."
+  ],
+  "files": [
+    "components/filters/DateRangeFilterContent.tsx",
+    "test/setupA11y.ts",
+    "test/a11y/{DataTable",
+    "Select",
+    "DateRangeFilter",
+    "Dialog",
+    "Command}.test.tsx"
+  ]
+}

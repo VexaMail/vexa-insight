@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-acb16e14-5036-46f1-8943-2f106f0554ac",
+  "title": "Stop advertising PostgreSQL and MySQL",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-08-28",
+  "result": "claim deleted from `README.md` (four spots), `docs/UPDATING.md` and `.env.example`; SQLite documented as the only supported database. Commit: `docs: stop advertising PostgreSQL/MySQL support that does not exist`.",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

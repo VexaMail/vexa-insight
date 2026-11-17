@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-159b9b89-e591-47e5-afa6-f41386321f3f",
+  "title": "Live instance unreachable for 29 hours",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    while the app stayed healthy; no external uptime check.",
+    "- Cause: the nightly `cloudflared` rpm upgrade (2026.8.2 to 2026.8.3) removed",
+    "  the `/usr/local/bin/cloudflared` symlink the tunnel unit's `ExecStart` used",
+    "  (the old package's `postuninstall` runs after the new one's `postinstall`),",
+    "  so the unit crash-looped with `status=203/EXEC` while the loopback",
+    "  `/api/v1/health` stayed green."
+  ],
+  "closed": "2026-09-02",
+  "result": "tunnel units repointed to `/usr/bin/cloudflared`; a systemd timer on the host now probes the public hostname every 5 minutes through Cloudflare, restarts the tunnel unit on the first failure and mails root on failure and recovery (mail delivery verified in the exim log); `docs/DEPLOY-BEHIND-PROXY.md` tells operators to monitor the public hostname and to reference the package path.",
+  "evidence": [
+    "public health endpoint 200 through the tunnel; probe run exits 0; timer listed by `systemctl list-timers`."
+  ]
+}

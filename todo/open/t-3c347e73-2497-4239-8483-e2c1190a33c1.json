@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-3c347e73-2497-4239-8483-e2c1190a33c1",
+  "title": "Burn down the 210 `code-policy/no-inline-types-in-runtime-files`",
+  "state": "pending",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (`anonymousTypeLiteral`) findings that `eslint-plugin-code-policy@0.8.0`",
+    "    added to `eslint-suppressions.json` on 2026-10-07: name each inline object",
+    "    type in `src/types/<area>/`, then `pnpm lint:prune`."
+  ]
+}

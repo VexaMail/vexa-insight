@@ -1,0 +1,31 @@
+{
+  "tadu": 2,
+  "id": "t-14406b2a-056d-4d62-b8ce-f88286c1dd1a",
+  "title": "`@busirocket/quality-config` 0.11.0 gates wired",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `baseline-audit --level moderate` replaces the `continue-on-error` audit",
+    "    step in CI (`pnpm run audit:check`); the two advisories that have no fix",
+    "    today (qs via `@lhci/cli`) are waived in `.baseline-advisories.json` with",
+    "    reasons and a 2026-12-31 expiry, after which the gate fails. oxlint runs",
+    "    as `lint:fast` (correctness rules, `--deny-warnings`, `no-unused-vars`",
+    "    mirroring the ESLint `ignoreRestSiblings` and `^_` options so both agree",
+    "    on `const { omitted, ...rest }`), first in `check:ci` and on staged files",
+    "    at pre-commit. commitlint enforces Conventional Commits from a new",
+    "    `commit-msg` hook (`commitlint.config.mjs`, shared preset). vitest bumped",
+    "    to 4.1.11 for GHSA-82fw-gwwq-j7x9. Evidence: `pnpm run audit:check`",
+    "    reports 0 unwaived, 0 expired, 2 waived; commitlint rejects `feature:` and",
+    "    passes the last 12 commits; `lefthook install` lists pre-commit,",
+    "    commit-msg and pre-push; `pnpm run check:ci` green (93 files, 568 tests);",
+    "    `pnpm run test:a11y` green (18 files, 50 tests). The knip hint about",
+    "    `dependency-cruiser` in `ignoreDependencies` predates this change."
+  ],
+  "closed": "2026-09-09",
+  "result": "`@busirocket/quality-config` 0.11.0 gates wired",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

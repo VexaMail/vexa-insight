@@ -1,0 +1,38 @@
+{
+  "tadu": 2,
+  "id": "t-96056bfc-a9d4-4c3b-9c7b-bed435908463",
+  "title": "Decide whether the shared API key should be",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    excluded from `users:write`.",
+    "- Decision: yes. The shared `SECRET_KEY` no longer maps to the `admin` role;",
+    "  it now carries the fixed set `API_KEY_PERMISSIONS` = `reports:read`,",
+    "  `reports:write`, `settings:read`, `ai:invoke`. One secret shared by every",
+    "  automation client must not be able to create users, change roles, or read",
+    "  the audit log — that is the difference between a leaked key and account",
+    "  takeover.",
+    "- Behavior change to know about: `/api/v1/users/**`",
+    "  (`users:read`/`users:write`) and `/api/v1/audit-log` (`audit:read`) now",
+    "  answer 403 to the shared key, and so do the webhook writes on",
+    "  `/api/v1/admin/webhooks*` (`settings:write`), which were not part of the",
+    "  original question. Routes gated by `requireAdminAuth` (IMAP, GeoIP, admin",
+    "  settings, poll control) check the raw key directly and are unaffected."
+  ],
+  "closed": "2026-07-26",
+  "result": "`services/api/getApiKeyRole.ts` (returned `'admin'`) replaced by `services/api/hasValidApiKey.ts` (returns a boolean); `requirePermission` checks a session against its user's role and a keyed request against `API_KEY_PERMISSIONS`, keeping 401-vs-403 semantics. `getAllowedDomainIds` still treats a valid key as unrestricted, otherwise every domain-scoped query returns nothing to API callers.",
+  "evidence": [
+    "`pnpm run check:ci` clean (type-check, lint, format, 462/462 tests, migrations OK). New `test/requirePermission.test.ts` (5 cases) pins the grant set, the 403s, the 401-without-credentials path, and that an admin session still holds what the key does not."
+  ],
+  "files": [
+    "constants/auth/apiKeyPermissions.ts",
+    "services/api/hasValidApiKey.ts",
+    "services/auth/{requirePermission",
+    "domainAccess}.ts",
+    "test/requirePermission.test.ts",
+    "docs/adr/0001-default-deny-api-surface.md",
+    "README.md"
+  ]
+}

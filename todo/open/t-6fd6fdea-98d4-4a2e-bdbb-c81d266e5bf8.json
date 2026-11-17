@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-6fd6fdea-98d4-4a2e-bdbb-c81d266e5bf8",
+  "title": "Scheduled email digests",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Weekly/monthly summary mail per domain",
+    "",
+    "    (Postmark, dmarc-srg, EasyDMARC, Red Sift). Needs SMTP settings."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-9df92e42-f98d-4e2b-aa42-cba05e4dea98",
+  "title": "Enable `.test.tsx` in the unit Vitest config",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "`vitest.config.ts` now includes `test/**/*.{test,spec}.{ts,tsx}` (a11y dir excluded to keep it under its own jsdom config); DOM-dependent tests can opt in via the `@vitest-environment jsdom` pragma.",
+  "evidence": [
+    "full suite green; a11y suite unaffected."
+  ],
+  "files": [
+    "vitest.config.ts"
+  ]
+}

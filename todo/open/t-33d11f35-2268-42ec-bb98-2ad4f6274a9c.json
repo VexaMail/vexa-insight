@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-33d11f35-2268-42ec-bb98-2ad4f6274a9c",
+  "title": "Encrypt webhook signing secrets at rest. `webhook_endpoints.secret` is a",
+  "state": "pending",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    plain `text` column (found 2026-10-19 while building the Webhooks settings",
+    "    UI); responses mask it, but a database copy exposes every secret, unlike",
+    "    mailbox passwords, which are encrypted. Smallest step: reuse the mailbox",
+    "    password encryption for this column, with a migration that encrypts",
+    "    existing rows."
+  ]
+}

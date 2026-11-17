@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-62a25f6a-62df-4443-9f46-e7878df91c22",
+  "title": "Require a configured model in",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `isAiConfigured`.",
+    "- Note: `services/ai/contracts/AiConfigurationStatus.ts`",
+    "  (`AIConfigurationStatus`) has no consumers at all; left in place as",
+    "  pre-existing dead code, tracked in `TODO.md`."
+  ],
+  "closed": "2026-07-25",
+  "result": "`isAiConfigured()` now also requires a non-blank `model`, so with only provider + key saved the diagnostics and report panels render `AiNotConfiguredCta` instead of an Analyze button that always 422s. Since ADR 0007 `resolveEffectiveModel` refuses to guess a provider default, provider+key alone is not a usable configuration.",
+  "evidence": [
+    "new `test/isAiConfigured.test.ts` (3 cases: no provider, provider+key without a model incl. blank/whitespace, provider+key+model); `pnpm run test` 424/424."
+  ],
+  "files": [
+    "services/ai/core/isAiConfigured.ts",
+    "test/isAiConfigured.test.ts"
+  ]
+}

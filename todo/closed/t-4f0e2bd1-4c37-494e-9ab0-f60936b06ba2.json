@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-4f0e2bd1-4c37-494e-9ab0-f60936b06ba2",
+  "title": "Decide missing OpenRouter model",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    behavior — fail clearly."
+  ],
+  "closed": "2026-07-24",
+  "result": "Removed the silent `PROVIDER_DEFAULTS` fallback (`openrouter/auto` et al.); `resolveEffectiveModel` now throws `NOT_CONFIGURED` with an actionable message; routes return 422 and the panels render it.",
+  "evidence": [
+    "`test/resolveEffectiveModel.test.ts` (7 tests); full suite green."
+  ],
+  "files": [
+    "services/ai/providers/shared/resolveEffectiveModel.ts` (providerDefaults.ts deleted)"
+  ]
+}

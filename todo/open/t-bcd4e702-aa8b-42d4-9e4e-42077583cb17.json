@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-bcd4e702-aa8b-42d4-9e4e-42077583cb17",
+  "title": "Ingest run duration, ingest \"+n% vs previous\" and StatTile deltas on the",
+  "state": "pending",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    reports list need a previous-window query and a run duration column."
+  ]
+}

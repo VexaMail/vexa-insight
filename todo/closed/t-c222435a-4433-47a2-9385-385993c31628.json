@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-c222435a-4433-47a2-9385-385993c31628",
+  "title": "Add operations, proxy, SSO, and migration",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    guidance."
+  ],
+  "closed": "2026-05-19",
+  "result": "Documented troubleshooting, reverse-proxy deployment, experimental SSO, and migration policy.",
+  "evidence": [
+    "`650522a5`, `8dfe7f2a`, `94b548ad`."
+  ],
+  "files": [
+    "docs/TROUBLESHOOTING.md",
+    "docs/DEPLOY-BEHIND-PROXY.md",
+    "docs/SSO.md",
+    "docs/MIGRATIONS.md"
+  ]
+}

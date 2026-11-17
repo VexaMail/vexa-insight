@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-a483ca8e-7941-44f8-824d-60b0ddeded4f",
+  "title": "`app/inter.tsx` and",
+  "state": "done",
+  "category": "fonts-for-offline-builds",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `app/spaceGrotesk.tsx` load the two variable fonts through",
+    "    `next/font/local` from `app/fonts/` (latin `woff2` from",
+    "    `@fontsource-variable` 5.3.0, OFL licence files alongside, provenance in",
+    "    `app/fonts/README.md`), so `next build` no longer reaches Google Fonts.",
+    "    Evidence: `pnpm run build` green with both files emitted under",
+    "    `.next/static/media`; CSP `font-src 'self'` unchanged."
+  ],
+  "closed": "2026-09-09",
+  "result": "`app/inter.tsx` and",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

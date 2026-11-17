@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-aaac59bf-d187-4dab-b6a2-966e21d8928f",
+  "title": "DNSSEC, DANE/TLSA and MX STARTTLS/certificate",
+  "state": "pending",
+  "category": "deeper-dns-checks",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    probing, BIMI VMC validation, `_report._dmarc` external authorization, SPF",
+    "    void lookups, RFC 9989 tags (`np`/`psd`/`t`) and removed-tag warnings",
+    "    (checkdmarc, Spoofy, YADT)."
+  ]
+}

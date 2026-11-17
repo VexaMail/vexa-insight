@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-f2fc1a65-f3a0-4504-ab0c-da212685a1d1",
+  "title": "P1 — Real-message authentication test (app; landing test inbox later)",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Reference: mail-tester and Red Sift Investigate. First step: design an",
+    "    expiring per-test inbox address and receive a message from the user's",
+    "    actual sending service; report the observed IP, SPF identity, DKIM",
+    "    signature, From alignment and trusted receiver authentication results.",
+    "    Define retention/redaction, consent, message-size limits, expiry and abuse",
+    "    budgets before exposing a public inbox. A score must not claim inbox",
+    "    placement."
+  ]
+}

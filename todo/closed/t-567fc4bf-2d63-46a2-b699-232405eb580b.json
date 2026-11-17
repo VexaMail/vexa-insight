@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-567fc4bf-2d63-46a2-b699-232405eb580b",
+  "title": "Domain detail: decision header",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (compliance, published policy, enforcement stage Observe -> Identify ->",
+    "    Fix -> Quarantine -> Reject, senders at risk, forwarders), tabs Sources /",
+    "    DNS / Reports / TLS-RUF, sources filtered by classification, compliance",
+    "    trend vs previous period."
+  ],
+  "closed": "2026-10-19",
+  "result": "Header with Actions and more menus, five decision cards, path to enforcement, icon tabs incl. History, sources with Classification column, filters, CSV/JSON export and an enforcement blockers strip.",
+  "evidence": [
+    "0f33cf5, 90a685d"
+  ]
+}

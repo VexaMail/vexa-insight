@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-3c6eb46e-1e26-449b-b158-543fe10cb2de",
+  "title": "Diagnostics: findings table",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (severity, check, observed, recommendation, action), status tiles per",
+    "    protocol, next best actions, re-run check, copy record, explanations moved",
+    "    to a side panel. Supersedes the three diagnostics items under Future",
+    "    Ideas."
+  ],
+  "closed": "2026-10-19",
+  "result": "Header with last run and Run diagnostics split button, score ring with grade, six protocol tiles, filterable findings with Verify and More, numbered next actions, why-this-matters, record generator tab.",
+  "evidence": [
+    "588d2f5, 0ccb1aa, a0e6676"
+  ]
+}

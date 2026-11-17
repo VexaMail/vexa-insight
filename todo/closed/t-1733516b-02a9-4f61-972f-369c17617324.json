@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-1733516b-02a9-4f61-972f-369c17617324",
+  "title": "Add direct unit tests for the diagnostics",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    scoring and parsers."
+  ],
+  "closed": "2026-07-24",
+  "result": "57 tests covering `computeDomainScore` grade boundaries, `parseDmarcTags`, `parseDkimRecord`, `analyzeSpfRecord` edge cases; they surfaced the two bugs fixed above.",
+  "evidence": [
+    "`pnpm run test` green."
+  ],
+  "files": [
+    "test/computeDomainScore.test.ts",
+    "test/parseDmarcTags.test.ts",
+    "test/parseDkimRecord.test.ts",
+    "test/analyzeSpfRecord.test.ts"
+  ]
+}

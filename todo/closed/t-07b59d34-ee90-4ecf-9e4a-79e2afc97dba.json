@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-07b59d34-ee90-4ecf-9e4a-79e2afc97dba",
+  "title": "Check whether the OpenAI adapter",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    has the same `temperature` problem the Anthropic one had.",
+    "- Still unverified: whether those models accept",
+    "  `response_format: { type: 'json_object' }`, which the adapter sends",
+    "  unconditionally and every prompt here relies on. Left in `TODO.md` rather",
+    "  than guessed at."
+  ],
+  "closed": "2026-07-26",
+  "result": "it does, and it came with a second half. OpenAI's reasoning families (`o1`/`o3`/`o4`, `gpt-5`) reject a non-default `temperature` (`Unsupported value: 'temperature' does not support 0.2 with this model. Only the default (1) value is supported.`) **and** `max_tokens`, which has to be `max_completion_tokens` there. Either one is an HTTP 400, so gating only the temperature would have left those models exactly as unusable. `utils/ai/usesLegacyOpenAiChatParams.ts` picks one shape or the other from `LEGACY_OPENAI_CHAT_MODEL_PREFIXES` (`gpt-3.5`, `gpt-4*`, `chatgpt-4o`): legacy models keep `max_tokens` + `temperature`, everything else gets `max_completion_tokens` and no sampling controls. `gpt-5-chat` is deliberately excluded — reports disagree on whether the non-reasoning chat variant accepts `temperature`, and the modern shape is the harmless side of that.",
+  "evidence": [
+    "`pnpm run check:ci` clean (type-check, lint, format, 504/504 tests, migrations OK). New `test/createOpenAiAdapter.test.ts` asserts the whole request body over a stubbed `fetch` — `max_tokens` + `temperature` and no `max_completion_tokens` for `gpt-4o`, the inverse for `gpt-5`; `test/usesLegacyOpenAiChatParams.test.ts` (4 cases) pins both model sets, the unknown-model default, and casing. The 400s come from published reports and Microsoft's Azure OpenAI reasoning docs, not from a call made here: `platform.openai.com` returned 403 to an unauthenticated fetch, so no primary-doc quote was captured and no metered call was made."
+  ],
+  "files": [
+    "constants/ai/legacyOpenAiChatModelPrefixes.ts",
+    "utils/ai/usesLegacyOpenAiChatParams.ts",
+    "services/ai/providers/openai/createOpenAiAdapter.ts",
+    "test/{createOpenAiAdapter",
+    "usesLegacyOpenAiChatParams}.test.ts"
+  ]
+}

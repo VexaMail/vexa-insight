@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-6cb58b14-9f5b-4106-a28b-e4de83541b61",
+  "title": "the eight",
+  "state": "done",
+  "category": "open-source-launch-screenshots",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `docs/screenshots/*.png` are regenerated from the `pnpm run seed:demo`",
+    "    dataset at 1440x900 (example.com domains, documentation-range IPs, demo",
+    "    report IDs, the demo API key). Commit `5e6f48838`. The `.playwright-mcp/`",
+    "    capture directory is gitignored (`9b094791d`). The history-rewrite",
+    "    decision for the old captures stays in `TODO.md`."
+  ],
+  "closed": "2026-09-09",
+  "result": "the eight",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-85c82f07-b16c-42d0-82fd-da9229ccfa4e",
+  "title": "Change detection: a domain or",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    source that starts failing (new endpoint, state snapshot)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Home 'What changed' table compares the window with the previous one per domain and source, with trends.",
+  "evidence": [
+    "b9b27cb, c5138af"
+  ]
+}

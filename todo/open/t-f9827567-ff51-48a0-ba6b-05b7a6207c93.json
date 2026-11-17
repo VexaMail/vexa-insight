@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-f9827567-ff51-48a0-ba6b-05b7a6207c93",
+  "title": "DNS change history",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Snapshot SPF/DKIM/DMARC/MTA-STS/BIMI records on a",
+    "",
+    "    schedule, show a timeline and alert on change (PowerDMARC, EasyDMARC,",
+    "    URIports, Sendmarc)."
+  ]
+}

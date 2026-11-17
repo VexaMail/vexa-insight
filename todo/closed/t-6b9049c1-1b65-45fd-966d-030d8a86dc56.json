@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-6b9049c1-1b65-45fd-966d-030d8a86dc56",
+  "title": "Production findings from the nova pass fixed",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-19",
+  "result": "records without a usable source IP are skipped and counted instead of failing the whole report (7250569); `ip_hostname_enrichments` timestamps default to unix seconds, with migration 0040 rebuilding the table and converting the text values (d2d0045); scheduler run lines carry a timestamp and each failed hostname lookup logs its IP and error (8d69c62); the standalone output no longer traces the project root (85deafa); expired sessions and poll events older than 90 days are pruned daily (4bda7a4).",
+  "evidence": [
+    "`pnpm run check:ci` exit 0 on the integrated main, 144 test files and 767 tests passed, `check-migrations: OK`; each change reviewed separately."
+  ]
+}

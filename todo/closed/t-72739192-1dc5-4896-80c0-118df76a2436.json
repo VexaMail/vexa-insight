@@ -1,0 +1,37 @@
+{
+  "tadu": 2,
+  "id": "t-72739192-1dc5-4896-80c0-118df76a2436",
+  "title": "**Pre-rewrite history purged from GitHub, old copies",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    deleted:** the force-push had left `refs/pull/1..66` on the server, so the",
+    "    original screenshots stayed fetchable by SHA. The repository held nothing",
+    "    worth a support ticket (0 stars, forks, issues, discussions, secrets,",
+    "    webhooks, deploy keys; 66 closed Dependabot PRs), so the GHCR package and",
+    "    the repository were deleted and recreated under the same name from the",
+    "    rewritten local history: `main`, `v0.2.0` and `v0.2.1` pushed, topics,",
+    "    description, homepage, Discussions, secret scanning, push protection,",
+    "    vulnerability alerts and the `main` protection re-applied. The tag push on",
+    "    the fresh repository started no release run; deleting and re-pushing the",
+    "    same tag objects did, and the two release runs rebuilt both images into a",
+    "    fresh package that inherited the repository's public visibility with no",
+    "    manual flip. Evidence: the old commit and the old tag object both answer",
+    "    404 on the API; anonymous manifest pulls of `latest`, `0.2.1` and `0.2.0`",
+    "    answer 200 across the five tags; `gh attestation verify` exits 0 on both",
+    "    images. A tree-wide grep of the published checkout finds no internal",
+    "    hostname, no public IP outside the documentation ranges and no third-party",
+    "    address, and the eight published screenshots show only documentation IPs",
+    "    and a placeholder API key."
+  ],
+  "closed": "2026-09-10",
+  "result": "compromised copies removed. The pre-rotation database copy on the production host (old key plus old IMAP ciphertext) and the local pre-rewrite bundle are deleted; the macmini clone was reset onto the new history, pruned of the stale Dependabot refs and the old tag, and `git gc --prune=now` leaves the old commit unresolvable there. The portable Mac was unreachable and keeps its clone until it next syncs; a plain `git fetch --prune --prune-tags --force` plus `reset --hard origin/main` cleans it. three local `bot/*` branches deleted (two at `main`, one a superseded `db:migrate` fix); `bot/f4d82a7f` kept, it holds the fenced-JSON parsing test tied to the open diagnostics-prompt decision.",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ],
+  "files": [
+    "TODO.md"
+  ]
+}

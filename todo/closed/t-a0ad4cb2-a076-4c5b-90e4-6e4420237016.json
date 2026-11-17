@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-a0ad4cb2-a076-4c5b-90e4-6e4420237016",
+  "title": "Enforce same-origin checks on",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    session-authenticated mutations."
+  ],
+  "closed": "2026-05-18",
+  "result": "Added CSRF validation while preserving API-key automation.",
+  "evidence": [
+    "`87d3aef4`, `dc0a0845`; covered by `test/requireSameOrigin.test.ts`."
+  ],
+  "files": [
+    "services/security/requireSameOrigin.ts",
+    "services/api/withApiAuth.ts"
+  ]
+}

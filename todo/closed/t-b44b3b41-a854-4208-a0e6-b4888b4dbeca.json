@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-b44b3b41-a854-4208-a0e6-b4888b4dbeca",
+  "title": "One detail-page pattern for",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    domain, source, report and diagnostics: identity header with copy buttons,",
+    "    status chips, KPI strip, tabs."
+  ],
+  "closed": "2026-10-19",
+  "result": "Domain, source, report and diagnostics share identity header with copy, status chips, feature KPI tiles and icon tabs.",
+  "evidence": [
+    "90a685d, 3dbc40b, 120e19d, 0ccb1aa"
+  ]
+}

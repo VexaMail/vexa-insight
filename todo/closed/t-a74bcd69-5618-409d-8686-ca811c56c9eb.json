@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-a74bcd69-5618-409d-8686-ca811c56c9eb",
+  "title": "Add the domain security score",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Added letter grades and percentages with protocol-specific scoring functions coordinated by `computeDomainScore`.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "services/diagnostics/computeDomainScore.ts",
+    "services/diagnostics/score*.ts"
+  ]
+}

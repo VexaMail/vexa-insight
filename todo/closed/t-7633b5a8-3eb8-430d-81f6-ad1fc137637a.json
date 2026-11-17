@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-7633b5a8-3eb8-430d-81f6-ad1fc137637a",
+  "title": "Add a deterministic administrator runbook",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Added why-it-matters, remediation, and verification guidance derived from DNS, score, and report data.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "services/diagnostics/buildDiagnosticsAdminGuides.ts",
+    "components/ai/DiagnosticsAdminRunbook.tsx"
+  ]
+}

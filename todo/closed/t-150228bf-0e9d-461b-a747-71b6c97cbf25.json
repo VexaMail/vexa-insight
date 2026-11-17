@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-150228bf-0e9d-461b-a747-71b6c97cbf25",
+  "title": "**Recovered the fenced-JSON parser test from a dangling",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    branch:** `bot/f4d82a7f` held",
+    "    `test/parseDiagnosticsInsightsFromContent.test.ts` (5 cases pinning that",
+    "    the diagnostics parser accepts both fenced and unfenced JSON), which had",
+    "    never reached `main`. Cherry-picked the test alone: the branch's other",
+    "    change reflowed `deploy/k8s/README.md` and still pointed at the pre-rename",
+    "    `helm/vexa-insight-dashboard` path, so merging it would have undone part",
+    "    of the rename. Branch deleted."
+  ],
+  "closed": "2026-09-10",
+  "result": "the open prompt-wording decision is now safe either way, since the parser's tolerance is pinned by a test.",
+  "evidence": [
+    "the 5 cases pass against `main`."
+  ],
+  "files": [
+    "test/parseDiagnosticsInsightsFromContent.test.ts"
+  ]
+}

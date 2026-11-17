@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-a6b496b9-74fd-4f1c-9af4-13af6c22a627",
+  "title": "SNDS: confirm the IP status CSV format",
+  "state": "pending",
+  "category": "future-ideas",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The status endpoint has",
+    "",
+    "    returned no rows so far, so its parser is untested against real data.",
+    "    Check it the first time an IP is listed as blocked, and add a fixture."
+  ]
+}

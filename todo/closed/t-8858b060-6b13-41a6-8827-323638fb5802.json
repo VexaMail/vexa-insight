@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-8858b060-6b13-41a6-8827-323638fb5802",
+  "title": "Standardize the poll-status path-param error",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    shape."
+  ],
+  "closed": "2026-07-25",
+  "result": "`app/api/v1/job-runs/[id]/poll-status/route.ts` now uses the shared `parseIdParam` guard and returns `{ error: { code: 'BAD_REQUEST', message: 'Invalid job run id' } }` instead of the non-standard `{ error: 'Invalid Job ID' }`. This also tightens the guard: `parseInt` accepted `\"12abc\"` and negative ids, `parseIdParam` requires a positive integer.",
+  "evidence": [
+    "`pnpm run type-check`, `pnpm run lint`, `pnpm run format:check` clean; `pnpm run test` 424/424."
+  ],
+  "files": [
+    "app/api/v1/job-runs/[id]/poll-status/route.ts"
+  ]
+}

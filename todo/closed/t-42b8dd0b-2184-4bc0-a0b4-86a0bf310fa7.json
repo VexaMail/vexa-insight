@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-42b8dd0b-2184-4bc0-a0b4-86a0bf310fa7",
+  "title": "Migrate the production CSP to nonces",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "Per-request nonce with `'strict-dynamic'` for `script-src` set by the proxy (`utils/proxy/applyProdCspHeaders.ts`); `'unsafe-inline'` removed from scripts (kept for styles — Recharts/framer-motion/next-font constraints, see ADR 0006); dev CSP unchanged via static headers; all pages force-dynamic (login via a server `layout.tsx`).",
+  "evidence": [
+    "`pnpm run build` shows every page `ƒ` (dynamic); `test/buildProdCspDirectives.test.ts`, `test/createCspNonce.test.ts`; full suite green."
+  ],
+  "files": [
+    "proxy.ts",
+    "utils/proxy/applyProdCspHeaders.ts",
+    "utils/security/",
+    "app/login/layout.tsx",
+    "eight `page.tsx` files"
+  ]
+}

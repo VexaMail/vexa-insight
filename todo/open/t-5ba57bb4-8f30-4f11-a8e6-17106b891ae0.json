@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-5ba57bb4-8f30-4f11-a8e6-17106b891ae0",
+  "title": "IP network context: ASN, organization, PTR and FCrDNS lookups ship on the",
+  "state": "in_progress",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "source page (50b4d9b, 3dbc40b). Left: DNSBL, shown as \"Not checked\"; needs an",
+    "outbound query policy, rate limits and a provider choice."
+  ]
+}

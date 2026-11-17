@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-6bae0bd2-9931-4081-a716-ff37df3d040a",
+  "title": "Reports list and detail: KPI tiles with trends, report identity header,",
+  "state": "in_progress",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "links to domain, source and DNS diagnostics, and source/metadata/raw XML/TLS",
+    "tabs shipped (120e19d, e68127f). Left: RUA grouping views (source, result,",
+    "receiver, host, country) and a per-row trend column, which needs per-report",
+    "history."
+  ]
+}

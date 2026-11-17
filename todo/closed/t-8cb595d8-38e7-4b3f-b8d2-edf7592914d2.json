@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-8cb595d8-38e7-4b3f-b8d2-edf7592914d2",
+  "title": "**The release workflow could push a Helm chart but not sign",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    it.** The 0.3.0 Release run failed on `Sign chart with cosign (keyless)`",
+    "    with `UNAUTHORIZED: unauthenticated` against",
+    "    `ghcr.io/vexamail/charts/vexa-insight`.",
+    "- Root cause: the chart job authenticated with `helm registry login`, which",
+    "  writes Helm's own registry config. cosign reads `~/.docker/config.json`, so",
+    "  it had no credentials for a registry the same job had just pushed to. The",
+    "  container-image job was unaffected because it uses `docker/login-action`.",
+    "- Why it had never failed before: the chart job arrived in #30, after `v0.2.2`",
+    "  was tagged, so `v0.3.0` was the first release to run it at all."
+  ],
+  "closed": "2026-09-11",
+  "result": "the chart job logs in with `docker/login-action`, which Helm and cosign both read. Released as `0.3.1`; the 0.3.0 chart stays published but unsigned, so `cosign verify` against it fails and the README points at 0.3.1. No application code changed between the two.",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

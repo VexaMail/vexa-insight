@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-3214d6eb-3e28-4ab7-93d9-b99de9528046",
+  "title": "Re-run one DNS check on demand",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (new endpoint)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Check now on the domain DNS tab and Re-run DNS check in the domain Actions menu.",
+  "evidence": [
+    "b0d5dd3, 90a685d"
+  ]
+}

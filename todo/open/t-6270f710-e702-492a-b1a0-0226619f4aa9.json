@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-6270f710-e702-492a-b1a0-0226619f4aa9",
+  "title": "`/docs`: the API viewer is now pinned with SRI, allowed by the dev CSP,",
+  "state": "in_progress",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "mounted explicitly, and runs with telemetry, the hosted agent, MCP and",
+    "developer tools off (2026-10-19). Left: `next dev` still logs \"Hydration",
+    "completed but contains mismatches\" on that page, only while the viewer runs;",
+    "check a production build, and if it shows there too, mount the viewer in a",
+    "client-only boundary (`useSyncExternalStore`-based mount flag; a `setState` in",
+    "an effect fails the lint)."
+  ]
+}

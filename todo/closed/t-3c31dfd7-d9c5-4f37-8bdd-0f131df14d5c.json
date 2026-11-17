@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-3c31dfd7-d9c5-4f37-8bdd-0f131df14d5c",
+  "title": "Domain health timeline",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    correlating DNS, compliance, sources and ingest."
+  ],
+  "closed": "2026-10-19",
+  "result": "History tab on the domain page joins daily results, DNS changes and events.",
+  "evidence": [
+    "fb1cdf7, b0d5dd3"
+  ]
+}

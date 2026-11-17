@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-d749f2a2-714c-46c0-9996-ca13bbaa6e02",
+  "title": "multi-tenancy and",
+  "state": "pending",
+  "category": "larger-ideas-each-needing-a-brief-first",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    white-label reports for MSPs, hosted MTA-STS policy, hosted/flattened SPF",
+    "    (needs authoritative DNS), blocklist monitoring, lookalike domains, Google",
+    "    Postmaster Tools v2 integration."
+  ]
+}

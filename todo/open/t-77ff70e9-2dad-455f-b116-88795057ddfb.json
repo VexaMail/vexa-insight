@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-77ff70e9-2dad-455f-b116-88795057ddfb",
+  "title": "A DNS timeout reads as a missing record (`resolveTxtSafe` returns `[]`),",
+  "state": "pending",
+  "category": "diagnostics-load-time-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    and the index now stores that run for up to a day. Seen locally on",
+    "    2026-10-19: under resolver load busirocket.com scored 3 instead of 40.",
+    "    Next: have the resolvers report a timeout separately and skip storing a",
+    "    run that had any, keeping the previous one."
+  ]
+}

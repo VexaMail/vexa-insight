@@ -1,0 +1,35 @@
+{
+  "tadu": 2,
+  "id": "t-d36c029a-72fd-42b1-9927-eb69c9a48270",
+  "title": "First batch of the suppression",
+  "state": "done",
+  "category": "baseline-gate-debt",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    burn-down: the two worst components.",
+    "- `ImapAccountsSection.tsx` was 386 lines carrying `max-lines`,",
+    "  `cognitive-complexity` and a 300-line render function. Split into eleven",
+    "  files, largest 76 lines: a section shell that maps accounts, a row, its",
+    "  header and toolbar, the three field groups, the two option groups, the",
+    "  move-to-folder control and the move-to-trash checkbox. The repeated",
+    "  `imap-account-${index}-${field}` id template became",
+    "  `utils/settings/imapAccountFieldId`, which is also what removed the inline",
+    "  helper `code-policy/view-logic-separation` was reporting.",
+    "- `IpDisplay.tsx` was one function with three layouts and",
+    "  `cognitive-complexity`. Now a dispatcher plus one component per layout, with",
+    "  the stacked layout's hostname line (the only one carrying a last-lookup",
+    "  timestamp and a refresh control) extracted. The eight presentation defaults",
+    "  were about to be copied into all three layouts, so they went to",
+    "  `utils/ips/resolveIpDisplayOptions` instead - one definition, and it is what",
+    "  brought the stacked layout under the complexity ceiling.",
+    "- Markup is unchanged in both: same elements, classes, ids and ARIA. The",
+    "  accessibility suite is the check that says so, and it asserts the header is",
+    "  a real button with `aria-expanded` and no nested button inside it."
+  ],
+  "closed": "2026-09-08",
+  "result": "First batch of the suppression",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

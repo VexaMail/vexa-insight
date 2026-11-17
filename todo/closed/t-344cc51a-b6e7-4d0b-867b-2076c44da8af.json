@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-344cc51a-b6e7-4d0b-867b-2076c44da8af",
+  "title": "knip and dependency-cruiser at zero and in `check:ci`",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Removed three unused files (`isApplied`, two `MIN_LENGTH` copies) and 15",
+    "    barrel re-exports nobody imported. All 16 `no-circular` errors ran through",
+    "    `CollectMessageAttachmentsInput`, which imported `@/utils/imap` only to",
+    "    type `bodyStructure` as the parser's third parameter, which is `unknown`;",
+    "    typing it `unknown` directly cleared them. `check:ci` now runs",
+    "    `pnpm run knip` and `pnpm run deps:graph`, so findings cannot return",
+    "    unnoticed."
+  ],
+  "closed": "2026-09-30",
+  "result": "knip and dependency-cruiser at zero and in `check:ci`",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

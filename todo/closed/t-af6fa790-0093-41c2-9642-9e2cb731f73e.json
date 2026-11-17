@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-af6fa790-0093-41c2-9642-9e2cb731f73e",
+  "title": "Consider upgrading or replacing `vitest-axe`",
+  "state": "cancelled",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "resolution": "No upgrade exists — `vitest-axe` latest stable is still 0.1.0 (1.0.0 is prerelease `1.0.0-pre.5` only), and its `extend-expect` is a 0-byte no-op under Vitest 4. The a11y suites assert `results.violations` directly, which is fully typed, needs no setup, and still prints complete violation objects on failure. Revisit only if 1.0.0 ships stable."
+}

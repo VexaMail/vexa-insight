@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-ac9ea1fe-d232-47b8-9d2f-ed4d6b09fb14",
+  "title": "Record generator",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Copy-ready DMARC, SPF, `_smtp._tls` and MTA-STS",
+    "",
+    "    records from a form (Mimecast, Cloudflare, parse-dmarc, YADT)."
+  ]
+}

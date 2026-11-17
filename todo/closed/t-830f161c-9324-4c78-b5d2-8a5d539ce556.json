@@ -1,0 +1,32 @@
+{
+  "tadu": 2,
+  "id": "t-830f161c-9324-4c78-b5d2-8a5d539ce556",
+  "title": "Stop sending `temperature` to",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Claude 5 models on the metered Anthropic path.",
+    "- Decision: gate the field on the model rather than dropping it everywhere. A",
+    "  blanket drop would silently move the older Claude models from",
+    "  `temperature: 0.2` to the API default of 1.0, which is a real loss for",
+    "  prompts whose output is parsed as JSON. Anthropic removed the sampling",
+    "  parameters starting with Opus 4.7, so the split is by model generation, not",
+    "  by provider.",
+    "- Left open: the Gemini and OpenRouter adapters send `temperature`",
+    "  unconditionally and were not examined; tracked in `TODO.md`."
+  ],
+  "closed": "2026-07-26",
+  "result": "`utils/ai/supportsAnthropicTemperature.ts` matches the configured model against `TEMPERATURE_CAPABLE_CLAUDE_MODEL_PREFIXES` (Claude 2/3, Opus 4.0/4.1/4.5/4.6, Sonnet 4.0/4.5/4.6, Haiku 4.5) as prefixes, so dated ids resolve too; `createAnthropicAdapter` spreads `temperature` into the body only when that returns true. The list is an allow-list of the older families on purpose: an unrecognised id is far more likely to be newer than this code than older, and losing the field is recoverable where an HTTP 400 is not. The Max OAuth lane still strips the field in `applyMaxOAuthRequestShape` and is unchanged.",
+  "evidence": [
+    "`pnpm run check:ci` clean (type-check, lint, format, 488/488 tests, migrations OK). New `test/createAnthropicAdapter.test.ts` asserts the request body over a stubbed `fetch` — `temperature` present for `claude-sonnet-4-6`, absent for `claude-opus-5`; `test/supportsAnthropicTemperature.test.ts` (4 cases) pins both model sets, the unknown-model default, and the casing/whitespace handling. No live provider call was made, so the HTTP 400 itself is still only reproduced from the 2026-07-26 Max OAuth session."
+  ],
+  "files": [
+    "constants/ai/temperatureCapableClaudeModelPrefixes.ts",
+    "utils/ai/supportsAnthropicTemperature.ts",
+    "services/ai/providers/anthropic/createAnthropicAdapter.ts",
+    "test/{createAnthropicAdapter",
+    "supportsAnthropicTemperature}.test.ts"
+  ]
+}

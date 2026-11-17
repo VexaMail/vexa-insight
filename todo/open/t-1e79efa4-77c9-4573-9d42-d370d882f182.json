@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-1e79efa4-77c9-4573-9d42-d370d882f182",
+  "title": "Report coverage gaps",
+  "state": "in_progress",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Per domain done 2026-09-30 (Last report column,",
+    "",
+    "`reports.stopped` webhook). Still to do: per reporting organisation, so a",
+    "domain that loses Microsoft but keeps Google is flagged (pescheckit)."
+  ]
+}

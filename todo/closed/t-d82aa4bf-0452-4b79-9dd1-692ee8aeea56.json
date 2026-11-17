@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-d82aa4bf-0452-4b79-9dd1-692ee8aeea56",
+  "title": "Convert `utils/api/index.ts` off `export *`",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-25",
+  "result": "Replaced the wildcard barrel with an explicit `export { parseIdParam }`, matching the repo barrel policy and the `utils/validation/index.ts` conversion from 2026-07-24.",
+  "evidence": [
+    "`pnpm run type-check`, `pnpm run lint` clean."
+  ],
+  "files": [
+    "utils/api/index.ts"
+  ]
+}

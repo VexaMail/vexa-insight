@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-0ca3e035-2773-4882-8a23-553d49715156",
+  "title": "RFC 9990 `pass` disposition counted as no policy applied",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `ipDetailSelection.ts` summed only `none`, `quarantine` and `reject`, so",
+    "    `pass` messages vanished from the IP disposition breakdown, and",
+    "    `diagnosticAuthStatsSelection.ts` counted them as failed (`!= 'none'`).",
+    "    Both now treat `pass` like `none`. Test:",
+    "    `test/rfc9990PassDisposition.test.ts` (0 before the fix, 123 after)."
+  ],
+  "closed": "2026-09-30",
+  "result": "RFC 9990 `pass` disposition counted as no policy applied",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

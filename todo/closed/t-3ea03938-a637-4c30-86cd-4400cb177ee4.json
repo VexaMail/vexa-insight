@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-3ea03938-a637-4c30-86cd-4400cb177ee4",
+  "title": "**Dependency audit failed on every PR",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    (GHSA-3g3m-2fjr-6pw4, glob 13.0.6 via lhci > lighthouse > @sentry/node).**",
+    "    Added the `'glob@13': ^14.0.2` override to `pnpm-workspace.yaml`; the",
+    "    lockfile now resolves glob 14.0.6."
+  ],
+  "closed": "2026-11-15",
+  "result": "`pnpm run audit:check` reports 0 unwaived advisories.",
+  "evidence": [
+    "`pnpm run audit:check` failed on main before the change and passes after; `pnpm run check:ci` passes locally."
+  ]
+}

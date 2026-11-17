@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-5c1de43e-465c-40b4-85ad-ca86b427b425",
+  "title": "Shell: grouped sidebar (Operate",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    / Investigate / Admin), a real phone layout (drawer navigation, no",
+    "    persistent 240px sidebar; today `/ips/<ip>` at 390px splits the IP over",
+    "    three lines and overlaps labels), global search as a command palette",
+    "    (domain, IP, report id; `Cmd+K`)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Flat sidebar per the second mockup set (Overview, Issues, Domains, Sending sources, Diagnostics, Reports, Ingestion, Upload; Users and Settings pinned), phone drawer, wide Cmd+K palette, breadcrumbs in the shell, segmented theme switch.",
+  "evidence": [
+    "1980973, 1cf61c3; phone and desktop screenshots in both themes"
+  ]
+}

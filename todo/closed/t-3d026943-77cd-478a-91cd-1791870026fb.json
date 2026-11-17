@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-3d026943-77cd-478a-91cd-1791870026fb",
+  "title": "**All pending Dependabot updates taken, and Dependabot",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    grouped.** 15 separate PRs (#35-#39, #50-#59) became grouped ones once",
+    "    `.github/dependabot.yml` gained `production-minor-patch`,",
+    "    `development-minor-patch` and a single `github-actions` group; the npm",
+    "    updates were applied directly (624316b, ac41441). The `undici: ^7.29.0`",
+    "    override was silently holding the direct `^8` dependency and jsdom's `^8`",
+    "    requirement on the 7 line; dropped, audit clean. Issue #28's volunteer",
+    "    answer (2026-09-28) and the imapflow 2.0 type fixes (already on `main`)",
+    "    closed with it."
+  ],
+  "closed": "2026-09-30",
+  "result": "**All pending Dependabot updates taken, and Dependabot",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

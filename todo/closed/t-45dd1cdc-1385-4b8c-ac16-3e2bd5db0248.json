@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-45dd1cdc-1385-4b8c-ac16-3e2bd5db0248",
+  "title": "Migrate `boundaries/dependencies` to",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    eslint-plugin-boundaries v7 syntax."
+  ],
+  "closed": "2026-07-24",
+  "result": "`rules` -> `policies` and 4 legacy selectors converted to object-based selectors; policy matrix unchanged; deprecation warnings gone; rule still enforcing (verified via debug run).",
+  "evidence": [
+    "`pnpm run lint` exit 0 with zero boundaries warnings."
+  ],
+  "files": [
+    "eslint.config.ts"
+  ]
+}

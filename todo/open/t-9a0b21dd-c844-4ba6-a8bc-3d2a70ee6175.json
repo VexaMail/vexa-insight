@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-9a0b21dd-c844-4ba6-a8bc-3d2a70ee6175",
+  "title": "P2 — DKIM key diagnostics (app/public)",
+  "state": "in_progress",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Private diagnostics now",
+    "",
+    "discover Enhance's `hostingcp` and observed provider selectors, parse actual",
+    "RSA key sizes, distinguish revoked/malformed keys from strength",
+    "recommendations, and use parsed validity consistently in scores and findings.",
+    "See `docs/dkim-diagnostics.md`. The public checker remains conservative DNS",
+    "discovery with an optional selector. Next: show key details in the public",
+    "checker, including revocation, duplicate records and strength warnings without",
+    "claiming verified message signing. Keep customer data out of tests."
+  ]
+}

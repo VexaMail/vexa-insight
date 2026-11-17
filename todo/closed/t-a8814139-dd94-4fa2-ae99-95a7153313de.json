@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-a8814139-dd94-4fa2-ae99-95a7153313de",
+  "title": "Consolidate state types under `types/stores`",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-19",
+  "result": "Removed the duplicate `store/` and `stores/` locations and centralized state contracts.",
+  "evidence": [
+    "`c04dc957`."
+  ],
+  "files": [
+    "types/stores/",
+    "hooks/"
+  ]
+}

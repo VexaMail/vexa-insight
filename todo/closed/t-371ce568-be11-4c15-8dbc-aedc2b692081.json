@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-371ce568-be11-4c15-8dbc-aedc2b692081",
+  "title": "Issue #29 closed: the drizzle snapshot drift is gone",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    Generating 0035 emitted only the one `ALTER`, and a second `db:generate`",
+    "    reports no changes."
+  ],
+  "closed": "2026-09-30",
+  "result": "Issue #29 closed: the drizzle snapshot drift is gone",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

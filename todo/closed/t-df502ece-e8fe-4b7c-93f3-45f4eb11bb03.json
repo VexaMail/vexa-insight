@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-df502ece-e8fe-4b7c-93f3-45f4eb11bb03",
+  "title": "Add Kubernetes manifests and a Helm",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    chart."
+  ],
+  "closed": "2026-05-19",
+  "result": "Added single-replica, SQLite-safe deployment resources with probes, persistence, ingress, and hardened container settings.",
+  "evidence": [
+    "`e8287ee4`; validated with `helm lint`, `helm template`, and `kubectl apply -k --dry-run=client`."
+  ],
+  "files": [
+    "deploy/k8s/",
+    "deploy/helm/vexa-insight/"
+  ]
+}

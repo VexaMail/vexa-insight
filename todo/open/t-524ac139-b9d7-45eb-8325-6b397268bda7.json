@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-524ac139-b9d7-45eb-8325-6b397268bda7",
+  "title": "Match the domain score to PowerDMARC's output exactly. Decided 2026-07-26:",
+  "state": "blocked",
+  "category": "pending-decisions",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "parity is the goal, so any divergence in the SPF/DKIM/DMARC/BIMI/MTA-STS/TLS-RPT weights is a bug, not a design choice. Blocked on reference data this run cannot obtain: PowerDMARC's scores are behind their account, and scraping or signing up for a third-party service is not something to do unattended.",
+  "unblock": "The user supplies a handful of domains with PowerDMARC's reported score for each (a spread of good/partial/broken configurations is worth more than many similar ones); then `computeDomainScore` can be diffed against them and the weights tuned, with the reference set pinned as a test. Note 2026-07-24: the DKIM key-length estimator fix changed reported bit values, so any reference capture must post-date it."
+}

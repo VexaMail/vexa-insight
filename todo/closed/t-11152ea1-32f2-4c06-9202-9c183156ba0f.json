@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-11152ea1-32f2-4c06-9202-9c183156ba0f",
+  "title": "Restore English-only report copy",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-04-22",
+  "result": "Reverted an accidental Spanish/English mix while retaining the functional guidance changes.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "components/diagnostics/",
+    "services/diagnostics/"
+  ]
+}

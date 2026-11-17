@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-73fda863-de9e-4ede-868b-daa690434049",
+  "title": "the 15 `dependabot/*` branches on",
+  "state": "done",
+  "category": "limpieza-de-ramas",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    origin were deleted in one `git push origin --delete` batch, as decided;",
+    "    Dependabot regenerates any update that still applies."
+  ],
+  "closed": "2026-08-28",
+  "result": "the 15 `dependabot/*` branches on",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

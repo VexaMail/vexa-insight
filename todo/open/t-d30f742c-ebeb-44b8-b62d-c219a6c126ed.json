@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-d30f742c-ebeb-44b8-b62d-c219a6c126ed",
+  "title": "**P2 — PTR / forward-confirmed reverse DNS checks for sender IPs (app;",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    public IP lookup later).** Reference: Red Sift Investigate and MXToolbox",
+    "    PTR. First step: reuse the existing hostname enrichment to compare reverse",
+    "    and forward answers, record resolver failures and show the last successful",
+    "    check; attach changes to the sender timeline."
+  ]
+}

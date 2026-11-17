@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-809fa986-373f-4144-b76f-349f68b1e1f8",
+  "title": "Give the IMAP account checkbox groups real",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    grouping semantics."
+  ],
+  "closed": "2026-07-26",
+  "result": "Both captions in `ImapAccountsSection` now name a `role=\"group\"` via `aria-labelledby`, with per-row-index ids like the other fields, so AT announces which group a checkbox belongs to. Landed as ARIA rather than the `fieldset`/`legend` the backlog asked for: the visual risk the entry flagged is real and was measured, not guessed. The two markups were rendered side by side against the app's own compiled CSS and their boxes compared in a real browser -- native `fieldset`/`legend` pushes every row down 4px and grows each group 4px, because a legend is laid out by the fieldset's rendering rules (adding `inline` does not change it), while Tailwind v4's `space-y-3` sets `margin-block-end` on all but the last child, which is inert on today's inline span. `role=\"group\"` measured pixel-identical to the current markup and is equivalent to AT.",
+  "evidence": [
+    "`pnpm run test:a11y` 44/44 (the two new grouping cases fail before the change, verified by stashing it); `pnpm run check:ci` clean (454/454, migrations OK)."
+  ],
+  "files": [
+    "components/settings/ImapAccountsSection.tsx",
+    "test/a11y/ImapAccountsSection.test.tsx"
+  ]
+}

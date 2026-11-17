@@ -1,0 +1,35 @@
+{
+  "tadu": 2,
+  "id": "t-0a2ab182-3376-4e5f-a102-0e73b85458ed",
+  "title": "**Four false claims removed from the operator",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    documentation.** Each one cost an operator a configuration that did",
+    "    nothing.",
+    "- `IMAP_SERVER`, `IMAP_PORT`, `IMAP_USERNAME`, `IMAP_PASSWORD` and",
+    "  `PROJECT_NAME` were documented in the README, `.env.example` and",
+    "  `docker-compose.yml`; no code reads any of them.",
+    "  `test/documentedEnvVars.test.ts` now fails when a variable the app never",
+    "  reads is documented again, verified by reintroducing `PROJECT_NAME`.",
+    "- `INGESTION_INTERVAL_MINUTES`, `INGESTION_DAYS_BACK` and `ENVIRONMENT` are",
+    "  read only while the settings row still holds `CHANGE_ME`, not on every boot.",
+    "- Outbound webhooks were sold as Slack and Teams integrations. Delivery is a",
+    "  generic JSON envelope, one attempt, no retry.",
+    "- The self-hosting comparison implied nothing leaves the host. The README now",
+    "  tables every feature that reaches the network, its default and what it",
+    "  sends.",
+    "- The documented Docker rollup backfill could not run: the runner image is a",
+    "  bare `node:26-alpine` with neither pnpm nor corepack, and tsx is absent from",
+    "  the standalone output. The entrypoint is now bundled to CJS at build time.",
+    "  Verified inside the built image:",
+    "  `[backfill:rollup] Rebuilt event_rollup_daily: 0 rows.`"
+  ],
+  "closed": "2026-09-10",
+  "result": "**Four false claims removed from the operator",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "tadu": 2,
+  "id": "t-9e7a9f55-6198-4a60-8799-cf1565d49981",
+  "title": "Stop writing the IMAP protocol trace to the",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    production logs.",
+    "- Symptom: `createClient` passed no `logger` to ImapFlow, so its default pino",
+    "  instance wrote every protocol line to stdout. On the production host that",
+    "  meant journald held the subject, envelope, sender, recipient and Message-ID",
+    "  of all 4962 scanned messages on each hourly run — mailbox content sitting in",
+    "  the system log with no retention control."
+  ],
+  "closed": "2026-08-25",
+  "result": "`createImapLogger` drops debug and info, forwards warn and error to the console, and restores the full trace only when `VEXA_IMAP_DEBUG` is `true`/`1`. Documented in `.env.example` and the README env table.",
+  "evidence": [
+    "after the deploy, `journalctl -u vexa` across two ingest runs contains zero `imap-connection` lines (9 log lines total since restart, all startup and systemd), while ingest still completed with `error_count` 0."
+  ],
+  "files": [
+    "services/imap/createClient.ts",
+    "utils/imap/createImapLogger.ts",
+    "utils/imap/isImapDebugEnabled.ts",
+    "lib/env.ts",
+    "test/imapLogging.test.ts",
+    "env.example",
+    "README.md",
+    "docker-compose.yml",
+    "deploy/k8s/configmap.yaml",
+    "deploy/helm/vexa-insight/values.yaml"
+  ]
+}

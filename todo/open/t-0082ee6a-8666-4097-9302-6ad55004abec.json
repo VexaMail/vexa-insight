@@ -1,0 +1,10 @@
+{
+  "tadu": 2,
+  "id": "t-0082ee6a-8666-4097-9302-6ad55004abec",
+  "title": "Re-upgrade `typescript` to a plain spec once typescript-eslint supports",
+  "state": "blocked",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias interop: `typescript` -> `@typescript/typescript6` (JS API for eslint/Next/prettier plugins) and `typescript-7` -> native `tsc` used by `type-check`. The `typescript-eslint` overrides in `pnpm-workspace.yaml` exist because `eslint-config-next` pins 8.59.x. Re-checked 2026-07-26: unchanged — 8.65.0 is still `latest` and both it and the 8.65.1-alpha.7 canary declare `typescript >=4.8.4 <6.1.0`. See ADR 0005."
+}

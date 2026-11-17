@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-60545cf0-3624-4ec8-9913-7ec58fca4b88",
+  "title": "Expose an explicit rollout plan",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    in the diagnostics AI response."
+  ],
+  "closed": "2026-07-24",
+  "result": "Response schema extended to `{\"insights\":[...],\"rolloutPlan\":[...]}` (protocol-tagged, highest-impact first, max 5 steps); parsed defensively (missing/malformed -> `[]`) and rendered as a numbered Rollout Plan card after the insight sections.",
+  "evidence": [
+    "`test/diagnosticsAiPrompts.test.ts`, `test/parseDiagnosticsRolloutPlanFromContent.test.ts`; full suite 334/334. Live-provider call not exercised (follow-up in TODO)."
+  ],
+  "files": [
+    "services/ai/prompts/diagnosticsAnalysisSystem.ts",
+    "services/ai/use-cases/",
+    "components/ai/DiagnosticsRolloutPlanCard.tsx",
+    "types/ai/DiagnosticsAnalysisResult.ts"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-de107d41-e418-4c6e-afc8-824b1b72087f",
+  "title": "Source classification by",
+  "state": "done",
+  "category": "ui-redesign-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    observed flow, with reason and confidence (new endpoint); operator review",
+    "    \"Mark as legitimate sender\" that never claims to change DNS or receiver",
+    "    behaviour (extends the Source approval item under Competitive gaps)."
+  ],
+  "closed": "2026-10-19",
+  "result": "Sources classified by cause with a heuristic label; operator review and Mark as legitimate sender record a verdict without claiming DNS or receiver changes.",
+  "evidence": [
+    "d857691, f3eee30, 3dbc40b"
+  ]
+}

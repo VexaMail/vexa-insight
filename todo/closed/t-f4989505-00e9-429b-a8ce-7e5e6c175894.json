@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-f4989505-00e9-429b-a8ce-7e5e6c175894",
+  "title": "Production redeployed",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "from `aa9af4dc6` with the",
+    "",
+    "    out-of-repo deploy script (rsync, install and build on the host,",
+    "    standalone assembly, restart). Verified on the live host: `package.json`",
+    "    0.2.0, the session-validation, install-token and font changes present,",
+    "    service active, no journal errors in the first ten minutes. From outside:",
+    "    `/`, `/settings` and `/ingest` with a forged `session` cookie answer 307",
+    "    to `/login`, `/login` serves the two self-hosted woff2 files and",
+    "    references no Google Fonts host. The previous build there dated from",
+    "    2026-08-27."
+  ],
+  "closed": "2026-09-09",
+  "result": "Production redeployed",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

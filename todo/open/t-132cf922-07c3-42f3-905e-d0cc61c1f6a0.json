@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-132cf922-07c3-42f3-905e-d0cc61c1f6a0",
+  "title": "Generate copy-ready DNS examples from the inspected domain's real values",
+  "state": "pending",
+  "category": "future-ideas",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    instead of generic placeholders."
+  ]
+}

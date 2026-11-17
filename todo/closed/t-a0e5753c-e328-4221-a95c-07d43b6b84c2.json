@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-a0e5753c-e328-4221-a95c-07d43b6b84c2",
+  "title": "Require integer ids in the AI request bodies",
+  "state": "done",
+  "category": "refactors",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-25",
+  "result": "Added `.int()` to `reportInsightsRequestSchema.reportId` and `diagnosticsInsightsRequestSchema.domainId`; both accepted fractional numbers, preserved from the pre-Zod code. Row ids are integers everywhere in the schema, so a fractional id could only ever be a client bug.",
+  "evidence": [
+    "existing `test/reportInsightsRequestSchema.test.ts` and `test/diagnosticsInsightsRequestSchema.test.ts` still pass (error messages unchanged); `pnpm run test` 424/424."
+  ],
+  "files": [
+    "validators/ai/{reportInsightsRequestSchema",
+    "diagnosticsInsightsRequestSchema}.ts"
+  ]
+}

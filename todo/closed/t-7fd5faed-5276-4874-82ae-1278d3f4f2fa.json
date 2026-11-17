@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-7fd5faed-5276-4874-82ae-1278d3f4f2fa",
+  "title": "Resolve the expanded protocol and DNS",
+  "state": "done",
+  "category": "diagnostics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    dataset with caching."
+  ],
+  "closed": "2026-04-22",
+  "result": "Added BIMI, MTA-STS, TLS-RPT, A, and NS resolution plus a five-minute in-memory TTL cache.",
+  "evidence": [
+    "Type-check and focused ESLint passed; repository baseline `a9848a44`."
+  ],
+  "files": [
+    "services/diagnostics/getDomainDnsRecords.ts",
+    "services/diagnostics/withDiagnosticsCache.ts"
+  ]
+}

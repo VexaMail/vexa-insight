@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-f21678f5-bdae-4f5b-a8a0-53e49a4769d9",
+  "title": "Decide per-process `withDiagnosticsCache`",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    is sufficient — documented in ADR 0003."
+  ],
+  "closed": "2026-07-24",
+  "result": "Decide per-process `withDiagnosticsCache`",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ],
+  "resolution": "Deployment is deliberately single-replica (SQLite, RWO PVC, replicas=1 in k8s/Helm); per-replica DNS resolution only matters multi-replica. Revisit together with any multi-replica move."
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-2de9572e-0785-4178-a316-6a728aa55402",
+  "title": "Index normalized report end dates",
+  "state": "done",
+  "category": "performance",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-19",
+  "result": "Added an index for date-range filtering on normalized events.",
+  "evidence": [
+    "`966ca174`."
+  ],
+  "files": [
+    "drizzle/"
+  ]
+}

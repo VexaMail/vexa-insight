@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-fbc14b72-5545-4f49-a161-65975e88f55f",
+  "title": "Make `VEXA_ALLOWED_ORIGINS` a runtime",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    value."
+  ],
+  "closed": "2026-08-28",
+  "result": "`proxy.ts` reads the variable per request; when a POST's Origin host is allow-listed but does not match the forwarded host it rewrites `X-Forwarded-Host` so Next's own CSRF comparison passes. Docs and `.env.example` describe it as runtime config; the build-time bake stays as a fallback. Also documented that a proxy forwarding the public hostname in `Host`/`X-Forwarded-Host` needs no list at all.",
+  "evidence": [
+    "type-check and lint clean; `ƒ Proxy (Middleware)` present in the fresh-clone build output. Not yet exercised against a live proxy — the production host still works via the build-time path, so the runtime path gets its live proof on the next image-based deploy. Commit: `feat(deploy): read the Server Actions origin allow-list at request time`."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-7c148b51-bea2-4a1b-b4be-cc96ac4ad3f2",
+  "title": "Harden CI and release provenance",
+  "state": "done",
+  "category": "infrastructure",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-05-18",
+  "result": "Added least-privilege tokens, frozen installs, SHA-pinned actions, CodeQL, SBOMs, SLSA provenance, and keyless image signing.",
+  "evidence": [
+    "`d452230c`, `e0157a8f`, `dfe655f2`."
+  ],
+  "files": [
+    "github/workflows/"
+  ]
+}

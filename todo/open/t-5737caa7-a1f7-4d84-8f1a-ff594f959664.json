@@ -1,0 +1,10 @@
+{
+  "tadu": 2,
+  "id": "t-5737caa7-a1f7-4d84-8f1a-ff594f959664",
+  "title": "Define the diagnostic backfill contract before enabling its selector",
+  "state": "blocked",
+  "category": "production-findings-2026-10-19",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "Migration `drizzle/0020_dizzy_dazzler.sql` makes `spf_auth_result` NOT NULL with the legitimate default `none`, so `backfillDiagnosticFields` currently selects no rows. Replacing the predicate alone risks attaching another XML record's fields to an event: `groupEventIdsByReport` preserves an unordered query's order, while `backfillReportEvents` pairs event IDs and parsed records by index. **Blocked on:** choosing an explicit whole-report reparse contract with stable identity/order and count validation, or a reliable legacy ownership marker. Verify that contract with reordered and subset fixtures before enabling writes. No database operation was run during the 2026-10-22 audit."
+}

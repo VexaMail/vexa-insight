@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-07974db4-2c10-4bdc-87bf-33aba31a3349",
+  "title": "Keep the live database out of the build",
+  "state": "done",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    artifact."
+  ],
+  "closed": "2026-08-28",
+  "result": "`outputFileTracingExcludes: { '*': ['data/**'] }` in `next.config.ts`.",
+  "evidence": [
+    "fresh-clone `pnpm run build` exit 0 with `.next/standalone/data` absent. Commit: `fix(build): keep data/ out of the standalone output`."
+  ]
+}

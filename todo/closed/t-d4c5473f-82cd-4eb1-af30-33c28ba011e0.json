@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-d4c5473f-82cd-4eb1-af30-33c28ba011e0",
+  "title": "Complete the full repository quality gate over",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    the diagnostics work."
+  ],
+  "closed": "2026-07-23",
+  "result": "Ran the full Vitest suite with outbound DNS available; the previously failing live-DNS assertion passed.",
+  "evidence": [
+    "`pnpm test` — 27 files, 186/186 tests passed."
+  ],
+  "files": [
+    "test/safeFetch.test.ts"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-e3f4f82c-1007-45f3-8bb4-154505d79146",
+  "title": "Deduplicate the `makeDns` DNS fixture",
+  "state": "done",
+  "category": "testing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-25",
+  "result": "`test/computeDomainScore.test.ts` carried its own 30-line copy. The two fixtures were not interchangeable — the shared `makeDnsDiagnostics` defaults to a healthy domain, the scoring one to a fully unconfigured domain — so rather than force one on the other, added `makeEmptyDnsDiagnostics`, which derives the unconfigured baseline from the shared fixture. Intent stays explicit at both call sites.",
+  "evidence": [
+    "`test/computeDomainScore.test.ts` 15/15 unchanged assertions; `pnpm run test` 442/442."
+  ],
+  "files": [
+    "test/setup/makeEmptyDnsDiagnostics.ts",
+    "test/computeDomainScore.test.ts"
+  ]
+}

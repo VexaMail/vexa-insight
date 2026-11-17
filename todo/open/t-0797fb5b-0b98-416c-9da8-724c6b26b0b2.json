@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-0797fb5b-0b98-416c-9da8-724c6b26b0b2",
+  "title": "ASN / AS name enrichment",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "of source IPs (parsedmarc via IPinfo,",
+    "",
+    "    Open-DMARC-Analyzer), next to the existing country."
+  ]
+}

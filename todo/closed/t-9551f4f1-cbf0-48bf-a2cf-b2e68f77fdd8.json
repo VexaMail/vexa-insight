@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-9551f4f1-cbf0-48bf-a2cf-b2e68f77fdd8",
+  "title": "Remove the dead",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    `AIConfigurationStatus` type."
+  ],
+  "closed": "2026-07-25",
+  "result": "`services/ai/contracts/AiConfigurationStatus.ts` had no consumers anywhere; the panels take a boolean `isAiConfigured`. Deleted with its barrel entry.",
+  "evidence": [
+    "cold `pnpm run type-check` clean; `pnpm run test` 442/442."
+  ],
+  "files": [
+    "services/ai/contracts/{AiConfigurationStatus.ts",
+    "index.ts}"
+  ]
+}

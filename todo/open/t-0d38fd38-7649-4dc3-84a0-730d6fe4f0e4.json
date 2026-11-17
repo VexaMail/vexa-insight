@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-0d38fd38-7649-4dc3-84a0-730d6fe4f0e4",
+  "title": "Retention settings",
+  "state": "pending",
+  "category": "competitive-gaps-2026-09-30-survey",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "per data type (reports, events, mailbox, logs) with",
+    "",
+    "    pruning (dmarc-srg, DmarcAnalyzerApp); pairs with table pruning."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-fa4d47fd-7b74-491a-87a8-e3e1b05b96b2",
+  "title": "Track the Select component under its PascalCase",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    filename.",
+    "- Symptom: git tracked `components/ui/select.tsx` while",
+    "  `components/ui/index.ts` re-exports `'./Select'`. Invisible on macOS",
+    "  (case-insensitive APFS) and invisible on the production host too, because",
+    "  `vexa-deploy` rsyncs the working tree, whose directory entry reads",
+    "  `Select.tsx`. Any fresh clone on a case-sensitive filesystem fails",
+    "  type-check with `TS1261 ... differs from file name ... only in casing`."
+  ],
+  "closed": "2026-08-26",
+  "result": "renamed the tracked file to `Select.tsx`, matching every sibling (`SelectContent`, `SelectItem`, `SelectTrigger`) and the convention that a component file is named after its exported symbol.",
+  "evidence": [
+    "surfaced by running `pnpm run check:ci` in a clean worktree, which is also what proved the fix — 540 tests green there afterwards."
+  ],
+  "files": [
+    "components/ui/Select.tsx"
+  ]
+}

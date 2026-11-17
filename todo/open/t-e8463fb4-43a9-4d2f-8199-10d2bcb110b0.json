@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-e8463fb4-43a9-4d2f-8199-10d2bcb110b0",
+  "title": "P2 — Sender health overview combining evidence",
+  "state": "pending",
+  "category": "email-observability-expansion",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Reuse existing source",
+    "",
+    "    classification, reviews, DNS history, SNDS and alert rules. First step:",
+    "    design a per-sender view that separates authentication, reputation and",
+    "    transport observations, their timestamps and uncertainty; do not collapse",
+    "    unrelated evidence into an unexplained deliverability grade."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-b5583e84-9bda-4ad8-b0d1-dfafbc1285af",
+  "title": "Consider per-user API keys with real role mapping to replace the single",
+  "state": "blocked",
+  "category": "security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "shared `SECRET_KEY` (see ADR 0001, which states finer-grained keys need their own ADR). Less urgent since 2026-07-26, when the shared key stopped mapping to `admin` and got the fixed `API_KEY_PERMISSIONS` set instead, but the remaining gaps are unchanged: one secret for every client, no per-client attribution, no revocation without rotating for everyone. Needs product decisions before implementation: key scoping model, rotation and revocation UX, whether the existing shared `SECRET_KEY` keeps working during migration, and where hashed keys live in the schema. Blocked on those four answers, not on effort: an implementation that guesses them is worse than none.",
+  "unblock": "The owner picks a scoping model and a revocation story, ideally as an ADR alongside 0001, and the schema plus migration follow from it."
+}

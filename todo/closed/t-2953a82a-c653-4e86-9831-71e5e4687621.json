@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-2953a82a-c653-4e86-9831-71e5e4687621",
+  "title": "Three Dependabot PRs",
+  "state": "done",
+  "category": "open-dependabot-prs-2026-10-13",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    open on VexaMail/vexa-insight (#71-#73 were superseded and closed): #77",
+    "    github-actions group, #78 production-minor-patch, #79",
+    "    development-minor-patch. Checked 2026-11-01: all three failed \"Dependency",
+    "    audit\", which `main` has fixed since (raised overrides and two dated",
+    "    waivers); #78 and #79 also fail lint with one",
+    "    `@typescript-eslint/no-unnecessary-condition` error at line 17:10 of a",
+    "    file the log does not name. Next: let Dependabot rebase onto `main`, then",
+    "    fix that lint error on the branch or in `main` before merging."
+  ],
+  "closed": "2026-11-01",
+  "result": "#77 applied on main as 00cab41; #78 and #79 applied as a7189e0 with the imapflow fetchOne lint fix, the buildSpfTreeNode public export and the useCalendarDayButton hook that eslint-plugin-code-policy 0.9 required.",
+  "evidence": [
+    "pnpm run check:ci 1051/1051, audit:check 0 unwaived, pnpm run build compiled; commits 00cab41 and a7189e0 on main"
+  ]
+}

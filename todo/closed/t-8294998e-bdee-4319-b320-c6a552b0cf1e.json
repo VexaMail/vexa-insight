@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-8294998e-bdee-4319-b320-c6a552b0cf1e",
+  "title": "Confirm whether OpenAI's",
+  "state": "done",
+  "category": "artificial-intelligence",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "    reasoning models accept `response_format: { type: 'json_object' }`."
+  ],
+  "closed": "2026-08-28",
+  "result": "they do not, on chat completions. OpenAI support (quoted in the o4-mini structured-output community thread) states JSON object/schema response formats are \"not compatible with these models\"; users get `'response_format' of type 'json_schema' is not supported` and equivalent failures, and the models are steered to the Responses API. JSON mode now rides the same legacy-model branch as `max_tokens`/`temperature` in `createOpenAiAdapter`, so reasoning models stop failing with HTTP 400; the prompts already demand raw JSON and the parser strips fences.",
+  "evidence": [
+    "`test/createOpenAiAdapter.test.ts` asserts JSON mode present for `gpt-4o` and absent for `gpt-5`; 2/2 pass. No metered call was spent. Commit: `fix(ai): stop sending JSON mode to OpenAI reasoning models`."
+  ]
+}

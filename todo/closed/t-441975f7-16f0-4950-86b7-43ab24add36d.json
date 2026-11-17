@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-441975f7-16f0-4950-86b7-43ab24add36d",
+  "title": "Write the architecture decision records",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-07-24",
+  "result": "7 ADRs + index under `docs/adr/` (default-deny API, encrypted IMAP credentials, SQLite single-replica, reversible migrations, TS7 dual-alias interop, nonce CSP, explicit AI model), linked from `docs/README.md`; claims verified against code (notably: the \"API key\" is the shared `SECRET_KEY` admin token, not per-user keys).",
+  "evidence": [
+    "`docs/adr/README.md`; prettier clean."
+  ],
+  "files": [
+    "docs/adr/"
+  ]
+}
