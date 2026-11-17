@@ -349,7 +349,6 @@ coherence review over all screens in both themes.
 - [ ] `Sparkline` scales from zero, so rate lines look flat (home works around
       it); add a domain option. Chart x-axes print ISO dates.
 - [ ] DataTable: a flush/bare variant inside a Panel and a wider search option.
-- [ ] Phone card list of domain sources still uses soft badges, not solid.
 - [ ] Source issue keys changed from `source:<ip>:<domain>` to
       `source:<domain>:<ip>` (c5138af) so per-domain permission checks work;
       acknowledgements saved under the old key no longer match. Decide whether
