@@ -233,6 +233,10 @@ the portfolio repo.
 
 ## Infrastructure
 
+- [ ] 2026-11-17 — **PR #90: bump `azure/setup-helm` 5.0.1 to 5.1.0.**
+      Dependabot PR, review requested from the owner, checks green. Next: create
+      the missing dependabot labels, then merge.
+  - Evidence: GitHub notification 2026-11-17; `gh pr view 90` state OPEN.
 - [!] Re-upgrade `typescript` to a plain spec once typescript-eslint supports
   TS >= 7.1 (their issue #10940). Until then the repo uses the dual-alias
   interop: `typescript` -> `@typescript/typescript6` (JS API for
