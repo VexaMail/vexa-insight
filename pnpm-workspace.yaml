@@ -6,7 +6,7 @@
 # packages stay subject to the policy.
 minimumReleaseAgeExclude:
   - '@syntopica/*'
-  - eslint-plugin-code-policy@0.8.0
+  - eslint-plugin-code-policy@0.8.0 || 0.9.1
 
 allowBuilds:
   # better-sqlite3 13 ships prebuilt binaries for every platform we target and

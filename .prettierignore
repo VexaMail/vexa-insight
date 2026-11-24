@@ -16,3 +16,7 @@ drizzle/meta/_journal.json
 # eslint.config.ts ignores them for the same reason.
 .worktrees/**
 .claude/**
+
+# Task records use the canonical JSON written by tadu.
+/todo/open/*.json
+/todo/closed/*.json
